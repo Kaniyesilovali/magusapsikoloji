@@ -1,0 +1,2 @@
+# magusapsikoloji
+Mağusa Psikoloji
