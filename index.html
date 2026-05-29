@@ -270,11 +270,6 @@
               <div class="eco-badge badge-makro" data-system="makro" data-start-angle="242" data-radius="179" style="position:absolute;top:324px;left:82px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">💥</span><span>Travma</span></div>
               <div class="eco-badge badge-makro" data-system="makro" data-start-angle="332" data-radius="179" style="position:absolute;top:82px;left:156px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🔍</span><span>Kimlik</span></div>
 
-              <!-- Tıklanabilir sistem butonları -->
-              <div style="position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);display:flex;gap:6px;white-space:nowrap;">
-                <button class="eco-btn" data-target="mikro" style="color:#4A7C6F;border-color:#4A7C6F;--btn-c:#4A7C6F;">Mikro</button>
-                <button class="eco-btn" data-target="makro" style="color:#2F5C52;border-color:#2F5C52;--btn-c:#2F5C52;">Makro</button>
-              </div>
 
             </div>
           </div>
@@ -929,18 +924,14 @@
     })();
     // ─────────────────────────────────────────────────────────────
 
-    // Eco Systems: badge hover highlights + orbital animation on button click
+    // Eco Systems: auto-orbit all badges (50s/turn) + badge hover highlights
     (function(){
-      var orbitRAF = {};
-
       document.querySelectorAll('.eco-wrap').forEach(function(wrap){
-        var badges  = wrap.querySelectorAll('.eco-badge');
-        var buttons = wrap.querySelectorAll('.eco-btn');
+        var badges = wrap.querySelectorAll('.eco-badge');
 
-        // Badge hover → highlight same-system (disabled during orbit)
+        // Badge hover → highlight same-system
         badges.forEach(function(badge){
           badge.addEventListener('mouseenter', function(){
-            if(wrap.dataset.orbitActive) return;
             var sys = this.dataset.system;
             badges.forEach(function(b){
               b.classList.toggle('eco-dimmed', b.dataset.system !== sys);
@@ -948,62 +939,26 @@
             });
           });
           badge.addEventListener('mouseleave', function(){
-            if(wrap.dataset.orbitActive) return;
             badges.forEach(function(b){ b.classList.remove('eco-dimmed','eco-active'); });
           });
         });
 
-        // Reset a badge to its original position (from data-start-angle + data-radius)
-        function resetBadge(b){
-          var a = parseFloat(b.dataset.startAngle) * Math.PI / 180;
-          var r = parseFloat(b.dataset.radius);
-          b.style.top  = (240 - r * Math.cos(a)) + 'px';
-          b.style.left = (240 + r * Math.sin(a)) + 'px';
-        }
-
-        // Orbital animation for a system's badges
-        function startOrbit(system){
-          var ob  = Array.from(badges).filter(function(b){ return b.dataset.system === system; });
-          var ang = ob.map(function(b){ return parseFloat(b.dataset.startAngle); });
-          var rad = ob.map(function(b){ return parseFloat(b.dataset.radius); });
-          var deg = 0;
-          function step(){
-            deg += 0.15; // ≈ 9°/sec → ~40 sec per full orbit
-            ob.forEach(function(b, i){
-              var a = (ang[i] + deg) * Math.PI / 180;
-              b.style.top  = (240 - rad[i] * Math.cos(a)) + 'px';
-              b.style.left = (240 + rad[i] * Math.sin(a)) + 'px';
-            });
-            orbitRAF[wrap.id] = requestAnimationFrame(step);
-          }
-          step();
-        }
-
-        function stopOrbit(){
-          if(orbitRAF[wrap.id]){ cancelAnimationFrame(orbitRAF[wrap.id]); delete orbitRAF[wrap.id]; }
-        }
-
-        // Button click → toggle orbit for that system
-        buttons.forEach(function(btn){
-          btn.addEventListener('click', function(){
-            var target   = this.dataset.target;
-            var wasActive = this.classList.contains('eco-btn-active');
-            // Reset everything
-            stopOrbit();
-            buttons.forEach(function(b){ b.classList.remove('eco-btn-active'); });
-            badges.forEach(function(b){ b.classList.remove('eco-dimmed','eco-active'); resetBadge(b); });
-            delete wrap.dataset.orbitActive;
-            if(!wasActive){
-              this.classList.add('eco-btn-active');
-              wrap.dataset.orbitActive = target;
-              badges.forEach(function(b){
-                b.classList.toggle('eco-dimmed', b.dataset.system !== target);
-                b.classList.toggle('eco-active',  b.dataset.system === target);
-              });
-              startOrbit(target);
-            }
-          });
+        // Pre-parse badge data once
+        var badgeData = Array.from(badges).map(function(b){
+          return { el: b, angle: parseFloat(b.dataset.startAngle), r: parseFloat(b.dataset.radius) };
         });
+
+        // Auto-orbit loop — all badges, 50 sec/full turn
+        var deg = 0;
+        (function step(){
+          deg += 0.12; // 360 / 50s / 60fps ≈ 0.12
+          badgeData.forEach(function(d){
+            var a = (d.angle + deg) * Math.PI / 180;
+            d.el.style.top  = (240 - d.r * Math.cos(a)) + 'px';
+            d.el.style.left = (240 + d.r * Math.sin(a)) + 'px';
+          });
+          requestAnimationFrame(step);
+        })();
       });
     })();
   </script>
