@@ -968,7 +968,7 @@
           var rad = ob.map(function(b){ return parseFloat(b.dataset.radius); });
           var deg = 0;
           function step(){
-            deg += 0.2; // ≈ 12°/sec → ~30 sec per full orbit
+            deg += 0.15; // ≈ 9°/sec → ~40 sec per full orbit
             ob.forEach(function(b, i){
               var a = (ang[i] + deg) * Math.PI / 180;
               b.style.top  = (240 - rad[i] * Math.cos(a)) + 'px';
