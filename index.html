@@ -78,6 +78,14 @@
     .badge-mezo  { border-left:3px solid #6B9E91; }
     .badge-ekzo  { border-left:3px solid #C8785A; }
     .badge-makro { border-left:3px solid #2F5C52; }
+    /* Clickable system buttons */
+    .eco-btn {
+      font-size:0.6rem; font-weight:700; padding:5px 11px;
+      border-radius:20px; border:1.5px solid; background:transparent;
+      cursor:pointer; transition:background 0.25s, color 0.25s;
+      letter-spacing:0.04em; line-height:1;
+    }
+    .eco-btn.eco-btn-active { background-color:var(--btn-c); color:white; border-color:var(--btn-c); }
   </style>
 </head>
 
@@ -256,38 +264,34 @@
                 <p style="color:white;font-family:'Lora',serif;font-size:0.72rem;font-weight:600;text-align:center;line-height:1.3;padding:0 6px;">Kendinizle<br/>barışın</p>
               </div>
 
-              <!-- ═══ BADGES: MİKROSİSTEM (r=95, 15° 105° 195° 285°) ═══ -->
-              <div class="eco-badge badge-mikro" data-system="mikro" style="position:absolute;top:148px;left:265px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🧒</span><span>Çocuk Terapisi</span></div>
-              <div class="eco-badge badge-mikro" data-system="mikro" style="position:absolute;top:265px;left:332px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🧠</span><span>ADHD</span></div>
-              <div class="eco-badge badge-mikro" data-system="mikro" style="position:absolute;top:332px;left:215px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">✨</span><span>Özsaygı</span></div>
-              <div class="eco-badge badge-mikro" data-system="mikro" style="position:absolute;top:215px;left:148px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">👨‍👩‍👧</span><span>Ebeveyn–Çocuk</span></div>
+              <!-- ═══ BADGES: MİKROSİSTEM (r=95) ═══ -->
+              <div class="eco-badge badge-mikro" data-system="mikro" data-start-angle="15"  data-radius="95"  style="position:absolute;top:148px;left:265px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🧒</span><span>Çocuk Terapisi</span></div>
+              <div class="eco-badge badge-mikro" data-system="mikro" data-start-angle="105" data-radius="95"  style="position:absolute;top:265px;left:332px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🧠</span><span>ADHD</span></div>
+              <div class="eco-badge badge-mikro" data-system="mikro" data-start-angle="195" data-radius="95"  style="position:absolute;top:332px;left:215px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">✨</span><span>Özsaygı</span></div>
+              <div class="eco-badge badge-mikro" data-system="mikro" data-start-angle="285" data-radius="95"  style="position:absolute;top:215px;left:148px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">👨‍👩‍👧</span><span>Ebeveyn–Çocuk</span></div>
 
-              <!-- ═══ BADGES: MAKROSİSTEM (r=140, 68° 152° 242° 332°) ═══ -->
-              <div class="eco-badge badge-makro" data-system="makro" style="position:absolute;top:188px;left:370px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🌧️</span><span>Depresyon</span></div>
-              <div class="eco-badge badge-makro" data-system="makro" style="position:absolute;top:364px;left:306px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🧩</span><span>Kişilik</span></div>
-              <div class="eco-badge badge-makro" data-system="makro" style="position:absolute;top:306px;left:116px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">💥</span><span>Travma</span></div>
-              <div class="eco-badge badge-makro" data-system="makro" style="position:absolute;top:116px;left:174px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🔍</span><span>Kimlik</span></div>
+              <!-- ═══ BADGES: MAKROSİSTEM (r=140) ═══ -->
+              <div class="eco-badge badge-makro" data-system="makro" data-start-angle="68"  data-radius="140" style="position:absolute;top:188px;left:370px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🌧️</span><span>Depresyon</span></div>
+              <div class="eco-badge badge-makro" data-system="makro" data-start-angle="152" data-radius="140" style="position:absolute;top:364px;left:306px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🧩</span><span>Kişilik</span></div>
+              <div class="eco-badge badge-makro" data-system="makro" data-start-angle="242" data-radius="140" style="position:absolute;top:306px;left:116px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">💥</span><span>Travma</span></div>
+              <div class="eco-badge badge-makro" data-system="makro" data-start-angle="332" data-radius="140" style="position:absolute;top:116px;left:174px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🔍</span><span>Kimlik</span></div>
 
-              <!-- ═══ BADGES: MEZOSISTEM (r=183, 10° 148° 228°) ═══ -->
-              <div class="eco-badge badge-mezo" data-system="mezo" style="position:absolute;top:60px;left:272px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🧍</span><span>Bireysel Terapi</span></div>
-              <div class="eco-badge badge-mezo" data-system="mezo" style="position:absolute;top:395px;left:337px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🔗</span><span>Bağlanma</span></div>
-              <div class="eco-badge badge-mezo" data-system="mezo" style="position:absolute;top:362px;left:104px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">💑</span><span>İlişki Sorunları</span></div>
+              <!-- ═══ BADGES: MEZOSISTEM (r=183) ═══ -->
+              <div class="eco-badge badge-mezo" data-system="mezo" data-start-angle="10"  data-radius="183" style="position:absolute;top:60px;left:272px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🧍</span><span>Bireysel Terapi</span></div>
+              <div class="eco-badge badge-mezo" data-system="mezo" data-start-angle="148" data-radius="183" style="position:absolute;top:395px;left:337px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🔗</span><span>Bağlanma</span></div>
+              <div class="eco-badge badge-mezo" data-system="mezo" data-start-angle="228" data-radius="183" style="position:absolute;top:362px;left:104px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">💑</span><span>İlişki Sorunları</span></div>
 
-              <!-- ═══ BADGES: EKZOSİSTEM (r=224, 90° 185° 305°) ═══ -->
-              <div class="eco-badge badge-ekzo" data-system="ekzo" style="position:absolute;top:240px;left:464px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🌊</span><span>Kaygı Terapisi</span></div>
-              <div class="eco-badge badge-ekzo" data-system="ekzo" style="position:absolute;top:463px;left:220px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🔥</span><span>Tükenmişlik</span></div>
-              <div class="eco-badge badge-ekzo" data-system="ekzo" style="position:absolute;top:112px;left:57px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">😰</span><span>Anksiyete</span></div>
+              <!-- ═══ BADGES: EKZOSİSTEM (r=224) ═══ -->
+              <div class="eco-badge badge-ekzo" data-system="ekzo" data-start-angle="90"  data-radius="224" style="position:absolute;top:240px;left:464px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🌊</span><span>Kaygı Terapisi</span></div>
+              <div class="eco-badge badge-ekzo" data-system="ekzo" data-start-angle="185" data-radius="224" style="position:absolute;top:463px;left:220px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🔥</span><span>Tükenmişlik</span></div>
+              <div class="eco-badge badge-ekzo" data-system="ekzo" data-start-angle="305" data-radius="224" style="position:absolute;top:112px;left:57px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">😰</span><span>Anksiyete</span></div>
 
-              <!-- Hover tooltip (JS controlled) -->
-              <div class="eco-tooltip" style="position:absolute;background:rgba(44,56,48,0.88);color:white;font-size:0.62rem;font-weight:700;padding:4px 10px;border-radius:20px;pointer-events:none;opacity:0;transition:opacity 0.15s;z-index:100;white-space:nowrap;transform:translateX(-50%);">—</div>
-
-              <!-- Sistem lejantı (içten dışa: Mikro → Makro → Mezo → Ekzo → Kronos) -->
-              <div style="position:absolute;bottom:-34px;left:50%;transform:translateX(-50%);display:flex;gap:10px;align-items:center;white-space:nowrap;">
-                <span style="display:inline-flex;align-items:center;gap:3px;font-size:0.58rem;font-weight:700;color:#4A7C6F;"><span style="width:7px;height:7px;border:1.5px solid #4A7C6F;border-radius:50%;display:inline-block;"></span>Mikro</span>
-                <span style="display:inline-flex;align-items:center;gap:3px;font-size:0.58rem;font-weight:700;color:#2F5C52;"><span style="width:7px;height:7px;border:1.5px solid #2F5C52;border-radius:50%;display:inline-block;"></span>Makro</span>
-                <span style="display:inline-flex;align-items:center;gap:3px;font-size:0.58rem;font-weight:700;color:#6B9E91;"><span style="width:7px;height:7px;border:1.5px dashed #6B9E91;border-radius:50%;display:inline-block;"></span>Mezo</span>
-                <span style="display:inline-flex;align-items:center;gap:3px;font-size:0.58rem;font-weight:700;color:#C8785A;"><span style="width:7px;height:7px;border:1.5px dashed #C8785A;border-radius:50%;display:inline-block;"></span>Ekzo</span>
-                <span style="display:inline-flex;align-items:center;gap:3px;font-size:0.58rem;font-weight:700;color:#4A7C6F;opacity:0.55;"><span style="width:7px;height:7px;border:1.5px dashed #4A7C6F;border-radius:50%;display:inline-block;"></span>Kronos</span>
+              <!-- Tıklanabilir sistem butonları -->
+              <div style="position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);display:flex;gap:6px;white-space:nowrap;">
+                <button class="eco-btn" data-target="mikro" style="color:#4A7C6F;border-color:#4A7C6F;--btn-c:#4A7C6F;">Mikro</button>
+                <button class="eco-btn" data-target="makro" style="color:#2F5C52;border-color:#2F5C52;--btn-c:#2F5C52;">Makro</button>
+                <button class="eco-btn" data-target="mezo"  style="color:#6B9E91;border-color:#6B9E91;--btn-c:#6B9E91;">Mezo</button>
+                <button class="eco-btn" data-target="ekzo"  style="color:#C8785A;border-color:#C8785A;--btn-c:#C8785A;">Ekzo</button>
               </div>
 
             </div>
@@ -943,18 +947,18 @@
     })();
     // ─────────────────────────────────────────────────────────────
 
-    // Eco Systems: badge hover highlights + ring zone tooltip
+    // Eco Systems: badge hover highlights + orbital animation on button click
     (function(){
-      var zoneNames = ['Mikrosistem','Makrosistem','Mezosistem','Ekzosistem','Kronosistem'];
-      var zoneRadii = [95, 140, 183, 224, 250];
+      var orbitRAF = {};
 
       document.querySelectorAll('.eco-wrap').forEach(function(wrap){
         var badges  = wrap.querySelectorAll('.eco-badge');
-        var tooltip = wrap.querySelector('.eco-tooltip');
+        var buttons = wrap.querySelectorAll('.eco-btn');
 
-        // Badge hover → highlight same-system badges
+        // Badge hover → highlight same-system (disabled during orbit)
         badges.forEach(function(badge){
           badge.addEventListener('mouseenter', function(){
+            if(wrap.dataset.orbitActive) return;
             var sys = this.dataset.system;
             badges.forEach(function(b){
               b.classList.toggle('eco-dimmed', b.dataset.system !== sys);
@@ -962,31 +966,61 @@
             });
           });
           badge.addEventListener('mouseleave', function(){
+            if(wrap.dataset.orbitActive) return;
             badges.forEach(function(b){ b.classList.remove('eco-dimmed','eco-active'); });
           });
         });
 
-        // Mouse distance → show system zone label
-        wrap.addEventListener('mousemove', function(e){
-          var r   = wrap.getBoundingClientRect();
-          var dx  = e.clientX - r.left - 240;
-          var dy  = e.clientY - r.top  - 240;
-          var dist = Math.sqrt(dx*dx + dy*dy);
-          var name = null;
-          for(var i=0; i<zoneRadii.length; i++){
-            if(dist < zoneRadii[i]){ name = zoneNames[i]; break; }
+        // Reset a badge to its original position (from data-start-angle + data-radius)
+        function resetBadge(b){
+          var a = parseFloat(b.dataset.startAngle) * Math.PI / 180;
+          var r = parseFloat(b.dataset.radius);
+          b.style.top  = (240 - r * Math.cos(a)) + 'px';
+          b.style.left = (240 + r * Math.sin(a)) + 'px';
+        }
+
+        // Orbital animation for a system's badges
+        function startOrbit(system){
+          var ob  = Array.from(badges).filter(function(b){ return b.dataset.system === system; });
+          var ang = ob.map(function(b){ return parseFloat(b.dataset.startAngle); });
+          var rad = ob.map(function(b){ return parseFloat(b.dataset.radius); });
+          var deg = 0;
+          function step(){
+            deg += 0.35; // ≈ 21°/sec → ~17 sec per full orbit
+            ob.forEach(function(b, i){
+              var a = (ang[i] + deg) * Math.PI / 180;
+              b.style.top  = (240 - rad[i] * Math.cos(a)) + 'px';
+              b.style.left = (240 + rad[i] * Math.sin(a)) + 'px';
+            });
+            orbitRAF[wrap.id] = requestAnimationFrame(step);
           }
-          if(name){
-            tooltip.textContent = name;
-            tooltip.style.left  = (e.clientX - r.left) + 'px';
-            tooltip.style.top   = (e.clientY - r.top - 34) + 'px';
-            tooltip.style.opacity = '1';
-          } else {
-            tooltip.style.opacity = '0';
-          }
-        });
-        wrap.addEventListener('mouseleave', function(){
-          tooltip.style.opacity = '0';
+          step();
+        }
+
+        function stopOrbit(){
+          if(orbitRAF[wrap.id]){ cancelAnimationFrame(orbitRAF[wrap.id]); delete orbitRAF[wrap.id]; }
+        }
+
+        // Button click → toggle orbit for that system
+        buttons.forEach(function(btn){
+          btn.addEventListener('click', function(){
+            var target   = this.dataset.target;
+            var wasActive = this.classList.contains('eco-btn-active');
+            // Reset everything
+            stopOrbit();
+            buttons.forEach(function(b){ b.classList.remove('eco-btn-active'); });
+            badges.forEach(function(b){ b.classList.remove('eco-dimmed','eco-active'); resetBadge(b); });
+            delete wrap.dataset.orbitActive;
+            if(!wasActive){
+              this.classList.add('eco-btn-active');
+              wrap.dataset.orbitActive = target;
+              badges.forEach(function(b){
+                b.classList.toggle('eco-dimmed', b.dataset.system !== target);
+                b.classList.toggle('eco-active',  b.dataset.system === target);
+              });
+              startOrbit(target);
+            }
+          });
         });
       });
     })();
