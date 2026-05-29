@@ -951,7 +951,7 @@
         // Auto-orbit loop — all badges, 50 sec/full turn
         var deg = 0;
         (function step(){
-          deg += 0.12; // 360 / 50s / 60fps ≈ 0.12
+          deg += 0.04; // 360 / 150s / 60fps ≈ 0.04
           badgeData.forEach(function(d){
             var a = (d.angle + deg) * Math.PI / 180;
             d.el.style.top  = (240 - d.r * Math.cos(a)) + 'px';
