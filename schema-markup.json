@@ -1,0 +1,182 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": ["MedicalBusiness", "LocalBusiness"],
+      "@id": "https://www.magusapiskoloji.com/#business",
+      "name": "Mağusa Psikoloji Merkezi",
+      "alternateName": ["Magusa Psikoloji", "KKTC Psikoloji Merkezi"],
+      "description": "Gazimağusa'da klinik psikoloji hizmetleri: bireysel terapi, aile terapisi, çocuk psikolojisi, kaygı terapisi, BDT, öğrenci danışmanlığı ve online psikoterapi.",
+      "url": "https://www.magusapiskoloji.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.magusapiskoloji.com/logo.png"
+      },
+      "image": "https://www.magusapiskoloji.com/images/klinik.jpg",
+      "telephone": "+90-392-000-0000",
+      "email": "info@magusapiskoloji.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Adres Buraya",
+        "addressLocality": "Gazimağusa",
+        "addressRegion": "Mağusa",
+        "addressCountry": "CY",
+        "postalCode": "00000"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "35.1264",
+        "longitude": "33.9416"
+      },
+      "areaServed": [
+        { "@type": "City", "name": "Gazimağusa" },
+        { "@type": "City", "name": "Mağusa" },
+        { "@type": "State", "name": "Kuzey Kıbrıs" },
+        { "@type": "Country", "name": "KKTC" }
+      ],
+      "medicalSpecialty": [
+        "Klinik Psikoloji",
+        "Çocuk Psikolojisi",
+        "Bilişsel Davranışçı Terapi",
+        "Kaygı Terapisi"
+      ],
+      "availableLanguage": [
+        { "@type": "Language", "name": "Turkish", "alternateName": "tr" },
+        { "@type": "Language", "name": "English", "alternateName": "en" }
+      ],
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "09:00",
+          "closes": "18:00"
+        }
+      ],
+      "sameAs": [
+        "https://www.facebook.com/magusapiskoloji",
+        "https://www.instagram.com/magusapiskoloji"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Psikoloji Hizmetleri",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Bireysel Terapi",
+              "url": "https://www.magusapiskoloji.com/hizmetler/bireysel-terapi"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Aile Terapisi",
+              "url": "https://www.magusapiskoloji.com/hizmetler/aile-terapisi"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "BDT Terapisi",
+              "url": "https://www.magusapiskoloji.com/hizmetler/bdt-terapisi"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Çocuk Psikolojisi",
+              "url": "https://www.magusapiskoloji.com/hizmetler/cocuk-psikolojisi"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Kaygı Terapisi",
+              "url": "https://www.magusapiskoloji.com/hizmetler/kaygi-terapisi"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Öğrenci Danışmanlık",
+              "url": "https://www.magusapiskoloji.com/hizmetler/ogrenci-danismanlik"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Online Terapi",
+              "url": "https://www.magusapiskoloji.com/hizmetler/online-terapi"
+            }
+          }
+        ]
+      }
+    },
+
+    {
+      "@type": "WebSite",
+      "@id": "https://www.magusapiskoloji.com/#website",
+      "url": "https://www.magusapiskoloji.com",
+      "name": "Mağusa Psikoloji Merkezi",
+      "inLanguage": ["tr", "en"],
+      "publisher": { "@id": "https://www.magusapiskoloji.com/#business" }
+    },
+
+    {
+      "@type": "WebPage",
+      "@id": "https://www.magusapiskoloji.com/#homepage",
+      "url": "https://www.magusapiskoloji.com",
+      "name": "Mağusa Psikolog | Klinik Psikoloji Merkezi — Gazimağusa",
+      "description": "Gazimağusa'da uzman psikolog. Bireysel terapi, aile terapisi, çocuk psikolojisi, kaygı terapisi ve online seans. Türkçe ve İngilizce hizmet.",
+      "isPartOf": { "@id": "https://www.magusapiskoloji.com/#website" },
+      "about": { "@id": "https://www.magusapiskoloji.com/#business" },
+      "inLanguage": "tr"
+    },
+
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.magusapiskoloji.com/sss#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Kuzey Kıbrıs'ta psikolog bulmak zor mu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Mağusa Psikoloji Merkezi olarak KKTC'de Türkçe ve İngilizce psikoterapi hizmeti sunuyoruz. Yüz yüze seansların yanı sıra online terapi seçeneğiyle Kıbrıs'ın her bölgesinden ulaşabilirsiniz."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Online terapi yüz yüze terapi kadar etkili mi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Araştırmalar, birçok terapi yönteminde online seansların yüz yüze seanslarla benzer etkinlik gösterdiğini ortaya koymaktadır. Özellikle bireysel terapi ve BDT süreçlerinde online format güvenli ve etkili bir alternatiftir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "İngilizce psikoterapi hizmeti veriyor musunuz?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evet, tüm hizmetlerimiz hem Türkçe hem İngilizce sunulmaktadır. Yabancı uyruklu danışanlar ve uluslararası öğrenciler için İngilizce online ve yüz yüze seans mevcuttur."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Öğrencilere özel terapi hizmeti var mı?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evet, DAÜ ve diğer üniversitelerdeki öğrencilere yönelik öğrenci danışmanlık hizmetimiz mevcuttur. Sınav kaygısı, uyum sorunları ve akademik stres konularında destek sağlıyoruz."
+          }
+        }
+      ]
+    }
+  ]
+}
