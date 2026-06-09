@@ -3,8 +3,8 @@
 
   var style = document.createElement('style');
   style.textContent =
-    '[data-animate]{opacity:0;transform:translateY(28px);transition:opacity .55s ease,transform .55s ease}' +
-    '[data-animate].is-visible{opacity:1;transform:none}';
+    '[data-animate]{opacity:0;transform:translateY(28px);transition:opacity .55s ease,transform .55s ease;will-change:opacity,transform}' +
+    '[data-animate].is-visible{opacity:1;transform:none;will-change:auto}';
   document.head.appendChild(style);
 
   document.addEventListener('DOMContentLoaded', function () {
