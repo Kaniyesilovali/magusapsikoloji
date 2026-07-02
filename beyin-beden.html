@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>İçinde Ne Oluyor? | Mağusa Psikoloji Merkezi</title>
+  <meta name="description" content="Sinirlendiğinde, üzüldüğünde ya da kaygılandığında içinde aslında ne oluyor? Düşünce, duygu, beden ve davranış bağlantısını keşfet." />
+  <meta name="robots" content="index, follow" />
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" />
+  <link rel="canonical" href="https://magusapsikoloji.com/beyin-beden.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://magusapsikoloji.com/beyin-beden.html" />
+  <meta property="og:title" content="İçinde Ne Oluyor? | Mağusa Psikoloji" />
+  <meta property="og:description" content="Bir şey olduğunda vücudun ve aklın ne yaptığını keşfet." />
+  <meta property="og:image" content="https://magusapsikoloji.com/assets/images/og-image.jpg" />
+  <link rel="alternate" hreflang="tr" href="https://magusapsikoloji.com/beyin-beden.html" />
+  <link rel="alternate" hreflang="x-default" href="https://magusapsikoloji.com/beyin-beden.html" />
+
+  <link href="dist/output.css" rel="stylesheet" />
+
+  <style>
+    /* ── Scroll reveal ── */
+    [data-animate] {
+      opacity: 0; transform: translateY(18px);
+      transition: opacity 0.5s cubic-bezier(0.4,0,0.2,1), transform 0.5s cubic-bezier(0.4,0,0.2,1);
+    }
+    [data-animate].is-visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Flow dot animation ── */
+    @keyframes flowDot {
+      from { stroke-dashoffset: 0; }
+      to   { stroke-dashoffset: -300; }
+    }
+    @keyframes ringBreath {
+      0%,100% { transform: scale(1); opacity: 0.22; }
+      55%     { transform: scale(1.2); opacity: 0; }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes chainPop {
+      0%   { opacity: 0; transform: scale(0.85); }
+      60%  { transform: scale(1.04); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes pulseGlow {
+      0%,100% { box-shadow: 0 0 0 0 rgba(74,124,111,0.3); }
+      50%     { box-shadow: 0 0 0 10px rgba(74,124,111,0); }
+    }
+
+    /* ── SVG arrows ── */
+    .arrow-td { animation: flowDot 2.8s linear infinite 0s; }
+    .arrow-de { animation: flowDot 2.8s linear infinite 0.93s; }
+    .arrow-bt { animation: flowDot 2.8s linear infinite 1.87s; }
+    .ring-breath { animation: ringBreath 3s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+    .ring-breath-b { animation: ringBreath 3s ease-in-out infinite 1s; transform-box: fill-box; transform-origin: center; }
+
+    /* ── Pause ── */
+    #main-diagram.is-paused .arrow-td,
+    #main-diagram.is-paused .arrow-de,
+    #main-diagram.is-paused .arrow-bt,
+    #main-diagram.is-paused .ring-breath,
+    #main-diagram.is-paused .ring-breath-b { animation-play-state: paused; }
+
+    /* ── Node highlight ── */
+    .node-circle { transition: filter 0.3s ease, opacity 0.3s ease; }
+    #main-diagram[data-highlight]:not([data-highlight=""]):not([data-highlight="all"]) .node-circle { opacity: 0.3; }
+    #main-diagram[data-highlight="dusunce"]  #node-dusunce  .node-circle { opacity: 1; filter: drop-shadow(0 0 12px rgba(74,124,111,0.65)); }
+    #main-diagram[data-highlight="duygu"]    #node-duygu    .node-circle { opacity: 1; filter: drop-shadow(0 0 12px rgba(200,120,90,0.65)); }
+    #main-diagram[data-highlight="davranis"] #node-davranis .node-circle { opacity: 1; filter: drop-shadow(0 0 12px rgba(90,107,98,0.65)); }
+    #main-diagram[data-highlight="beden"]    #node-beden    .node-circle { opacity: 1; filter: drop-shadow(0 0 10px rgba(138,158,148,0.65)); }
+    .diagram-node { cursor: pointer; }
+    .diagram-node:hover .node-circle { filter: drop-shadow(0 0 8px rgba(74,124,111,0.3)); }
+    #node-duygu:hover .node-circle   { filter: drop-shadow(0 0 8px rgba(200,120,90,0.3)); }
+
+    /* ── Info card animation ── */
+    .info-card { animation: fadeUp 0.22s ease; }
+
+    /* ── Step fade ── */
+    .step-body { transition: opacity 0.17s ease; }
+    .step-body.fading { opacity: 0; }
+
+    /* ── Step dots ── */
+    .sdot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #D0CCC6; flex-shrink: 0;
+      transition: background 0.25s, transform 0.25s;
+    }
+    .sdot.on { background: #4A7C6F; transform: scale(1.45); }
+
+    /* ── Chain cards ── */
+    .chain-card {
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .chain-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(44,56,48,0.12); }
+    .chain-card.active { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(44,56,48,0.16); }
+
+    /* ── Chain detail expand ── */
+    .chain-detail {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s ease;
+      opacity: 0;
+    }
+    .chain-detail.open { max-height: 200px; opacity: 1; }
+
+    /* ── Scenario step indicator badges ── */
+    .step-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 600;
+      padding: 5px 12px; border-radius: 999px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    /* ── Reduced motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      [data-animate] { opacity: 1 !important; transform: none !important; transition: none !important; }
+      .arrow-td,.arrow-de,.arrow-bt,.ring-breath,.ring-breath-b,
+      .node-circle,.info-card,.step-body,.chain-detail { animation: none !important; transition: none !important; }
+      .chain-detail { max-height: none; opacity: 1; }
+    }
+  </style>
+</head>
+
+<body class="font-sans antialiased bg-warm text-ink">
+
+  <!-- ══ NAVBAR ══ -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-warm/80 backdrop-blur-sm">
+    <div class="max-w-6xl mx-auto px-5 lg:px-8">
+      <div class="flex items-center justify-between py-4">
+        <a href="/" class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-serif text-lg font-semibold">M</div>
+          <div>
+            <div class="text-ink font-semibold text-sm leading-tight">Mağusa Psikoloji</div>
+            <div class="text-ink-muted text-xs">Merkezi</div>
+          </div>
+        </a>
+        <div class="hidden lg:flex items-center gap-7">
+          <a href="/" class="text-sm text-ink-muted hover:text-primary transition-colors">Anasayfa</a>
+          <a href="/hakkimizda.html" class="text-sm text-ink-muted hover:text-primary transition-colors">Hakkımızda</a>
+          <div class="relative group">
+            <button class="flex items-center gap-1 text-sm text-ink-muted hover:text-primary transition-colors">
+              Hizmetler
+              <svg class="w-3.5 h-3.5 mt-0.5 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 bg-white rounded-2xl shadow-xl border border-warm-tertiary p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+              <a href="/hizmetler/bireysel-terapi.html" class="block px-3 py-2.5 rounded-xl hover:bg-warm text-sm text-ink transition-colors">Bireysel Terapi</a>
+              <a href="/hizmetler/kaygi-terapisi.html" class="block px-3 py-2.5 rounded-xl hover:bg-warm text-sm text-ink transition-colors">Kaygı Terapisi</a>
+              <a href="/hizmetler/cocuk-psikolojisi.html" class="block px-3 py-2.5 rounded-xl hover:bg-warm text-sm text-ink transition-colors">Çocuk Psikolojisi</a>
+              <a href="/hizmetler/online-terapi.html" class="block px-3 py-2.5 rounded-xl hover:bg-warm text-sm text-ink transition-colors">Online Terapi</a>
+              <div class="border-t border-warm-tertiary my-1.5 mx-3"></div>
+              <a href="/hizmetler/" class="block px-3 py-2 rounded-xl hover:bg-warm text-xs text-primary font-medium transition-colors">Tüm hizmetler →</a>
+            </div>
+          </div>
+          <a href="/blog/" class="text-sm text-ink-muted hover:text-primary transition-colors">Blog</a>
+          <a href="/sss.html" class="text-sm text-ink-muted hover:text-primary transition-colors">SSS</a>
+          <a href="/iletisim.html" class="text-sm text-ink-muted hover:text-primary transition-colors">İletişim</a>
+          <div class="inline-flex items-center text-xs border border-ink-light/40 rounded-full overflow-hidden">
+            <span class="px-3 py-1.5 bg-primary text-white font-medium">TR</span>
+            <a href="/en/" class="px-3 py-1.5 text-ink-muted hover:text-primary transition-colors border-l border-ink-light/40">EN</a>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="/iletisim.html" class="hidden lg:flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-medium px-5 py-2.5 rounded-full transition-colors shadow-sm">Randevu Al</a>
+          <button id="menuBtn" class="lg:hidden p-2 rounded-xl hover:bg-warm-secondary transition-colors" aria-label="Menü aç/kapat">
+            <svg class="w-5 h-5 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="mobileMenu" class="hidden lg:hidden bg-white border-t border-warm-tertiary">
+      <div class="px-5 py-4 space-y-1">
+        <a href="/" class="block px-3 py-2.5 rounded-xl hover:bg-warm text-sm text-ink">Anasayfa</a>
+        <a href="/hakkimizda.html" class="block px-3 py-2.5 rounded-xl hover:bg-warm text-sm text-ink">Hakkımızda</a>
+        <p class="px-3 pt-1 pb-0.5 text-xs font-medium text-ink-light uppercase tracking-wide">Hizmetler</p>
+        <a href="/hizmetler/bireysel-terapi.html" class="block px-5 py-2 rounded-xl hover:bg-warm text-sm text-ink-muted">Bireysel Terapi</a>
+        <a href="/hizmetler/kaygi-terapisi.html" class="block px-5 py-2 rounded-xl hover:bg-warm text-sm text-ink-muted">Kaygı Terapisi</a>
+        <a href="/hizmetler/cocuk-psikolojisi.html" class="block px-5 py-2 rounded-xl hover:bg-warm text-sm text-ink-muted">Çocuk Psikolojisi</a>
+        <a href="/hizmetler/online-terapi.html" class="block px-5 py-2 rounded-xl hover:bg-warm text-sm text-ink-muted">Online Terapi</a>
+        <a href="/blog/" class="block px-3 py-2.5 rounded-xl hover:bg-warm text-sm text-ink">Blog</a>
+        <a href="/sss.html" class="block px-3 py-2.5 rounded-xl hover:bg-warm text-sm text-ink">SSS</a>
+        <a href="/iletisim.html" class="block px-3 py-2.5 rounded-xl hover:bg-warm text-sm text-ink">İletişim</a>
+        <div class="pt-2 border-t border-warm-tertiary">
+          <a href="/iletisim.html" class="flex items-center justify-center bg-primary text-white text-sm font-medium px-5 py-3 rounded-full w-full">Randevu Al</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- ══ 1. HERO ══ -->
+    <section class="relative pt-36 pb-16 overflow-hidden bg-warm">
+      <div class="absolute top-10 -right-20 w-80 h-80 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute bottom-0 -left-10 w-64 h-64 bg-accent/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="max-w-2xl mx-auto px-5 lg:px-8 text-center relative">
+
+        <h1 class="font-serif text-4xl lg:text-6xl text-ink leading-tight mb-5">
+          İçinde<br/>
+          <em class="text-primary not-italic">ne oluyor?</em>
+        </h1>
+
+        <p class="text-lg text-ink-muted leading-relaxed mb-8">
+          Sinirlendiğinde, üzüldüğünde ya da kaygılandığında —<br class="hidden sm:block"/>
+          vücudun ve aklın çok meşgul. Aslında ne yaptıklarını görünce<br class="hidden sm:block"/>
+          her şey biraz daha anlamlı hale geliyor.
+        </p>
+
+        <a href="#dongu" class="inline-flex items-center justify-center gap-2 bg-primary text-white font-medium px-8 py-4 rounded-full hover:bg-primary-hover transition-colors shadow-sm text-base">
+          Keşfet
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ══ 2. DÖNGÜ DİYAGRAMI ══ -->
+    <section id="dongu" class="py-16 lg:py-24 bg-warm-secondary">
+      <div class="max-w-6xl mx-auto px-5 lg:px-8">
+
+        <div class="text-center mb-4" data-animate>
+          <h2 class="font-serif text-3xl lg:text-4xl text-ink mb-3">Dört halka, bir döngü.</h2>
+          <p class="text-ink-muted">Her birine dokun — ne olduğunu anlat sana.</p>
+        </div>
+
+        <div class="grid lg:grid-cols-[1fr_360px] gap-8 items-start mt-10">
+
+          <!-- SVG Diagram -->
+          <div class="mx-auto w-full" style="max-width:500px;">
+            <svg id="main-diagram"
+                 viewBox="0 0 600 580"
+                 width="100%"
+                 data-highlight=""
+                 style="display:block;"
+                 aria-label="Düşünce, Duygu, Davranış ve Beden bağlantı döngüsü">
+              <defs>
+                <marker id="arw-g" markerWidth="9" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L9,4 z" fill="#4A7C6F" opacity="0.75"/></marker>
+                <marker id="arw-t" markerWidth="9" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L9,4 z" fill="#C8785A" opacity="0.75"/></marker>
+                <marker id="arw-m" markerWidth="9" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L9,4 z" fill="#8A9E94" opacity="0.75"/></marker>
+              </defs>
+
+              <!-- Connection lines: Beden center to nodes -->
+              <g opacity="0.35">
+                <line x1="300" y1="252" x2="300" y2="160" stroke="#8A9E94" stroke-width="1.5" stroke-dasharray="4 6"/>
+                <line x1="336" y1="312" x2="418" y2="363" stroke="#8A9E94" stroke-width="1.5" stroke-dasharray="4 6"/>
+                <line x1="264" y1="312" x2="182" y2="363" stroke="#8A9E94" stroke-width="1.5" stroke-dasharray="4 6"/>
+              </g>
+
+              <!-- Arrow tracks (static, low opacity, arrowheads) -->
+              <path d="M 332 152 C 458 196 494 306 448 358" fill="none" stroke="#4A7C6F" stroke-width="1.2" opacity="0.2" marker-end="url(#arw-g)"/>
+              <path d="M 416 412 C 378 463 222 463 184 412" fill="none" stroke="#C8785A" stroke-width="1.2" opacity="0.2" marker-end="url(#arw-t)"/>
+              <path d="M 152 358 C 106 306 142 196 268 152" fill="none" stroke="#8A9E94" stroke-width="1.2" opacity="0.2" marker-end="url(#arw-m)"/>
+
+              <!-- Animated flow dots -->
+              <path class="arrow-td" d="M 332 152 C 458 196 494 306 448 358" fill="none" stroke="#4A7C6F" stroke-width="3.5" stroke-dasharray="16 284" stroke-linecap="round" opacity="0.85"/>
+              <path class="arrow-de" d="M 416 412 C 378 463 222 463 184 412" fill="none" stroke="#C8785A" stroke-width="3.5" stroke-dasharray="16 284" stroke-linecap="round" opacity="0.85"/>
+              <path class="arrow-bt" d="M 152 358 C 106 306 142 196 268 152" fill="none" stroke="#8A9E94" stroke-width="3.5" stroke-dasharray="16 284" stroke-linecap="round" opacity="0.85"/>
+
+              <!-- DÜŞÜNCE -->
+              <g class="diagram-node" id="node-dusunce" data-node="dusunce" tabindex="0" role="button" aria-label="Düşünce">
+                <circle class="ring-breath" cx="300" cy="113" r="57" fill="none" stroke="#4A7C6F" stroke-width="1.5" opacity="0.22"/>
+                <circle class="node-circle" cx="300" cy="113" r="48" fill="#4A7C6F"/>
+                <!-- Brain icon simplified -->
+                <text x="300" y="106" text-anchor="middle" font-size="22" fill="white" font-family="serif">💭</text>
+                <text x="300" y="128" text-anchor="middle" font-family="Lora, Georgia, serif" font-weight="600" font-size="14" fill="white">Düşünce</text>
+              </g>
+
+              <!-- DUYGU -->
+              <g class="diagram-node" id="node-duygu" data-node="duygu" tabindex="0" role="button" aria-label="Duygu">
+                <circle class="ring-breath" cx="458" cy="390" r="57" fill="none" stroke="#C8785A" stroke-width="1.5" opacity="0.22"/>
+                <circle class="node-circle" cx="458" cy="390" r="48" fill="#C8785A"/>
+                <text x="458" y="383" text-anchor="middle" font-size="22" fill="white" font-family="serif">❤️</text>
+                <text x="458" y="405" text-anchor="middle" font-family="Lora, Georgia, serif" font-weight="600" font-size="14" fill="white">Duygu</text>
+              </g>
+
+              <!-- DAVRANIS -->
+              <g class="diagram-node" id="node-davranis" data-node="davranis" tabindex="0" role="button" aria-label="Davranış">
+                <circle class="ring-breath" cx="142" cy="390" r="57" fill="none" stroke="#5A6B62" stroke-width="1.5" opacity="0.22"/>
+                <circle class="node-circle" cx="142" cy="390" r="48" fill="#5A6B62"/>
+                <text x="142" y="383" text-anchor="middle" font-size="22" fill="white" font-family="serif">🏃</text>
+                <text x="142" y="405" text-anchor="middle" font-family="Lora, Georgia, serif" font-weight="600" font-size="13" fill="white">Davranış</text>
+              </g>
+
+              <!-- BEDEN (center) -->
+              <g class="diagram-node" id="node-beden" data-node="beden" tabindex="0" role="button" aria-label="Beden">
+                <circle class="ring-breath-b" cx="300" cy="287" r="42" fill="none" stroke="#8A9E94" stroke-width="1.5" opacity="0.18"/>
+                <circle class="node-circle" cx="300" cy="287" r="34" fill="none" stroke="#8A9E94" stroke-width="2" stroke-dasharray="5 4"/>
+                <circle cx="300" cy="287" r="27" fill="#F0EDE8" opacity="0.96"/>
+                <text x="300" y="283" text-anchor="middle" font-size="16" fill="#5A6B62" font-family="serif">🫁</text>
+                <text x="300" y="300" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" font-weight="600" fill="#5A6B62">Beden</text>
+              </g>
+
+            </svg>
+
+            <p class="text-center text-xs text-ink-muted mt-1 opacity-60">Her halkaya dokun</p>
+          </div>
+
+          <!-- Info Panel -->
+          <div id="info-panel" class="lg:sticky lg:top-28">
+
+            <!-- Default -->
+            <div id="info-default" class="bg-white rounded-2xl p-7 border border-warm-tertiary">
+              <div class="flex flex-col items-center text-center py-4 gap-4">
+                <div class="text-5xl">👆</div>
+                <div>
+                  <h3 class="font-serif text-xl text-ink mb-2">Bir halkaya dokun</h3>
+                  <p class="text-sm text-ink-muted leading-relaxed">
+                    O anda içinde ne olduğunu anlat sana.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Active -->
+            <div id="info-active" class="hidden">
+              <div class="info-card bg-white rounded-2xl border border-warm-tertiary overflow-hidden">
+                <div class="px-6 pt-5 pb-4 flex items-center justify-between border-b border-warm-tertiary">
+                  <div class="flex items-center gap-3">
+                    <span id="info-emoji" class="text-2xl"></span>
+                    <h3 id="info-title" class="font-serif text-xl text-ink"></h3>
+                  </div>
+                  <button id="info-close" class="p-1.5 rounded-lg hover:bg-warm text-ink-muted transition-colors" aria-label="Kapat">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                  </button>
+                </div>
+                <div class="px-6 py-5">
+                  <p id="info-what" class="text-base text-ink font-medium leading-snug mb-3"></p>
+                  <p id="info-example" class="text-sm text-ink-muted leading-relaxed italic"></p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 3. SENARYO ══ -->
+    <section class="py-16 lg:py-24 bg-warm">
+      <div class="max-w-4xl mx-auto px-5 lg:px-8">
+
+        <div class="text-center mb-10" data-animate>
+          <h2 class="font-serif text-3xl lg:text-4xl text-ink mb-3">Tanıdık geliyor mu?</h2>
+          <p class="text-ink-muted">Gerçek bir anı seç. Adım adım ne olduğuna bakalım.</p>
+        </div>
+
+        <!-- Scenario tabs -->
+        <div class="flex flex-wrap gap-3 justify-center mb-8" data-animate>
+          <button class="scen-tab active px-5 py-2.5 rounded-full text-sm font-medium transition-colors bg-primary text-white" data-scen="0">Arkadaşlarla</button>
+          <button class="scen-tab px-5 py-2.5 rounded-full text-sm font-medium transition-colors bg-white border border-warm-tertiary text-ink hover:border-primary hover:text-primary" data-scen="1">Sınav günü</button>
+          <button class="scen-tab px-5 py-2.5 rounded-full text-sm font-medium transition-colors bg-white border border-warm-tertiary text-ink hover:border-primary hover:text-primary" data-scen="2">Kavgadan sonra</button>
+        </div>
+
+        <!-- Scenario card -->
+        <div class="bg-warm-secondary rounded-3xl overflow-hidden" data-animate>
+
+          <!-- Step indicators -->
+          <div class="flex" id="step-bar">
+            <!-- JS fills these -->
+          </div>
+
+          <!-- Step body -->
+          <div class="p-7 lg:p-10">
+            <div id="step-body" class="step-body min-h-[160px]">
+              <div class="flex items-start gap-4 mb-5">
+                <div id="step-icon" class="text-5xl shrink-0 mt-1"></div>
+                <div>
+                  <p id="step-label" class="text-xs font-semibold uppercase tracking-wider mb-2" style="color:#8A9E94;"></p>
+                  <h3 id="step-headline" class="font-serif text-2xl lg:text-3xl text-ink leading-tight"></h3>
+                </div>
+              </div>
+              <p id="step-desc" class="text-ink-muted text-base leading-relaxed pl-16"></p>
+            </div>
+
+            <!-- Nav -->
+            <div class="flex items-center justify-between mt-8 pt-6 border-t border-warm-tertiary">
+              <button id="btn-prev" class="flex items-center gap-2 text-sm font-medium text-ink-muted hover:text-ink transition-colors disabled:opacity-25 disabled:cursor-not-allowed" disabled>
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                Geri
+              </button>
+              <div id="step-dots-wrap" class="flex gap-2"></div>
+              <button id="btn-next" class="flex items-center gap-2 bg-primary text-white text-sm font-medium px-6 py-2.5 rounded-full hover:bg-primary-hover transition-colors shadow-sm">
+                İleri
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ 4. BU NORMAL ══ -->
+    <section class="py-16 lg:py-24 bg-warm-secondary">
+      <div class="max-w-5xl mx-auto px-5 lg:px-8">
+
+        <div class="text-center mb-12" data-animate>
+          <h2 class="font-serif text-3xl lg:text-4xl text-ink">Bu hisler mantıklı.</h2>
+          <p class="text-ink-muted mt-2">Sende yanlış olan bir şey yok.</p>
+        </div>
+
+        <div class="grid sm:grid-cols-3 gap-5" data-animate>
+
+          <div class="bg-white rounded-2xl p-7 text-center">
+            <div class="text-5xl mb-4">🛡️</div>
+            <h3 class="font-semibold text-ink mb-2">Beyin seni koruyor</h3>
+            <p class="text-sm text-ink-muted leading-relaxed">Kalp çarpıntısı, mide sıkışması — bunlar beynin "dikkat!" demesi. Yıllarca işe yaramış bir sistem.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-7 text-center">
+            <div class="text-5xl mb-4">🌊</div>
+            <h3 class="font-semibold text-ink mb-2">Her duygu geçer</h3>
+            <p class="text-sm text-ink-muted leading-relaxed">Ne kadar yoğun olursa olsun, hiçbir his sonsuza kadar sürmez. Dalga gibi — gelir ve gider.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-7 text-center">
+            <div class="text-5xl mb-4">🔑</div>
+            <h3 class="font-semibold text-ink mb-2">Değişebilir</h3>
+            <p class="text-sm text-ink-muted leading-relaxed">Bu döngüyü fark etmek zaten büyük bir adım. Terapide bu döngüyü değiştirmeyi birlikte çalışabiliriz.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 5. CTA ══ -->
+    <section class="py-20 lg:py-28 bg-primary">
+      <div class="max-w-2xl mx-auto px-5 lg:px-8 text-center">
+        <p class="text-white/60 text-sm font-medium mb-4">Bir adım yeterli</p>
+        <h2 class="font-serif text-3xl lg:text-5xl text-white mb-6 leading-tight">
+          Birlikte bakalım.
+        </h2>
+        <p class="text-white/70 text-lg mb-10 leading-relaxed">
+          İçinde ne olduğunu anlamak, en önemli ilk adım.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="/iletisim.html" class="inline-flex items-center justify-center gap-2 bg-white text-primary font-semibold px-8 py-4 rounded-full hover:bg-warm transition-colors shadow-lg">
+            Randevu Al
+          </a>
+          <a href="/terapi-sureci.html" class="inline-flex items-center justify-center gap-2 border-2 border-white/30 text-white font-medium px-8 py-4 rounded-full hover:border-white hover:bg-white/10 transition-colors">
+            Terapi Nasıl İşler?
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══ FOOTER ══ -->
+  <footer class="bg-ink text-white/70">
+    <div class="max-w-6xl mx-auto px-5 lg:px-8 py-14">
+      <div class="grid grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
+        <div class="col-span-2 lg:col-span-1">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white font-serif font-semibold text-sm">M</div>
+            <p class="text-white font-semibold text-sm">Mağusa Psikoloji Merkezi</p>
+          </div>
+          <p class="text-xs leading-relaxed mb-4">Kuzey Kıbrıs, Gazimağusa'da profesyonel psikolojik danışmanlık ve terapi hizmetleri.</p>
+          <p class="text-xs text-white/40">Türkçe · English</p>
+          <div class="flex gap-3 mt-4">
+            <a href="https://www.instagram.com/magusapsikoloji" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-colors">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/magusapsikoloji/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-colors">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <p class="text-white font-medium text-sm mb-4">Hizmetler</p>
+          <ul class="space-y-2 text-xs">
+            <li><a href="/hizmetler/bireysel-terapi.html" class="hover:text-white transition-colors">Bireysel Terapi</a></li>
+            <li><a href="/hizmetler/kaygi-terapisi.html" class="hover:text-white transition-colors">Kaygı Terapisi</a></li>
+            <li><a href="/hizmetler/cocuk-psikolojisi.html" class="hover:text-white transition-colors">Çocuk Psikolojisi</a></li>
+            <li><a href="/hizmetler/aile-terapisi.html" class="hover:text-white transition-colors">Aile Terapisi</a></li>
+            <li><a href="/hizmetler/bdt-terapisi.html" class="hover:text-white transition-colors">BDT Terapisi</a></li>
+            <li><a href="/hizmetler/online-terapi.html" class="hover:text-white transition-colors">Online Terapi</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-white font-medium text-sm mb-4">Kurumsal</p>
+          <ul class="space-y-2 text-xs">
+            <li><a href="/hakkimizda.html" class="hover:text-white transition-colors">Hakkımızda</a></li>
+            <li><a href="/felsefemiz.html" class="hover:text-white transition-colors">Felsefemiz</a></li>
+            <li><a href="/terapi-sureci.html" class="hover:text-white transition-colors">Terapi Süreci</a></li>
+            <li><a href="/sss.html" class="hover:text-white transition-colors">SSS</a></li>
+            <li><a href="/blog/" class="hover:text-white transition-colors">Blog</a></li>
+            <li><a href="/en/" class="hover:text-white transition-colors">English</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-white font-medium text-sm mb-4">Bilgi Merkezi</p>
+          <ul class="space-y-2 text-xs">
+            <li><a href="/blog/kaygi-bozuklugu-nedir.html" class="hover:text-white transition-colors">Kaygı Bozukluğu</a></li>
+            <li><a href="/blog/panik-atak-belirtileri.html" class="hover:text-white transition-colors">Panik Atak</a></li>
+            <li><a href="/blog/depresyon-nedir.html" class="hover:text-white transition-colors">Depresyon Nedir?</a></li>
+            <li><a href="/beyin-beden.html" class="hover:text-white transition-colors text-white/90">İçinde Ne Oluyor?</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-white font-medium text-sm mb-4">İletişim</p>
+          <ul class="space-y-3 text-xs">
+            <li class="flex items-start gap-2">
+              <svg class="w-3.5 h-3.5 mt-0.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              Gazimağusa, Kuzey Kıbrıs
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              info@magusapsikoloji.com
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/30">
+        <span>© 2025 Mağusa Psikoloji Merkezi. Tüm hakları saklıdır.</span>
+        <div class="flex gap-4">
+          <a href="/gizlilik.html" class="hover:text-white/60 transition-colors">Gizlilik Politikası</a>
+          <a href="/kvkk.html" class="hover:text-white/60 transition-colors">KVKK</a>
+          <button id="openCookieSettings" class="hover:text-white/60 transition-colors cursor-pointer">Çerez Tercihleri</button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- GDPR -->
+  <div id="cookieBanner" role="dialog" aria-modal="true" aria-label="Çerez tercihlerinizi yönetin"
+       style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;padding:1rem;background:#FAF8F5;border-top:1px solid #E4DDD5;box-shadow:0 -4px 24px rgba(44,56,48,0.10);">
+    <div style="max-width:72rem;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:1rem;">
+      <div style="flex:1;min-width:220px;"><p style="font-size:.85rem;font-weight:600;color:#2C3830;margin:0 0 .25rem;">Bu site çerez kullanmaktadır</p><p style="font-size:.78rem;color:#5A6B62;margin:0;line-height:1.5;">Siteyi işletmek için zorunlu çerezler kullanılmaktadır. <a href="/gizlilik.html" style="color:#4A7C6F;text-decoration:underline;">Gizlilik Politikası</a></p></div>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;">
+        <button id="cookieBtnSettings" style="font-size:.78rem;padding:.45rem .9rem;border-radius:999px;border:1px solid #8A9E94;background:transparent;color:#5A6B62;cursor:pointer;">Tercihler</button>
+        <button id="cookieBtnReject" style="font-size:.78rem;padding:.45rem .9rem;border-radius:999px;border:1px solid #8A9E94;background:transparent;color:#5A6B62;cursor:pointer;">Sadece Zorunlular</button>
+        <button id="cookieBtnAccept" style="font-size:.78rem;padding:.45rem .9rem;border-radius:999px;border:none;background:#4A7C6F;color:#fff;cursor:pointer;font-weight:500;">Tümünü Kabul Et</button>
+      </div>
+    </div>
+  </div>
+  <div id="cookieModal" role="dialog" aria-modal="true" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(44,56,48,.45);padding:1rem;align-items:center;justify-content:center;">
+    <div style="background:#FAF8F5;border-radius:1.25rem;max-width:480px;width:100%;padding:2rem;box-shadow:0 8px 40px rgba(44,56,48,.18);">
+      <h2 style="font-size:1rem;font-weight:700;color:#2C3830;margin:0 0 .5rem;">Çerez Tercihleriniz</h2>
+      <p style="font-size:.78rem;color:#5A6B62;margin:0 0 1.25rem;line-height:1.55;">Zorunlu çerezler her zaman aktiftir.</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem;background:#fff;border-radius:.75rem;margin-bottom:.5rem;border:1px solid #E4DDD5;"><div><p style="font-size:.82rem;font-weight:600;color:#2C3830;margin:0 0 .15rem;">Zorunlu Çerezler</p><p style="font-size:.72rem;color:#5A6B62;margin:0;">Her zaman aktif.</p></div><div style="width:36px;height:20px;border-radius:999px;background:#4A7C6F;flex-shrink:0;position:relative;"><div style="width:14px;height:14px;border-radius:50%;background:#fff;position:absolute;top:3px;right:3px;"></div></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem;background:#fff;border-radius:.75rem;margin-bottom:.5rem;border:1px solid #E4DDD5;"><div><p style="font-size:.82rem;font-weight:600;color:#2C3830;margin:0 0 .15rem;">Analitik Çerezler</p><p style="font-size:.72rem;color:#5A6B62;margin:0;">Ziyaretçi istatistikleri.</p></div><button id="toggleAnalytics" role="switch" aria-checked="false" style="width:36px;height:20px;border-radius:999px;background:#C8C8C8;flex-shrink:0;position:relative;border:none;cursor:pointer;transition:background .2s;"><span style="width:14px;height:14px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:left .2s;"></span></button></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem;background:#fff;border-radius:.75rem;margin-bottom:1.25rem;border:1px solid #E4DDD5;"><div><p style="font-size:.82rem;font-weight:600;color:#2C3830;margin:0 0 .15rem;">Pazarlama Çerezleri</p><p style="font-size:.72rem;color:#5A6B62;margin:0;">Kişiselleştirilmiş reklam.</p></div><button id="toggleMarketing" role="switch" aria-checked="false" style="width:36px;height:20px;border-radius:999px;background:#C8C8C8;flex-shrink:0;position:relative;border:none;cursor:pointer;transition:background .2s;"><span style="width:14px;height:14px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:left .2s;"></span></button></div>
+      <div style="display:flex;gap:.5rem;justify-content:flex-end;">
+        <button id="modalBtnCancel" style="font-size:.78rem;padding:.5rem 1rem;border-radius:999px;border:1px solid #8A9E94;background:transparent;color:#5A6B62;cursor:pointer;">İptal</button>
+        <button id="modalBtnSave" style="font-size:.78rem;padding:.5rem 1rem;border-radius:999px;border:none;background:#4A7C6F;color:#fff;cursor:pointer;font-weight:500;">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    'use strict';
+
+    // ── Navbar ──
+    window.addEventListener('scroll', function () {
+      document.getElementById('navbar').classList.toggle('nav-scrolled', window.scrollY > 20);
+    });
+    document.getElementById('menuBtn').addEventListener('click', function () {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    });
+
+    // ── Diagram node data (plain language) ──
+    var NODE = {
+      dusunce: {
+        emoji: '💭',
+        title: 'Düşünce',
+        what: 'Bir şey olduğu an beyin anlam çıkarmaya çalışır. "Mahvoldum", "Kimse umursamıyor" — bunlar çok hızlı gelir. Farkında bile olmadan.',
+        example: 'Mesela biri sana baktı ve güldü. Beyin hemen yorumlar: "Benimle mi gülüyorlar?" — henüz kanıt bile yok.'
+      },
+      duygu: {
+        emoji: '❤️',
+        title: 'Duygu',
+        what: 'Göğsünde sıkışma, karnında dalgalanma. Duygular bedenden ayrılmaz — hep birlikte gelirler.',
+        example: 'Kaygı göğsü sıkıştırır. Heyecan kalbi hızlandırır. İkisi bazen çok benzer hissettiriyor — ama biri güzel, diğeri zor.'
+      },
+      davranis: {
+        emoji: '🏃',
+        title: 'Davranış',
+        what: 'Kaçmak, susmak, bağırmak, donup kalmak. Hepsi beynin seni koruma çabası. Anlamsız değil — sadece bazen işe yaramıyor.',
+        example: 'Birileriyle kavga ettikten sonra odana kapanmak, sessizce uzaklaşmak — bunlar "yanlış" değil, beynin "koru" modunda.'
+      },
+      beden: {
+        emoji: '🫁',
+        title: 'Beden',
+        what: 'Kalp hızlanıyor, mide sıkışıyor, eller titriyor. Hayal değil bunlar — beyin tehdit algıladığında beden gerçekten değişiyor.',
+        example: 'Sınav öncesi midenin sıkıştığını hissettin mi? İşte tam bu — beyin "dikkat, önemli bir an" dedi, beden harekete geçti.'
+      }
+    };
+
+    var diagram     = document.getElementById('main-diagram');
+    var infoDef     = document.getElementById('info-default');
+    var infoAct     = document.getElementById('info-active');
+    var infoClose   = document.getElementById('info-close');
+    var infoEmoji   = document.getElementById('info-emoji');
+    var infoTitle   = document.getElementById('info-title');
+    var infoWhat    = document.getElementById('info-what');
+    var infoExample = document.getElementById('info-example');
+    var activeNode  = null;
+
+    function openNode(id) {
+      var d = NODE[id];
+      if (!d) return;
+      activeNode = id;
+      infoEmoji.textContent   = d.emoji;
+      infoTitle.textContent   = d.title;
+      infoWhat.textContent    = d.what;
+      infoExample.textContent = '"' + d.example + '"';
+      infoDef.classList.add('hidden');
+      infoAct.classList.remove('hidden');
+      var card = infoAct.querySelector('.info-card');
+      if (card) { card.classList.remove('info-card'); void card.offsetWidth; card.classList.add('info-card'); }
+      diagram.classList.add('is-paused');
+      diagram.dataset.highlight = id;
+    }
+
+    function closeNode() {
+      activeNode = null;
+      infoAct.classList.add('hidden');
+      infoDef.classList.remove('hidden');
+      diagram.classList.remove('is-paused');
+      diagram.dataset.highlight = '';
+    }
+
+    document.querySelectorAll('.diagram-node').forEach(function (n) {
+      n.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var id = n.dataset.node;
+        if (!id) return;
+        activeNode === id ? closeNode() : openNode(id);
+      });
+      n.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); n.click(); }
+      });
+    });
+
+    infoClose.addEventListener('click', closeNode);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && activeNode) closeNode();
+    });
+
+    // ── Scenarios ──
+    var SCENARIOS = [
+      {
+        name: 'Arkadaşlarla',
+        steps: [
+          { icon: '📱', label: 'NE OLDU', headline: 'Arkadaşına mesaj attın. Saatler geçti, hâlâ cevap yok.', desc: '', highlight: '' },
+          { icon: '💭', label: 'DÜŞÜNCE', headline: '"Acaba küstüm mü?"', desc: 'Beyin hemen anlam çıkarmaya başladı. Kanıt yok henüz — ama düşünce çoktan geldi.', highlight: 'dusunce' },
+          { icon: '😰', label: 'DUYGU', headline: 'Belirsizlik. Küçük bir korku.', desc: 'Göğüste hafif bir sıkışma. "Önemli biri benden uzaklaşıyor mu?" duygusu.', highlight: 'duygu' },
+          { icon: '🫁', label: 'BEDEN', headline: 'Telefonu defalarca kontrol ediyorsun.', desc: 'Farkında değilsin ama ellerinde hafif bir gerginlik var. Mide de hissediyor.', highlight: 'beden' },
+          { icon: '🏃', label: 'DAVRANIS', headline: 'Uyuyamıyorsun. Ya da kendini işe veriyorsun.', desc: 'Beyin rahatsızlığı azaltmaya çalışıyor. Döngü başa dönüyor.', highlight: 'davranis' }
+        ]
+      },
+      {
+        name: 'Sınav günü',
+        steps: [
+          { icon: '⏰', label: 'NE OLDU', headline: 'Sabah gözlerin açıldı. Bugün sınav.', desc: '', highlight: '' },
+          { icon: '💭', label: 'DÜŞÜNCE', headline: '"Yeterince çalışmadım."', desc: 'Belki yeterince çalıştın. Belki çalışmadın. Ama beyin şimdiden sonuç çıkardı.', highlight: 'dusunce' },
+          { icon: '😰', label: 'DUYGU', headline: 'Kaygı. Panik. Bazen his yok gibi.', desc: 'Yoğun kaygıda bazen "donma" hissi gelir. Duygu kapanır gibi.', highlight: 'duygu' },
+          { icon: '🫁', label: 'BEDEN', headline: 'Mide sıkıştı. Kalp hızlandı.', desc: 'Eller soğudu. Boğaz düğümlendi. Beden "tehlike var" moduna geçti.', highlight: 'beden' },
+          { icon: '🏃', label: 'DAVRANIS', headline: 'Donup kaldın. Ya da koşmak istedin.', desc: 'Çalışmaya oturamıyorsun ya da kafan çalışmıyor — bu da normal. Beyin aşırı yüklendi.', highlight: 'davranis' }
+        ]
+      },
+      {
+        name: 'Kavgadan sonra',
+        steps: [
+          { icon: '💥', label: 'NE OLDU', headline: 'Önemli biriyle bir şeyler ters gitti.', desc: '', highlight: '' },
+          { icon: '💭', label: 'DÜŞÜNCE', headline: '"Ben mi yanlış yaptım? O mu? Her şey bitti mi?"', desc: 'Beyin çelişkili düşünceler arasında gidip geliyor. Yanıt aramaya çalışıyor.', highlight: 'dusunce' },
+          { icon: '😰', label: 'DUYGU', headline: 'Öfke ve üzüntü — aynı anda.', desc: 'İkisi birden gelebilir. Çok yoğun hissettiriyor.', highlight: 'duygu' },
+          { icon: '🫁', label: 'BEDEN', headline: 'Göğüs sıkıştı. Boğaz doldu.', desc: 'Göz yaşarmış olabilir. Ya da tam tersi — içi boş, uyuşmuş.', highlight: 'beden' },
+          { icon: '🏃', label: 'DAVRANIS', headline: 'Odana kapandın. Ya da bağırdın. Ya da sustun.', desc: 'Hepsi geçerli tepkiler. Beyin kendini ve seni korumaya çalışıyor.', highlight: 'davranis' }
+        ]
+      }
+    ];
+
+    var currentScen = 0;
+    var currentStep = 0;
+    var stepBody    = document.getElementById('step-body');
+    var stepIcon    = document.getElementById('step-icon');
+    var stepLabel   = document.getElementById('step-label');
+    var stepHL      = document.getElementById('step-headline');
+    var stepDesc    = document.getElementById('step-desc');
+    var stepBar     = document.getElementById('step-bar');
+    var dotsWrap    = document.getElementById('step-dots-wrap');
+    var btnPrev     = document.getElementById('btn-prev');
+    var btnNext     = document.getElementById('btn-next');
+
+    var STEP_COLORS = ['#8A9E94', '#4A7C6F', '#C8785A', '#8A9E94', '#5A6B62'];
+
+    function buildBar(scen) {
+      stepBar.innerHTML = '';
+      var steps = SCENARIOS[scen].steps;
+      steps.forEach(function (s, i) {
+        var div = document.createElement('div');
+        div.style.flex = '1';
+        div.style.height = '4px';
+        div.style.background = '#E4DDD5';
+        div.style.transition = 'background 0.3s ease';
+        div.dataset.idx = i;
+        stepBar.appendChild(div);
+      });
+    }
+
+    function buildDots(scen) {
+      dotsWrap.innerHTML = '';
+      SCENARIOS[scen].steps.forEach(function (_, i) {
+        var d = document.createElement('span');
+        d.className = 'sdot';
+        d.dataset.idx = i;
+        dotsWrap.appendChild(d);
+      });
+    }
+
+    function renderStep(scen, step) {
+      stepBody.classList.add('fading');
+      setTimeout(function () {
+        var s = SCENARIOS[scen].steps[step];
+        stepIcon.textContent    = s.icon;
+        stepLabel.textContent   = s.label;
+        stepHL.textContent      = s.headline;
+        stepDesc.textContent    = s.desc;
+        stepLabel.style.color   = STEP_COLORS[step] || '#8A9E94';
+
+        // bar
+        stepBar.querySelectorAll('div').forEach(function (bar, i) {
+          bar.style.background = i <= step ? (STEP_COLORS[step] || '#4A7C6F') : '#E4DDD5';
+        });
+
+        // dots
+        dotsWrap.querySelectorAll('.sdot').forEach(function (d, i) {
+          d.classList.toggle('on', i === step);
+        });
+
+        diagram.dataset.highlight = s.highlight;
+        btnPrev.disabled = (step === 0);
+
+        var isLast = step === SCENARIOS[scen].steps.length - 1;
+        btnNext.disabled = isLast;
+        btnNext.innerHTML = isLast
+          ? '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Tamam'
+          : 'İleri <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>';
+
+        stepBody.classList.remove('fading');
+      }, 170);
+    }
+
+    function switchScenario(scen) {
+      currentScen = scen;
+      currentStep = 0;
+      buildBar(scen);
+      buildDots(scen);
+      renderStep(scen, 0);
+      document.querySelectorAll('.scen-tab').forEach(function (t) {
+        var on = parseInt(t.dataset.scen) === scen;
+        t.className = on
+          ? 'scen-tab active px-5 py-2.5 rounded-full text-sm font-medium transition-colors bg-primary text-white'
+          : 'scen-tab px-5 py-2.5 rounded-full text-sm font-medium transition-colors bg-white border border-warm-tertiary text-ink hover:border-primary hover:text-primary';
+      });
+    }
+
+    document.querySelectorAll('.scen-tab').forEach(function (t) {
+      t.addEventListener('click', function () { switchScenario(parseInt(t.dataset.scen)); });
+    });
+
+    btnNext.addEventListener('click', function () {
+      if (currentStep < SCENARIOS[currentScen].steps.length - 1) { currentStep++; renderStep(currentScen, currentStep); }
+    });
+    btnPrev.addEventListener('click', function () {
+      if (currentStep > 0) { currentStep--; renderStep(currentScen, currentStep); }
+    });
+    document.addEventListener('keydown', function (e) {
+      var tag = document.activeElement && document.activeElement.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'BUTTON') return;
+      if (e.key === 'ArrowRight' && currentStep < SCENARIOS[currentScen].steps.length - 1) { currentStep++; renderStep(currentScen, currentStep); }
+      if (e.key === 'ArrowLeft'  && currentStep > 0)                                        { currentStep--; renderStep(currentScen, currentStep); }
+    });
+
+    switchScenario(0);
+
+    // ── Scroll animations ──
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add('is-visible'); obs.unobserve(e.target); }
+        });
+      }, { threshold: 0.06, rootMargin: '0px 0px -30px 0px' });
+      document.querySelectorAll('[data-animate]').forEach(function (el) { obs.observe(el); });
+    } else {
+      document.querySelectorAll('[data-animate]').forEach(function (el) { el.classList.add('is-visible'); });
+    }
+
+    // ── GDPR ──
+    (function () {
+      var KEY = 'gdpr_consent';
+      var banner = document.getElementById('cookieBanner');
+      var modal  = document.getElementById('cookieModal');
+      function get() { try { return JSON.parse(localStorage.getItem(KEY)); } catch(e) { return null; } }
+      function save(a, m) { var c={necessary:true,analytics:!!a,marketing:!!m,timestamp:new Date().toISOString()}; localStorage.setItem(KEY,JSON.stringify(c)); window.gdprConsent=c; hide(); hideM(); }
+      function show()  { banner.style.display='block'; }
+      function hide()  { banner.style.display='none'; }
+      function showM() { modal.style.display='flex'; document.body.style.overflow='hidden'; }
+      function hideM() { modal.style.display='none'; document.body.style.overflow=''; }
+      function tog(btn, on) { btn.setAttribute('aria-checked',on?'true':'false'); btn.style.background=on?'#4A7C6F':'#C8C8C8'; btn.querySelector('span').style.left=on?'19px':'3px'; }
+      var aOn=false, mOn=false;
+      document.getElementById('toggleAnalytics').addEventListener('click', function(){aOn=!aOn; tog(this,aOn);});
+      document.getElementById('toggleMarketing').addEventListener('click', function(){mOn=!mOn; tog(this,mOn);});
+      document.getElementById('cookieBtnAccept').addEventListener('click', function(){save(true,true);});
+      document.getElementById('cookieBtnReject').addEventListener('click', function(){save(false,false);});
+      document.getElementById('cookieBtnSettings').addEventListener('click', function(){hide(); showM();});
+      document.getElementById('modalBtnSave').addEventListener('click', function(){save(aOn,mOn);});
+      document.getElementById('modalBtnCancel').addEventListener('click', function(){hideM(); show();});
+      document.getElementById('openCookieSettings').addEventListener('click', function(){var c=get(); if(c){aOn=!!c.analytics;mOn=!!c.marketing;tog(document.getElementById('toggleAnalytics'),aOn);tog(document.getElementById('toggleMarketing'),mOn);} showM();});
+      document.addEventListener('keydown', function(e){if(e.key==='Escape'&&modal.style.display==='flex'){hideM(); if(!get())show();}});
+      var ex=get(); if(ex){window.gdprConsent=ex;} else{show();}
+    })();
+
+  })();
+  </script>
+
+</body>
+</html>

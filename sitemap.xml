@@ -526,4 +526,13 @@
     <priority>0.7</priority>
   </url>
 
+  <url>
+    <loc>https://magusapsikoloji.com/beyin-beden.html</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://magusapsikoloji.com/beyin-beden.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://magusapsikoloji.com/beyin-beden.html"/>
+    <lastmod>2026-06-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
 </urlset>
