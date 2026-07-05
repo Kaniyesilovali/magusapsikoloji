@@ -4,6 +4,10 @@
 #  1. GitHub OAuth App oluştur + sveltia-cms-auth Cloudflare Worker'ı deploy et
 #     (https://github.com/sveltia/sveltia-cms-auth) ve aşağıdaki base_url'i doldur.
 #  2. Müşterinin GitHub hesabını repoya collaborator olarak ekle.
+#
+# Not: Sveltia CMS, burada listelenmeyen frontmatter alanlarını (SEO şemaları,
+# hreflang vb.) kaydederken korur; bu yüzden teknik alanlar bilinçli olarak
+# arayüzde gösterilmiyor.
 
 backend:
   name: github
@@ -16,49 +20,159 @@ display_url: https://magusapsikoloji.com
 media_folder: assets/images
 public_folder: /assets/images
 
+# Sağdaki önizleme paneli ham HTML gösterdiği için kafa karıştırıyor; kapalı.
+editor:
+  preview: false
+
 collections:
   # ── BLOG ──────────────────────────────────────────────
   - name: blog_tr
     label: "Blog Yazıları (TR)"
     label_singular: "Blog Yazısı (TR)"
+    icon: article
     folder: content/tr/blog
     extension: njk
     format: yaml-frontmatter
     create: true
     identifier_field: title
     summary: "{{title}}"
-    sortable_fields: [datePublished, title]
-    fields: &blog_fields
-      - { name: title, label: "Sayfa Başlığı (SEO)", widget: string }
-      - { name: description, label: "Meta Açıklama", widget: text }
-      - { name: permalink, label: "URL (değiştirmeyin)", widget: string }
+    sortable_fields:
+      fields: [datePublished, title]
+      default:
+        field: datePublished
+        direction: descending
+    view_groups:
+      - label: "Kategoriye Göre"
+        field: category
+    fields:
+      - name: title
+        label: "Sayfa Başlığı (SEO)"
+        widget: string
+        hint: "Google arama sonucunda görünen başlık. İdeal uzunluk 50–60 karakter."
+      - name: description
+        label: "Meta Açıklama"
+        widget: text
+        hint: "Google'da başlığın altında görünen kısa açıklama. İdeal uzunluk 140–160 karakter."
+      - name: permalink
+        label: "Sayfa Adresi (URL)"
+        widget: string
+        pattern: ['^/blog/[a-z0-9-]+\.html$', "Şu biçimde olmalı: /blog/yazi-adi.html (küçük harf, Türkçe karakter ve boşluk kullanmayın)"]
+        hint: "⚠️ Yayınlanmış bir yazının adresini değiştirmeyin — Google sıralaması ve mevcut bağlantılar kırılır. Örn: /blog/yeni-yazi.html"
       - { name: layout, widget: hidden, default: post.njk }
-      - { name: translationKey, label: "Çeviri Anahtarı (TR/EN eşleştirme)", widget: string, required: false }
-      - { name: datePublished, label: "Yayın Tarihi", widget: string, required: false }
-      - { name: dateModified, label: "Güncelleme Tarihi", widget: string, required: false }
-      - { name: category, label: "Kategori", widget: string, required: false }
-      - { name: readingTime, label: "Okuma Süresi", widget: string, required: false }
+      - name: translationKey
+        label: "Çeviri Anahtarı"
+        widget: string
+        required: false
+        hint: "Bu yazının İngilizce sürümüyle eşleşmesini sağlar; iki sürümde de birebir aynı olmalı. Örn: blog/anksiyete-nedir"
+      - name: datePublished
+        label: "Yayın Tarihi"
+        widget: datetime
+        format: "YYYY-MM-DD"
+        time_format: false
+        required: false
+      - name: dateModified
+        label: "Güncelleme Tarihi"
+        widget: datetime
+        format: "YYYY-MM-DD"
+        time_format: false
+        required: false
+        hint: "Yazıda değişiklik yaptığınızda bugünün tarihini seçin."
+      - name: category
+        label: "Kategori"
+        widget: select
+        required: false
+        options:
+          - "Terapi Eğitimi"
+          - "Kaygı & Tükenmişlik"
+          - "Travma & İyileşme"
+          - "Çocuk & Aile"
+          - "Çocuk & Ergen"
+          - "Öğrenci Ruh Sağlığı"
+          - "İlişkiler"
+      - name: readingTime
+        label: "Okuma Süresi"
+        widget: string
+        required: false
+        hint: "Örn: 6 dk okuma"
       - name: card
         label: "Blog Listesi Kartı"
         widget: object
         required: false
         collapsed: true
+        hint: "Blog ana sayfasındaki kart görünümü. Boş bırakılan alanlar yukarıdaki bilgilerden otomatik doldurulur."
         fields:
-          - { name: title, label: "Kart Başlığı", widget: string, required: false }
-          - { name: excerpt, label: "Kart Özeti", widget: text, required: false }
-          - { name: category, label: "Kart Kategorisi", widget: string, required: false }
-          - { name: readingTime, label: "Kart Okuma Süresi", widget: string, required: false }
-          - { name: emoji, label: "Emoji", widget: string, required: false }
-          - { name: gradientClass, label: "Görsel CSS sınıfı (teknik)", widget: string, required: false }
-          - { name: badgeClass, label: "Rozet CSS sınıfı (teknik)", widget: string, required: false }
-      - { name: cardOrder, label: "Kart Sırası (boş = en üstte)", widget: number, required: false }
-      - { name: faqTopic, label: "SSS Konusu (yazı altındaki akordiyon)", widget: string, required: false, hint: "Örn: kaygi, depresyon, panik-atak, emdr, aile-terapisi…" }
+          - { name: title, label: "Kart Başlığı", widget: string, required: false, hint: "Boş bırakılırsa sayfa başlığı kullanılır. Kartta kısa başlık daha iyi durur." }
+          - { name: excerpt, label: "Kart Özeti", widget: text, required: false, hint: "Kartta görünen 1–2 cümlelik özet." }
+          - name: category
+            label: "Kart Kategorisi"
+            widget: select
+            required: false
+            hint: "Boş bırakılırsa yukarıdaki Kategori kullanılır."
+            options:
+              - "Terapi Eğitimi"
+              - "Kaygı & Tükenmişlik"
+              - "Travma & İyileşme"
+              - "Çocuk & Aile"
+              - "Çocuk & Ergen"
+              - "Öğrenci Ruh Sağlığı"
+              - "İlişkiler"
+          - { name: readingTime, label: "Kart Okuma Süresi", widget: string, required: false, hint: "Boş bırakılırsa yukarıdaki Okuma Süresi kullanılır." }
+          - { name: emoji, label: "Emoji", widget: string, required: false, hint: "Kartın üst kısmında büyük görünen emoji. Örn: 🧠" }
+          - name: gradientClass
+            label: "Kart Arka Plan Rengi"
+            widget: select
+            required: false
+            options: &gradient_options
+              - { label: "Yeşil → Adaçayı (varsayılan)", value: "h-44 bg-gradient-to-br from-primary/10 to-sage/15 flex items-center justify-center text-5xl" }
+              - { label: "Yeşil → Adaçayı (daha açık)", value: "h-44 bg-gradient-to-br from-primary/10 to-sage/12 flex items-center justify-center text-5xl" }
+              - { label: "Açık Yeşil → Adaçayı", value: "h-44 bg-gradient-to-br from-primary/8 to-sage/20 flex items-center justify-center text-5xl" }
+              - { label: "Yeşil → Kiremit", value: "h-44 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center text-5xl" }
+              - { label: "Açık Yeşil → Kiremit", value: "h-44 bg-gradient-to-br from-primary/8 to-accent/10 flex items-center justify-center text-5xl" }
+              - { label: "Yeşil → Bej", value: "h-44 bg-gradient-to-br from-primary/10 to-warm-tertiary flex items-center justify-center text-5xl" }
+              - { label: "Kiremit → Yeşil", value: "h-44 bg-gradient-to-br from-accent/10 to-primary/8 flex items-center justify-center text-5xl" }
+              - { label: "Kiremit → Adaçayı", value: "h-44 bg-gradient-to-br from-accent/8 to-sage/15 flex items-center justify-center text-5xl" }
+              - { label: "Kiremit → Bej", value: "h-44 bg-gradient-to-br from-accent/8 to-warm-tertiary flex items-center justify-center text-5xl" }
+              - { label: "Adaçayı → Yeşil", value: "h-44 bg-gradient-to-br from-sage/20 to-primary/8 flex items-center justify-center text-5xl" }
+              - { label: "Adaçayı → Kiremit", value: "h-44 bg-gradient-to-br from-sage/15 to-accent/8 flex items-center justify-center text-5xl" }
+              - { label: "Adaçayı (koyu) → Kiremit", value: "h-44 bg-gradient-to-br from-sage/20 to-accent/8 flex items-center justify-center text-5xl" }
+          - name: badgeClass
+            label: "Kategori Rozeti Rengi"
+            widget: select
+            required: false
+            options: &badge_options
+              - { label: "Yeşil (varsayılan)", value: "text-xs bg-primary/10 text-primary font-medium px-2.5 py-0.5 rounded-full" }
+              - { label: "Kiremit / Turuncu", value: "text-xs bg-accent/10 text-accent font-medium px-2.5 py-0.5 rounded-full" }
+              - { label: "Adaçayı Yeşili", value: "text-xs bg-sage/20 text-primary font-medium px-2.5 py-0.5 rounded-full" }
+      - name: cardOrder
+        label: "Kart Sırası"
+        widget: number
+        required: false
+        hint: "Blog listesindeki sıralama. Küçük sayı daha üstte görünür; boş bırakılırsa en üstte."
+      - name: faqTopic
+        label: "SSS Konusu"
+        widget: select
+        required: false
+        hint: "Yazının altında gösterilecek hazır soru-cevap akordiyonunun konusu."
+        options:
+          - { label: "Kaygı", value: kaygi }
+          - { label: "Depresyon", value: depresyon }
+          - { label: "Panik Atak", value: panik-atak }
+          - { label: "DEHB", value: dehb }
+          - { label: "EMDR Terapisi", value: emdr }
+          - { label: "Terapiye Ne Zaman Gidilmeli", value: terapiye-ne-zaman }
+          - { label: "Terapiye Başlamadan Önce", value: terapiye-baslamadan }
+          - { label: "Psikolog mu Psikiyatrist mi", value: psikolog-psikiyatrist }
+          - { label: "Öğrenci Kaygısı", value: ogrenci-kaygisi }
+          - { label: "Kuzey Kıbrıs'ta Destek", value: kuzey-kibris }
+          - { label: "Çift Terapisi", value: cift-terapisi }
+          - { label: "Aile Terapisi", value: aile-terapisi }
       - name: faq
-        label: "Google SSS Şeması (yazıya özel soru-cevap)"
+        label: "Google SSS Şeması"
         widget: list
         required: false
         collapsed: true
-        fields:
+        hint: "Bu yazıya özel soru-cevaplar; Google arama sonuçlarında yazının altında görünebilir."
+        fields: &faq_fields
           - { name: q, label: "Soru", widget: string }
           - { name: a, label: "Cevap", widget: text }
       - name: related
@@ -66,151 +180,358 @@ collections:
         widget: list
         required: false
         collapsed: true
-        fields:
-          - { name: url, label: "Bağlantı", widget: string }
+        hint: "Yazının sonunda önerilen diğer yazılar."
+        fields: &related_fields
+          - { name: url, label: "Bağlantı", widget: string, hint: "Örn: /blog/depresyon-nedir.html" }
           - { name: category, label: "Kategori Etiketi", widget: string }
           - { name: title, label: "Başlık", widget: string }
-      - { name: relatedHeading, label: "İlgili Yazılar Başlığı", widget: string, required: false }
+      - { name: relatedHeading, label: "İlgili Yazılar Başlığı", widget: string, required: false, hint: "Örn: Bunlar da ilginizi çekebilir" }
       - name: cta
         label: "Sayfa Sonu Çağrısı (CTA)"
         widget: object
         required: false
         collapsed: true
-        fields:
+        hint: "Yazının en altındaki renkli randevu/iletişim kutusu."
+        fields: &cta_fields
           - { name: heading, label: "Başlık", widget: string }
           - { name: sub, label: "Alt Metin", widget: string }
           - { name: label, label: "Düğme Yazısı", widget: string }
-          - { name: href, label: "Düğme Bağlantısı", widget: string }
+          - { name: href, label: "Düğme Bağlantısı", widget: string, hint: "Örn: /iletisim.html veya https://wa.me/905…" }
           - { name: external, label: "Yeni sekmede aç", widget: boolean, required: false }
-      - { name: body, label: "İçerik (HTML)", widget: code, default_language: html, output_code_only: true, allow_language_selection: false }
+      - name: body
+        label: "Yazı İçeriği (HTML)"
+        widget: code
+        default_language: html
+        output_code_only: true
+        allow_language_selection: false
+        hint: "Metinleri <p>…</p> ve <h2>…</h2> gibi etiketlerin ARASINDA düzenleyin; etiketlerin kendisini silmeyin veya değiştirmeyin."
 
   - name: blog_en
     label: "Blog Posts (EN)"
     label_singular: "Blog Post (EN)"
+    icon: translate
     folder: content/en/blog
     extension: njk
     format: yaml-frontmatter
     create: true
     identifier_field: title
     summary: "{{title}}"
-    sortable_fields: [datePublished, title]
-    fields: *blog_fields
-
-  # ── HİZMETLER ─────────────────────────────────────────
-  - name: services_tr
-    label: "Hizmetler (TR)"
-    folder: content/tr/hizmetler
-    extension: njk
-    format: yaml-frontmatter
-    create: false
-    identifier_field: title
-    fields: &service_fields
-      - { name: title, label: "Sayfa Başlığı (SEO)", widget: string }
-      - { name: description, label: "Meta Açıklama", widget: text }
-      - { name: permalink, label: "URL (değiştirmeyin)", widget: string }
-      - { name: layout, widget: hidden }
-      - { name: translationKey, label: "Çeviri Anahtarı", widget: string, required: false }
+    sortable_fields:
+      fields: [datePublished, title]
+      default:
+        field: datePublished
+        direction: descending
+    view_groups:
+      - label: "Kategoriye Göre"
+        field: category
+    fields:
+      - name: title
+        label: "Sayfa Başlığı (SEO)"
+        widget: string
+        hint: "Google arama sonucunda görünen başlık. İdeal uzunluk 50–60 karakter."
+      - name: description
+        label: "Meta Açıklama"
+        widget: text
+        hint: "Google'da başlığın altında görünen kısa açıklama. İdeal uzunluk 140–160 karakter."
+      - name: permalink
+        label: "Sayfa Adresi (URL)"
+        widget: string
+        pattern: ['^/en/blog/[a-z0-9-]+\.html$', "Şu biçimde olmalı: /en/blog/post-name.html (küçük harf, boşluksuz)"]
+        hint: "⚠️ Yayınlanmış bir yazının adresini değiştirmeyin. Örn: /en/blog/new-post.html"
+      - { name: layout, widget: hidden, default: post.njk }
+      - name: translationKey
+        label: "Çeviri Anahtarı"
+        widget: string
+        required: false
+        hint: "Bu yazının Türkçe sürümüyle eşleşmesini sağlar; iki sürümde de birebir aynı olmalı."
+      - name: datePublished
+        label: "Yayın Tarihi"
+        widget: datetime
+        format: "YYYY-MM-DD"
+        time_format: false
+        required: false
+      - name: dateModified
+        label: "Güncelleme Tarihi"
+        widget: datetime
+        format: "YYYY-MM-DD"
+        time_format: false
+        required: false
+        hint: "Yazıda değişiklik yaptığınızda bugünün tarihini seçin."
+      - name: category
+        label: "Kategori"
+        widget: select
+        required: false
+        options: &category_options_en
+          - "Therapy Guide"
+          - "Anxiety & Burnout"
+          - "Children & Family"
+          - "Children & Adolescents"
+          - "Student Mental Health"
+          - "Relationships"
+      - name: readingTime
+        label: "Okuma Süresi"
+        widget: string
+        required: false
+        hint: "Örn: 6 min read"
       - name: card
-        label: "Hizmetler Listesi Kartı"
+        label: "Blog Listesi Kartı"
         widget: object
         required: false
         collapsed: true
+        hint: "Blog ana sayfasındaki kart görünümü. Boş bırakılan alanlar yukarıdaki bilgilerden otomatik doldurulur."
         fields:
-          - { name: title, label: "Kart Başlığı", widget: string, required: false }
+          - { name: title, label: "Kart Başlığı", widget: string, required: false, hint: "Boş bırakılırsa sayfa başlığı kullanılır." }
           - { name: excerpt, label: "Kart Özeti", widget: text, required: false }
-          - { name: linkLabel, label: "Bağlantı Yazısı", widget: string, required: false }
-      - { name: cardOrder, label: "Kart Sırası", widget: number, required: false }
+          - name: category
+            label: "Kart Kategorisi"
+            widget: select
+            required: false
+            hint: "Boş bırakılırsa yukarıdaki Kategori kullanılır."
+            options: *category_options_en
+          - { name: readingTime, label: "Kart Okuma Süresi", widget: string, required: false, hint: "Boş bırakılırsa yukarıdaki Okuma Süresi kullanılır." }
+          - { name: emoji, label: "Emoji", widget: string, required: false, hint: "Kartın üst kısmında büyük görünen emoji. Örn: 🧠" }
+          - name: gradientClass
+            label: "Kart Arka Plan Rengi"
+            widget: select
+            required: false
+            options: *gradient_options
+          - name: badgeClass
+            label: "Kategori Rozeti Rengi"
+            widget: select
+            required: false
+            options: *badge_options
+      - name: cardOrder
+        label: "Kart Sırası"
+        widget: number
+        required: false
+        hint: "Blog listesindeki sıralama. Küçük sayı daha üstte görünür; boş bırakılırsa en üstte."
+      - name: faqTopic
+        label: "SSS Konusu"
+        widget: select
+        required: false
+        hint: "Yazının altında gösterilecek hazır soru-cevap akordiyonunun konusu."
+        options:
+          - { label: "Anxiety", value: anxiety }
+          - { label: "Depression", value: depression }
+          - { label: "Panic Attack", value: panic-attack }
+          - { label: "ADHD", value: adhd }
+          - { label: "EMDR Therapy", value: emdr }
+          - { label: "When to Start Therapy", value: when-therapy }
+          - { label: "Before Starting Therapy", value: before-therapy }
+          - { label: "Psychologist vs Psychiatrist", value: psychologist-psychiatrist }
+          - { label: "Exam Anxiety", value: exam-anxiety }
+          - { label: "Student Wellbeing", value: student-wellbeing }
+          - { label: "Support in North Cyprus", value: north-cyprus }
+          - { label: "Couples Therapy", value: couples-therapy }
+          - { label: "Family Therapy", value: family-therapy }
+          - { label: "Online Therapy", value: online-therapy }
+          - { label: "Finding a Psychologist", value: find-psychologist }
+      - name: faq
+        label: "Google SSS Şeması"
+        widget: list
+        required: false
+        collapsed: true
+        hint: "Bu yazıya özel soru-cevaplar; Google arama sonuçlarında yazının altında görünebilir."
+        fields: *faq_fields
+      - name: related
+        label: "İlgili Yazılar"
+        widget: list
+        required: false
+        collapsed: true
+        hint: "Yazının sonunda önerilen diğer yazılar."
+        fields: *related_fields
+      - { name: relatedHeading, label: "İlgili Yazılar Başlığı", widget: string, required: false, hint: "Örn: You may also like" }
       - name: cta
         label: "Sayfa Sonu Çağrısı (CTA)"
         widget: object
         required: false
         collapsed: true
+        hint: "Yazının en altındaki renkli randevu/iletişim kutusu."
+        fields: *cta_fields
+      - name: body
+        label: "Yazı İçeriği (HTML)"
+        widget: code
+        default_language: html
+        output_code_only: true
+        allow_language_selection: false
+        hint: "Metinleri <p>…</p> ve <h2>…</h2> gibi etiketlerin ARASINDA düzenleyin; etiketlerin kendisini silmeyin veya değiştirmeyin."
+
+  - divider: true
+
+  # ── HİZMETLER ─────────────────────────────────────────
+  - name: services_tr
+    label: "Hizmetler (TR)"
+    label_singular: "Hizmet (TR)"
+    icon: psychology
+    folder: content/tr/hizmetler
+    extension: njk
+    format: yaml-frontmatter
+    create: false
+    identifier_field: title
+    summary: "{{title}}"
+    fields: &service_fields
+      - name: title
+        label: "Sayfa Başlığı (SEO)"
+        widget: string
+        hint: "Google arama sonucunda görünen başlık. İdeal uzunluk 50–60 karakter."
+      - name: description
+        label: "Meta Açıklama"
+        widget: text
+        hint: "Google'da başlığın altında görünen kısa açıklama. İdeal uzunluk 140–160 karakter."
+      - name: permalink
+        label: "Sayfa Adresi (URL)"
+        widget: string
+        readonly: true
+        hint: "Otomatik — değiştirilmesi bağlantıları ve Google sıralamasını kırar."
+      - { name: layout, widget: hidden }
+      - name: translationKey
+        label: "Çeviri Anahtarı"
+        widget: string
+        required: false
+        hint: "Sayfanın diğer dildeki sürümüyle eşleşmesini sağlar; değiştirmeyin."
+      - name: card
+        label: "Hizmetler Listesi Kartı"
+        widget: object
+        required: false
+        collapsed: true
+        hint: "Hizmetler sayfasındaki kart görünümü."
         fields:
-          - { name: heading, label: "Başlık", widget: string }
-          - { name: sub, label: "Alt Metin", widget: string }
-          - { name: label, label: "Düğme Yazısı", widget: string }
-          - { name: href, label: "Düğme Bağlantısı", widget: string }
-          - { name: external, label: "Yeni sekmede aç", widget: boolean, required: false }
-      - { name: body, label: "İçerik (HTML)", widget: code, default_language: html, output_code_only: true, allow_language_selection: false }
+          - { name: title, label: "Kart Başlığı", widget: string, required: false }
+          - { name: excerpt, label: "Kart Özeti", widget: text, required: false, hint: "Kartta görünen 1–2 cümlelik özet." }
+          - { name: linkLabel, label: "Bağlantı Yazısı", widget: string, required: false, hint: "Örn: Detaylı bilgi →" }
+      - name: cardOrder
+        label: "Kart Sırası"
+        widget: number
+        required: false
+        hint: "Hizmetler listesindeki sıralama. Küçük sayı daha üstte görünür."
+      - name: cta
+        label: "Sayfa Sonu Çağrısı (CTA)"
+        widget: object
+        required: false
+        collapsed: true
+        hint: "Sayfanın en altındaki renkli randevu/iletişim kutusu."
+        fields: *cta_fields
+      - name: body
+        label: "Sayfa İçeriği (HTML)"
+        widget: code
+        default_language: html
+        output_code_only: true
+        allow_language_selection: false
+        hint: "Metinleri <p>…</p> ve <h2>…</h2> gibi etiketlerin ARASINDA düzenleyin; etiketlerin kendisini silmeyin veya değiştirmeyin."
 
   - name: services_en
     label: "Services (EN)"
+    label_singular: "Service (EN)"
+    icon: psychology
     folder: content/en/services
     extension: njk
     format: yaml-frontmatter
     create: false
     identifier_field: title
+    summary: "{{title}}"
     fields: *service_fields
 
   # ── SABİT SAYFALAR ────────────────────────────────────
   - name: pages_tr
     label: "Sayfalar (TR)"
+    icon: description
     folder: content/tr
     extension: njk
     format: yaml-frontmatter
     create: false
     identifier_field: title
+    summary: "{{title}}"
     fields: &page_fields
-      - { name: title, label: "Sayfa Başlığı (SEO)", widget: string }
-      - { name: description, label: "Meta Açıklama", widget: text }
-      - { name: permalink, label: "URL (değiştirmeyin)", widget: string }
+      - name: title
+        label: "Sayfa Başlığı (SEO)"
+        widget: string
+        hint: "Google arama sonucunda görünen başlık."
+      - name: description
+        label: "Meta Açıklama"
+        widget: text
+        hint: "Google'da başlığın altında görünen kısa açıklama. İdeal uzunluk 140–160 karakter."
+      - name: permalink
+        label: "Sayfa Adresi (URL)"
+        widget: string
+        readonly: true
+        hint: "Otomatik — değiştirilmesi bağlantıları ve Google sıralamasını kırar."
       - { name: layout, widget: hidden }
-      - { name: body, label: "İçerik (HTML)", widget: code, default_language: html, output_code_only: true, allow_language_selection: false }
+      - name: body
+        label: "Sayfa İçeriği (HTML)"
+        widget: code
+        default_language: html
+        output_code_only: true
+        allow_language_selection: false
+        hint: "Metinleri <p>…</p> ve <h2>…</h2> gibi etiketlerin ARASINDA düzenleyin; etiketlerin kendisini silmeyin veya değiştirmeyin."
 
   - name: pages_en
     label: "Pages (EN)"
+    icon: public
     folder: content/en
     extension: njk
     format: yaml-frontmatter
     create: false
     identifier_field: title
+    summary: "{{title}}"
     fields: *page_fields
+
+  - divider: true
 
   # ── SİTE AYARLARI ─────────────────────────────────────
   - name: settings
     label: "Site Ayarları"
+    icon: settings
     files:
       - name: contact
         label: "İletişim Bilgileri"
         file: _data/contact.json
         fields:
-          - { name: whatsapp, label: "WhatsApp Numarası (ülke koduyla, örn. 905331234567)", widget: string }
-          - { name: phone, label: "Telefon (görünen)", widget: string }
+          - name: whatsapp
+            label: "WhatsApp Numarası"
+            widget: string
+            pattern: ['^[0-9]{10,15}$', "Sadece rakam girin, başında + veya 0 olmadan. Örn: 905331234567"]
+            hint: "Ülke koduyla, sadece rakam. Örn: 905331234567"
+          - { name: phone, label: "Telefon (sitede görünen)", widget: string, hint: "Örn: +90 533 123 45 67" }
           - { name: email, label: "E-posta", widget: string }
-          - { name: copyrightYear, label: "© Yılı", widget: string }
-          - { name: instagram, label: "Instagram", widget: string }
-          - { name: facebook, label: "Facebook", widget: string }
+          - { name: copyrightYear, label: "© Yılı", widget: string, hint: "Sayfa altbilgisindeki telif yılı. Örn: 2026" }
+          - { name: instagram, label: "Instagram", widget: string, hint: "Profil bağlantısının tamamı: https://instagram.com/…" }
+          - { name: facebook, label: "Facebook", widget: string, hint: "Profil bağlantısının tamamı: https://facebook.com/…" }
       - name: faq_pages
-        label: "SSS Sayfası (sss.html / en/faq.html)"
+        label: "SSS Sayfası"
         file: _data/faqdata.json
         fields:
           - name: pageCategories
-            label: "Kategoriler"
+            label: "Soru Kategorileri"
             widget: object
+            hint: "sss.html ve en/faq.html sayfalarındaki soru-cevaplar."
             fields:
               - name: tr
-                label: "Türkçe"
+                label: "Türkçe Sorular"
                 widget: list
                 collapsed: true
+                summary: "{{fields.title}}"
                 fields:
-                  - { name: id, label: "Bölüm ID", widget: string }
+                  - { name: id, label: "Bölüm ID (teknik)", widget: string, hint: "Sayfa içi bağlantı için; küçük harf ve tire. Örn: terapi-sureci" }
                   - { name: title, label: "Kategori Başlığı", widget: string }
                   - name: items
                     label: "Sorular"
                     widget: list
+                    summary: "{{fields.q}}"
                     fields:
                       - { name: q, label: "Soru", widget: string }
                       - { name: a, label: "Cevap", widget: text }
               - name: en
-                label: "English"
+                label: "İngilizce Sorular"
                 widget: list
                 collapsed: true
+                summary: "{{fields.title}}"
                 fields:
-                  - { name: id, label: "Section ID", widget: string }
-                  - { name: title, label: "Category Title", widget: string }
+                  - { name: id, label: "Bölüm ID (teknik)", widget: string, hint: "Sayfa içi bağlantı için; küçük harf ve tire. Örn: therapy-process" }
+                  - { name: title, label: "Kategori Başlığı", widget: string }
                   - name: items
-                    label: "Questions"
+                    label: "Sorular"
                     widget: list
+                    summary: "{{fields.q}}"
                     fields:
-                      - { name: q, label: "Question", widget: string }
-                      - { name: a, label: "Answer", widget: text }
+                      - { name: q, label: "Soru", widget: string }
+                      - { name: a, label: "Cevap", widget: text }
