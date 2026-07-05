@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+{% include "chrome/head-meta.njk" %}
+</head>
+<body class="font-sans antialiased bg-warm text-ink">
+
+{% include "chrome/nav-" + lang + ".njk" %}
+
+  <main>
+{{ content | safe }}
+  </main>
+
+{% include "chrome/footer-" + lang + ".njk" %}
+
+{% include "chrome/gdpr-" + lang + ".njk" %}
+
+{% include "chrome/site-scripts.njk" %}
+
+{% include "chrome/whatsapp-" + lang + ".njk" %}
+
+  <script src="/assets/js/scroll-animations.js"></script>
+</body>
+</html>

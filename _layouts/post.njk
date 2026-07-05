@@ -1,0 +1,34 @@
+---
+layout: base.njk
+---
+{{ content | safe }}
+{%- if faqTopic and faqdata.topics[faqTopic] %}
+{% include "chrome/faq-accordion.njk" %}
+{%- endif %}
+{%- if related and related.length %}
+    <section class="py-12 bg-warm">
+      <div class="max-w-3xl mx-auto px-5 lg:px-8">
+        <h2 class="font-serif text-xl text-ink mb-6">{{ relatedHeading }}</h2>
+        <div class="grid sm:grid-cols-2 gap-4">
+{%- for r in related %}
+          <a href="{{ r.url }}" class="group bg-white border border-warm-tertiary rounded-xl p-4 hover:shadow-md transition-all">
+            <p class="text-xs text-ink-muted mb-1">{{ r.category }}</p>
+            <p class="text-sm font-medium text-ink group-hover:text-primary transition-colors leading-snug">{{ r.title }}</p>
+          </a>
+{%- endfor %}
+        </div>
+      </div>
+    </section>
+{%- endif %}
+{%- if cta %}
+    <section class="py-16 bg-primary">
+      <div class="max-w-3xl mx-auto px-5 lg:px-8 text-center">
+        <h2 class="font-serif text-3xl text-white mb-4">{{ cta.heading }}</h2>
+        <p class="text-white/70 mb-8">{{ cta.sub }}</p>
+        <a href="{{ cta.href }}"{% if cta.external %} target="_blank" rel="noopener"{% endif %}
+           class="inline-flex items-center gap-2 bg-white text-primary font-semibold px-8 py-4 rounded-full hover:bg-warm transition-colors shadow-lg">
+          {{ cta.label }}
+        </a>
+      </div>
+    </section>
+{%- endif %}

@@ -1,0 +1,58 @@
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{{ title }}</title>
+<meta name="description" content="{{ description }}" />
+{%- if keywords %}
+<meta name="keywords" content="{{ keywords }}" />
+{%- endif %}
+<meta name="robots" content="{{ robots or "index, follow" }}" />
+<link rel="icon" type="image/png" href="/assets/images/favicon.png" sizes="32x32" />
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png" />
+<link rel="canonical" href="{{ site.url }}{{ page.url }}" />
+
+{%- if hreflangs.tr %}
+<link rel="alternate" hreflang="tr" href="{{ hreflangs.tr }}" />
+{%- endif %}
+{%- if hreflangs.en %}
+<link rel="alternate" hreflang="en" href="{{ hreflangs.en }}" />
+{%- endif %}
+<link rel="alternate" hreflang="x-default" href="{{ hreflangs.xDefault }}" />
+
+<meta property="og:type" content="{{ ogType or "website" }}" />
+<meta property="og:url" content="{{ site.url }}{{ page.url }}" />
+<meta property="og:title" content="{{ ogTitle or title }}" />
+<meta property="og:description" content="{{ ogDescription or description }}" />
+<meta property="og:image" content="{{ ogImage or site.ogImage }}" />
+{%- if ogLocale %}
+<meta property="og:locale" content="{{ ogLocale }}" />
+{%- endif %}
+{%- if not noTwitter %}
+<meta name="twitter:card" content="{{ twitterCard or "summary_large_image" }}" />
+<meta name="twitter:title" content="{{ twitterTitle or ogTitle or title }}" />
+<meta name="twitter:description" content="{{ twitterDescription or ogDescription or description }}" />
+<meta name="twitter:image" content="{{ twitterImage or ogImage or site.ogImage }}" />
+{%- endif %}
+{%- for m in metaExtra %}
+<meta {{ m.attr }}="{{ m.key }}" content="{{ m.content }}" />
+{%- endfor %}
+
+{%- if breadcrumb %}
+<script type="application/ld+json">{{ breadcrumb | jsonldBreadcrumb | safe }}</script>
+{%- endif %}
+{%- if articleSchema %}
+<script type="application/ld+json">{{ articleSchema | jsonldArticle | safe }}</script>
+{%- endif %}
+{%- if faq %}
+<script type="application/ld+json">{{ faq | jsonldFaq | safe }}</script>
+{%- endif %}
+{%- if faqSchemaFromData %}
+<script type="application/ld+json">{{ faqdata.pageCategories[lang] | flattenFaq | jsonldFaq | safe }}</script>
+{%- endif %}
+{%- for s in rawSchemas %}
+<script type="application/ld+json">{{ s | safe }}</script>
+{%- endfor %}
+
+<link href="/dist/output.css" rel="stylesheet" />
+{%- if headExtra %}
+{{ headExtra | safe }}
+{%- endif %}

@@ -1,0 +1,26 @@
+{#- SSS sayfası içeriği: _data/faqdata.json → pageCategories[lang].
+    Markup eski generate-faq.js üreticisiyle birebir aynı. -#}
+{%- set cats = faqdata.pageCategories[lang] %}
+    <nav class="flex flex-wrap gap-2 mb-10" aria-label="FAQ categories">
+{%- for cat in cats %}
+      <a href="#{{ cat.id }}" class="text-xs font-medium px-3.5 py-1.5 rounded-full border border-warm-tertiary bg-warm hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-colors text-ink-muted">{{ cat.title }}</a>
+{%- endfor %}
+    </nav>
+
+    <div itemscope itemtype="https://schema.org/FAQPage">
+{%- for cat in cats %}
+      <section id="{{ cat.id }}" class="mb-14">
+        <h2 class="font-serif text-lg text-ink mb-1 pb-3 border-b-2 border-primary/20">{{ cat.title }}</h2>
+        <div>
+{%- for item in cat.items %}
+        <article class="py-6 border-b border-warm-secondary last:border-0" itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
+          <h3 class="font-semibold text-ink mb-2.5 leading-snug" itemprop="name">{{ item.q }}</h3>
+          <div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer">
+            <p class="text-sm text-ink-muted leading-relaxed" itemprop="text">{{ item.a }}</p>
+          </div>
+        </article>
+{%- endfor %}
+        </div>
+      </section>
+{%- endfor %}
+    </div>

@@ -1,3 +1,5 @@
 node_modules/
 .DS_Store
 deploy/
+_site/
+.snapshot/

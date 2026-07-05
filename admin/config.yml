@@ -1,0 +1,216 @@
+# Sveltia CMS yapılandırması — magusapsikoloji.com/admin/
+#
+# Kurulum (tek seferlik, geliştirici):
+#  1. GitHub OAuth App oluştur + sveltia-cms-auth Cloudflare Worker'ı deploy et
+#     (https://github.com/sveltia/sveltia-cms-auth) ve aşağıdaki base_url'i doldur.
+#  2. Müşterinin GitHub hesabını repoya collaborator olarak ekle.
+
+backend:
+  name: github
+  repo: Kaniyesilovali/magusapsikoloji
+  branch: main
+  # base_url: https://sveltia-cms-auth.<hesabiniz>.workers.dev   # ← Worker adresi
+
+site_url: https://magusapsikoloji.com
+display_url: https://magusapsikoloji.com
+media_folder: assets/images
+public_folder: /assets/images
+
+collections:
+  # ── BLOG ──────────────────────────────────────────────
+  - name: blog_tr
+    label: "Blog Yazıları (TR)"
+    label_singular: "Blog Yazısı (TR)"
+    folder: content/tr/blog
+    extension: njk
+    format: yaml-frontmatter
+    create: true
+    identifier_field: title
+    summary: "{{title}}"
+    sortable_fields: [datePublished, title]
+    fields: &blog_fields
+      - { name: title, label: "Sayfa Başlığı (SEO)", widget: string }
+      - { name: description, label: "Meta Açıklama", widget: text }
+      - { name: permalink, label: "URL (değiştirmeyin)", widget: string }
+      - { name: layout, widget: hidden, default: post.njk }
+      - { name: translationKey, label: "Çeviri Anahtarı (TR/EN eşleştirme)", widget: string, required: false }
+      - { name: datePublished, label: "Yayın Tarihi", widget: string, required: false }
+      - { name: dateModified, label: "Güncelleme Tarihi", widget: string, required: false }
+      - { name: category, label: "Kategori", widget: string, required: false }
+      - { name: readingTime, label: "Okuma Süresi", widget: string, required: false }
+      - name: card
+        label: "Blog Listesi Kartı"
+        widget: object
+        required: false
+        collapsed: true
+        fields:
+          - { name: title, label: "Kart Başlığı", widget: string, required: false }
+          - { name: excerpt, label: "Kart Özeti", widget: text, required: false }
+          - { name: category, label: "Kart Kategorisi", widget: string, required: false }
+          - { name: readingTime, label: "Kart Okuma Süresi", widget: string, required: false }
+          - { name: emoji, label: "Emoji", widget: string, required: false }
+          - { name: gradientClass, label: "Görsel CSS sınıfı (teknik)", widget: string, required: false }
+          - { name: badgeClass, label: "Rozet CSS sınıfı (teknik)", widget: string, required: false }
+      - { name: cardOrder, label: "Kart Sırası (boş = en üstte)", widget: number, required: false }
+      - { name: faqTopic, label: "SSS Konusu (yazı altındaki akordiyon)", widget: string, required: false, hint: "Örn: kaygi, depresyon, panik-atak, emdr, aile-terapisi…" }
+      - name: faq
+        label: "Google SSS Şeması (yazıya özel soru-cevap)"
+        widget: list
+        required: false
+        collapsed: true
+        fields:
+          - { name: q, label: "Soru", widget: string }
+          - { name: a, label: "Cevap", widget: text }
+      - name: related
+        label: "İlgili Yazılar"
+        widget: list
+        required: false
+        collapsed: true
+        fields:
+          - { name: url, label: "Bağlantı", widget: string }
+          - { name: category, label: "Kategori Etiketi", widget: string }
+          - { name: title, label: "Başlık", widget: string }
+      - { name: relatedHeading, label: "İlgili Yazılar Başlığı", widget: string, required: false }
+      - name: cta
+        label: "Sayfa Sonu Çağrısı (CTA)"
+        widget: object
+        required: false
+        collapsed: true
+        fields:
+          - { name: heading, label: "Başlık", widget: string }
+          - { name: sub, label: "Alt Metin", widget: string }
+          - { name: label, label: "Düğme Yazısı", widget: string }
+          - { name: href, label: "Düğme Bağlantısı", widget: string }
+          - { name: external, label: "Yeni sekmede aç", widget: boolean, required: false }
+      - { name: body, label: "İçerik (HTML)", widget: code, default_language: html, output_code_only: true, allow_language_selection: false }
+
+  - name: blog_en
+    label: "Blog Posts (EN)"
+    label_singular: "Blog Post (EN)"
+    folder: content/en/blog
+    extension: njk
+    format: yaml-frontmatter
+    create: true
+    identifier_field: title
+    summary: "{{title}}"
+    sortable_fields: [datePublished, title]
+    fields: *blog_fields
+
+  # ── HİZMETLER ─────────────────────────────────────────
+  - name: services_tr
+    label: "Hizmetler (TR)"
+    folder: content/tr/hizmetler
+    extension: njk
+    format: yaml-frontmatter
+    create: false
+    identifier_field: title
+    fields: &service_fields
+      - { name: title, label: "Sayfa Başlığı (SEO)", widget: string }
+      - { name: description, label: "Meta Açıklama", widget: text }
+      - { name: permalink, label: "URL (değiştirmeyin)", widget: string }
+      - { name: layout, widget: hidden }
+      - { name: translationKey, label: "Çeviri Anahtarı", widget: string, required: false }
+      - name: card
+        label: "Hizmetler Listesi Kartı"
+        widget: object
+        required: false
+        collapsed: true
+        fields:
+          - { name: title, label: "Kart Başlığı", widget: string, required: false }
+          - { name: excerpt, label: "Kart Özeti", widget: text, required: false }
+          - { name: linkLabel, label: "Bağlantı Yazısı", widget: string, required: false }
+      - { name: cardOrder, label: "Kart Sırası", widget: number, required: false }
+      - name: cta
+        label: "Sayfa Sonu Çağrısı (CTA)"
+        widget: object
+        required: false
+        collapsed: true
+        fields:
+          - { name: heading, label: "Başlık", widget: string }
+          - { name: sub, label: "Alt Metin", widget: string }
+          - { name: label, label: "Düğme Yazısı", widget: string }
+          - { name: href, label: "Düğme Bağlantısı", widget: string }
+          - { name: external, label: "Yeni sekmede aç", widget: boolean, required: false }
+      - { name: body, label: "İçerik (HTML)", widget: code, default_language: html, output_code_only: true, allow_language_selection: false }
+
+  - name: services_en
+    label: "Services (EN)"
+    folder: content/en/services
+    extension: njk
+    format: yaml-frontmatter
+    create: false
+    identifier_field: title
+    fields: *service_fields
+
+  # ── SABİT SAYFALAR ────────────────────────────────────
+  - name: pages_tr
+    label: "Sayfalar (TR)"
+    folder: content/tr
+    extension: njk
+    format: yaml-frontmatter
+    create: false
+    identifier_field: title
+    fields: &page_fields
+      - { name: title, label: "Sayfa Başlığı (SEO)", widget: string }
+      - { name: description, label: "Meta Açıklama", widget: text }
+      - { name: permalink, label: "URL (değiştirmeyin)", widget: string }
+      - { name: layout, widget: hidden }
+      - { name: body, label: "İçerik (HTML)", widget: code, default_language: html, output_code_only: true, allow_language_selection: false }
+
+  - name: pages_en
+    label: "Pages (EN)"
+    folder: content/en
+    extension: njk
+    format: yaml-frontmatter
+    create: false
+    identifier_field: title
+    fields: *page_fields
+
+  # ── SİTE AYARLARI ─────────────────────────────────────
+  - name: settings
+    label: "Site Ayarları"
+    files:
+      - name: contact
+        label: "İletişim Bilgileri"
+        file: _data/contact.json
+        fields:
+          - { name: whatsapp, label: "WhatsApp Numarası (ülke koduyla, örn. 905331234567)", widget: string }
+          - { name: phone, label: "Telefon (görünen)", widget: string }
+          - { name: email, label: "E-posta", widget: string }
+          - { name: copyrightYear, label: "© Yılı", widget: string }
+          - { name: instagram, label: "Instagram", widget: string }
+          - { name: facebook, label: "Facebook", widget: string }
+      - name: faq_pages
+        label: "SSS Sayfası (sss.html / en/faq.html)"
+        file: _data/faqdata.json
+        fields:
+          - name: pageCategories
+            label: "Kategoriler"
+            widget: object
+            fields:
+              - name: tr
+                label: "Türkçe"
+                widget: list
+                collapsed: true
+                fields:
+                  - { name: id, label: "Bölüm ID", widget: string }
+                  - { name: title, label: "Kategori Başlığı", widget: string }
+                  - name: items
+                    label: "Sorular"
+                    widget: list
+                    fields:
+                      - { name: q, label: "Soru", widget: string }
+                      - { name: a, label: "Cevap", widget: text }
+              - name: en
+                label: "English"
+                widget: list
+                collapsed: true
+                fields:
+                  - { name: id, label: "Section ID", widget: string }
+                  - { name: title, label: "Category Title", widget: string }
+                  - name: items
+                    label: "Questions"
+                    widget: list
+                    fields:
+                      - { name: q, label: "Question", widget: string }
+                      - { name: a, label: "Answer", widget: text }

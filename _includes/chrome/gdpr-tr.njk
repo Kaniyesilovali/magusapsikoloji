@@ -1,0 +1,74 @@
+<div id="cookieBanner" role="dialog" aria-modal="true" aria-label="Çerez tercihlerinizi yönetin" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;padding:1rem;background:#FAF8F5;border-top:1px solid #E4DDD5;box-shadow:0 -4px 24px rgba(44,56,48,0.10);">
+    <div style="max-width:72rem;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:1rem;">
+      <div style="flex:1;min-width:220px;">
+        <p style="font-size:.85rem;font-weight:600;color:#2C3830;margin:0 0 .25rem;">Bu site çerez kullanmaktadır</p>
+        <p style="font-size:.78rem;color:#5A6B62;margin:0;line-height:1.5;">
+          Siteyi işletmek için zorunlu çerezler kullanılmaktadır. İleride eklenecek analitik veya pazarlama araçları için ayrıca rızanız alınacaktır.
+          <a href="/gizlilik.html" style="color:#4A7C6F;text-decoration:underline;">Gizlilik Politikası</a>
+        </p>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;">
+        <button id="cookieBtnSettings" style="font-size:.78rem;padding:.45rem .9rem;border-radius:999px;border:1px solid #8A9E94;background:transparent;color:#5A6B62;cursor:pointer;">
+          Tercihler
+        </button>
+        <button id="cookieBtnReject" style="font-size:.78rem;padding:.45rem .9rem;border-radius:999px;border:1px solid #8A9E94;background:transparent;color:#5A6B62;cursor:pointer;">
+          Sadece Zorunlular
+        </button>
+        <button id="cookieBtnAccept" style="font-size:.78rem;padding:.45rem .9rem;border-radius:999px;border:none;background:#4A7C6F;color:#fff;cursor:pointer;font-weight:500;">
+          Tümünü Kabul Et
+        </button>
+      </div>
+    </div>
+  </div>
+
+<div id="cookieModal" role="dialog" aria-modal="true" aria-label="Çerez tercihleri" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(44,56,48,.45);padding:1rem;align-items:center;justify-content:center;">
+    <div style="background:#FAF8F5;border-radius:1.25rem;max-width:480px;width:100%;padding:2rem;box-shadow:0 8px 40px rgba(44,56,48,.18);">
+      <h2 style="font-size:1rem;font-weight:700;color:#2C3830;margin:0 0 .5rem;">Çerez Tercihleriniz</h2>
+      <p style="font-size:.78rem;color:#5A6B62;margin:0 0 1.25rem;line-height:1.55;">
+        Aşağıdan hangi çerez kategorilerine izin vermek istediğinizi seçebilirsiniz.
+        Zorunlu çerezler her zaman aktiftir.
+      </p>
+
+      <!-- Zorunlu -->
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem;background:#fff;border-radius:.75rem;margin-bottom:.5rem;border:1px solid #E4DDD5;">
+        <div>
+          <p style="font-size:.82rem;font-weight:600;color:#2C3830;margin:0 0 .15rem;">Zorunlu Çerezler</p>
+          <p style="font-size:.72rem;color:#5A6B62;margin:0;">Sitenin çalışması için gereklidir. Kapatılamaz.</p>
+        </div>
+        <div style="width:36px;height:20px;border-radius:999px;background:#4A7C6F;flex-shrink:0;position:relative;" title="Her zaman aktif">
+          <div style="width:14px;height:14px;border-radius:50%;background:#fff;position:absolute;top:3px;right:3px;"></div>
+        </div>
+      </div>
+
+      <!-- Analitik -->
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem;background:#fff;border-radius:.75rem;margin-bottom:.5rem;border:1px solid #E4DDD5;">
+        <div>
+          <p style="font-size:.82rem;font-weight:600;color:#2C3830;margin:0 0 .15rem;">Analitik Çerezler</p>
+          <p style="font-size:.72rem;color:#5A6B62;margin:0;">Ziyaretçi istatistikleri (ör. Google Analytics).</p>
+        </div>
+        <button id="toggleAnalytics" role="switch" aria-checked="false" style="width:36px;height:20px;border-radius:999px;background:#C8C8C8;flex-shrink:0;position:relative;border:none;cursor:pointer;transition:background .2s;">
+          <span style="width:14px;height:14px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:left .2s;"></span>
+        </button>
+      </div>
+
+      <!-- Pazarlama -->
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem;background:#fff;border-radius:.75rem;margin-bottom:1.25rem;border:1px solid #E4DDD5;">
+        <div>
+          <p style="font-size:.82rem;font-weight:600;color:#2C3830;margin:0 0 .15rem;">Pazarlama Çerezleri</p>
+          <p style="font-size:.72rem;color:#5A6B62;margin:0;">Kişiselleştirilmiş reklam ve yeniden hedefleme.</p>
+        </div>
+        <button id="toggleMarketing" role="switch" aria-checked="false" style="width:36px;height:20px;border-radius:999px;background:#C8C8C8;flex-shrink:0;position:relative;border:none;cursor:pointer;transition:background .2s;">
+          <span style="width:14px;height:14px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:left .2s;"></span>
+        </button>
+      </div>
+
+      <div style="display:flex;gap:.5rem;justify-content:flex-end;">
+        <button id="modalBtnCancel" style="font-size:.78rem;padding:.5rem 1rem;border-radius:999px;border:1px solid #8A9E94;background:transparent;color:#5A6B62;cursor:pointer;">
+          İptal
+        </button>
+        <button id="modalBtnSave" style="font-size:.78rem;padding:.5rem 1rem;border-radius:999px;border:none;background:#4A7C6F;color:#fff;cursor:pointer;font-weight:500;">
+          Tercihleri Kaydet
+        </button>
+      </div>
+    </div>
+  </div>

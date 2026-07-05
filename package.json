@@ -4,18 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npx @tailwindcss/cli -i ./src/input.css -o ./dist/output.css --watch",
-    "build": "npx @tailwindcss/cli -i ./src/input.css -o ./dist/output.css --minify",
-    "faq": "node generate-faq.js",
-    "deploy": "npm run build && bash deploy.sh"
+    "dev": "npx @11ty/eleventy --serve",
+    "dev:css": "npx @tailwindcss/cli -i ./src/input.css -o ./dist/output.css --watch",
+    "build:css": "npx @tailwindcss/cli -i ./src/input.css -o ./dist/output.css --minify",
+    "build": "npm run build:css && npx @11ty/eleventy",
+    "check": "node scripts/check-site.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "@parcel/watcher-linux-arm64-glibc": "^2.5.6",
+    "@11ty/eleventy": "^3.1.6",
     "@tailwindcss/cli": "^4.3.0",
+    "cheerio": "^1.2.0",
+    "js-yaml": "^5.2.1",
     "tailwindcss": "^4.3.0"
   }
 }

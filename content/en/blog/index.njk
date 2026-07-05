@@ -1,0 +1,60 @@
+---
+title: Blog & Knowledge Centre | Famagusta Psychology Centre
+description: Expert articles on anxiety, trauma, relationships, child psychology and therapy. Famagusta Psychology Centre Knowledge Centre.
+permalink: /en/blog/index.html
+hreflangOverride:
+  tr: https://magusapsikoloji.com/blog/
+  en: https://magusapsikoloji.com/en/blog/
+  xDefault: https://magusapsikoloji.com/
+translationKey: blog
+ogLocale: en_CY
+breadcrumb:
+  - name: Home
+    item: https://magusapsikoloji.com/en/
+  - name: Blog
+    item: https://magusapsikoloji.com/en/blog/
+layout: page.njk
+---
+<section class="pt-32 pb-12 bg-warm">
+      <div class="max-w-6xl mx-auto px-5 lg:px-8">
+        <span class="inline-block text-xs font-medium text-primary bg-primary/10 px-4 py-1.5 rounded-full mb-4">Knowledge Centre</span>
+        <h1 class="font-serif text-4xl lg:text-5xl text-ink leading-tight mb-4">What you need to know<br>about psychology</h1>
+        <p class="text-ink-muted text-lg max-w-xl">Up-to-date articles from our specialists on anxiety, relationships, trauma, child development and therapy.</p>
+      </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="py-6 bg-warm border-b border-warm-tertiary">
+      <div class="max-w-6xl mx-auto px-5 lg:px-8">
+        <div class="flex flex-wrap gap-2">
+          <span class="text-xs font-medium bg-primary text-white px-4 py-1.5 rounded-full cursor-pointer">All</span>
+          <span class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Anxiety &amp; Burnout</span>
+          <span class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Student Mental Health</span>
+          <span class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Relationships</span>
+          <span class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Children &amp; Family</span>
+          <span class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Trauma &amp; Recovery</span>
+          <span class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Therapy Guide</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Articles -->
+    <section class="py-16 bg-white">
+      <div class="max-w-6xl mx-auto px-5 lg:px-8">
+        <div id="blogGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+{%- for p in collections.blog_en | indexSort %}
+          <a href="{{ p.url }}" class="group bg-warm border border-warm-tertiary rounded-2xl overflow-hidden hover:shadow-lg transition-all">
+            <div class="{{ p.data.card.gradientClass or 'h-44 bg-gradient-to-br from-primary/10 to-sage/15 flex items-center justify-center text-5xl' }}">{{ p.data.card.emoji }}</div>
+            <div class="p-5">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="{{ p.data.card.badgeClass or 'text-xs bg-primary/10 text-primary font-medium px-2.5 py-0.5 rounded-full' }}">{{ p.data.card.category or p.data.category }}</span>
+                <span class="text-xs text-ink-light">{{ p.data.card.readingTime or p.data.readingTime }}</span>
+              </div>
+              <h2 class="font-semibold text-ink text-sm mb-2 group-hover:text-primary transition-colors leading-snug">{{ p.data.card.title or p.data.title }}</h2>
+              <p class="text-xs text-ink-muted line-clamp-2 leading-relaxed">{{ p.data.card.excerpt or p.data.description }}</p>
+            </div>
+          </a>
+{%- endfor %}
+</div>
+      </div>
+    </section>

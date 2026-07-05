@@ -1,0 +1,122 @@
+  <script>
+    // Navbar scroll efekti
+    window.addEventListener('scroll', function () {
+      document.getElementById('navbar').classList.toggle('nav-scrolled', window.scrollY > 20);
+    });
+
+    // Mobil menü
+    document.getElementById('menuBtn').addEventListener('click', function () {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    });
+
+    // SSS accordion (sayfada .faq-btn yoksa etkisiz)
+    document.querySelectorAll('.faq-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var body = this.nextElementSibling;
+        var icon = this.querySelector('.faq-icon');
+        var isOpen = this.getAttribute('aria-expanded') === 'true';
+
+        document.querySelectorAll('.faq-btn').forEach(function (b) {
+          b.setAttribute('aria-expanded', 'false');
+          b.nextElementSibling.classList.add('hidden');
+          b.querySelector('.faq-icon').style.transform = '';
+        });
+
+        if (!isOpen) {
+          this.setAttribute('aria-expanded', 'true');
+          body.classList.remove('hidden');
+          icon.style.transform = 'rotate(45deg)';
+        }
+      });
+    });
+
+    // ── GDPR Cookie Consent ──────────────────────────────────────
+    (function () {
+      var STORAGE_KEY = 'gdpr_consent';
+      var banner = document.getElementById('cookieBanner');
+      var modal  = document.getElementById('cookieModal');
+
+      function getConsent() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) { return null; }
+      }
+
+      function saveConsent(analytics, marketing) {
+        var c = { necessary: true, analytics: !!analytics, marketing: !!marketing, timestamp: new Date().toISOString() };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(c));
+        window.gdprConsent = c;
+        hideBanner();
+        hideModal();
+      }
+
+      function showBanner() { banner.style.display = 'block'; }
+      function hideBanner() { banner.style.display = 'none'; }
+      function showModal()  { modal.style.display  = 'flex'; document.body.style.overflow = 'hidden'; }
+      function hideModal()  { modal.style.display  = 'none'; document.body.style.overflow = ''; }
+
+      function setToggle(btn, active) {
+        btn.setAttribute('aria-checked', active ? 'true' : 'false');
+        btn.style.background = active ? '#4A7C6F' : '#C8C8C8';
+        btn.querySelector('span').style.left = active ? '19px' : '3px';
+      }
+
+      var analyticsOn  = false;
+      var marketingOn  = false;
+
+      document.getElementById('toggleAnalytics').addEventListener('click', function () {
+        analyticsOn = !analyticsOn;
+        setToggle(this, analyticsOn);
+      });
+
+      document.getElementById('toggleMarketing').addEventListener('click', function () {
+        marketingOn = !marketingOn;
+        setToggle(this, marketingOn);
+      });
+
+      document.getElementById('cookieBtnAccept').addEventListener('click', function () {
+        saveConsent(true, true);
+      });
+
+      document.getElementById('cookieBtnReject').addEventListener('click', function () {
+        saveConsent(false, false);
+      });
+
+      document.getElementById('cookieBtnSettings').addEventListener('click', function () {
+        hideBanner();
+        showModal();
+      });
+
+      document.getElementById('modalBtnSave').addEventListener('click', function () {
+        saveConsent(analyticsOn, marketingOn);
+      });
+
+      document.getElementById('modalBtnCancel').addEventListener('click', function () {
+        hideModal();
+        showBanner();
+      });
+
+      document.getElementById('openCookieSettings').addEventListener('click', function () {
+        var c = getConsent();
+        if (c) {
+          analyticsOn = !!c.analytics;
+          marketingOn = !!c.marketing;
+          setToggle(document.getElementById('toggleAnalytics'), analyticsOn);
+          setToggle(document.getElementById('toggleMarketing'), marketingOn);
+        }
+        showModal();
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal.style.display === 'flex') {
+          hideModal();
+          if (!getConsent()) showBanner();
+        }
+      });
+
+      var existing = getConsent();
+      if (existing) {
+        window.gdprConsent = existing;
+      } else {
+        showBanner();
+      }
+    })();
+  </script>

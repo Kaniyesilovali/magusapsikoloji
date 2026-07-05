@@ -1,0 +1,29 @@
+---
+permalink: /sitemap.xml
+eleventyExcludeFromCollections: true
+layout: null
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+{%- for p in collections.all %}
+{%- if not p.data.eleventyExcludeFromCollections and p.data.sitemap != false and p.url %}
+{%- set hl = p.data.hreflangs %}
+{#- Varsayılanlar: CMS ile eklenen yeni sayfalar için yol bazlı kural #}
+{%- set cf = (p.data.sitemap.changefreq if p.data.sitemap) or ("weekly" if p.url == "/" or p.url == "/en/" else "monthly") %}
+{%- set pr = (p.data.sitemap.priority if p.data.sitemap) or (0.7 if "/blog/" in p.url else 0.8) %}
+  <url>
+    <loc>{{ site.url }}{{ p.url }}</loc>
+{%- if hl.tr %}
+    <xhtml:link rel="alternate" hreflang="tr" href="{{ hl.tr }}"/>
+{%- endif %}
+{%- if hl.en %}
+    <xhtml:link rel="alternate" hreflang="en" href="{{ hl.en }}"/>
+{%- endif %}
+    <xhtml:link rel="alternate" hreflang="x-default" href="{{ hl.xDefault }}"/>
+    <changefreq>{{ cf }}</changefreq>
+    <priority>{{ pr }}</priority>
+  </url>
+{%- endif %}
+{%- endfor %}
+</urlset>

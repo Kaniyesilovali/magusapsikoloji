@@ -1,0 +1,26 @@
+{#- Blog/hizmet sayfalarına gömülen SSS akordiyonu.
+    Eski assets/js/faq.js widget'ının sunucuda render edilen hâli:
+    rastgele 4 yerine konunun ilk 4 sorusu (deterministik, SEO dostu). -#}
+{%- set faqItems = faqdata.topics[faqTopic][lang] %}
+{%- if faqItems %}
+    <section class="py-12 bg-warm-secondary" data-faq-accordion="1">
+      <div class="max-w-3xl mx-auto px-5 lg:px-8">
+        <h2 class="font-serif text-xl text-ink mb-6">{{ 'Frequently Asked Questions' if lang == 'en' else 'Sıkça Sorulan Sorular' }}</h2>
+        <div class="space-y-3">
+{%- for item in faqItems %}
+{%- if loop.index <= 4 %}
+          <div class="border border-warm-tertiary rounded-xl overflow-hidden bg-white">
+            <button type="button" class="faq-btn w-full text-left flex items-center justify-between gap-3 px-4 py-4 hover:bg-warm transition-colors" aria-expanded="false">
+              <span class="text-sm font-medium text-ink leading-snug">{{ item.q }}</span>
+              <svg class="faq-icon w-5 h-5 text-primary shrink-0 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            </button>
+            <div class="faq-body hidden">
+              <p class="px-4 pb-4 text-sm text-ink-muted leading-relaxed">{{ item.a }}</p>
+            </div>
+          </div>
+{%- endif %}
+{%- endfor %}
+        </div>
+      </div>
+    </section>
+{%- endif %}

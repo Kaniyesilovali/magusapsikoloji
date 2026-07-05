@@ -1,0 +1,51 @@
+---
+title: Hizmetlerimiz | Mağusa Psikoloji Merkezi
+description: Bireysel terapi, BDT, çocuk ve ergen psikolojisi, aile terapisi ve online terapi. Mağusa Psikoloji Merkezi'nin tüm hizmetleri.
+permalink: /hizmetler/index.html
+hreflangOverride:
+  tr: https://magusapsikoloji.com/hizmetler/
+  en: https://magusapsikoloji.com/en/services/
+  xDefault: https://magusapsikoloji.com/
+translationKey: hizmetler
+ogLocale: tr_CY
+breadcrumb:
+  - name: Anasayfa
+    item: https://magusapsikoloji.com/
+  - name: Hizmetler
+    item: https://magusapsikoloji.com/hizmetler/
+layout: page.njk
+sitemap:
+  changefreq: monthly
+  priority: 0.9
+---
+<section class="pt-32 pb-16 bg-warm">
+      <div class="max-w-4xl mx-auto px-5 lg:px-8 text-center">
+        <span class="inline-block text-xs font-medium text-primary bg-primary/10 px-4 py-1.5 rounded-full mb-4">Hizmetlerimiz</span>
+        <h1 class="font-serif text-4xl lg:text-5xl text-ink leading-tight mb-6">Size özel <em class="text-primary not-italic">terapi yolları</em></h1>
+        <p class="text-ink-muted text-lg leading-relaxed max-w-2xl mx-auto">Her bireyin ihtiyacı farklıdır. Alanında uzmanlaşmış psikologlarımızla doğru yaklaşımı birlikte buluyoruz.</p>
+      </div>
+    </section>
+
+    <section class="py-16 bg-white">
+      <div class="max-w-6xl mx-auto px-5 lg:px-8">
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+{%- for p in collections.services_tr | indexSort %}
+          <a href="{{ p.url }}" class="service-card group bg-warm hover:bg-white hover:shadow-lg border border-warm-tertiary hover:border-primary/20 rounded-2xl p-6">
+            <h2 class="font-semibold text-ink mb-2 group-hover:text-primary transition-colors">{{ p.data.card.title or p.data.title }}</h2>
+            <p class="text-sm text-ink-muted leading-relaxed mb-4">{{ p.data.card.excerpt or p.data.description }}</p>
+            <span class="inline-flex items-center gap-1 text-xs font-medium text-primary">{{ p.data.card.linkLabel }} <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg></span>
+          </a>
+{%- endfor %}
+</div>
+      </div>
+    </section>
+
+    <section class="py-16 bg-primary">
+      <div class="max-w-3xl mx-auto px-5 lg:px-8 text-center">
+        <h2 class="font-serif text-3xl text-white mb-4">Hangi hizmetin size uygun olduğunu bulmaya yardımcı olalım</h2>
+        <p class="text-white/70 mb-8">Doğru psikologu ve yöntemi birlikte belirleyelim.</p>
+        <a href="/iletisim.html" class="inline-flex items-center gap-2 bg-white text-primary font-semibold px-8 py-4 rounded-full hover:bg-warm transition-colors shadow-lg">
+          Randevu Al
+        </a>
+      </div>
+    </section>

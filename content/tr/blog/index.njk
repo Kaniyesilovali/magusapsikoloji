@@ -1,0 +1,121 @@
+---
+title: Blog & Bilgi Merkezi | Mağusa Psikoloji Merkezi
+description: Kaygı, travma, ilişkiler, çocuk ve ergen psikolojisi ve terapi hakkında uzman yazılar. Mağusa Psikoloji Merkezi Bilgi Merkezi.
+permalink: /blog/index.html
+hreflangOverride:
+  tr: https://magusapsikoloji.com/blog/
+  en: https://magusapsikoloji.com/en/blog/
+  xDefault: https://magusapsikoloji.com/
+translationKey: blog
+ogLocale: tr_CY
+breadcrumb:
+  - name: Anasayfa
+    item: https://magusapsikoloji.com/
+  - name: Blog
+    item: https://magusapsikoloji.com/blog/
+layout: page.njk
+---
+<section class="pt-32 pb-12 bg-warm">
+      <div class="max-w-6xl mx-auto px-5 lg:px-8">
+        <span class="inline-block text-xs font-medium text-primary bg-primary/10 px-4 py-1.5 rounded-full mb-4">Bilgi Merkezi</span>
+        <h1 class="font-serif text-4xl lg:text-5xl text-ink leading-tight mb-4">Psikoloji hakkında<br>bilmeniz gerekenler</h1>
+        <p class="text-ink-muted text-lg max-w-xl">Uzmanlarımızdan kaygı, ilişkiler, travma, çocuk gelişimi ve terapi hakkında güncel yazılar.</p>
+      </div>
+    </section>
+
+    <!-- Kategoriler -->
+    <section class="py-6 bg-warm border-b border-warm-tertiary">
+      <div class="max-w-6xl mx-auto px-5 lg:px-8">
+        <div class="flex flex-wrap gap-2">
+          <span class="text-xs font-medium bg-primary text-white px-4 py-1.5 rounded-full cursor-pointer">Tümü</span>
+          <span class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Kaygı &amp; Tükenmişlik</span>
+          <span class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Öğrenci Ruh Sağlığı</span>
+          <span class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">İlişkiler</span>
+          <span class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Çocuk &amp; Aile</span>
+          <span class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Travma &amp; İyileşme</span>
+          <span class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Terapi Eğitimi</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Yazılar -->
+    <section class="py-16 bg-white">
+      <div class="max-w-6xl mx-auto px-5 lg:px-8">
+        <div id="blogGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+{%- for p in collections.blog_tr | indexSort %}
+          <a href="{{ p.url }}" class="group bg-warm border border-warm-tertiary rounded-2xl overflow-hidden hover:shadow-lg transition-all">
+            <div class="{{ p.data.card.gradientClass or 'h-44 bg-gradient-to-br from-primary/10 to-sage/15 flex items-center justify-center text-5xl' }}">{{ p.data.card.emoji }}</div>
+            <div class="p-5">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="{{ p.data.card.badgeClass or 'text-xs bg-primary/10 text-primary font-medium px-2.5 py-0.5 rounded-full' }}">{{ p.data.card.category or p.data.category }}</span>
+                <span class="text-xs text-ink-light">{{ p.data.card.readingTime or p.data.readingTime }}</span>
+              </div>
+              <h2 class="font-semibold text-ink text-sm mb-2 group-hover:text-primary transition-colors leading-snug">{{ p.data.card.title or p.data.title }}</h2>
+              <p class="text-xs text-ink-muted line-clamp-2 leading-relaxed">{{ p.data.card.excerpt or p.data.description }}</p>
+            </div>
+          </a>
+{%- endfor %}
+</div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         SSS
+    ══════════════════════════════════════ -->
+    <section id="sss" class="py-20 lg:py-28 bg-white">
+      <div class="max-w-3xl mx-auto px-5 lg:px-8">
+        <div class="text-center mb-12">
+          <span class="inline-block text-xs font-medium text-primary bg-primary/10 px-4 py-1.5 rounded-full mb-4">SSS</span>
+          <h2 class="font-serif text-3xl lg:text-4xl text-ink">Sıkça sorulan sorular</h2>
+        </div>
+
+        <div itemscope="" itemtype="https://schema.org/FAQPage">
+
+          <article class="py-5 border-b border-warm-secondary" itemprop="mainEntity" itemscope="" itemtype="https://schema.org/Question">
+            <h3 class="font-semibold text-ink mb-2 text-sm leading-snug" itemprop="name">İlk seansta ne olur?</h3>
+            <div itemprop="acceptedAnswer" itemscope="" itemtype="https://schema.org/Answer">
+              <p class="text-sm text-ink-muted leading-relaxed" itemprop="text">İlk seans bir "tanışma görüşmesi"dir. Psikolog sizi ve geliş nedeninizi anlamaya çalışır; siz de psikologu tanırsınız. Bu seansta herhangi bir şeyi paylaşmak zorunda değilsiniz — tempo tamamen size aittir.</p>
+            </div>
+          </article>
+
+          <article class="py-5 border-b border-warm-secondary" itemprop="mainEntity" itemscope="" itemtype="https://schema.org/Question">
+            <h3 class="font-semibold text-ink mb-2 text-sm leading-snug" itemprop="name">Terapi kaç seans sürer?</h3>
+            <div itemprop="acceptedAnswer" itemscope="" itemtype="https://schema.org/Answer">
+              <p class="text-sm text-ink-muted leading-relaxed" itemprop="text">Süre bireye ve ele alınan konuya göre değişir. Kısa süreli BDT genellikle 8–16 seans arasında sürerken, daha derin psikodinamik çalışmalar uzun vadeli olabilir.</p>
+            </div>
+          </article>
+
+          <article class="py-5 border-b border-warm-secondary" itemprop="mainEntity" itemscope="" itemtype="https://schema.org/Question">
+            <h3 class="font-semibold text-ink mb-2 text-sm leading-snug" itemprop="name">Online terapi yüz yüze kadar etkili mi?</h3>
+            <div itemprop="acceptedAnswer" itemscope="" itemtype="https://schema.org/Answer">
+              <p class="text-sm text-ink-muted leading-relaxed" itemprop="text">Araştırmalar, bireysel terapi için online seansların yüz yüze seanslarla karşılaştırılabilir etkinliğe sahip olduğunu göstermektedir. Özellikle BDT ve konuşma terapisi için online format oldukça verimlidir.</p>
+            </div>
+          </article>
+
+          <article class="py-5" itemprop="mainEntity" itemscope="" itemtype="https://schema.org/Question">
+            <h3 class="font-semibold text-ink mb-2 text-sm leading-snug" itemprop="name">İngilizce seans mümkün mü?</h3>
+            <div itemprop="acceptedAnswer" itemscope="" itemtype="https://schema.org/Answer">
+              <p class="text-sm text-ink-muted leading-relaxed" itemprop="text">Evet. Ekibimiz hem Türkçe hem de İngilizce seans vermektedir. Expat danışanlarımız ve uluslararası öğrenciler için İngilizce seanslar mevcuttur.</p>
+            </div>
+          </article>
+
+        </div>
+
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {"@type":"Question","name":"İlk seansta ne olur?","acceptedAnswer":{"@type":"Answer","text":"İlk seans bir tanışma görüşmesidir. Psikolog sizi ve geliş nedeninizi anlamaya çalışır. Bu seansta herhangi bir şeyi paylaşmak zorunda değilsiniz — tempo tamamen size aittir."}},
+            {"@type":"Question","name":"Terapi kaç seans sürer?","acceptedAnswer":{"@type":"Answer","text":"Süre bireye ve ele alınan konuya göre değişir. Kısa süreli BDT genellikle 8–16 seans arasında sürerken, daha derin psikodinamik çalışmalar uzun vadeli olabilir."}},
+            {"@type":"Question","name":"Online terapi yüz yüze kadar etkili mi?","acceptedAnswer":{"@type":"Answer","text":"Araştırmalar, bireysel terapi için online seansların yüz yüze seanslarla karşılaştırılabilir etkinliğe sahip olduğunu göstermektedir. Özellikle BDT ve konuşma terapisi için online format oldukça verimlidir."}},
+            {"@type":"Question","name":"İngilizce seans mümkün mü?","acceptedAnswer":{"@type":"Answer","text":"Evet. Ekibimiz hem Türkçe hem de İngilizce seans vermektedir. Expat danışanlarımız ve uluslararası öğrenciler için İngilizce seanslar mevcuttur."}}
+          ]
+        }
+        </script>
+
+        <div class="text-center mt-8">
+          <a href="/sss.html" class="text-sm font-medium text-primary hover:text-primary-dark transition-colors">Tüm soruları görüntüle →</a>
+        </div>
+      </div>
+    </section>

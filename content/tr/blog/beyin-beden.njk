@@ -1,0 +1,379 @@
+---
+title: İçinde Ne Oluyor? | Mağusa Psikoloji Merkezi
+description: Sinirlendiğinde, üzüldüğünde ya da kaygılandığında içinde aslında ne oluyor? Düşünce, duygu, beden ve davranış bağlantısını keşfet.
+permalink: /blog/beyin-beden.html
+hreflangOverride:
+  tr: https://magusapsikoloji.com/blog/beyin-beden.html
+  xDefault: https://magusapsikoloji.com/
+translationKey: blog/beyin-beden
+ogType: article
+ogTitle: İçinde Ne Oluyor? | Mağusa Psikoloji
+ogDescription: Bir şey olduğunda vücudun ve aklın ne yaptığını keşfet.
+noTwitter: true
+headExtra: |-
+  <style>
+      /* ── Scroll reveal ── */
+      [data-animate] {
+        opacity: 0; transform: translateY(18px);
+        transition: opacity 0.5s cubic-bezier(0.4,0,0.2,1), transform 0.5s cubic-bezier(0.4,0,0.2,1);
+      }
+      [data-animate].is-visible { opacity: 1; transform: translateY(0); }
+
+      /* ── Flow dot animation ── */
+      @keyframes flowDot {
+        from { stroke-dashoffset: 0; }
+        to   { stroke-dashoffset: -300; }
+      }
+      @keyframes ringBreath {
+        0%,100% { transform: scale(1); opacity: 0.22; }
+        55%     { transform: scale(1.2); opacity: 0; }
+      }
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes chainPop {
+        0%   { opacity: 0; transform: scale(0.85); }
+        60%  { transform: scale(1.04); }
+        100% { opacity: 1; transform: scale(1); }
+      }
+      @keyframes pulseGlow {
+        0%,100% { box-shadow: 0 0 0 0 rgba(74,124,111,0.3); }
+        50%     { box-shadow: 0 0 0 10px rgba(74,124,111,0); }
+      }
+
+      /* ── SVG arrows ── */
+      .arrow-td { animation: flowDot 2.8s linear infinite 0s; }
+      .arrow-de { animation: flowDot 2.8s linear infinite 0.93s; }
+      .arrow-bt { animation: flowDot 2.8s linear infinite 1.87s; }
+      .ring-breath { animation: ringBreath 3s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+      .ring-breath-b { animation: ringBreath 3s ease-in-out infinite 1s; transform-box: fill-box; transform-origin: center; }
+
+      /* ── Pause ── */
+      #main-diagram.is-paused .arrow-td,
+      #main-diagram.is-paused .arrow-de,
+      #main-diagram.is-paused .arrow-bt,
+      #main-diagram.is-paused .ring-breath,
+      #main-diagram.is-paused .ring-breath-b { animation-play-state: paused; }
+
+      /* ── Node highlight ── */
+      .node-circle { transition: filter 0.3s ease, opacity 0.3s ease; }
+      #main-diagram[data-highlight]:not([data-highlight=""]):not([data-highlight="all"]) .node-circle { opacity: 0.3; }
+      #main-diagram[data-highlight="dusunce"]  #node-dusunce  .node-circle { opacity: 1; filter: drop-shadow(0 0 12px rgba(74,124,111,0.65)); }
+      #main-diagram[data-highlight="duygu"]    #node-duygu    .node-circle { opacity: 1; filter: drop-shadow(0 0 12px rgba(200,120,90,0.65)); }
+      #main-diagram[data-highlight="davranis"] #node-davranis .node-circle { opacity: 1; filter: drop-shadow(0 0 12px rgba(90,107,98,0.65)); }
+      #main-diagram[data-highlight="beden"]    #node-beden    .node-circle { opacity: 1; filter: drop-shadow(0 0 10px rgba(138,158,148,0.65)); }
+      .diagram-node { cursor: pointer; }
+      .diagram-node:hover .node-circle { filter: drop-shadow(0 0 8px rgba(74,124,111,0.3)); }
+      #node-duygu:hover .node-circle   { filter: drop-shadow(0 0 8px rgba(200,120,90,0.3)); }
+
+      /* ── Info card animation ── */
+      .info-card { animation: fadeUp 0.22s ease; }
+
+      /* ── Step fade ── */
+      .step-body { transition: opacity 0.17s ease; }
+      .step-body.fading { opacity: 0; }
+
+      /* ── Step dots ── */
+      .sdot {
+        width: 8px; height: 8px; border-radius: 50%;
+        background: #D0CCC6; flex-shrink: 0;
+        transition: background 0.25s, transform 0.25s;
+      }
+      .sdot.on { background: #4A7C6F; transform: scale(1.45); }
+
+      /* ── Chain cards ── */
+      .chain-card {
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .chain-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(44,56,48,0.12); }
+      .chain-card.active { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(44,56,48,0.16); }
+
+      /* ── Chain detail expand ── */
+      .chain-detail {
+        max-height: 0; overflow: hidden;
+        transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s ease;
+        opacity: 0;
+      }
+      .chain-detail.open { max-height: 200px; opacity: 1; }
+
+      /* ── Scenario step indicator badges ── */
+      .step-badge {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-size: 11px; font-weight: 600;
+        padding: 5px 12px; border-radius: 999px;
+        transition: background 0.2s, color 0.2s;
+      }
+
+      /* ── Reduced motion ── */
+      @media (prefers-reduced-motion: reduce) {
+        [data-animate] { opacity: 1 !important; transform: none !important; transition: none !important; }
+        .arrow-td,.arrow-de,.arrow-bt,.ring-breath,.ring-breath-b,
+        .node-circle,.info-card,.step-body,.chain-detail { animation: none !important; transition: none !important; }
+        .chain-detail { max-height: none; opacity: 1; }
+      }
+    </style>
+layout: page.njk
+sitemap:
+  changefreq: monthly
+  priority: 0.8
+cardOrder: 2
+card:
+  gradientClass: h-44 bg-gradient-to-br from-accent/8 to-sage/15 flex items-center justify-center text-5xl
+  emoji: ''
+  badgeClass: text-xs bg-accent/10 text-accent font-medium px-2.5 py-0.5 rounded-full
+  category: Travma & İyileşme
+  readingTime: 6 dk okuma
+  title: 'Beyin ve beden bağlantısı: travma bedende nasıl depolanır?'
+  excerpt: Duygular neden bedende hissedilir? Travmanın somatik izleri ve iyileşme yolları.
+---
+<!-- ══ 1. HERO ══ -->
+    <section class="relative pt-36 pb-16 overflow-hidden bg-warm">
+      <div class="absolute top-10 -right-20 w-80 h-80 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute bottom-0 -left-10 w-64 h-64 bg-accent/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="max-w-2xl mx-auto px-5 lg:px-8 text-center relative">
+
+        <h1 class="font-serif text-4xl lg:text-6xl text-ink leading-tight mb-5">
+          İçinde<br>
+          <em class="text-primary not-italic">ne oluyor?</em>
+        </h1>
+
+        <p class="text-lg text-ink-muted leading-relaxed mb-8">
+          Sinirlendiğinde, üzüldüğünde ya da kaygılandığında —<br class="hidden sm:block">
+          vücudun ve aklın çok meşgul. Aslında ne yaptıklarını görünce<br class="hidden sm:block">
+          her şey biraz daha anlamlı hale geliyor.
+        </p>
+
+        <a href="#dongu" class="inline-flex items-center justify-center gap-2 bg-primary text-white font-medium px-8 py-4 rounded-full hover:bg-primary-hover transition-colors shadow-sm text-base">
+          Keşfet
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ══ 2. DÖNGÜ DİYAGRAMI ══ -->
+    <section id="dongu" class="py-16 lg:py-24 bg-warm-secondary">
+      <div class="max-w-6xl mx-auto px-5 lg:px-8">
+
+        <div class="text-center mb-4" data-animate="">
+          <h2 class="font-serif text-3xl lg:text-4xl text-ink mb-3">Dört halka, bir döngü.</h2>
+          <p class="text-ink-muted">Her birine dokun — ne olduğunu anlat sana.</p>
+        </div>
+
+        <div class="grid lg:grid-cols-[1fr_360px] gap-8 items-start mt-10">
+
+          <!-- SVG Diagram -->
+          <div class="mx-auto w-full" style="max-width:500px;">
+            <svg id="main-diagram" viewBox="0 0 600 580" width="100%" data-highlight="" style="display:block;" aria-label="Düşünce, Duygu, Davranış ve Beden bağlantı döngüsü">
+              <defs>
+                <marker id="arw-g" markerWidth="9" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L9,4 z" fill="#4A7C6F" opacity="0.75"></path></marker>
+                <marker id="arw-t" markerWidth="9" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L9,4 z" fill="#C8785A" opacity="0.75"></path></marker>
+                <marker id="arw-m" markerWidth="9" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L9,4 z" fill="#8A9E94" opacity="0.75"></path></marker>
+              </defs>
+
+              <!-- Connection lines: Beden center to nodes -->
+              <g opacity="0.35">
+                <line x1="300" y1="252" x2="300" y2="160" stroke="#8A9E94" stroke-width="1.5" stroke-dasharray="4 6"></line>
+                <line x1="336" y1="312" x2="418" y2="363" stroke="#8A9E94" stroke-width="1.5" stroke-dasharray="4 6"></line>
+                <line x1="264" y1="312" x2="182" y2="363" stroke="#8A9E94" stroke-width="1.5" stroke-dasharray="4 6"></line>
+              </g>
+
+              <!-- Arrow tracks (static, low opacity, arrowheads) -->
+              <path d="M 332 152 C 458 196 494 306 448 358" fill="none" stroke="#4A7C6F" stroke-width="1.2" opacity="0.2" marker-end="url(#arw-g)"></path>
+              <path d="M 416 412 C 378 463 222 463 184 412" fill="none" stroke="#C8785A" stroke-width="1.2" opacity="0.2" marker-end="url(#arw-t)"></path>
+              <path d="M 152 358 C 106 306 142 196 268 152" fill="none" stroke="#8A9E94" stroke-width="1.2" opacity="0.2" marker-end="url(#arw-m)"></path>
+
+              <!-- Animated flow dots -->
+              <path class="arrow-td" d="M 332 152 C 458 196 494 306 448 358" fill="none" stroke="#4A7C6F" stroke-width="3.5" stroke-dasharray="16 284" stroke-linecap="round" opacity="0.85"></path>
+              <path class="arrow-de" d="M 416 412 C 378 463 222 463 184 412" fill="none" stroke="#C8785A" stroke-width="3.5" stroke-dasharray="16 284" stroke-linecap="round" opacity="0.85"></path>
+              <path class="arrow-bt" d="M 152 358 C 106 306 142 196 268 152" fill="none" stroke="#8A9E94" stroke-width="3.5" stroke-dasharray="16 284" stroke-linecap="round" opacity="0.85"></path>
+
+              <!-- DÜŞÜNCE -->
+              <g class="diagram-node" id="node-dusunce" data-node="dusunce" tabindex="0" role="button" aria-label="Düşünce">
+                <circle class="ring-breath" cx="300" cy="113" r="57" fill="none" stroke="#4A7C6F" stroke-width="1.5" opacity="0.22"></circle>
+                <circle class="node-circle" cx="300" cy="113" r="48" fill="#4A7C6F"></circle>
+                <!-- Brain icon simplified -->
+                <text x="300" y="106" text-anchor="middle" font-size="22" fill="white" font-family="serif">💭</text>
+                <text x="300" y="128" text-anchor="middle" font-family="Lora, Georgia, serif" font-weight="600" font-size="14" fill="white">Düşünce</text>
+              </g>
+
+              <!-- DUYGU -->
+              <g class="diagram-node" id="node-duygu" data-node="duygu" tabindex="0" role="button" aria-label="Duygu">
+                <circle class="ring-breath" cx="458" cy="390" r="57" fill="none" stroke="#C8785A" stroke-width="1.5" opacity="0.22"></circle>
+                <circle class="node-circle" cx="458" cy="390" r="48" fill="#C8785A"></circle>
+                <text x="458" y="383" text-anchor="middle" font-size="22" fill="white" font-family="serif">❤️</text>
+                <text x="458" y="405" text-anchor="middle" font-family="Lora, Georgia, serif" font-weight="600" font-size="14" fill="white">Duygu</text>
+              </g>
+
+              <!-- DAVRANIS -->
+              <g class="diagram-node" id="node-davranis" data-node="davranis" tabindex="0" role="button" aria-label="Davranış">
+                <circle class="ring-breath" cx="142" cy="390" r="57" fill="none" stroke="#5A6B62" stroke-width="1.5" opacity="0.22"></circle>
+                <circle class="node-circle" cx="142" cy="390" r="48" fill="#5A6B62"></circle>
+                <text x="142" y="383" text-anchor="middle" font-size="22" fill="white" font-family="serif">🏃</text>
+                <text x="142" y="405" text-anchor="middle" font-family="Lora, Georgia, serif" font-weight="600" font-size="13" fill="white">Davranış</text>
+              </g>
+
+              <!-- BEDEN (center) -->
+              <g class="diagram-node" id="node-beden" data-node="beden" tabindex="0" role="button" aria-label="Beden">
+                <circle class="ring-breath-b" cx="300" cy="287" r="42" fill="none" stroke="#8A9E94" stroke-width="1.5" opacity="0.18"></circle>
+                <circle class="node-circle" cx="300" cy="287" r="34" fill="none" stroke="#8A9E94" stroke-width="2" stroke-dasharray="5 4"></circle>
+                <circle cx="300" cy="287" r="27" fill="#F0EDE8" opacity="0.96"></circle>
+                <text x="300" y="283" text-anchor="middle" font-size="16" fill="#5A6B62" font-family="serif">🫁</text>
+                <text x="300" y="300" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" font-weight="600" fill="#5A6B62">Beden</text>
+              </g>
+
+            </svg>
+
+            <p class="text-center text-xs text-ink-muted mt-1 opacity-60">Her halkaya dokun</p>
+          </div>
+
+          <!-- Info Panel -->
+          <div id="info-panel" class="lg:sticky lg:top-28">
+
+            <!-- Default -->
+            <div id="info-default" class="bg-white rounded-2xl p-7 border border-warm-tertiary">
+              <div class="flex flex-col items-center text-center py-4 gap-4">
+                <div class="text-5xl">👆</div>
+                <div>
+                  <h3 class="font-serif text-xl text-ink mb-2">Bir halkaya dokun</h3>
+                  <p class="text-sm text-ink-muted leading-relaxed">
+                    O anda içinde ne olduğunu anlat sana.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Active -->
+            <div id="info-active" class="hidden">
+              <div class="info-card bg-white rounded-2xl border border-warm-tertiary overflow-hidden">
+                <div class="px-6 pt-5 pb-4 flex items-center justify-between border-b border-warm-tertiary">
+                  <div class="flex items-center gap-3">
+                    <span id="info-emoji" class="text-2xl"></span>
+                    <h3 id="info-title" class="font-serif text-xl text-ink"></h3>
+                  </div>
+                  <button id="info-close" class="p-1.5 rounded-lg hover:bg-warm text-ink-muted transition-colors" aria-label="Kapat">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                  </button>
+                </div>
+                <div class="px-6 py-5">
+                  <p id="info-what" class="text-base text-ink font-medium leading-snug mb-3"></p>
+                  <p id="info-example" class="text-sm text-ink-muted leading-relaxed italic"></p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 3. SENARYO ══ -->
+    <section class="py-16 lg:py-24 bg-warm">
+      <div class="max-w-4xl mx-auto px-5 lg:px-8">
+
+        <div class="text-center mb-10" data-animate="">
+          <h2 class="font-serif text-3xl lg:text-4xl text-ink mb-3">Tanıdık geliyor mu?</h2>
+          <p class="text-ink-muted">Gerçek bir anı seç. Adım adım ne olduğuna bakalım.</p>
+        </div>
+
+        <!-- Scenario tabs -->
+        <div class="flex flex-wrap gap-3 justify-center mb-8" data-animate="">
+          <button class="scen-tab active px-5 py-2.5 rounded-full text-sm font-medium transition-colors bg-primary text-white" data-scen="0">Arkadaşlarla</button>
+          <button class="scen-tab px-5 py-2.5 rounded-full text-sm font-medium transition-colors bg-white border border-warm-tertiary text-ink hover:border-primary hover:text-primary" data-scen="1">Sınav günü</button>
+          <button class="scen-tab px-5 py-2.5 rounded-full text-sm font-medium transition-colors bg-white border border-warm-tertiary text-ink hover:border-primary hover:text-primary" data-scen="2">Kavgadan sonra</button>
+        </div>
+
+        <!-- Scenario card -->
+        <div class="bg-warm-secondary rounded-3xl overflow-hidden" data-animate="">
+
+          <!-- Step indicators -->
+          <div class="flex" id="step-bar">
+            <!-- JS fills these -->
+          </div>
+
+          <!-- Step body -->
+          <div class="p-7 lg:p-10">
+            <div id="step-body" class="step-body min-h-[160px]">
+              <div class="flex items-start gap-4 mb-5">
+                <div id="step-icon" class="text-5xl shrink-0 mt-1"></div>
+                <div>
+                  <p id="step-label" class="text-xs font-semibold uppercase tracking-wider mb-2" style="color:#8A9E94;"></p>
+                  <h3 id="step-headline" class="font-serif text-2xl lg:text-3xl text-ink leading-tight"></h3>
+                </div>
+              </div>
+              <p id="step-desc" class="text-ink-muted text-base leading-relaxed pl-16"></p>
+            </div>
+
+            <!-- Nav -->
+            <div class="flex items-center justify-between mt-8 pt-6 border-t border-warm-tertiary">
+              <button id="btn-prev" class="flex items-center gap-2 text-sm font-medium text-ink-muted hover:text-ink transition-colors disabled:opacity-25 disabled:cursor-not-allowed" disabled="">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+                Geri
+              </button>
+              <div id="step-dots-wrap" class="flex gap-2"></div>
+              <button id="btn-next" class="flex items-center gap-2 bg-primary text-white text-sm font-medium px-6 py-2.5 rounded-full hover:bg-primary-hover transition-colors shadow-sm">
+                İleri
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ 4. BU NORMAL ══ -->
+    <section class="py-16 lg:py-24 bg-warm-secondary">
+      <div class="max-w-5xl mx-auto px-5 lg:px-8">
+
+        <div class="text-center mb-12" data-animate="">
+          <h2 class="font-serif text-3xl lg:text-4xl text-ink">Bu hisler mantıklı.</h2>
+          <p class="text-ink-muted mt-2">Sende yanlış olan bir şey yok.</p>
+        </div>
+
+        <div class="grid sm:grid-cols-3 gap-5" data-animate="">
+
+          <div class="bg-white rounded-2xl p-7 text-center">
+            <div class="text-5xl mb-4">🛡️</div>
+            <h3 class="font-semibold text-ink mb-2">Beyin seni koruyor</h3>
+            <p class="text-sm text-ink-muted leading-relaxed">Kalp çarpıntısı, mide sıkışması — bunlar beynin "dikkat!" demesi. Yıllarca işe yaramış bir sistem.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-7 text-center">
+            <div class="text-5xl mb-4">🌊</div>
+            <h3 class="font-semibold text-ink mb-2">Her duygu geçer</h3>
+            <p class="text-sm text-ink-muted leading-relaxed">Ne kadar yoğun olursa olsun, hiçbir his sonsuza kadar sürmez. Dalga gibi — gelir ve gider.</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-7 text-center">
+            <div class="text-5xl mb-4">🔑</div>
+            <h3 class="font-semibold text-ink mb-2">Değişebilir</h3>
+            <p class="text-sm text-ink-muted leading-relaxed">Bu döngüyü fark etmek zaten büyük bir adım. Terapide bu döngüyü değiştirmeyi birlikte çalışabiliriz.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 5. CTA ══ -->
+    <section class="py-20 lg:py-28 bg-primary">
+      <div class="max-w-2xl mx-auto px-5 lg:px-8 text-center">
+        <p class="text-white/60 text-sm font-medium mb-4">Bir adım yeterli</p>
+        <h2 class="font-serif text-3xl lg:text-5xl text-white mb-6 leading-tight">
+          Birlikte bakalım.
+        </h2>
+        <p class="text-white/70 text-lg mb-10 leading-relaxed">
+          İçinde ne olduğunu anlamak, en önemli ilk adım.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="/iletisim.html" class="inline-flex items-center justify-center gap-2 bg-white text-primary font-semibold px-8 py-4 rounded-full hover:bg-warm transition-colors shadow-lg">
+            Randevu Al
+          </a>
+          <a href="/terapi-sureci.html" class="inline-flex items-center justify-center gap-2 border-2 border-white/30 text-white font-medium px-8 py-4 rounded-full hover:border-white hover:bg-white/10 transition-colors">
+            Terapi Nasıl İşler?
+          </a>
+        </div>
+      </div>
+    </section>
