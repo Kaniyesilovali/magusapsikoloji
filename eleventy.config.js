@@ -1,4 +1,5 @@
 const schemas = require('./scripts/schemas');
+const blocks = require('./scripts/render-blocks');
 
 module.exports = function (eleventyConfig) {
   // Statik dosyalar olduğu gibi kopyalanır
@@ -14,6 +15,11 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter('jsonldArticle', (o) => JSON.stringify(schemas.article(o)));
   eleventyConfig.addFilter('jsonldFaq', (items) => JSON.stringify(schemas.faqPage(items)));
   eleventyConfig.addFilter('flattenFaq', (categories) => categories.flatMap((c) => c.items));
+
+  // Blog gövdesi: frontmatter'daki hero + bloklar → HTML (scripts/render-blocks.js)
+  eleventyConfig.addFilter('renderHero', (hero, category, readingTime, url) =>
+    blocks.renderHero(hero, { category, readingTime, url }));
+  eleventyConfig.addFilter('renderBlocks', (list) => blocks.renderBlocks(list));
 
   // Index kart sıralaması: cardOrder'sız yeni yazılar en üstte (yeni→eski),
   // ardından migre edilen kartlar orijinal el sıralamasıyla

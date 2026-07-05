@@ -94,6 +94,165 @@ collections:
         widget: string
         required: false
         hint: "Örn: 6 dk okuma"
+      - &hero_field
+        name: hero
+        label: "Yazı Girişi (Üst Bölüm)"
+        widget: object
+        required: false
+        hint: "Sayfanın en üstü: büyük başlık ve tanıtım cümlesi."
+        fields:
+          - { name: baslik, label: "Yazı Başlığı", widget: string, hint: "Sayfada görünen büyük başlık. SEO başlığından farklı olabilir (genelde | işaretinden önceki kısım)." }
+          - { name: giris, label: "Giriş Paragrafı", widget: text, hint: "Başlığın hemen altındaki 1–2 cümlelik tanıtım." }
+          - name: rozetSinifi
+            label: "Kategori Rozeti Rengi"
+            widget: select
+            required: false
+            options:
+              - { label: "Yeşil (varsayılan)", value: "text-xs bg-primary/10 text-primary font-medium px-3 py-1 rounded-full" }
+              - { label: "Kiremit / Turuncu", value: "text-xs bg-accent/10 text-accent font-medium px-3 py-1 rounded-full" }
+              - { label: "Adaçayı Yeşili", value: "text-xs bg-sage/20 text-primary font-medium px-3 py-1 rounded-full" }
+          - { name: kategori, label: "Kategori Metni (özel)", widget: string, required: false, hint: "Genelde boş bırakın — yukarıdaki Kategori otomatik kullanılır." }
+          - { name: okumaSuresi, label: "Okuma Süresi (özel)", widget: string, required: false, hint: "Genelde boş bırakın — yukarıdaki Okuma Süresi otomatik kullanılır." }
+      - &blocks_field
+        name: blocks
+        label: "Yazı İçeriği (Bölümler)"
+        label_singular: "Bölüm"
+        widget: list
+        required: false
+        hint: "Yazı alt alta bölümlerden oluşur. 'Bölüm ekle' ile yeni bölüm ekleyin, tutamaçtan sürükleyerek sıralayın."
+        types:
+          - name: metin
+            label: "Metin"
+            widget: object
+            summary: "{{fields.baslik}}"
+            fields:
+              - { name: baslik, label: "Bölüm Başlığı", widget: string, required: false }
+              - { name: metin, label: "Metin", widget: markdown, required: false, buttons: [bold, italic, link], editor_components: [], hint: "Yeni paragraf için satırı boş bırakarak alt satıra geçin." }
+          - name: bilgi-kutusu
+            label: "Bilgi Kutusu"
+            widget: object
+            summary: "{{fields.baslik}}"
+            fields:
+              - name: ton
+                label: "Renk"
+                widget: select
+                default: yesil
+                options:
+                  - { label: "Yeşil", value: yesil }
+                  - { label: "Turuncu / Kiremit", value: turuncu }
+              - { name: baslik, label: "Kutu Başlığı", widget: string }
+              - { name: metin, label: "Kutu Metni", widget: text }
+          - name: onayli-liste
+            label: "Onay İşaretli Liste"
+            widget: object
+            summary: "{{fields.baslik}}"
+            fields:
+              - { name: baslik, label: "Bölüm Başlığı", widget: string, required: false }
+              - { name: giris, label: "Giriş Paragrafı", widget: text, required: false }
+              - name: maddeler
+                label: "Maddeler"
+                label_singular: "Madde"
+                widget: list
+                fields:
+                  - { name: baslik, label: "Madde Başlığı", widget: string }
+                  - { name: aciklama, label: "Açıklama", widget: text, required: false }
+              - { name: kapanis, label: "Kapanış Notu", widget: text, required: false, hint: "Listenin altında görünen kısa not (isteğe bağlı)." }
+          - name: kart-grid
+            label: "Yan Yana Kartlar"
+            widget: object
+            summary: "{{fields.baslik}}"
+            fields:
+              - { name: baslik, label: "Bölüm Başlığı", widget: string, required: false }
+              - { name: giris, label: "Giriş Paragrafı", widget: text, required: false }
+              - name: kolon
+                label: "Sütun Sayısı"
+                widget: select
+                default: 3
+                options:
+                  - { label: "2 sütun", value: 2 }
+                  - { label: "3 sütun", value: 3 }
+              - name: kartlar
+                label: "Kartlar"
+                label_singular: "Kart"
+                widget: list
+                summary: "{{fields.baslik}}"
+                fields:
+                  - { name: baslik, label: "Kart Başlığı", widget: string }
+                  - name: maddeler
+                    label: "Maddeler"
+                    label_singular: "Madde"
+                    widget: list
+                    field: { name: madde, label: "Madde", widget: string }
+          - name: kart-yigini
+            label: "Alt Alta Kartlar"
+            widget: object
+            summary: "{{fields.baslik}}"
+            fields:
+              - { name: baslik, label: "Bölüm Başlığı", widget: string, required: false }
+              - { name: giris, label: "Giriş Paragrafı", widget: text, required: false }
+              - name: kartlar
+                label: "Kartlar"
+                label_singular: "Kart"
+                widget: list
+                summary: "{{fields.baslik}}"
+                fields:
+                  - { name: baslik, label: "Kart Başlığı", widget: string }
+                  - { name: metin, label: "Kart Metni", widget: text }
+          - name: numarali-liste
+            label: "Numaralı Liste"
+            widget: object
+            summary: "{{fields.baslik}}"
+            fields:
+              - { name: baslik, label: "Bölüm Başlığı", widget: string, required: false }
+              - { name: giris, label: "Giriş Paragrafı", widget: text, required: false }
+              - name: stil
+                label: "Numara Stili"
+                widget: select
+                default: acik
+                options:
+                  - { label: "Açık yeşil daire", value: acik }
+                  - { label: "Koyu yeşil daire", value: koyu }
+              - name: maddeler
+                label: "Maddeler"
+                label_singular: "Madde"
+                widget: list
+                field: { name: madde, label: "Madde", widget: string }
+              - { name: kapanis, label: "Kapanış Notu", widget: text, required: false }
+          - name: adimlar
+            label: "Numaralı Adımlar (başlıklı)"
+            widget: object
+            summary: "{{fields.baslik}}"
+            fields:
+              - { name: baslik, label: "Bölüm Başlığı", widget: string, required: false }
+              - { name: giris, label: "Giriş Paragrafı", widget: text, required: false }
+              - name: adimlar
+                label: "Adımlar"
+                label_singular: "Adım"
+                widget: list
+                summary: "{{fields.baslik}}"
+                fields:
+                  - { name: baslik, label: "Adım Başlığı", widget: string }
+                  - { name: metin, label: "Adım Açıklaması", widget: text }
+          - name: ozel
+            label: "Özel Tasarım Bölümü (teknik)"
+            widget: object
+            fields:
+              - name: html
+                label: "HTML"
+                widget: code
+                default_language: html
+                output_code_only: true
+                allow_language_selection: false
+                hint: "Bu bölüm özel tasarımlıdır. Metinleri etiketlerin ARASINDA düzenleyin; etiketleri silmeyin."
+      - &legacy_body_field
+        name: body
+        label: "Özel HTML Gövde (teknik)"
+        widget: code
+        required: false
+        default_language: html
+        output_code_only: true
+        allow_language_selection: false
+        hint: "Yalnızca özel sayfalarda doludur (blog dizini gibi). Bölüm kullanan yazılarda boş kalmalıdır."
       - name: card
         label: "Blog Listesi Kartı"
         widget: object
@@ -198,14 +357,6 @@ collections:
           - { name: label, label: "Düğme Yazısı", widget: string }
           - { name: href, label: "Düğme Bağlantısı", widget: string, hint: "Örn: /iletisim.html veya https://wa.me/905…" }
           - { name: external, label: "Yeni sekmede aç", widget: boolean, required: false }
-      - name: body
-        label: "Yazı İçeriği (HTML)"
-        widget: code
-        default_language: html
-        output_code_only: true
-        allow_language_selection: false
-        hint: "Metinleri <p>…</p> ve <h2>…</h2> gibi etiketlerin ARASINDA düzenleyin; etiketlerin kendisini silmeyin veya değiştirmeyin."
-
   - name: blog_en
     label: "Blog Posts (EN)"
     label_singular: "Blog Post (EN)"
@@ -273,6 +424,9 @@ collections:
         widget: string
         required: false
         hint: "Örn: 6 min read"
+      - *hero_field
+      - *blocks_field
+      - *legacy_body_field
       - name: card
         label: "Blog Listesi Kartı"
         widget: object
@@ -348,13 +502,6 @@ collections:
         collapsed: true
         hint: "Yazının en altındaki renkli randevu/iletişim kutusu."
         fields: *cta_fields
-      - name: body
-        label: "Yazı İçeriği (HTML)"
-        widget: code
-        default_language: html
-        output_code_only: true
-        allow_language_selection: false
-        hint: "Metinleri <p>…</p> ve <h2>…</h2> gibi etiketlerin ARASINDA düzenleyin; etiketlerin kendisini silmeyin veya değiştirmeyin."
 
   - divider: true
 

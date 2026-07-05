@@ -1,6 +1,10 @@
 ---
 layout: base.njk
 ---
+{%- if hero %}
+{{ hero | renderHero(category, readingTime, page.url) | safe }}
+{{ blocks | renderBlocks | safe }}
+{%- endif %}
 {{ content | safe }}
 {%- if faqTopic and faqdata.topics[faqTopic] %}
 {% include "chrome/faq-accordion.njk" %}

@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* Blog blok şablonlarının sınıfları bu JS modülünden gelir — taramaya dahil et */
+@source "../scripts/render-blocks.js";
 
 /* ── Yerel font dosyaları (GDPR: Google CDN kullanılmıyor) ── */
 @font-face {
