@@ -9,7 +9,7 @@ backend:
   name: github
   repo: Kaniyesilovali/magusapsikoloji
   branch: main
-  # base_url: https://sveltia-cms-auth.<hesabiniz>.workers.dev   # ← Worker adresi
+  base_url: https://sveltia-cms-auth.kani-09f.workers.dev
 
 site_url: https://magusapsikoloji.com
 display_url: https://magusapsikoloji.com
