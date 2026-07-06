@@ -90,7 +90,7 @@ function extract(file) {
 
   // Görünür metin: nav/footer şablonlaştırıldığı için sadece <main> karşılaştırılır.
   // Sunucuda render edilen SSS akordiyonu bilinçli bir ekleme — metin karşılaştırmasına girmez.
-  $('script, style, noscript, [data-faq-accordion]').remove();
+  $('script, style, noscript, [data-faq-accordion], [data-faq]').remove();
   let text = norm(($('main').length ? $('main') : $('body')).text());
   for (const p of WHITELIST.textIgnorePatterns) text = text.replace(p, '␀');
 

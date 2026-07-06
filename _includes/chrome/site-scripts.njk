@@ -9,27 +9,6 @@
       document.getElementById('mobileMenu').classList.toggle('hidden');
     });
 
-    // SSS accordion (sayfada .faq-btn yoksa etkisiz)
-    document.querySelectorAll('.faq-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var body = this.nextElementSibling;
-        var icon = this.querySelector('.faq-icon');
-        var isOpen = this.getAttribute('aria-expanded') === 'true';
-
-        document.querySelectorAll('.faq-btn').forEach(function (b) {
-          b.setAttribute('aria-expanded', 'false');
-          b.nextElementSibling.classList.add('hidden');
-          b.querySelector('.faq-icon').style.transform = '';
-        });
-
-        if (!isOpen) {
-          this.setAttribute('aria-expanded', 'true');
-          body.classList.remove('hidden');
-          icon.style.transform = 'rotate(45deg)';
-        }
-      });
-    });
-
     // ── GDPR Cookie Consent ──────────────────────────────────────
     (function () {
       var STORAGE_KEY = 'gdpr_consent';

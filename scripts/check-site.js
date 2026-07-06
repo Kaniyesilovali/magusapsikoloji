@@ -54,7 +54,8 @@ for (const f of htmlFiles) {
   }
   const lang = rel.startsWith('/en/') ? 'en' : 'tr';
   const other = lang === 'tr' ? 'en' : 'tr';
-  if (!hl[other]) warn.push(`${rel}: ${other.toUpperCase()} eşi yok`);
+  // /admin/ CMS arayüzüdür, çeviri eşi beklenmez
+  if (!hl[other] && !rel.startsWith('/admin/')) warn.push(`${rel}: ${other.toUpperCase()} eşi yok`);
 }
 
 // Karşılıklılık: A'nın en'i B ise, B'nin tr'si A olmalı

@@ -680,6 +680,40 @@
           "q": "What support exists specifically for DAU / EMU students in Famagusta?",
           "a": "Our centre is conveniently located near the main Famagusta university campuses and offers flexible scheduling. Both in-person and online sessions are available."
         }
+      ],
+      "tr": [
+        {
+          "q": "Uluslararası öğrenci olarak ruh sağlığımda zorlanmam normal mi?",
+          "a": "Evet. Yeni bir ülkeye uyum, akademik baskı, dil engelleri ve aileden uzaklık önemli stres kaynaklarıdır. Bu bağlamda kaygı, ev özlemi ya da keyifsizlik yaşamak çok yaygındır."
+        },
+        {
+          "q": "Kuzey Kıbrıs’ta İngilizce terapi mümkün mü?",
+          "a": "Evet. Merkezimiz İngilizce danışmanlık sunarak hizmetlerimizi uluslararası öğrenciler, expat’lar ve İngilizce seans tercih eden herkes için erişilebilir kılıyor."
+        },
+        {
+          "q": "Terapiyi üniversite programıma sığdırabilir miyim?",
+          "a": "Online terapi bunu çok kolaylaştırır. Seanslar derslerin etrafında, akşamları ve hafta sonları da planlanabilir. Haftada ya da iki haftada bir seans bile anlamlı fark yaratabilir."
+        },
+        {
+          "q": "Terapi akademik baskıyla başa çıkmama nasıl yardımcı olur?",
+          "a": "Terapi, mükemmeliyetçiliği ve ertelemeyi besleyen düşünceleri belirlemeye yardımcı olur, stres yönetimi becerileri kazandırır ve sınav ya da teslim tarihleri öncesinde kaygıyı artıran kaçınma döngülerini kırar."
+        },
+        {
+          "q": "Aileden uzakta yalnız ya da ev özlemi içinde hissedersem?",
+          "a": "Bu duygular geçerlidir ve terapi bunları işlemek için destekleyici bir alan sunar. Kampüste sosyal bağ kurmak ve aile ile teması sürdürmek de sürecin bir parçası olarak ele alınır."
+        },
+        {
+          "q": "Öğrenci terapisi maddi olarak karşılanabilir mi?",
+          "a": "Öğrenciler için esnek seçenekler sunuyoruz. Online seanslar yol masrafını da ortadan kaldırır. Bütçenize uygun bir plan konuşmak için lütfen bize ulaşın."
+        },
+        {
+          "q": "Terapi vize ya da akademik belirsizlikle ilgili yardımcı olabilir mi?",
+          "a": "Evet. Belirsizlik ve kontrol kaybı hissi, kaygının temel tetikleyicilerindendir. Terapi bu duyguları yönetmenize, önceliklerinizi netleştirmenize ve kararlarınızı daha güvenle almanıza yardımcı olur."
+        },
+        {
+          "q": "Gazimağusa’da DAÜ öğrencilerine özel ne tür destek var?",
+          "a": "Merkezimiz Gazimağusa’daki ana üniversite kampüslerine yakın konumdadır ve esnek planlama sunar. Hem yüz yüze hem online seans mümkündür."
+        }
       ]
     },
     "north-cyprus": {
@@ -860,6 +894,40 @@
           "q": "What are the advantages of online therapy in North Cyprus?",
           "a": "Online therapy removes travel time across the island, allows scheduling flexibility, and makes it possible to access our services from any city in Cyprus or abroad."
         }
+      ],
+      "tr": [
+        {
+          "q": "Online terapi yüz yüze terapi kadar etkili mi?",
+          "a": "Araştırmalar, online terapinin kaygı, depresyon, travma ve ilişki sorunları dahil çoğu psikolojik güçlükte yüz yüze terapiyle eşit derecede etkili olduğunu tutarlı biçimde gösteriyor."
+        },
+        {
+          "q": "Bir online terapi seansı nasıl işler?",
+          "a": "Seanslar güvenli bir video platformu üzerinden yapılır. Seçtiğiniz özel ve rahat bir alandan katılırsınız. Deneyim, derinlik ve etkileşim açısından yüz yüze terapiye çok yakındır."
+        },
+        {
+          "q": "Online terapi özel ve gizli midir?",
+          "a": "Evet. Şifreli video platformları kullanıyoruz ve terapistin gizlilik yükümlülükleri online ortamda da aynen geçerlidir. Duyulmayacağınız özel bir alanda olduğunuzdan emin olmanız yeterli."
+        },
+        {
+          "q": "Online terapi için hangi teknolojiye ihtiyacım var?",
+          "a": "Stabil bir internet bağlantısı; kameralı ve mikrofonlu bir telefon, tablet ya da bilgisayar; ve özel bir alan. Özel bir yazılım gerekmez."
+        },
+        {
+          "q": "Dünyanın her yerinden online terapi alabilir miyim?",
+          "a": "Genellikle evet; ancak terapistler tipik olarak belirli bölgelerde çalışma yetkisine sahiptir. Bulunduğunuz yerden sizinle çalışabileceğimizi teyit etmek için lütfen bize ulaşın."
+        },
+        {
+          "q": "Online terapi çocuklar için uygun mu?",
+          "a": "Evet, bazı uyarlamalarla. Küçük çocuklarda bir ebeveynin eşlik etmesi gerekebilir; büyük çocuklar ve ergenler online formata genellikle çok iyi uyum sağlar. Formata terapist yön verir."
+        },
+        {
+          "q": "Seans sırasında internet bağlantısı koparsa ne olur?",
+          "a": "Terapistiniz hemen yeniden bağlanmayı dener. Bağlantı kurulamazsa seans ek ücret olmadan yeniden planlanır."
+        },
+        {
+          "q": "Kuzey Kıbrıs’ta online terapinin avantajları neler?",
+          "a": "Online terapi ada içi yol süresini ortadan kaldırır, planlama esnekliği sağlar ve hizmetlerimize Kıbrıs’ın herhangi bir şehrinden ya da yurtdışından erişmeyi mümkün kılar."
+        }
       ]
     },
     "find-psychologist": {
@@ -895,6 +963,40 @@
         {
           "q": "What is a typical first session like?",
           "a": "The first session is a conversational assessment. Your therapist will ask about your background, current concerns, and what you hope to achieve. You set the pace—nothing is rushed."
+        }
+      ],
+      "tr": [
+        {
+          "q": "Psikolog seçerken nelere dikkat etmeliyim?",
+          "a": "Lisanslı bir uzman arayın (psikolojide yüksek lisans ya da doktora, veya eşdeğeri). Uzmanlık alanını, terapi yaklaşımını ve ilk seanstan sonra kendinizi güvende ve anlaşılmış hissedip hissetmediğinizi göz önünde bulundurun."
+        },
+        {
+          "q": "Bir terapistin yetkin olduğunu nasıl anlarım?",
+          "a": "Diplomasını ve lisansını sorun. Kıbrıs’ta psikologların ilgili meslek kuruluşuna kayıtlı olması gerekir. Saygın bir merkez bu bilgileri şeffaf biçimde paylaşır."
+        },
+        {
+          "q": "Terapist, danışman ve psikolog arasındaki fark nedir?",
+          "a": "“Terapist” geniş bir terimdir; “psikolog” genellikle psikolojide ileri derecesi olan kişiyi ifade eder; “danışman” unvanının nitelikleri değişkenlik gösterebilir. Kıbrıs’ta yapılandırılmış terapi için lisanslı psikolog ya da sertifikalı danışman arayın."
+        },
+        {
+          "q": "Görüştüğüm ilk psikolog bana uygun değilse ne yapmalıyım?",
+          "a": "Terapötik uyum çok önemlidir. Kendinizi rahat hissetmiyorsanız ya da 3–4 seans sonunda ilerleme hissetmiyorsanız başka bir terapist denemek tamamen normaldir — hatta önerilir."
+        },
+        {
+          "q": "Seanslara başlamadan önce tanışma görüşmesi yapabilir miyim?",
+          "a": "Evet. Bizimkiler dahil birçok terapist, ilk tam seansınızı planlamadan önce soru sorabilmeniz ve uyumu değerlendirebilmeniz için kısa bir tanışma görüşmesi sunar."
+        },
+        {
+          "q": "Kuzey Kıbrıs’ta İngilizce konuşan psikolog var mı?",
+          "a": "Evet. Gazimağusa’daki merkezimiz uluslararası öğrenciler, expat’lar ve İngilizce seans tercih eden herkes için İngilizce danışmanlık sunuyor."
+        },
+        {
+          "q": "Ne kadar sürede randevu alabilirim?",
+          "a": "İlk randevuyu bir hafta içinde sunmayı hedefliyoruz. Acil durumlarda elimizden geldiğince daha erken yer açmaya çalışırız. Online seanslar genellikle daha hızlı planlanabilir."
+        },
+        {
+          "q": "Tipik bir ilk seans nasıl geçer?",
+          "a": "İlk seans sohbet şeklinde bir değerlendirmedir. Terapistiniz geçmişinizi, güncel kaygılarınızı ve neyi hedeflediğinizi sorar. Temposu size aittir — hiçbir şey aceleye getirilmez."
         }
       ]
     }
