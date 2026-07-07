@@ -23,6 +23,14 @@
         var c = { necessary: true, analytics: !!analytics, marketing: !!marketing, timestamp: new Date().toISOString() };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(c));
         window.gdprConsent = c;
+        if (typeof gtag === 'function') {
+          gtag('consent', 'update', {
+            analytics_storage: c.analytics ? 'granted' : 'denied',
+            ad_storage: c.marketing ? 'granted' : 'denied',
+            ad_user_data: c.marketing ? 'granted' : 'denied',
+            ad_personalization: c.marketing ? 'granted' : 'denied'
+          });
+        }
         hideBanner();
         hideModal();
       }
