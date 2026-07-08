@@ -20,13 +20,19 @@ module.exports = {
       return data.lang === 'tr' ? '/en/' : '/';
     },
     hreflangs: (data) => {
-      if (data.hreflangOverride) return data.hreflangOverride;
+      // x-default her kümede sayfanın TR (varsayılan dil) sürümüne işaret eder;
+      // TR eşi olmayan sayfalarda sayfanın kendisine düşer.
+      if (data.hreflangOverride) {
+        const o = data.hreflangOverride;
+        return { ...o, xDefault: o.tr || o.en };
+      }
       const self = data.site.url + data.page.url;
       const alt = data.counterpartUrl ? data.site.url + data.counterpartUrl : null;
+      const tr = data.lang === 'tr' ? self : alt;
       return {
-        tr: data.lang === 'tr' ? self : alt,
+        tr,
         en: data.lang === 'en' ? self : alt,
-        xDefault: data.site.url + '/',
+        xDefault: tr || self,
       };
     },
   },
