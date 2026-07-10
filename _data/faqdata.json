@@ -999,6 +999,52 @@
           "a": "İlk seans sohbet şeklinde bir değerlendirmedir. Terapistiniz geçmişinizi, güncel kaygılarınızı ve neyi hedeflediğinizi sorar. Temposu size aittir — hiçbir şey aceleye getirilmez."
         }
       ]
+    },
+    "online-therapy-effectiveness": {
+      "tr": [
+        {
+          "q": "Online terapi gerçekten etkili mi?",
+          "a": "Evet. Randomize kontrollü çalışmalar ve meta-analizler, görüntülü terapinin depresyon, kaygı bozuklukları, panik ve travma dahil yaygın psikolojik güçlüklerin çoğunda yüz yüze terapiyle eşdeğer sonuçlar verdiğini tutarlı biçimde gösteriyor."
+        },
+        {
+          "q": "Online terapi hangi sorunlarda yüz yüze kadar etkili?",
+          "a": "Kanıtlar en güçlü olarak depresyon, yaygın kaygı, sosyal kaygı, panik bozukluk ve travma sonrası stres bozukluğunda birikmiştir. Bu alanlarda görüntülü terapi, yüz yüze uygulamayla karşılaştırılabilir iyileşme sağlar."
+        },
+        {
+          "q": "Online terapide terapistimle gerçek bir bağ kurabilir miyim?",
+          "a": "Evet. Araştırmalar, terapinin etkisini büyük ölçüde belirleyen terapötik ittifakın görüntülü seanslarda da kurulduğunu gösteriyor. Danışanların çoğu birkaç seans sonra formatı düşünmeyi bıraktığını söylüyor."
+        },
+        {
+          "q": "Uzaktan psikolojik destek kimler için uygun olmayabilir?",
+          "a": "Akut kriz dönemlerinde, yakın güvenlik takibi gereken durumlarda ya da evinde mahrem bir alan bulamayan danışanlar için yüz yüze seans daha uygun bir başlangıç olabilir. İlk görüşmede doğru formatı birlikte değerlendiririz."
+        },
+        {
+          "q": "Online terapinin etkisini artırmak için ne yapabilirim?",
+          "a": "Duyulmayacağınız özel bir alan seçin, kulaklık kullanın, seansı her hafta aynı gün ve saate sabitleyin ve seans sonrasına 10 dakikalık bir sindirme payı bırakın. Araştırmalara göre farkı yaratan format değil, bu koşullardır."
+        }
+      ],
+      "en": [
+        {
+          "q": "Is online therapy really effective?",
+          "a": "Yes. Randomised controlled trials and meta-analyses consistently show that video therapy produces outcomes equivalent to face-to-face therapy for most common psychological difficulties, including depression, anxiety disorders, panic and trauma."
+        },
+        {
+          "q": "For which problems is online therapy as effective as in-person?",
+          "a": "The evidence is strongest for depression, generalised anxiety, social anxiety, panic disorder and post-traumatic stress disorder. In these areas video therapy achieves improvement comparable to in-person treatment."
+        },
+        {
+          "q": "Can I build a real bond with my therapist online?",
+          "a": "Yes. Research shows the therapeutic alliance — one of the strongest predictors of whether therapy works — forms in video sessions as well. Most clients say they stop thinking about the format after a few sessions."
+        },
+        {
+          "q": "Who might remote psychological support not suit?",
+          "a": "In-person sessions may be a better starting point during acute crises, when safety requires close monitoring, or for clients who cannot find a private space at home. We assess the right format together in your first session."
+        },
+        {
+          "q": "How can I get the most out of online therapy?",
+          "a": "Choose a private space where you won't be overheard, use headphones, anchor your session to the same day and time each week, and leave 10 minutes to decompress afterwards. Research suggests it's these conditions, not the format, that make the difference."
+        }
+      ]
     }
   },
   "pageCategories": {
