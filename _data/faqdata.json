@@ -1045,6 +1045,52 @@
           "a": "Choose a private space where you won't be overheard, use headphones, anchor your session to the same day and time each week, and leave 10 minutes to decompress afterwards. Research suggests it's these conditions, not the format, that make the difference."
         }
       ]
+    },
+    "tukenmislik": {
+      "tr": [
+        {
+          "q": "Tükenmişlik sendromu nedir?",
+          "a": "Tükenmişlik, Dünya Sağlık Örgütü'nün (WHO) tanımıyla başarıyla yönetilememiş kronik işyeri stresinden kaynaklanan bir sendromdur. Üç boyutta görülür: enerji tükenmesi, işe karşı sinizm ve mesafe, azalmış başarı hissi. WHO bunu bir hastalık değil, mesleki bir olgu olarak sınıflandırır."
+        },
+        {
+          "q": "İş stresi ile tükenmişlik arasındaki fark nedir?",
+          "a": "İş stresi bir \"çok fazla\" halidir: sistem sürekli açık, duygular yoğun ve aşırı tepkilidir, ama kişi hâlâ önemser. Tükenmişlik ise bir \"yeterince değil\" halidir: sistem kapalı, duygular körelmiş, motivasyon ve umut kaybolmuştur. Stres genellikle dinlenmeyle hafifler; tükenmişlikte dinlenmek çoğu zaman yetmez."
+        },
+        {
+          "q": "Tükenmişlik belirtileri nelerdir?",
+          "a": "Tükenmişlik bedende, duyguda ve davranışta iz bırakır: geçmeyen yorgunluk, uyku sorunları ve ağrılar (fiziksel); motivasyon kaybı, sinizm, çaresizlik ve yetersizlik hissi (duygusal); işten ve insanlardan kaçınma, erteleme ve performans düşüşü (davranışsal)."
+        },
+        {
+          "q": "Tükenmişlik mi, depresyon mu yaşıyorum?",
+          "a": "İki tablo örtüşebilir ama aynı değildir. Tükenmişlik büyük ölçüde işe bağlıdır ve iş bağlamından uzaklaşınca genellikle bir miktar hafifler. Depresyon ise yaşamın tüm alanlarına yayılır ve işten uzak kalmak onu düzeltmez. Uzayan tükenmişlik depresyona zemin hazırlayabildiği için ayrımı bir uzmanla netleştirmek önemlidir."
+        },
+        {
+          "q": "Tükenmişlikten nasıl çıkılır?",
+          "a": "Toparlanma \"daha çok gayret\"le olmaz. Genellikle şu adımları izler: durumu adlandırmak, yükü gerçekten azaltmak ve sınır koymak, uyku ve dinlenmeyle bedeni onarmak, güvendiğiniz kişilerle bağı ve anlamı geri kazanmak ve profesyonel destek almak. Belirtiler aylardır sürüyorsa bir psikologla görüşmek yerinde olur."
+        }
+      ],
+      "en": [
+        {
+          "q": "What is burnout?",
+          "a": "Burnout, in the World Health Organization's (WHO) definition, is a syndrome resulting from chronic workplace stress that has not been successfully managed. It appears in three dimensions: energy depletion, cynicism and distance toward work, and a reduced sense of accomplishment. The WHO classifies it not as a medical condition but as an occupational phenomenon."
+        },
+        {
+          "q": "What is the difference between work stress and burnout?",
+          "a": "Work stress is a state of \"too much\": the system is stuck on, emotions are intense and over-reactive, but you still care. Burnout is a state of \"not enough\": the system is off, emotions are blunted, and motivation and hope are gone. Stress usually eases with rest; with burnout, rest often isn't enough."
+        },
+        {
+          "q": "What are the symptoms of burnout?",
+          "a": "Burnout leaves marks on the body, emotions and behaviour: persistent fatigue, sleep problems and aches (physical); loss of motivation, cynicism, helplessness and a sense of inadequacy (emotional); avoiding work and people, procrastination and dropping performance (behavioural)."
+        },
+        {
+          "q": "Is it burnout or depression?",
+          "a": "The two can overlap but aren't the same. Burnout is largely tied to work and often eases somewhat once you step away from the job context. Depression spreads across every area of life, and time off won't fix it. Because prolonged burnout can pave the way for depression, it's important to clarify the distinction with a professional."
+        },
+        {
+          "q": "How do you recover from burnout?",
+          "a": "Recovery doesn't come from \"trying harder.\" It usually follows these steps: naming what's happening, genuinely reducing the load and setting boundaries, repairing the body through sleep and rest, reconnecting with people you trust and rebuilding meaning, and seeking professional support. If symptoms have lasted for months, it's worth speaking with a psychologist."
+        }
+      ]
     }
   },
   "pageCategories": {
