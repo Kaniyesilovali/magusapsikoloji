@@ -6,6 +6,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy('assets');
   eleventyConfig.addPassthroughCopy('dist');
   eleventyConfig.addPassthroughCopy({ 'static/robots.txt': 'robots.txt' });
+  eleventyConfig.addPassthroughCopy({ 'static/.htaccess': '.htaccess' });
   eleventyConfig.addPassthroughCopy({ admin: 'admin' });
 
   eleventyConfig.setTemplateFormats(['html', 'md', 'njk']);

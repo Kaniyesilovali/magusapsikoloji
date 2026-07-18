@@ -1,0 +1,11 @@
+# --- Kanonik host: www → non-www (301) ---
+# www.magusapsikoloji.com tüm sayfaları magusapsikoloji.com'a kalıcı yönlendir.
+# Google'ın www kopyalarını "duplicate/alternate" olarak taramasını önler.
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^www\.magusapsikoloji\.com [NC]
+RewriteRule ^(.*)$ https://magusapsikoloji.com/$1 [R=301,L]
+
+# --- Taşınan eski URL'ler (301) ---
+# Meta-refresh yerine gerçek 301; link değerini korur.
+Redirect 301 /beyin-beden.html https://magusapsikoloji.com/blog/beyin-beden.html
+Redirect 301 /blog/dau-ogrencileri-psikolojik-destek.html https://magusapsikoloji.com/blog/universite-ogrencileri-psikolojik-destek.html
