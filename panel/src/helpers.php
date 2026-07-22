@@ -173,20 +173,25 @@ function tr_month_name(int $month): string
 }
 
 /**
- * Takvim ay seçicisinin seçenekleri: ['2026-07-01' => 'Temmuz 2026', …]
+ * Ay seçicisinin seçenekleri: ['2026-07-01' => 'Temmuz 2026', …]
  *
  * Pencere bugünün bir yıl öncesinden bir yıl sonrasına uzanır ama her zaman
  * bulunulan ayı da kapsar: ileri geri adımlayarak 2029'a giden biri seçicide
  * kendini bulamazsa liste bozuk görünürdü. Uçlar bu yüzden çapaya göre esner,
  * araya boşluk girmez.
  *
- * Bulunulan ayın değeri ayın biri değil, çapanın kendisidir. Aynı form terapist
- * filtresini de taşıyor; ay seçicisine dokunmadan "Göster"e basan biri o an
- * baktığı haftadan ayın başına fırlatılmamalı.
+ * İki değer biçimi var çünkü iki farklı soru soruluyor:
+ *
+ *   'Y-m-d'  takvim ekranları — "şu güne git". Bulunulan ayın değeri ayın biri
+ *            değil, çapanın kendisidir: aynı form terapist filtresini de
+ *            taşıyor, ay seçicisine dokunmadan "Göster"e basan biri o an
+ *            baktığı haftadan ayın başına fırlatılmamalı.
+ *   'Y-m'    ödemeler ekranı — "şu ayın tamamına git". Orada seçim zaten bir
+ *            aralık demek, gün taşımanın karşılığı yok.
  *
  * @return array<string, string>
  */
-function tr_month_options(DateTimeImmutable $anchor): array
+function tr_month_options(DateTimeImmutable $anchor, string $format = 'Y-m-d'): array
 {
     $thisYear   = (int) (new DateTimeImmutable('today'))->format('Y');
     $anchorYear = (int) $anchor->format('Y');
@@ -195,9 +200,13 @@ function tr_month_options(DateTimeImmutable $anchor): array
     $options = [];
     for ($year = min($thisYear - 1, $anchorYear); $year <= max($thisYear + 1, $anchorYear); $year++) {
         for ($month = 1; $month <= 12; $month++) {
-            $value = $year === $anchorYear && $month === $anchorNum
-                ? $anchor->format('Y-m-d')
-                : sprintf('%04d-%02d-01', $year, $month);
+            if ($format === 'Y-m') {
+                $value = sprintf('%04d-%02d', $year, $month);
+            } else {
+                $value = $year === $anchorYear && $month === $anchorNum
+                    ? $anchor->format('Y-m-d')
+                    : sprintf('%04d-%02d-01', $year, $month);
+            }
 
             $options[$value] = tr_month_name($month) . ' ' . $year;
         }

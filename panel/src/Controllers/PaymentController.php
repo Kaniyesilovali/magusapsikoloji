@@ -86,6 +86,7 @@ final class PaymentController
             'totals'          => $this->totals($rows),
             'from'            => $from,
             'to'              => $to->modify('-1 day'),
+            'nav'             => $this->nav($from, $to),
             'status'          => $status,
             'statusLabels'    => self::STATUS_LABELS,
             'therapists'      => Rbac::can($actor, 'payment.view.all') ? $this->therapistOptions() : [],
@@ -316,9 +317,24 @@ final class PaymentController
         ];
     }
 
-    /** Varsayılan aralık: içinde bulunulan ay. @return array{0:DateTimeImmutable,1:DateTimeImmutable} */
+    /**
+     * Görüntülenen aralık. Varsayılan: içinde bulunulan ay.
+     *
+     * İki giriş var ve ikisi aynı formdan gelmiyor: `?ay=YYYY-MM` bütün bir ayı
+     * seçen kısayol (dönem çubuğu), `?baslangic`/`?bitis` ise serbest aralık
+     * (detay filtresi). Ay seçicisi tarihleri, tarih formu da ayı taşımadığı
+     * için ikisi hiçbir zaman birlikte gönderilmez; buradaki öncelik yalnız
+     * elle kurcalanmış bir adres için geçerli.
+     *
+     * @return array{0:DateTimeImmutable,1:DateTimeImmutable}  [başlangıç, bitişin ertesi günü]
+     */
     private function range(): array
     {
+        $month = $this->month(query('ay'));
+        if ($month !== null) {
+            return [$month, $month->modify('+1 month')];
+        }
+
         $parse = static function (string $value, string $fallback): DateTimeImmutable {
             try {
                 return new DateTimeImmutable($value !== '' ? $value : $fallback);
@@ -335,6 +351,55 @@ final class PaymentController
         }
         // Bitiş günü aralığa dahil olsun diye ertesi günün başına çekilir.
         return [$from, $to->modify('+1 day')];
+    }
+
+    /** '2026-07' → o ayın ilk günü; geçersizse null. */
+    private function month(string $value): ?DateTimeImmutable
+    {
+        if (preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $value) !== 1) {
+            return null;
+        }
+        return new DateTimeImmutable($value . '-01 00:00:00');
+    }
+
+    /**
+     * Dönem çubuğunun "önceki / sonraki" bağlantıları.
+     *
+     * Aralık tam bir aysa aylar arasında gezilir; değilse pencere **kendi
+     * uzunluğu kadar** kayar. Serbest bir on günlük aralığa bakarken "önceki"nin
+     * bir ay geri gitmesi, kullanıcının kurduğu aralığı sessizce bozardı.
+     *
+     * @param  DateTimeImmutable $to  bitişin ertesi günü
+     * @return array{isMonth:bool, prev:array<string,string>, next:array<string,string>}
+     */
+    private function nav(DateTimeImmutable $from, DateTimeImmutable $to): array
+    {
+        $last = $to->modify('-1 day');
+
+        $isMonth = $from->format('j') === '1'
+            && $last->format('Y-m-d') === $from->modify('last day of this month')->format('Y-m-d');
+
+        if ($isMonth) {
+            return [
+                'isMonth' => true,
+                'prev'    => ['ay' => $from->modify('-1 month')->format('Y-m')],
+                'next'    => ['ay' => $from->modify('+1 month')->format('Y-m')],
+            ];
+        }
+
+        $days = max(1, (int) $from->diff($to)->days);
+
+        return [
+            'isMonth' => false,
+            'prev'    => [
+                'baslangic' => $from->modify("-{$days} days")->format('Y-m-d'),
+                'bitis'     => $last->modify("-{$days} days")->format('Y-m-d'),
+            ],
+            'next'    => [
+                'baslangic' => $from->modify("+{$days} days")->format('Y-m-d'),
+                'bitis'     => $last->modify("+{$days} days")->format('Y-m-d'),
+            ],
+        ];
     }
 
     private function therapistOptions(): array

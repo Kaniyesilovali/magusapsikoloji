@@ -2,7 +2,19 @@
 use Panel\Money;
 use Panel\Rbac;
 /** @var array $rows @var array $totals @var DateTimeImmutable $from @var DateTimeImmutable $to */
-/** @var string $status @var array $statusLabels @var array $therapists @var int $therapistFilter @var array $actor */
+/** @var array $nav @var string $status @var array $statusLabels */
+/** @var array $therapists @var int $therapistFilter @var array $actor */
+
+/** Dönem değişirken durum ve terapist filtreleri korunur. */
+$link = static function (array $params) use ($status, $therapistFilter): string {
+    if ($status !== 'hepsi') {
+        $params['durum'] = $status;
+    }
+    if ($therapistFilter > 0) {
+        $params['terapist'] = (string) $therapistFilter;
+    }
+    return url('/odemeler?' . http_build_query($params));
+};
 
 // "Kısmi" de "ödenmedi" gibi bir bakiye demek — ikisi de insan kararı bekliyor,
 // bu yüzden aynı rozeti taşırlar; farkı metin söyler.
@@ -46,6 +58,44 @@ $statusChip = [
       <p class="eyebrow mt-1">Bekleyen (iptaller hariç)</p>
     </div>
   </div>
+</div>
+
+<?php // ── Dönem ─────────────────────────────────────────────────────────────
+      // Ödemelere neredeyse hep ay ay bakılıyor; aşağıdaki serbest aralık ise
+      // istisna için duruyor. Bu yüzden iki ayrı denetim: buradaki düğme "şu
+      // aya git" der, aşağıdaki "tam olarak bu aralığı göster". Tek forma
+      // sıkıştırılsalardı hangisinin kazandığı gizli bir kural olurdu. ?>
+<div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+  <div class="flex flex-wrap items-center gap-3">
+    <nav class="flex items-center gap-1.5" aria-label="Dönem">
+      <a href="<?= e($link($nav['prev'])) ?>" class="btn btn-quiet btn-sm">←&nbsp;Önceki</a>
+      <a href="<?= e($link(['ay' => date('Y-m')])) ?>" class="btn btn-quiet btn-sm">Bu ay</a>
+      <a href="<?= e($link($nav['next'])) ?>" class="btn btn-quiet btn-sm">Sonraki&nbsp;→</a>
+    </nav>
+    <?php // Serbest aralıkta okların ne yaptığı görünmüyor; söylenmezse
+          // kullanıcının kurduğu aralığı bozdukları sanılır. ?>
+    <?php if (!$nav['isMonth']): ?>
+      <span class="text-xs text-ink-light">Oklar aralığı kendi uzunluğu kadar kaydırır.</span>
+    <?php endif; ?>
+  </div>
+
+  <form method="get" action="<?= e(url('/odemeler')) ?>" class="flex flex-wrap items-center gap-2">
+    <?php if ($status !== 'hepsi'): ?>
+      <input type="hidden" name="durum" value="<?= e($status) ?>">
+    <?php endif; ?>
+    <?php if ($therapistFilter > 0): ?>
+      <input type="hidden" name="terapist" value="<?= (int) $therapistFilter ?>">
+    <?php endif; ?>
+    <label for="ay" class="eyebrow">Ay</label>
+    <select id="ay" name="ay" class="field w-auto py-1.5 text-[0.8125rem]">
+      <?php foreach (tr_month_options($from, 'Y-m') as $value => $label): ?>
+        <option value="<?= e($value) ?>" <?= $value === $from->format('Y-m') ? 'selected' : '' ?>>
+          <?= e($label) ?>
+        </option>
+      <?php endforeach; ?>
+    </select>
+    <button class="btn-text">Aya git</button>
+  </form>
 </div>
 
 <form method="get" action="<?= e(url('/odemeler')) ?>" class="mb-4 flex flex-wrap items-end gap-2">
