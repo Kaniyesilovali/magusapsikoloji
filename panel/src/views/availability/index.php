@@ -2,15 +2,31 @@
 use Panel\Csrf;
 use Panel\Rbac;
 use Panel\Scheduling;
-/** @var array|null $therapist @var array $therapists @var array $hours @var array $timeOff @var array $actor */
+/** @var array|null $therapist @var array $therapists @var array $hours @var array $timeOff */
+/** @var array|null $calendar @var string $mode @var DateTimeImmutable $anchor */
+/** @var DateTimeImmutable $monthStart @var DateTimeImmutable $rangeStart @var array $actor */
 
 $isManager = Rbac::can($actor, 'availability.manage.all');
+$isMonth   = $mode === 'ay';
+$today     = date('Y-m-d');
 
 // Haftalık şablonu güne göre grupla — boş günler de satır olarak görünsün.
 $byDay = array_fill_keys(array_keys(Scheduling::WEEKDAYS), []);
 foreach ($hours as $row) {
     $byDay[(int) $row['weekday']][] = $row;
 }
+
+/** Görünüm, çapa ve seçili terapist bağlantılar arasında taşınır. */
+$link = static function (array $over = []) use ($mode, $anchor, $therapist, $isManager): string {
+    $params = ['gorunum' => $mode, 'tarih' => $anchor->format('Y-m-d')];
+    if ($isManager && $therapist !== null) {
+        $params['terapist'] = (int) $therapist['id'];
+    }
+    return url('/musaitlik?' . http_build_query(array_merge($params, $over)));
+};
+
+$prev = $isMonth ? $monthStart->modify('-1 month') : $rangeStart->modify('-7 days');
+$next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 days');
 ?>
 
 <header class="mb-6">
@@ -34,6 +50,8 @@ foreach ($hours as $row) {
 
 <?php if ($isManager && $therapists !== []): ?>
   <form method="get" action="<?= e(url('/musaitlik')) ?>" class="mb-4 flex flex-wrap items-center gap-2">
+    <input type="hidden" name="gorunum" value="<?= e($mode) ?>">
+    <input type="hidden" name="tarih" value="<?= e($anchor->format('Y-m-d')) ?>">
     <label for="terapist" class="eyebrow">Terapist</label>
     <select id="terapist" name="terapist" class="field w-auto py-1.5 text-[0.8125rem]">
       <?php foreach ($therapists as $option): ?>
@@ -45,6 +63,122 @@ foreach ($hours as $row) {
     <button class="btn-text">Göster</button>
   </form>
 <?php endif; ?>
+
+<?php // ── Takvim ────────────────────────────────────────────────────────────
+      // Şablon haftalık bir kuraldır, izin ise belirli günlere yazılır; ikisi
+      // ancak gerçek tarihlerin üzerinde bir arada okunur. Düzenleme aşağıda:
+      // haftalık bir kuralı tek bir günün kutusundan silmek yanıltıcı olurdu. ?>
+<section class="mb-8">
+  <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+    <h2 class="page-title text-[1.125rem]">
+      <?php if ($isMonth): ?>
+        <?= e(tr_month_name((int) $monthStart->format('n')) . ' ' . $monthStart->format('Y')) ?>
+      <?php else: ?>
+        <?= e(tr_range_label($rangeStart->format('Y-m-d'), $rangeStart->modify('+6 days')->format('Y-m-d'))) ?>
+      <?php endif; ?>
+    </h2>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <nav class="flex items-center gap-1.5" aria-label="<?= $isMonth ? 'Ay' : 'Hafta' ?>">
+        <a href="<?= e($link(['tarih' => $prev->format('Y-m-d')])) ?>" class="btn btn-quiet btn-sm">←&nbsp;Önceki</a>
+        <a href="<?= e($link(['tarih' => $today])) ?>" class="btn btn-quiet btn-sm"><?= $isMonth ? 'Bu ay' : 'Bu hafta' ?></a>
+        <a href="<?= e($link(['tarih' => $next->format('Y-m-d')])) ?>" class="btn btn-quiet btn-sm">Sonraki&nbsp;→</a>
+      </nav>
+      <nav class="seg" aria-label="Görünüm">
+        <?php foreach (['hafta' => 'Hafta', 'ay' => 'Ay'] as $value => $label): ?>
+          <a href="<?= e($link(['gorunum' => $value])) ?>"
+             <?= $mode === $value ? 'aria-current="true"' : '' ?>><?= e($label) ?></a>
+        <?php endforeach; ?>
+      </nav>
+    </div>
+  </div>
+
+  <?php if ($isMonth): ?>
+    <?php $monthKey = $monthStart->format('Y-m'); ?>
+    <div class="cal-scroll">
+      <div class="sheet cal-min">
+        <div class="cal-month-head">
+          <?php foreach (Scheduling::WEEKDAYS as $name): ?>
+            <span><?= e($name) ?></span>
+          <?php endforeach; ?>
+        </div>
+        <div class="cal-month">
+          <?php foreach ($calendar['days'] as $date => $day): ?>
+            <div class="cal-cell <?= substr($date, 0, 7) !== $monthKey ? 'is-out' : '' ?> <?= $date === $today ? 'is-today' : '' ?>">
+              <span class="cal-daynum num"><?= e((new DateTimeImmutable($date))->format('j')) ?></span>
+
+              <?php foreach ($day['work'] as $band): ?>
+                <span class="cal-item is-work num"><?= e($band['start']) ?>–<?= e($band['end']) ?></span>
+              <?php endforeach; ?>
+              <?php if ($day['work'] === [] && $day['off'] === []): ?>
+                <span class="cal-item-none">—</span>
+              <?php endif; ?>
+
+              <?php foreach ($day['off'] as $band): ?>
+                <span class="cal-item is-off-day" title="<?= e($band['reason'] ?? 'İzin') ?>">
+                  <span class="cal-item-name">İzin<?= $band['reason'] !== null ? ' · ' . e($band['reason']) : '' ?></span>
+                </span>
+              <?php endforeach; ?>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    </div>
+  <?php else: ?>
+    <?php $short = [1 => 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']; ?>
+    <div class="cal-scroll">
+      <div class="cal-min">
+        <div class="cal-head">
+          <?php foreach (array_keys($calendar['days']) as $date): ?>
+            <?php $day = new DateTimeImmutable($date); ?>
+            <div class="cal-head-day <?= $date === $today ? 'is-today' : '' ?>">
+              <span>
+                <?= e($short[(int) $day->format('N')]) ?>
+                <span class="num ml-0.5"><?= e($day->format('j')) ?></span>
+              </span>
+            </div>
+          <?php endforeach; ?>
+        </div>
+
+        <div class="rail rail-<?= (int) $calendar['hours'] ?>h">
+          <?php for ($h = 0; $h <= $calendar['hours']; $h++): ?>
+            <div class="rail-hour at-<?= $h * 12 ?>">
+              <span><?= sprintf('%02d:00', $calendar['startHour'] + $h) ?></span>
+            </div>
+          <?php endfor; ?>
+
+          <?php if ($hours === []): ?>
+            <p class="rail-empty">Şablon girilmemiş; şu an her saat uygun sayılıyor.</p>
+          <?php endif; ?>
+
+          <div class="cal-track">
+            <?php foreach ($calendar['days'] as $date => $day): ?>
+              <div class="cal-col <?= $date === $today ? 'is-today' : '' ?>">
+                <?php foreach ($day['work'] as $band): ?>
+                  <?php if ($band['at'] === null) { continue; } ?>
+                  <div class="rail-band at-<?= (int) $band['at'] ?> dur-<?= (int) $band['dur'] ?>">
+                    <span class="num"><?= e($band['start']) ?>–<?= e($band['end']) ?></span>
+                  </div>
+                <?php endforeach; ?>
+
+                <?php // İzin şablonun üstüne biner: o gün çalışma saati yazılı olsa
+                      // bile geçerli olan izindir. ?>
+                <?php foreach ($day['off'] as $band): ?>
+                  <?php if ($band['at'] === null) { continue; } ?>
+                  <div class="rail-off at-<?= (int) $band['at'] ?> dur-<?= (int) $band['dur'] ?>"
+                       title="<?= e($band['reason'] ?? 'İzin') ?>">
+                    <span>İzin</span>
+                    <span class="rail-off-time num"><?= e($band['label']) ?></span>
+                  </div>
+                <?php endforeach; ?>
+              </div>
+            <?php endforeach; ?>
+          </div>
+        </div>
+      </div>
+    </div>
+  <?php endif; ?>
+</section>
 
 <section class="sheet mb-6">
   <div class="sheet-head">
@@ -86,6 +220,9 @@ foreach ($hours as $row) {
         class="sheet-foot flex flex-wrap items-end gap-3">
     <?= Csrf::field() ?>
     <input type="hidden" name="therapist_id" value="<?= (int) $therapist['id'] ?>">
+    <?php // Takvim kaydettikten sonra bulunduğu yerde kalsın diye taşınır. ?>
+    <input type="hidden" name="gorunum" value="<?= e($mode) ?>">
+    <input type="hidden" name="tarih" value="<?= e($anchor->format('Y-m-d')) ?>">
     <div>
       <label for="weekday" class="field-label">Gün</label>
       <select id="weekday" name="weekday" class="field w-auto py-1.5 text-[0.8125rem]">
@@ -126,6 +263,8 @@ foreach ($hours as $row) {
             <?= e(dt($row['starts_at'])) ?> → <?= e(dt($row['ends_at'])) ?>
           </span>
           <span class="text-sm text-ink-muted flex-1 min-w-32"><?= e($row['reason'] ?? '—') ?></span>
+          <a href="<?= e($link(['gorunum' => 'hafta', 'tarih' => substr((string) $row['starts_at'], 0, 10)])) ?>"
+             class="btn-text btn-text-quiet">Takvimde göster</a>
           <form method="post" action="<?= e(url("/musaitlik/izin/{$row['id']}/sil")) ?>"
                 data-confirm="İzin kaydı silinsin mi?">
             <?= Csrf::field() ?>
@@ -142,6 +281,9 @@ foreach ($hours as $row) {
         class="sheet-foot flex flex-wrap items-end gap-3">
     <?= Csrf::field() ?>
     <input type="hidden" name="therapist_id" value="<?= (int) $therapist['id'] ?>">
+    <?php // Takvim kaydettikten sonra bulunduğu yerde kalsın diye taşınır. ?>
+    <input type="hidden" name="gorunum" value="<?= e($mode) ?>">
+    <input type="hidden" name="tarih" value="<?= e($anchor->format('Y-m-d')) ?>">
     <div>
       <label for="start_date" class="field-label">Başlangıç</label>
       <div class="flex gap-2">

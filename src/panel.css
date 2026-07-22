@@ -430,7 +430,10 @@ details > summary::-webkit-details-marker {
    .dur-N   : yükseklik N × 5 dakika
    .rail-Nh : cetvelin toplam yüksekliği (N saat)
    .lane-K-N: üst üste binen randevular için N şeridin K'ıncısı
-   Tablolar tek kuralla türetildi; 5 dakikadan ince randevu yok.           */
+   Tablolar tek kuralla türetildi; 5 dakikadan ince randevu yok.
+
+   .dur-N cetvelin tamamına (14 saat) kadar gider: bir seans o kadar sürmez
+   ama müsaitlik ekranındaki çalışma bandı bütün günü kaplayabiliyor.       */
 .at-0{top:0px}.at-1{top:7px}.at-2{top:14px}.at-3{top:21px}.at-4{top:28px}.at-5{top:35px}.at-6{top:42px}.at-7{top:49px}.at-8{top:56px}.at-9{top:63px}
 .at-10{top:70px}.at-11{top:77px}.at-12{top:84px}.at-13{top:91px}.at-14{top:98px}.at-15{top:105px}.at-16{top:112px}.at-17{top:119px}.at-18{top:126px}.at-19{top:133px}
 .at-20{top:140px}.at-21{top:147px}.at-22{top:154px}.at-23{top:161px}.at-24{top:168px}.at-25{top:175px}.at-26{top:182px}.at-27{top:189px}.at-28{top:196px}.at-29{top:203px}
@@ -449,11 +452,20 @@ details > summary::-webkit-details-marker {
 .at-150{top:1050px}.at-151{top:1057px}.at-152{top:1064px}.at-153{top:1071px}.at-154{top:1078px}.at-155{top:1085px}.at-156{top:1092px}.at-157{top:1099px}.at-158{top:1106px}.at-159{top:1113px}
 .at-160{top:1120px}.at-161{top:1127px}.at-162{top:1134px}.at-163{top:1141px}.at-164{top:1148px}.at-165{top:1155px}.at-166{top:1162px}.at-167{top:1169px}.at-168{top:1176px}
 
-.dur-1{height:7px}.dur-2{height:14px}.dur-3{height:21px}.dur-4{height:28px}.dur-5{height:35px}.dur-6{height:42px}.dur-7{height:49px}.dur-8{height:56px}
-.dur-9{height:63px}.dur-10{height:70px}.dur-11{height:77px}.dur-12{height:84px}.dur-13{height:91px}.dur-14{height:98px}.dur-15{height:105px}.dur-16{height:112px}
-.dur-17{height:119px}.dur-18{height:126px}.dur-19{height:133px}.dur-20{height:140px}.dur-21{height:147px}.dur-22{height:154px}.dur-23{height:161px}.dur-24{height:168px}
-.dur-25{height:175px}.dur-26{height:182px}.dur-27{height:189px}.dur-28{height:196px}.dur-29{height:203px}.dur-30{height:210px}.dur-31{height:217px}.dur-32{height:224px}
-.dur-33{height:231px}.dur-34{height:238px}.dur-35{height:245px}.dur-36{height:252px}
+.dur-1{height:7px}.dur-2{height:14px}.dur-3{height:21px}.dur-4{height:28px}.dur-5{height:35px}.dur-6{height:42px}.dur-7{height:49px}.dur-8{height:56px}.dur-9{height:63px}.dur-10{height:70px}.dur-11{height:77px}.dur-12{height:84px}
+.dur-13{height:91px}.dur-14{height:98px}.dur-15{height:105px}.dur-16{height:112px}.dur-17{height:119px}.dur-18{height:126px}.dur-19{height:133px}.dur-20{height:140px}.dur-21{height:147px}.dur-22{height:154px}.dur-23{height:161px}.dur-24{height:168px}
+.dur-25{height:175px}.dur-26{height:182px}.dur-27{height:189px}.dur-28{height:196px}.dur-29{height:203px}.dur-30{height:210px}.dur-31{height:217px}.dur-32{height:224px}.dur-33{height:231px}.dur-34{height:238px}.dur-35{height:245px}.dur-36{height:252px}
+.dur-37{height:259px}.dur-38{height:266px}.dur-39{height:273px}.dur-40{height:280px}.dur-41{height:287px}.dur-42{height:294px}.dur-43{height:301px}.dur-44{height:308px}.dur-45{height:315px}.dur-46{height:322px}.dur-47{height:329px}.dur-48{height:336px}
+.dur-49{height:343px}.dur-50{height:350px}.dur-51{height:357px}.dur-52{height:364px}.dur-53{height:371px}.dur-54{height:378px}.dur-55{height:385px}.dur-56{height:392px}.dur-57{height:399px}.dur-58{height:406px}.dur-59{height:413px}.dur-60{height:420px}
+.dur-61{height:427px}.dur-62{height:434px}.dur-63{height:441px}.dur-64{height:448px}.dur-65{height:455px}.dur-66{height:462px}.dur-67{height:469px}.dur-68{height:476px}.dur-69{height:483px}.dur-70{height:490px}.dur-71{height:497px}.dur-72{height:504px}
+.dur-73{height:511px}.dur-74{height:518px}.dur-75{height:525px}.dur-76{height:532px}.dur-77{height:539px}.dur-78{height:546px}.dur-79{height:553px}.dur-80{height:560px}.dur-81{height:567px}.dur-82{height:574px}.dur-83{height:581px}.dur-84{height:588px}
+.dur-85{height:595px}.dur-86{height:602px}.dur-87{height:609px}.dur-88{height:616px}.dur-89{height:623px}.dur-90{height:630px}.dur-91{height:637px}.dur-92{height:644px}.dur-93{height:651px}.dur-94{height:658px}.dur-95{height:665px}.dur-96{height:672px}
+.dur-97{height:679px}.dur-98{height:686px}.dur-99{height:693px}.dur-100{height:700px}.dur-101{height:707px}.dur-102{height:714px}.dur-103{height:721px}.dur-104{height:728px}.dur-105{height:735px}.dur-106{height:742px}.dur-107{height:749px}.dur-108{height:756px}
+.dur-109{height:763px}.dur-110{height:770px}.dur-111{height:777px}.dur-112{height:784px}.dur-113{height:791px}.dur-114{height:798px}.dur-115{height:805px}.dur-116{height:812px}.dur-117{height:819px}.dur-118{height:826px}.dur-119{height:833px}.dur-120{height:840px}
+.dur-121{height:847px}.dur-122{height:854px}.dur-123{height:861px}.dur-124{height:868px}.dur-125{height:875px}.dur-126{height:882px}.dur-127{height:889px}.dur-128{height:896px}.dur-129{height:903px}.dur-130{height:910px}.dur-131{height:917px}.dur-132{height:924px}
+.dur-133{height:931px}.dur-134{height:938px}.dur-135{height:945px}.dur-136{height:952px}.dur-137{height:959px}.dur-138{height:966px}.dur-139{height:973px}.dur-140{height:980px}.dur-141{height:987px}.dur-142{height:994px}.dur-143{height:1001px}.dur-144{height:1008px}
+.dur-145{height:1015px}.dur-146{height:1022px}.dur-147{height:1029px}.dur-148{height:1036px}.dur-149{height:1043px}.dur-150{height:1050px}.dur-151{height:1057px}.dur-152{height:1064px}.dur-153{height:1071px}.dur-154{height:1078px}.dur-155{height:1085px}.dur-156{height:1092px}
+.dur-157{height:1099px}.dur-158{height:1106px}.dur-159{height:1113px}.dur-160{height:1120px}.dur-161{height:1127px}.dur-162{height:1134px}.dur-163{height:1141px}.dur-164{height:1148px}.dur-165{height:1155px}.dur-166{height:1162px}.dur-167{height:1169px}.dur-168{height:1176px}
 
 .rail-1h{height:84px}.rail-2h{height:168px}.rail-3h{height:252px}.rail-4h{height:336px}.rail-5h{height:420px}
 .rail-6h{height:504px}.rail-7h{height:588px}.rail-8h{height:672px}.rail-9h{height:756px}.rail-10h{height:840px}
@@ -469,3 +481,205 @@ details > summary::-webkit-details-marker {
 .lane-2-4{width:calc((100% - 12px) / 4);left:calc((100% + 4px) * 1 / 4)}
 .lane-3-4{width:calc((100% - 12px) / 4);left:calc((100% + 4px) * 2 / 4)}
 .lane-4-4{width:calc((100% - 12px) / 4);left:calc((100% + 4px) * 3 / 4)}
+
+/* ══ Takvim ════════════════════════════════════════════════════════════
+   Hafta, gün cetvelinin yan yana dizilmiş yedi kopyasıdır: aynı ölçek, aynı
+   saat çizgileri, tek bir saat penceresi. Ay ise ölçeği bilerek bırakır —
+   otuz günü zamana orantılı çizmek okunmaz olurdu. Ay "hangi gün ne kadar
+   dolu" sorusunu yanıtlar, "saat 14:00'te boşum" sorusunu değil.
+
+   Yedi sütun daraltılamaz: 320px'e sıkışmış bir hafta hiçbir şey söylemez.
+   Bu yüzden takvim kendi içinde yatay kayar, sayfa kaymaz.                */
+.cal-scroll { overflow-x: auto; }
+.cal-min    { min-width: 48rem; }
+
+/* Gün başlıkları cetvelin saat oluğundan sonra başlar (bkz. .rail-track). */
+.cal-head {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 5px;
+  margin-left: 3.5rem;
+  margin-bottom: 0.4rem;
+}
+.cal-head-day {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  color: var(--color-ink-muted);
+}
+.cal-head-day.is-today {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  font-weight: 500;
+}
+
+/* Gün başlığındaki "+": eylem orada dursun ama başlığı bastırmasın. */
+.cal-add {
+  font-size: 0.875rem;
+  line-height: 1;
+  color: var(--color-ink-light);
+  padding: 0 0.15rem;
+}
+.cal-add:hover { color: var(--color-primary); }
+
+.cal-track {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 5px;
+  margin-left: 3.5rem;
+  height: 100%;
+}
+.cal-col { position: relative; }
+
+/* Bugünün sütunu ::before ile boyanır: doğrudan arka plan verilseydi altından
+   geçen saat çizgilerini örter, çizgiler o sütunda kopmuş görünürdü. */
+.cal-col.is-today::before {
+  content: "";
+  position: absolute;
+  inset: -0.4rem 0 0;
+  background: var(--color-primary-soft);
+  border-radius: 6px;
+  z-index: -1;
+}
+
+/* Sütun genişliği bir günün üçte biri kadar: cetvel kutusundaki metin
+   dashboard'dakinden bir tık küçük yazılır, yoksa isim taşar. */
+.cal-slot { padding: 0.25rem 0.4rem; }
+.cal-slot .rail-time { font-size: 0.6875rem; }
+/* Bölünmüş sütuna saat aralığı sığmaz; başlangıç saati zaten yeri söylüyor. */
+.cal-slot:not(.lane-1-1) .rail-end { display: none; }
+.cal-slot .rail-name { font-size: 0.8125rem; line-height: 1.25; }
+.rail-slot.is-cancelled {
+  background: transparent;
+  border-style: dashed;
+}
+.rail-slot.is-cancelled .rail-name {
+  color: var(--color-ink-light);
+  text-decoration: line-through;
+}
+
+/* ── Müsaitlik bandı ───────────────────────────────────────────────────
+   Randevu kutusu bir olayı gösterir, bant bir kuralı. Bu yüzden çerçevesi
+   değil dolgusu var: arkada duran bir zemin, önde duran bir kart değil.  */
+.rail-band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  background: var(--color-primary-soft);
+  box-shadow: inset 0 0 0 1px rgb(47 92 82 / 0.18);
+}
+.rail-band > span {
+  font-size: 0.6875rem;
+  color: var(--color-primary-dark);
+}
+
+/* İzin şablonun üstüne biner: o gün çalışma saati yazılı olsa bile geçerli
+   olan izindir. clay burada da tek şeyi söyler — insan kararı gerekiyor. */
+.rail-off {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  overflow: hidden;
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  background: var(--color-accent-soft);
+  box-shadow: inset 0 0 0 1px rgb(158 82 56 / 0.35);
+  font-size: 0.6875rem;
+  color: var(--color-accent-dark);
+}
+.rail-off-time { display: block; color: var(--color-accent-dark); opacity: 0.75; }
+
+/* ── Ay ızgarası ──────────────────────────────────────────────────────── */
+.cal-month-head,
+.cal-month {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+.cal-month-head > span {
+  padding: 0.5rem 0.6rem;
+  background: var(--color-warm);
+  border-bottom: 1px solid var(--color-warm-tertiary);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-ink-light);
+}
+.cal-cell {
+  min-height: 6.5rem;
+  padding: 0.4rem 0.5rem 0.6rem;
+  border-right: 1px solid var(--color-warm-secondary);
+  border-bottom: 1px solid var(--color-warm-secondary);
+}
+.cal-cell:nth-child(7n) { border-right: 0; }
+/* Izgara hep tam haftalardan oluşur, son yedi kutu son satırdır. */
+.cal-cell:nth-last-child(-n+7) { border-bottom: 0; }
+/* Komşu ayın günleri: ızgarayı tamamlar ama aya ait değildir. */
+.cal-cell.is-out { background: var(--color-warm); }
+.cal-cell.is-today { background: var(--color-primary-soft); }
+
+.cal-daynum {
+  font-size: 0.75rem;
+  color: var(--color-ink-muted);
+}
+.cal-cell.is-out .cal-daynum { color: var(--color-ink-light); }
+.cal-cell.is-today .cal-daynum { color: var(--color-primary-dark); font-weight: 600; }
+
+.cal-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+  padding: 0.12rem 0.35rem;
+  border: 1px solid var(--color-warm-tertiary);
+  border-radius: 4px;
+  background: #fff;
+  font-size: 0.6875rem;
+  line-height: 1.45;
+}
+.cal-item:hover { border-color: var(--color-primary-light); }
+.cal-item.is-confirmed { background: var(--color-primary-soft); border-color: rgb(47 92 82 / 0.3); }
+.cal-item.is-done      { background: transparent; color: var(--color-ink-muted); }
+.cal-item.is-off       { background: transparent; border-style: dashed; border-color: rgb(158 82 56 / 0.55); }
+.cal-item.is-cancelled { background: transparent; border-style: dashed; color: var(--color-ink-light); }
+.cal-item.is-cancelled .cal-item-name { text-decoration: line-through; }
+/* Müsaitlik ayında kutular bir olayı değil bir kuralı gösterir. */
+.cal-item.is-work    { background: var(--color-primary-soft); border-color: rgb(47 92 82 / 0.18); color: var(--color-primary-dark); }
+.cal-item.is-off-day { background: var(--color-accent-soft);  border-color: rgb(158 82 56 / 0.35); color: var(--color-accent-dark); }
+.cal-item-none { display: block; margin-top: 0.35rem; font-size: 0.75rem; color: var(--color-ink-light); }
+
+.cal-item-time { flex-shrink: 0; color: var(--color-ink-muted); }
+.cal-item-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ── Görünüm anahtarı ──────────────────────────────────────────────────
+   Üç seçenek, biri hep açık: ayrı düğmeler yerine tek bir gövde. */
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--color-warm-tertiary);
+  border-radius: 6px;
+  background: #fff;
+  overflow: hidden;
+}
+.seg > a {
+  padding: 0.35rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--color-ink-light);
+  transition: background-color 0.15s, color 0.15s;
+}
+.seg > a + a { border-left: 1px solid var(--color-warm-tertiary); }
+.seg > a:hover { background: var(--color-warm); color: var(--color-ink); }
+.seg > a[aria-current="true"] {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}

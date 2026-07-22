@@ -3,9 +3,12 @@ declare(strict_types=1);
 
 namespace Panel\Controllers;
 
+use DateTimeImmutable;
+use Exception;
 use Panel\Audit;
 use Panel\Auth;
 use Panel\Db;
+use Panel\Rail;
 use Panel\Rbac;
 use Panel\Scheduling;
 use Panel\View;
@@ -16,22 +19,51 @@ use Panel\View;
  * Randevu kaydını engellemez, yalnız [Scheduling::warnings] üzerinden uyarı
  * üretir. Şablon hiç girilmemişse uyarı da çıkmaz — boş şablon "her saat uygun"
  * demektir, "hiçbir saat uygun değil" değil.
+ *
+ * Ekranın üstündeki takvim şablonun **gerçek tarihlere düşmüş hâlidir**: kural
+ * haftalıktır ama izin belirli günlere yazılır, ikisi ancak takvimde bir arada
+ * okunur. Şablonun kendisi aşağıdaki gün satırlarından düzenlenir — bir haftalık
+ * kuralı tek bir günün kutusundan silmek yanıltıcı olurdu.
  */
 final class AvailabilityController
 {
+    /** ?gorunum= değerleri. */
+    private const MODES = ['hafta', 'ay'];
+
     public function index(): void
     {
         $actor     = $this->requireAccess();
         $therapist = $this->target($actor);
 
+        $mode   = in_array(query('gorunum'), self::MODES, true) ? query('gorunum') : 'hafta';
+        $anchor = $this->day(query('tarih'));
+
+        $monthStart = $anchor->modify('first day of this month');
+        if ($mode === 'ay') {
+            $rangeStart = $monthStart->modify('monday this week');
+            $rangeEnd   = $monthStart->modify('last day of this month')->modify('monday this week')->modify('+7 days');
+        } else {
+            $rangeStart = $anchor->modify('monday this week');
+            $rangeEnd   = $rangeStart->modify('+7 days');
+        }
+
+        $base = [
+            'title'      => 'Müsaitlik',
+            'therapists' => $this->therapistOptions(),
+            'mode'       => $mode,
+            'anchor'     => $anchor,
+            'monthStart' => $monthStart,
+            'rangeStart' => $rangeStart,
+            'rangeEnd'   => $rangeEnd,
+            'actor'      => $actor,
+        ];
+
         if ($therapist === null) {
-            View::render('availability/index', [
-                'title'      => 'Müsaitlik',
-                'therapist'  => null,
-                'therapists' => $this->therapistOptions(),
-                'hours'      => [],
-                'timeOff'    => [],
-                'actor'      => $actor,
+            View::render('availability/index', $base + [
+                'therapist' => null,
+                'hours'     => [],
+                'timeOff'   => [],
+                'calendar'  => null,
             ]);
             return;
         }
@@ -47,13 +79,24 @@ final class AvailabilityController
             [$therapist['id']]
         );
 
-        View::render('availability/index', [
-            'title'      => 'Müsaitlik',
-            'therapist'  => $therapist,
-            'therapists' => $this->therapistOptions(),
-            'hours'      => $hours,
-            'timeOff'    => $timeOff,
-            'actor'      => $actor,
+        // Takvim, listeden farklı olarak geçmişi de çizer: geçen haftaya bakan
+        // biri "o gün izinliydim" bilgisini görebilmeli.
+        $visibleOff = Db::all(
+            'SELECT * FROM time_off
+              WHERE therapist_id = ? AND starts_at < ? AND ends_at > ?
+           ORDER BY starts_at',
+            [
+                $therapist['id'],
+                $rangeEnd->format('Y-m-d H:i:s'),
+                $rangeStart->format('Y-m-d H:i:s'),
+            ]
+        );
+
+        View::render('availability/index', $base + [
+            'therapist' => $therapist,
+            'hours'     => $hours,
+            'timeOff'   => $timeOff,
+            'calendar'  => $this->calendar($hours, $visibleOff, $rangeStart, $rangeEnd),
         ]);
     }
 
@@ -187,7 +230,127 @@ final class AvailabilityController
         redirect($this->backTo($actor, $therapistId));
     }
 
+    // ── Takvim geometrisi ───────────────────────────────────────
+
+    /**
+     * Haftalık şablonu ve izinleri gerçek tarihlere yayar.
+     *
+     * Randevu cetveliyle aynı 5 dakikalık ölçeği kullanır (bkz. Rail), böylece
+     * müsaitlik ekranı randevu ekranıyla aynı yüksekliği aynı saate verir.
+     *
+     * @return array{startHour:int, hours:int, days:array<string, array{work:array, off:array}>}
+     */
+    private function calendar(array $hours, array $timeOff, DateTimeImmutable $from, DateTimeImmutable $to): array
+    {
+        [$startHour, $endHour] = $this->hourWindow($hours);
+        $windowStart = $startHour * 60;
+        $windowEnd   = $endHour * 60;
+
+        $byWeekday = [];
+        foreach ($hours as $row) {
+            $byWeekday[(int) $row['weekday']][] = $row;
+        }
+
+        $days = [];
+        for ($day = $from; $day < $to; $day = $day->modify('+1 day')) {
+            $dayEnd = $day->modify('+1 day');
+
+            $work = [];
+            foreach ($byWeekday[(int) $day->format('N')] ?? [] as $row) {
+                $band = Rail::band(
+                    $this->minutes((string) $row['start_time']),
+                    $this->minutes((string) $row['end_time']),
+                    $windowStart,
+                    $windowEnd
+                );
+                $work[] = [
+                    'id'    => (int) $row['id'],
+                    'start' => substr((string) $row['start_time'], 0, 5),
+                    'end'   => substr((string) $row['end_time'], 0, 5),
+                    'at'    => $band['at']  ?? null,
+                    'dur'   => $band['dur'] ?? null,
+                ];
+            }
+
+            $off = [];
+            foreach ($timeOff as $row) {
+                $start = new DateTimeImmutable((string) $row['starts_at']);
+                $end   = new DateTimeImmutable((string) $row['ends_at']);
+                if ($end <= $day || $start >= $dayEnd) {
+                    continue;
+                }
+
+                // Birkaç güne yayılan izin her gün kendi diliminde çizilir.
+                $fromMin = $start <= $day     ? 0        : (int) $start->format('G') * 60 + (int) $start->format('i');
+                $toMin   = $end   >= $dayEnd  ? 24 * 60  : (int) $end->format('G')   * 60 + (int) $end->format('i');
+                $band    = Rail::band($fromMin, $toMin, $windowStart, $windowEnd);
+
+                $off[] = [
+                    'id'     => (int) $row['id'],
+                    'reason' => $row['reason'],
+                    'label'  => $fromMin <= $windowStart && $toMin >= $windowEnd
+                        ? 'Tüm gün'
+                        : sprintf('%02d:%02d–%02d:%02d', intdiv($fromMin, 60), $fromMin % 60, intdiv($toMin, 60), $toMin % 60),
+                    'at'     => $band['at']  ?? null,
+                    'dur'    => $band['dur'] ?? null,
+                ];
+            }
+
+            $days[$day->format('Y-m-d')] = ['work' => $work, 'off' => $off];
+        }
+
+        return [
+            'startHour' => $startHour,
+            'hours'     => $endHour - $startHour,
+            'days'      => $days,
+        ];
+    }
+
+    /**
+     * Cetvelin saat penceresi — şablonun kendi uçlarından. İzinler pencereyi
+     * genişletmez: tek bir tüm gün izni haftayı 24 saatlik bir şeride çevirirdi,
+     * oysa okunması gereken şey çalışma saatlerinin şekli.
+     *
+     * @return array{0:int, 1:int}
+     */
+    private function hourWindow(array $hours): array
+    {
+        if ($hours === []) {
+            return [9, 18];
+        }
+
+        $start = 24;
+        $end   = 0;
+        foreach ($hours as $row) {
+            $start = min($start, intdiv($this->minutes((string) $row['start_time']), 60));
+            $end   = max($end, (int) ceil($this->minutes((string) $row['end_time']) / 60));
+        }
+
+        $start = max(0, min($start, 23));
+        $end   = min(24, max($end, $start + 4));
+
+        // panel.css yalnız 14 saatlik cetvele kadar sınıf üretiyor.
+        return [$start, $end - $start > 14 ? $start + 14 : $end];
+    }
+
+    /** 'HH:MM:SS' → gün başından beri geçen dakika. */
+    private function minutes(string $time): int
+    {
+        return (int) substr($time, 0, 2) * 60 + (int) substr($time, 3, 2);
+    }
+
     // ── Yardımcılar ─────────────────────────────────────────────
+
+    /** Takvimin çapası, gece yarısına oturtulmuş — geçersiz parametre bugüne düşer. */
+    private function day(string $anchor): DateTimeImmutable
+    {
+        try {
+            $day = $anchor !== '' ? new DateTimeImmutable($anchor) : new DateTimeImmutable();
+        } catch (Exception) {
+            $day = new DateTimeImmutable();
+        }
+        return $day->setTime(0, 0);
+    }
 
     private function requireAccess(): array
     {
@@ -240,11 +403,24 @@ final class AvailabilityController
         return (int) $actor['id'];
     }
 
+    /**
+     * Kaydettikten sonra takvim bulunduğu yerde kalır: uzak bir tarihe izin
+     * yazan kullanıcı bu haftaya fırlatılmamalı.
+     */
     private function backTo(array $actor, int $therapistId): string
     {
-        return Rbac::can($actor, 'availability.manage.all')
-            ? '/musaitlik?terapist=' . $therapistId
-            : '/musaitlik';
+        $params = [];
+        if (Rbac::can($actor, 'availability.manage.all')) {
+            $params['terapist'] = $therapistId;
+        }
+        if (in_array(post('gorunum'), self::MODES, true)) {
+            $params['gorunum'] = post('gorunum');
+        }
+        if (post('tarih') !== '') {
+            $params['tarih'] = $this->day(post('tarih'))->format('Y-m-d');
+        }
+
+        return '/musaitlik' . ($params === [] ? '' : '?' . http_build_query($params));
     }
 
     /** 'HH:MM' → 'HH:MM:00'; geçersizse null. */

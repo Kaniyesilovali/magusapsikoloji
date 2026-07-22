@@ -11,6 +11,7 @@ use Panel\ClientScope;
 use Panel\Db;
 use Panel\Money;
 use Panel\Notifications;
+use Panel\Rail;
 use Panel\Rbac;
 use Panel\Scheduling;
 use Panel\Schema;
@@ -22,18 +23,38 @@ use Panel\View;
  * Kayıt kuralları [Scheduling] sınıfında; burada yalnız yetki, doğrulama ve
  * ekran akışı var. Çakışma kaydı engeller, mesai dışı/izin yalnız uyarır ve
  * kullanıcının açık onayıyla geçilebilir.
+ *
+ * Üç görünüm var ve üçü de aynı sorguyu paylaşır, yalnız aralıkları farklı:
+ * **hafta** ölçekli takvim (varsayılan), **ay** kuş bakışı ızgara, **liste**
+ * ise satır içi eylemlerin (onayla / tamamlandı / iptal) bulunduğu tek yer —
+ * takvim kutusuna bir eylem çubuğu sığmaz, bu yüzden liste kaldırılmadı.
  */
 final class AppointmentController
 {
     private const MIN_DURATION = 15;
     private const MAX_DURATION = 240;
 
+    /** ?gorunum= değerleri. */
+    private const MODES = ['hafta', 'ay', 'liste'];
+
     public function index(): void
     {
         $actor = $this->requireView();
 
-        $weekStart = $this->weekStart(query('hafta'));
-        $weekEnd   = $weekStart->modify('+7 days');
+        $mode   = in_array(query('gorunum'), self::MODES, true) ? query('gorunum') : 'hafta';
+        // 'hafta' eski bağlantılarda çapa parametresiydi; kırılmasın diye okunuyor.
+        $anchor = $this->day(query('tarih') !== '' ? query('tarih') : query('hafta'));
+
+        $monthStart = $anchor->modify('first day of this month');
+        if ($mode === 'ay') {
+            // Izgara tam haftalardan oluşur: ayın ilk gününün pazartesisinden
+            // son gününün pazarına kadar. Komşu ayların günleri soluk çizilir.
+            $rangeStart = $monthStart->modify('monday this week');
+            $rangeEnd   = $monthStart->modify('last day of this month')->modify('monday this week')->modify('+7 days');
+        } else {
+            $rangeStart = $anchor->modify('monday this week');
+            $rangeEnd   = $rangeStart->modify('+7 days');
+        }
 
         [$scope, $params] = $this->visibilityFilter($actor);
 
@@ -54,23 +75,44 @@ final class AppointmentController
                JOIN users   t ON t.id = a.therapist_id
               WHERE a.starts_at >= ? AND a.starts_at < ? AND {$scope}
            ORDER BY a.starts_at",
-            array_merge([$weekStart->format('Y-m-d H:i:s'), $weekEnd->format('Y-m-d H:i:s')], $params)
+            array_merge([$rangeStart->format('Y-m-d H:i:s'), $rangeEnd->format('Y-m-d H:i:s')], $params)
         );
 
         // Gün gün grupla — boş günler de görünsün diye anahtarlar önden açılır.
         $days = [];
-        for ($i = 0; $i < 7; $i++) {
-            $days[$weekStart->modify("+{$i} days")->format('Y-m-d')] = [];
+        for ($day = $rangeStart; $day < $rangeEnd; $day = $day->modify('+1 day')) {
+            $days[$day->format('Y-m-d')] = [];
         }
         foreach ($rows as $row) {
             $days[substr((string) $row['starts_at'], 0, 10)][] = $row;
         }
 
+        // Ay görünümünde sayaç yalnız o aya ait randevuları saymalı; ızgaranın
+        // komşu ay günleri toplama karışırsa "Temmuz'da 34 randevu" yanlış olur.
+        $total = $mode === 'ay'
+            ? count(array_filter($rows, static fn (array $r): bool
+                => substr((string) $r['starts_at'], 0, 7) === $monthStart->format('Y-m')))
+            : count($rows);
+
         View::render('appointments/index', [
             'title'           => 'Randevular',
+            'mode'            => $mode,
+            'anchor'          => $anchor,
+            'monthStart'      => $monthStart,
+            'rangeStart'      => $rangeStart,
+            'rangeEnd'        => $rangeEnd,
             'days'            => $days,
-            'weekStart'       => $weekStart,
-            'total'           => count($rows),
+            // Cetvel iptalleri çizmez: iptal saati gerçekten serbest bırakır,
+            // o yüzden takvimde de yer kaplamamalı. Liste ve ay ızgarası
+            // gösterir — orada kayıt "olan biten"in dökümüdür.
+            'rail'            => $mode === 'hafta'
+                ? Rail::week(
+                    array_values(array_filter($rows, static fn (array $r): bool => $r['status'] !== 'cancelled')),
+                    $rangeStart,
+                    new DateTimeImmutable()
+                )
+                : null,
+            'total'           => $total,
             'therapists'      => Rbac::can($actor, 'appointment.view.all') ? $this->therapistOptions() : [],
             'therapistFilter' => $therapistFilter,
             'actor'           => $actor,
@@ -488,14 +530,14 @@ final class AppointmentController
         );
     }
 
-    /** Pazartesi 00:00 — geçersiz parametre bugünün haftasına düşer. */
-    private function weekStart(string $anchor): DateTimeImmutable
+    /** Takvimin çapası, gece yarısına oturtulmuş — geçersiz parametre bugüne düşer. */
+    private function day(string $anchor): DateTimeImmutable
     {
         try {
             $day = $anchor !== '' ? new DateTimeImmutable($anchor) : new DateTimeImmutable();
         } catch (Exception) {
             $day = new DateTimeImmutable();
         }
-        return $day->modify('monday this week')->setTime(0, 0);
+        return $day->setTime(0, 0);
     }
 }
