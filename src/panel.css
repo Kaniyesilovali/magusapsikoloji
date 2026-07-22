@@ -7,7 +7,9 @@
 @source "../panel";
 
 /* Fontlar public sitedekilerle aynı dosyalardan gelir (GDPR: harici CDN yok).
-   Panel /panel altında çalıştığı için yollar köke göre mutlak yazılır. */
+   Panel /panel altında çalıştığı için yollar köke göre mutlak yazılır.
+   Inter arayüzü taşır; Lora yalnız sayfa başlıklarında ve kişi adlarında
+   kullanılır — panelin gerçekte insanlarla ilgili olduğunu hatırlatan tek ses. */
 @font-face {
   font-family: 'Inter';
   font-style: normal;
@@ -24,35 +26,84 @@
   src: url('/assets/fonts/inter-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
-
-/* Public site ile aynı renk paleti — panel siteden kopuk görünmesin */
-@theme {
-  --color-primary:        #4A7C6F;
-  --color-primary-light:  #6B9E91;
-  --color-primary-dark:   #2F5C52;
-  --color-primary-hover:  #3D6B5F;
-
-  --color-accent:         #C8785A;
-  --color-accent-dark:    #A85C42;
-
-  --color-warm:           #FAF8F5;
-  --color-warm-secondary: #F0EDE8;
-  --color-warm-tertiary:  #E4DDD5;
-
-  --color-sage:           #8FAF9F;
-  --color-sage-light:     #B4CBBF;
-
-  --color-ink:            #2C3830;
-  --color-ink-muted:      #5A6B62;
-  --color-ink-light:      #8A9E94;
-
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('/assets/fonts/lora-normal-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2212, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('/assets/fonts/lora-normal-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-body {
-  background-color: #F0EDE8;
-  color: #2C3830;
-  -webkit-font-smoothing: antialiased;
+/* ── Palet ───────────────────────────────────────────────────────────────
+   Panel siteyle aynı yeşili paylaşır ama kendi zeminini kullanır: sitenin
+   sıcak kremi pazarlama içindir, panel saatlerce açık kalır. Bu yüzden zemin
+   soğuk mineral yeşil-gri — danışma odası duvarı.
+
+   clay (accent) tek uyarı rengidir ve tek bir şey demektir: "insan kararı
+   gerekiyor" (ödenmedi, rıza eksik, iptal). Sarı/amber bilinçli olarak yok —
+   iki uyarı rengi dikkati böler.
+
+   Değişken adları eskisiyle aynı bırakıldı, değerler değişti; böylece bütün
+   ekranlar tek dosyadan tutarlı hâle geliyor.                              */
+@theme {
+  --color-primary:        #2F5C52;
+  --color-primary-light:  #7FA79A;
+  --color-primary-dark:   #1F4239;
+  --color-primary-hover:  #24483F;
+  --color-primary-soft:   #E3EBE6;
+
+  --color-accent:         #9E5238;
+  --color-accent-dark:    #7E3F2B;
+  --color-accent-soft:    #F5E8E2;
+
+  --color-warm:           #F4F7F3;
+  --color-warm-secondary: #E9EDE9;
+  --color-warm-tertiary:  #D3DBD4;
+
+  --color-sage:           #86A493;
+  --color-sage-light:     #B4CBBF;
+
+  --color-ink:            #1B2620;
+  --color-ink-muted:      #556158;
+  --color-ink-light:      #6E7C74;
+
+  --color-chrome:         #16211C;
+
+  --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Lora', Georgia, serif;
+}
+
+/* @layer base şart: katmansız bir kural Tailwind yardımcı sınıflarını yener ve
+   giriş ekranının bg-chrome'u zemine hiç uygulanmazdı. */
+@layer base {
+  body {
+    background-color: var(--color-warm-secondary);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Klavye odağı her yerde görünür olsun — panel klavyeyle de kullanılıyor. */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Mobil menü oku — <details> ile JS'siz açılır menü kullanılıyor */
@@ -63,3 +114,347 @@ details > summary {
 details > summary::-webkit-details-marker {
   display: none;
 }
+
+@layer components {
+
+  /* ── Yaprak (sheet) ────────────────────────────────────────────────────
+     Panelin tek kap birimi. Gölge yok: gölge derinlik uydurur, saç teli
+     çizgi zaten yeterli ayrımı veriyor.                                   */
+  .sheet {
+    background: #fff;
+    border: 1px solid var(--color-warm-tertiary);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .sheet-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--color-warm-tertiary);
+  }
+  /* Yaprağın kendi çerçevesi zaten kapatıyor; son bölümün alt çizgisi çift
+     çizgi yapardı (haftalık randevu listesi gün gün bölünüyor). */
+  .sheet > :last-child { border-bottom-width: 0; }
+  .sheet-body { padding: 1.25rem; }
+  .sheet-foot {
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid var(--color-warm-tertiary);
+    background: var(--color-warm);
+  }
+  .sheet-empty {
+    padding: 2.5rem 1.25rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--color-ink-light);
+  }
+
+  /* ── Tipografik roller ─────────────────────────────────────────────── */
+  .page-title {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    line-height: 1.2;
+    font-weight: 500;
+    color: var(--color-ink);
+    letter-spacing: -0.005em;
+  }
+  .sheet-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  /* Kişi adı — panelin "burada bir insan var" sesi */
+  .person { font-family: var(--font-serif); font-weight: 500; }
+
+  .eyebrow {
+    font-size: 0.6875rem;
+    line-height: 1.2;
+    font-weight: 500;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--color-ink-light);
+  }
+  .page-sub {
+    font-size: 0.8125rem;
+    color: var(--color-ink-muted);
+    margin-top: 0.35rem;
+  }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* ── Düğmeler ──────────────────────────────────────────────────────── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.95rem;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.2;
+    border: 1px solid transparent;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+    cursor: pointer;
+  }
+  .btn-primary { background: var(--color-primary); color: #fff; }
+  .btn-primary:hover { background: var(--color-primary-hover); }
+  .btn-quiet {
+    background: #fff;
+    border-color: var(--color-warm-tertiary);
+    color: var(--color-ink-muted);
+  }
+  .btn-quiet:hover { color: var(--color-ink); border-color: var(--color-ink-light); }
+  .btn-danger { background: var(--color-accent-dark); color: #fff; }
+  .btn-danger:hover { background: var(--color-accent); }
+  .btn-sm { padding: 0.35rem 0.65rem; font-size: 0.75rem; border-radius: 5px; }
+
+  /* Satır içi metin eylemi — tabloda ve randevu kartında */
+  .btn-text {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+  .btn-text:hover { color: var(--color-primary-dark); text-decoration: underline; }
+  /* Satır altı eylem çubuğu içeriğin önüne geçmemeli: sessiz durur, üzerine
+     gelindiğinde koyulaşır. Yeşil ve clay bu satırda değil, rozetlerde. */
+  .btn-text-quiet { color: var(--color-ink-light); font-weight: 400; }
+  .btn-text-quiet:hover { color: var(--color-ink); }
+  .btn-text-danger { color: var(--color-accent-dark); }
+  .btn-text-danger:hover { color: var(--color-accent); }
+
+  /* ── Form alanları ─────────────────────────────────────────────────── */
+  .field {
+    width: 100%;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--color-warm-tertiary);
+    border-radius: 6px;
+    background: #fff;
+    font-size: 0.875rem;
+    color: var(--color-ink);
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgb(47 92 82 / 0.14);
+  }
+  .field-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-ink-muted);
+    margin-bottom: 0.3rem;
+  }
+  .field-hint {
+    font-size: 0.75rem;
+    color: var(--color-ink-light);
+    margin-top: 0.35rem;
+  }
+
+  /* ── Rozet ─────────────────────────────────────────────────────────── */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+  .chip-neutral { background: var(--color-warm-secondary); color: var(--color-ink-muted); }
+  .chip-go      { background: var(--color-primary-soft);   color: var(--color-primary-dark); }
+  .chip-done    { background: transparent; color: var(--color-ink-light); box-shadow: inset 0 0 0 1px var(--color-warm-tertiary); }
+  .chip-stop    { background: var(--color-accent-soft);    color: var(--color-accent-dark); }
+
+  /* ── Tablo ─────────────────────────────────────────────────────────── */
+  .tbl { width: 100%; font-size: 0.875rem; border-collapse: collapse; }
+  .tbl thead th {
+    text-align: left;
+    padding: 0.6rem 1.25rem;
+    background: var(--color-warm);
+    border-bottom: 1px solid var(--color-warm-tertiary);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--color-ink-light);
+    white-space: nowrap;
+  }
+  .tbl tbody td { padding: 0.7rem 1.25rem; border-bottom: 1px solid var(--color-warm-secondary); vertical-align: top; }
+  .tbl tbody tr:last-child td { border-bottom: 0; }
+  .tbl tbody tr:hover { background: var(--color-warm); }
+
+  /* ── Bildirim şeridi ───────────────────────────────────────────────── */
+  .note {
+    border-left: 3px solid;
+    border-radius: 0 6px 6px 0;
+    padding: 0.7rem 1rem;
+    font-size: 0.875rem;
+  }
+  .note-ok   { border-color: var(--color-primary); background: var(--color-primary-soft); color: var(--color-primary-dark); }
+  .note-stop { border-color: var(--color-accent);  background: var(--color-accent-soft);  color: var(--color-accent-dark); }
+  .note-info { border-color: var(--color-warm-tertiary); background: #fff; color: var(--color-ink-muted); }
+
+  /* ── Kenar çubuğu ──────────────────────────────────────────────────── */
+  .nav-link {
+    display: block;
+    padding: 0.45rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    color: rgb(255 255 255 / 0.62);
+    transition: background-color 0.15s, color 0.15s;
+  }
+  .nav-link:hover { background: rgb(255 255 255 / 0.07); color: #fff; }
+  .nav-link[aria-current="page"] {
+    background: rgb(255 255 255 / 0.09);
+    color: #fff;
+    font-weight: 500;
+    box-shadow: inset 2px 0 0 var(--color-sage);
+  }
+}
+
+/* ══ Gün cetveli ═══════════════════════════════════════════════════════
+   Panelin imzası: zaman ölçekli çizilir. Bir seans süresi kadar yer kaplar,
+   boş saat gerçekten boş görünür. Terapist için günün şekli kararın kendisi:
+   14:00'ta 90 dakikalık bir boşluk olduğunu listeden değil, boşluktan görür.
+
+   Ölçek: 5 dakika = 7px  →  1 saat = 84px.
+
+   Konumlar sınıfla veriliyor çünkü panelin CSP'si inline style'a izin vermiyor
+   (style-src 'self'). Sınıf tabloları dosyanın sonunda.                     */
+.rail { position: relative; }
+
+.rail-hour {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px solid var(--color-warm-tertiary);
+}
+.rail-hour > span {
+  position: absolute;
+  top: -0.55rem;
+  left: 0;
+  width: 2.6rem;
+  text-align: right;
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink-light);
+  background: var(--color-warm-secondary);
+  padding-right: 0.15rem;
+}
+
+/* "Şimdi" çizgisi — clay burada uyarı değil, konum bildirir. Sayfadaki tek
+   canlı bilgi olduğu için saatini de taşır. */
+.rail-now {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px solid var(--color-accent);
+  z-index: 3;
+}
+.rail-now::after {
+  content: "";
+  position: absolute;
+  left: 3.5rem;
+  top: -3.5px;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--color-accent);
+}
+.rail-now > span {
+  position: absolute;
+  top: -0.55rem;
+  left: 0;
+  width: 2.6rem;
+  text-align: right;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-accent);
+  background: var(--color-warm-secondary);
+  padding-right: 0.15rem;
+}
+
+.rail-track { position: relative; margin-left: 3.5rem; height: 100%; }
+
+.rail-slot {
+  position: absolute;
+  overflow: hidden;
+  display: block;
+  padding: 0.35rem 0.7rem;
+  border-radius: 7px;
+  border: 1px solid var(--color-warm-tertiary);
+  background: #fff;
+  transition: border-color 0.15s;
+}
+.rail-slot:hover { border-color: var(--color-primary-light); }
+.rail-slot.is-confirmed { border-color: rgb(47 92 82 / 0.3); background: var(--color-primary-soft); }
+.rail-slot.is-done      { background: transparent; }
+.rail-slot.is-done .rail-name { color: var(--color-ink-muted); font-weight: 400; }
+/* Gelmedi: saat planlanmıştı ama seans olmadı — yeri durur, dolgusu durmaz. */
+.rail-slot.is-off       { background: transparent; border-style: dashed; border-color: rgb(158 82 56 / 0.55); }
+.rail-slot.is-off .rail-name { color: var(--color-ink-muted); }
+.rail-time { font-size: 0.75rem; font-variant-numeric: tabular-nums; color: var(--color-ink-muted); }
+.rail-name { font-family: var(--font-serif); font-size: 0.9375rem; font-weight: 500; color: var(--color-ink); }
+.rail-meta { font-size: 0.6875rem; color: var(--color-ink-light); }
+
+.rail-empty {
+  position: absolute;
+  left: 3.5rem;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--color-ink-light);
+}
+
+/* ── 5 dakikalık ızgara ────────────────────────────────────────────────
+   .at-N    : üstten N × 5 dakika
+   .dur-N   : yükseklik N × 5 dakika
+   .rail-Nh : cetvelin toplam yüksekliği (N saat)
+   .lane-K-N: üst üste binen randevular için N şeridin K'ıncısı
+   Tablolar tek kuralla türetildi; 5 dakikadan ince randevu yok.           */
+.at-0{top:0px}.at-1{top:7px}.at-2{top:14px}.at-3{top:21px}.at-4{top:28px}.at-5{top:35px}.at-6{top:42px}.at-7{top:49px}.at-8{top:56px}.at-9{top:63px}
+.at-10{top:70px}.at-11{top:77px}.at-12{top:84px}.at-13{top:91px}.at-14{top:98px}.at-15{top:105px}.at-16{top:112px}.at-17{top:119px}.at-18{top:126px}.at-19{top:133px}
+.at-20{top:140px}.at-21{top:147px}.at-22{top:154px}.at-23{top:161px}.at-24{top:168px}.at-25{top:175px}.at-26{top:182px}.at-27{top:189px}.at-28{top:196px}.at-29{top:203px}
+.at-30{top:210px}.at-31{top:217px}.at-32{top:224px}.at-33{top:231px}.at-34{top:238px}.at-35{top:245px}.at-36{top:252px}.at-37{top:259px}.at-38{top:266px}.at-39{top:273px}
+.at-40{top:280px}.at-41{top:287px}.at-42{top:294px}.at-43{top:301px}.at-44{top:308px}.at-45{top:315px}.at-46{top:322px}.at-47{top:329px}.at-48{top:336px}.at-49{top:343px}
+.at-50{top:350px}.at-51{top:357px}.at-52{top:364px}.at-53{top:371px}.at-54{top:378px}.at-55{top:385px}.at-56{top:392px}.at-57{top:399px}.at-58{top:406px}.at-59{top:413px}
+.at-60{top:420px}.at-61{top:427px}.at-62{top:434px}.at-63{top:441px}.at-64{top:448px}.at-65{top:455px}.at-66{top:462px}.at-67{top:469px}.at-68{top:476px}.at-69{top:483px}
+.at-70{top:490px}.at-71{top:497px}.at-72{top:504px}.at-73{top:511px}.at-74{top:518px}.at-75{top:525px}.at-76{top:532px}.at-77{top:539px}.at-78{top:546px}.at-79{top:553px}
+.at-80{top:560px}.at-81{top:567px}.at-82{top:574px}.at-83{top:581px}.at-84{top:588px}.at-85{top:595px}.at-86{top:602px}.at-87{top:609px}.at-88{top:616px}.at-89{top:623px}
+.at-90{top:630px}.at-91{top:637px}.at-92{top:644px}.at-93{top:651px}.at-94{top:658px}.at-95{top:665px}.at-96{top:672px}.at-97{top:679px}.at-98{top:686px}.at-99{top:693px}
+.at-100{top:700px}.at-101{top:707px}.at-102{top:714px}.at-103{top:721px}.at-104{top:728px}.at-105{top:735px}.at-106{top:742px}.at-107{top:749px}.at-108{top:756px}.at-109{top:763px}
+.at-110{top:770px}.at-111{top:777px}.at-112{top:784px}.at-113{top:791px}.at-114{top:798px}.at-115{top:805px}.at-116{top:812px}.at-117{top:819px}.at-118{top:826px}.at-119{top:833px}
+.at-120{top:840px}.at-121{top:847px}.at-122{top:854px}.at-123{top:861px}.at-124{top:868px}.at-125{top:875px}.at-126{top:882px}.at-127{top:889px}.at-128{top:896px}.at-129{top:903px}
+.at-130{top:910px}.at-131{top:917px}.at-132{top:924px}.at-133{top:931px}.at-134{top:938px}.at-135{top:945px}.at-136{top:952px}.at-137{top:959px}.at-138{top:966px}.at-139{top:973px}
+.at-140{top:980px}.at-141{top:987px}.at-142{top:994px}.at-143{top:1001px}.at-144{top:1008px}.at-145{top:1015px}.at-146{top:1022px}.at-147{top:1029px}.at-148{top:1036px}.at-149{top:1043px}
+.at-150{top:1050px}.at-151{top:1057px}.at-152{top:1064px}.at-153{top:1071px}.at-154{top:1078px}.at-155{top:1085px}.at-156{top:1092px}.at-157{top:1099px}.at-158{top:1106px}.at-159{top:1113px}
+.at-160{top:1120px}.at-161{top:1127px}.at-162{top:1134px}.at-163{top:1141px}.at-164{top:1148px}.at-165{top:1155px}.at-166{top:1162px}.at-167{top:1169px}.at-168{top:1176px}
+
+.dur-1{height:7px}.dur-2{height:14px}.dur-3{height:21px}.dur-4{height:28px}.dur-5{height:35px}.dur-6{height:42px}.dur-7{height:49px}.dur-8{height:56px}
+.dur-9{height:63px}.dur-10{height:70px}.dur-11{height:77px}.dur-12{height:84px}.dur-13{height:91px}.dur-14{height:98px}.dur-15{height:105px}.dur-16{height:112px}
+.dur-17{height:119px}.dur-18{height:126px}.dur-19{height:133px}.dur-20{height:140px}.dur-21{height:147px}.dur-22{height:154px}.dur-23{height:161px}.dur-24{height:168px}
+.dur-25{height:175px}.dur-26{height:182px}.dur-27{height:189px}.dur-28{height:196px}.dur-29{height:203px}.dur-30{height:210px}.dur-31{height:217px}.dur-32{height:224px}
+.dur-33{height:231px}.dur-34{height:238px}.dur-35{height:245px}.dur-36{height:252px}
+
+.rail-1h{height:84px}.rail-2h{height:168px}.rail-3h{height:252px}.rail-4h{height:336px}.rail-5h{height:420px}
+.rail-6h{height:504px}.rail-7h{height:588px}.rail-8h{height:672px}.rail-9h{height:756px}.rail-10h{height:840px}
+.rail-11h{height:924px}.rail-12h{height:1008px}.rail-13h{height:1092px}.rail-14h{height:1176px}.rail-15h{height:1260px}
+
+.lane-1-1{left:0;right:0}
+.lane-1-2{width:calc((100% - 4px) / 2);left:calc((100% + 4px) * 0 / 2)}
+.lane-2-2{width:calc((100% - 4px) / 2);left:calc((100% + 4px) * 1 / 2)}
+.lane-1-3{width:calc((100% - 8px) / 3);left:calc((100% + 4px) * 0 / 3)}
+.lane-2-3{width:calc((100% - 8px) / 3);left:calc((100% + 4px) * 1 / 3)}
+.lane-3-3{width:calc((100% - 8px) / 3);left:calc((100% + 4px) * 2 / 3)}
+.lane-1-4{width:calc((100% - 12px) / 4);left:calc((100% + 4px) * 0 / 4)}
+.lane-2-4{width:calc((100% - 12px) / 4);left:calc((100% + 4px) * 1 / 4)}
+.lane-3-4{width:calc((100% - 12px) / 4);left:calc((100% + 4px) * 2 / 4)}
+.lane-4-4{width:calc((100% - 12px) / 4);left:calc((100% + 4px) * 3 / 4)}

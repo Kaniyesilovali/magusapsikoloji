@@ -5,21 +5,41 @@ use Panel\Rbac;
 
 // Bir satır için listelenen yetkilerden herhangi biri yeterli: "hepsini gör" ile
 // "yalnız kendininkini gör" aynı ekrana çıkar, kapsamı ekranın kendisi daraltır.
-$nav = array_values(array_filter([
-    ['path' => '/',             'label' => 'Panel',            'permissions' => ['dashboard.view']],
-    ['path' => '/randevular',   'label' => 'Randevular',       'permissions' => ['appointment.view.all', 'appointment.view.own']],
-    ['path' => '/danisanlar',   'label' => 'Danışanlar',       'permissions' => ['client.view.all', 'client.view.own']],
-    ['path' => '/musaitlik',    'label' => 'Müsaitlik',        'permissions' => ['availability.manage.all', 'availability.manage.own']],
-    ['path' => '/odemeler',     'label' => 'Ödemeler',         'permissions' => ['payment.view.all', 'payment.view.own']],
-    ['path' => '/kullanicilar', 'label' => 'Kullanıcılar',     'permissions' => ['user.view']],
-    ['path' => '/icerik',       'label' => 'Site İçeriği',     'permissions' => ['content.manage']],
-    ['path' => '/kvkk',         'label' => 'KVKK Metni',       'permissions' => ['consent.manage']],
-    ['path' => '/kayitlar',     'label' => 'Sistem Kayıtları', 'permissions' => ['audit.view']],
-    ['path' => '/sistem',       'label' => 'Sistem',           'permissions' => ['settings.manage']],
-    ['path' => '/profil',       'label' => 'Profilim',         'permissions' => ['profile.self']],
-], static fn (array $item): bool => Rbac::canAny($authUser, $item['permissions'])));
+//
+// Menü üç öbeğe ayrıldı çünkü bunlar gerçekten üç ayrı iş: merkezin günlük
+// işleyişi, public sitenin içeriği ve sistemin kendisi. Tek listede yan yana
+// dururken "Müsaitlik" ile "Sistem Kayıtları" eşit ağırlıkta görünüyordu.
+$groups = [
+    ['label' => 'Merkez', 'items' => [
+        ['path' => '/',            'label' => 'Bugün',        'permissions' => ['dashboard.view']],
+        ['path' => '/randevular',  'label' => 'Randevular',   'permissions' => ['appointment.view.all', 'appointment.view.own']],
+        ['path' => '/danisanlar',  'label' => 'Danışanlar',   'permissions' => ['client.view.all', 'client.view.own']],
+        ['path' => '/musaitlik',   'label' => 'Müsaitlik',    'permissions' => ['availability.manage.all', 'availability.manage.own']],
+        ['path' => '/odemeler',    'label' => 'Ödemeler',     'permissions' => ['payment.view.all', 'payment.view.own']],
+    ]],
+    ['label' => 'Site', 'items' => [
+        ['path' => '/icerik',      'label' => 'Site içeriği', 'permissions' => ['content.manage']],
+        ['path' => '/kvkk',        'label' => 'KVKK metni',   'permissions' => ['consent.manage']],
+    ]],
+    ['label' => 'Yönetim', 'items' => [
+        ['path' => '/kullanicilar', 'label' => 'Kullanıcılar',     'permissions' => ['user.view']],
+        ['path' => '/kayitlar',     'label' => 'Sistem kayıtları', 'permissions' => ['audit.view']],
+        ['path' => '/sistem',       'label' => 'Sistem',           'permissions' => ['settings.manage']],
+    ]],
+];
+
+$groups = array_values(array_filter(array_map(static function (array $group) use ($authUser): array {
+    $group['items'] = array_values(array_filter(
+        $group['items'],
+        static fn (array $item): bool => Rbac::canAny($authUser, $item['permissions'])
+    ));
+    return $group;
+}, $groups), static fn (array $group): bool => $group['items'] !== []));
 
 $here = current_path();
+
+$isActive = static fn (string $path): bool
+    => $here === $path || ($path !== '/' && str_starts_with($here, $path));
 ?>
 <!doctype html>
 <html lang="tr">
@@ -36,65 +56,91 @@ $here = current_path();
 <div class="lg:flex">
 
   <!-- Kenar çubuğu -->
-  <aside class="hidden lg:flex lg:flex-col lg:w-64 lg:min-h-screen bg-ink text-warm-secondary shrink-0">
-    <div class="px-6 py-6 border-b border-white/10">
-      <p class="font-semibold text-white leading-tight">Mağusa Psikoloji</p>
-      <p class="text-xs text-white/50 mt-0.5">Yönetim Paneli</p>
+  <aside class="hidden lg:flex lg:flex-col lg:w-60 lg:h-screen lg:sticky lg:top-0 bg-chrome shrink-0">
+    <div class="px-5 pt-6 pb-5">
+      <p class="font-serif text-white text-[1.0625rem] leading-tight">Mağusa Psikoloji</p>
+      <p class="eyebrow text-white/40 mt-1">Yönetim paneli</p>
     </div>
-    <nav class="flex-1 p-3 space-y-1">
-      <?php foreach ($nav as $item): ?>
-        <?php $active = $here === $item['path'] || ($item['path'] !== '/' && str_starts_with($here, $item['path'])); ?>
-        <a href="<?= e(url($item['path'])) ?>"
-           class="block px-3 py-2 rounded-lg text-sm transition-colors <?= $active ? 'bg-primary text-white font-medium' : 'text-white/70 hover:bg-white/10 hover:text-white' ?>">
-          <?= e($item['label']) ?>
-        </a>
+
+    <nav class="flex-1 overflow-y-auto px-3 pb-3 space-y-5">
+      <?php foreach ($groups as $group): ?>
+        <div>
+          <p class="eyebrow text-white/30 px-3 mb-1.5"><?= e($group['label']) ?></p>
+          <?php foreach ($group['items'] as $item): ?>
+            <a href="<?= e(url($item['path'])) ?>" class="nav-link"
+               <?= $isActive($item['path']) ? 'aria-current="page"' : '' ?>>
+              <?= e($item['label']) ?>
+            </a>
+          <?php endforeach; ?>
+        </div>
       <?php endforeach; ?>
     </nav>
+
     <div class="p-3 border-t border-white/10">
-      <p class="px-3 text-sm text-white truncate"><?= e($authUser['full_name'] ?? '') ?></p>
-      <p class="px-3 text-xs text-white/50 mb-2"><?= e(Rbac::label($authUser['role'] ?? null)) ?></p>
-      <form method="post" action="<?= e(url('/cikis')) ?>">
+      <?php if (Rbac::can($authUser, 'profile.self')): ?>
+        <a href="<?= e(url('/profil')) ?>" class="block px-3 py-2 rounded-md hover:bg-white/[0.07]"
+           <?= $isActive('/profil') ? 'aria-current="page"' : '' ?>>
+          <span class="block font-serif text-sm text-white truncate"><?= e($authUser['full_name'] ?? '') ?></span>
+          <span class="block eyebrow text-white/35 mt-0.5"><?= e(Rbac::label($authUser['role'] ?? null)) ?></span>
+        </a>
+      <?php else: ?>
+        <div class="px-3 py-2">
+          <span class="block font-serif text-sm text-white truncate"><?= e($authUser['full_name'] ?? '') ?></span>
+          <span class="block eyebrow text-white/35 mt-0.5"><?= e(Rbac::label($authUser['role'] ?? null)) ?></span>
+        </div>
+      <?php endif; ?>
+      <form method="post" action="<?= e(url('/cikis')) ?>" class="mt-1">
         <?= Csrf::field() ?>
-        <button class="w-full text-left px-3 py-2 rounded-lg text-sm text-white/70 hover:bg-white/10 hover:text-white transition-colors">
-          Çıkış yap
-        </button>
+        <button class="nav-link w-full text-left">Çıkış yap</button>
       </form>
     </div>
   </aside>
 
   <!-- Mobil menü: JS gerektirmeyen <details> açılır menüsü -->
-  <details class="lg:hidden bg-ink text-white">
-    <summary class="flex items-center justify-between px-4 py-4">
-      <span class="font-semibold">Mağusa Psikoloji</span>
-      <span class="text-sm text-white/60">Menü ▾</span>
+  <details class="lg:hidden bg-chrome">
+    <summary class="flex items-center justify-between px-4 py-3.5">
+      <span class="font-serif text-white">Mağusa Psikoloji</span>
+      <span class="eyebrow text-white/50">Menü ▾</span>
     </summary>
-    <nav class="px-3 pb-3 space-y-1">
-      <?php foreach ($nav as $item): ?>
-        <a href="<?= e(url($item['path'])) ?>" class="block px-3 py-2 rounded-lg text-sm text-white/80 hover:bg-white/10">
-          <?= e($item['label']) ?>
-        </a>
+    <nav class="px-3 pb-3 space-y-4">
+      <?php foreach ($groups as $group): ?>
+        <div>
+          <p class="eyebrow text-white/30 px-3 mb-1"><?= e($group['label']) ?></p>
+          <?php foreach ($group['items'] as $item): ?>
+            <a href="<?= e(url($item['path'])) ?>" class="nav-link"
+               <?= $isActive($item['path']) ? 'aria-current="page"' : '' ?>>
+              <?= e($item['label']) ?>
+            </a>
+          <?php endforeach; ?>
+        </div>
       <?php endforeach; ?>
-      <form method="post" action="<?= e(url('/cikis')) ?>" class="pt-1">
-        <?= Csrf::field() ?>
-        <button class="w-full text-left px-3 py-2 rounded-lg text-sm text-white/80 hover:bg-white/10">Çıkış yap</button>
-      </form>
+      <div class="border-t border-white/10 pt-2">
+        <?php if (Rbac::can($authUser, 'profile.self')): ?>
+          <a href="<?= e(url('/profil')) ?>" class="nav-link"><?= e($authUser['full_name'] ?? 'Profilim') ?></a>
+        <?php endif; ?>
+        <form method="post" action="<?= e(url('/cikis')) ?>">
+          <?= Csrf::field() ?>
+          <button class="nav-link w-full text-left">Çıkış yap</button>
+        </form>
+      </div>
     </nav>
   </details>
 
   <!-- İçerik -->
   <main class="flex-1 min-w-0">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-8 py-8">
 
       <?php foreach ($flashes as $flash): ?>
         <?php
+        // Panelde tek uyarı rengi var: "insan kararı gerekiyor". Uyarı ile hata
+        // ayrı renkler kullandığında ikisi de zayıflıyordu.
         $tone = match ($flash['type']) {
-            'success' => 'bg-primary/10 text-primary-dark border-primary/25',
-            'error'   => 'bg-accent/10 text-accent-dark border-accent/30',
-            'warning' => 'bg-amber-50 text-amber-900 border-amber-200',
-            default   => 'bg-white text-ink-muted border-warm-tertiary',
+            'success'          => 'note-ok',
+            'error', 'warning' => 'note-stop',
+            default            => 'note-info',
         };
         ?>
-        <div class="mb-4 px-4 py-3 rounded-xl border text-sm <?= $tone ?>"><?= e($flash['message']) ?></div>
+        <div class="note <?= $tone ?> mb-4"><?= e($flash['message']) ?></div>
       <?php endforeach; ?>
 
       <?= $content ?>

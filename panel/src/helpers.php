@@ -124,13 +124,8 @@ function dt(?string $sqlDateTime, string $format = 'd.m.Y H:i'): string
  * "22 Temmuz 2026, Çarşamba" — takvim başlıkları için.
  * PHP'nin yerelleştirmesi (intl) her hostta bulunmadığından adlar elle tutulur.
  */
-function tr_date_label(?string $sqlDate, bool $withWeekday = true): string
+function tr_date_label(?string $sqlDate, bool $withWeekday = true, bool $withYear = true): string
 {
-    static $months = [
-        1 => 'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-        'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
-    ];
-
     if (!$sqlDate) {
         return '—';
     }
@@ -140,11 +135,52 @@ function tr_date_label(?string $sqlDate, bool $withWeekday = true): string
         return '—';
     }
 
-    $label = $date->format('j') . ' ' . $months[(int) $date->format('n')] . ' ' . $date->format('Y');
+    $label = $date->format('j') . ' ' . tr_month_name((int) $date->format('n'));
+    if ($withYear) {
+        $label .= ' ' . $date->format('Y');
+    }
 
     return $withWeekday
         ? $label . ', ' . Panel\Scheduling::weekdayLabel((int) $date->format('N'))
         : $label;
+}
+
+/** PHP'nin yerelleştirmesi (intl) her hostta bulunmadığından ay adları elle tutulur. */
+function tr_month_name(int $month): string
+{
+    static $months = [
+        1 => 'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+        'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
+    ];
+
+    return $months[$month] ?? '';
+}
+
+/**
+ * "20 – 26 Temmuz 2026" — aralık başlıkları için. Ay ve yıl iki tarafta da
+ * aynıysa bir kez yazılır; "20 Temmuz 2026 – 26 Temmuz 2026" gereksiz uzundu.
+ */
+function tr_range_label(?string $from, ?string $to): string
+{
+    if (!$from || !$to) {
+        return '—';
+    }
+    try {
+        $start = new DateTimeImmutable($from);
+        $end   = new DateTimeImmutable($to);
+    } catch (Exception) {
+        return '—';
+    }
+
+    if ($start->format('Y-m') === $end->format('Y-m')) {
+        return $start->format('j') . ' – ' . tr_date_label($to, false);
+    }
+    if ($start->format('Y') === $end->format('Y')) {
+        return $start->format('j') . ' ' . tr_month_name((int) $start->format('n'))
+            . ' – ' . tr_date_label($to, false);
+    }
+
+    return tr_date_label($from, false) . ' – ' . tr_date_label($to, false);
 }
 
 /** Danışan yaşı — doğum tarihi girilmişse. */

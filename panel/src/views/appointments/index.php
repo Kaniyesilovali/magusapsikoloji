@@ -11,158 +11,157 @@ $today    = date('Y-m-d');
 
 $canEdit       = Rbac::can($actor, 'appointment.update');
 $canCancel     = Rbac::can($actor, 'appointment.cancel');
+$canCreate     = Rbac::can($actor, 'appointment.create');
 $canWriteNotes = Rbac::canAny($actor, ['note.write', 'note.read.own']);
 
-$statusTone = [
-    'scheduled' => 'bg-warm-secondary text-ink-muted',
-    'confirmed' => 'bg-primary/10 text-primary-dark',
-    'completed' => 'bg-sage/20 text-primary-dark',
-    'cancelled' => 'bg-accent/10 text-accent-dark line-through',
-    'no_show'   => 'bg-amber-100 text-amber-900',
+$chip = [
+    'scheduled' => 'chip-neutral',
+    'confirmed' => 'chip-go',
+    'completed' => 'chip-done',
+    'cancelled' => 'chip-stop',
+    'no_show'   => 'chip-stop',
 ];
 ?>
 
-<header class="flex flex-wrap items-center justify-between gap-3 mb-6">
+<header class="flex flex-wrap items-end justify-between gap-4 mb-6">
   <div>
-    <h1 class="text-2xl font-semibold text-ink">Randevular</h1>
-    <p class="text-sm text-ink-light mt-1">
-      <?= e(tr_date_label($weekStart->format('Y-m-d'), false)) ?> – <?= e(tr_date_label($weekEnd->format('Y-m-d'), false)) ?>
-      · <?= $total ?> randevu
-    </p>
+    <p class="eyebrow">Randevular</p>
+    <h1 class="page-title mt-2">
+      <?= e(tr_range_label($weekStart->format('Y-m-d'), $weekEnd->format('Y-m-d'))) ?>
+    </h1>
+    <p class="page-sub"><span class="num"><?= $total ?></span> randevu</p>
   </div>
-  <?php if (Rbac::can($actor, 'appointment.create')): ?>
-    <a href="<?= e(url('/randevular/yeni?tarih=' . $weekStart->format('Y-m-d'))) ?>"
-       class="bg-primary hover:bg-primary-hover text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors">
-      Yeni randevu
-    </a>
+  <?php if ($canCreate): ?>
+    <a href="<?= e(url('/randevular/yeni?tarih=' . $weekStart->format('Y-m-d'))) ?>" class="btn btn-primary">Yeni randevu</a>
   <?php endif; ?>
 </header>
 
 <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-  <nav class="flex items-center gap-1 text-sm">
+  <nav class="flex items-center gap-1.5" aria-label="Hafta">
     <a href="<?= e(url('/randevular?hafta=' . $weekStart->modify('-7 days')->format('Y-m-d') . $filterQs)) ?>"
-       class="px-3 py-2 rounded-xl bg-white border border-warm-tertiary text-ink-muted hover:text-ink">← Önceki</a>
-    <a href="<?= e(url('/randevular?hafta=' . $today . $filterQs)) ?>"
-       class="px-3 py-2 rounded-xl bg-white border border-warm-tertiary text-ink-muted hover:text-ink">Bu hafta</a>
+       class="btn btn-quiet btn-sm">← Önceki</a>
+    <a href="<?= e(url('/randevular?hafta=' . $today . $filterQs)) ?>" class="btn btn-quiet btn-sm">Bu hafta</a>
     <a href="<?= e(url('/randevular?hafta=' . $weekStart->modify('+7 days')->format('Y-m-d') . $filterQs)) ?>"
-       class="px-3 py-2 rounded-xl bg-white border border-warm-tertiary text-ink-muted hover:text-ink">Sonraki →</a>
+       class="btn btn-quiet btn-sm">Sonraki →</a>
   </nav>
 
   <?php if ($therapists !== []): ?>
     <form method="get" action="<?= e(url('/randevular')) ?>" class="flex items-center gap-2">
       <input type="hidden" name="hafta" value="<?= e($weekStart->format('Y-m-d')) ?>">
-      <select name="terapist" class="px-3 py-2 rounded-xl border border-warm-tertiary bg-white text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20">
-        <option value="">Tüm terapistler</option>
+      <label for="terapist" class="eyebrow">Terapist</label>
+      <select id="terapist" name="terapist" class="field w-auto py-1.5 text-[0.8125rem]">
+        <option value="">Tümü</option>
         <?php foreach ($therapists as $therapist): ?>
           <option value="<?= (int) $therapist['id'] ?>" <?= $therapistFilter === (int) $therapist['id'] ? 'selected' : '' ?>>
             <?= e($therapist['full_name']) ?>
           </option>
         <?php endforeach; ?>
       </select>
-      <button class="text-sm text-primary hover:text-primary-dark font-medium">Göster</button>
+      <button class="btn-text">Göster</button>
     </form>
   <?php endif; ?>
 </div>
 
-<div class="space-y-3">
+<?php // Hafta tek bir belge: yedi ayrı kart yerine gün başlıklarıyla bölünmüş
+      // sürekli bir liste. Günden güne göz kaydırmak böyle daha kolay. ?>
+<div class="sheet">
   <?php foreach ($days as $date => $items): ?>
     <?php $isToday = $date === $today; ?>
-    <section class="bg-white border rounded-2xl overflow-hidden <?= $isToday ? 'border-primary/40' : 'border-warm-tertiary' ?>">
-      <div class="px-5 py-3 border-b <?= $isToday ? 'border-primary/25 bg-primary/5' : 'border-warm-tertiary bg-warm' ?> flex items-center justify-between">
-        <h2 class="text-sm font-medium <?= $isToday ? 'text-primary-dark' : 'text-ink' ?>">
-          <?= e(tr_date_label($date)) ?>
-          <?php if ($isToday): ?><span class="text-xs font-normal">· bugün</span><?php endif; ?>
-        </h2>
-        <?php if (Rbac::can($actor, 'appointment.create')): ?>
-          <a href="<?= e(url('/randevular/yeni?tarih=' . $date)) ?>" class="text-xs text-primary hover:text-primary-dark">+ ekle</a>
-        <?php endif; ?>
-      </div>
 
-      <?php if ($items === []): ?>
-        <p class="px-5 py-4 text-sm text-ink-light">Randevu yok.</p>
-      <?php else: ?>
-        <ul class="divide-y divide-warm-secondary">
-          <?php foreach ($items as $appointment): ?>
-            <?php
-            $start = new DateTimeImmutable((string) $appointment['starts_at']);
-            $end   = $start->modify('+' . (int) $appointment['duration_min'] . ' minutes');
-            $tone  = $statusTone[$appointment['status']] ?? 'bg-warm-secondary text-ink-muted';
-            ?>
-            <li class="px-5 py-3.5">
-              <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
-                <span class="text-sm font-medium text-ink tabular-nums w-28 shrink-0">
-                  <?= e($start->format('H:i')) ?>–<?= e($end->format('H:i')) ?>
-                </span>
-                <span class="text-sm text-ink flex-1 min-w-40">
-                  <a href="<?= e(url("/danisanlar/{$appointment['client_id']}")) ?>" class="hover:text-primary">
-                    <?= e($appointment['client_name']) ?>
-                  </a>
-                  <?php if ($appointment['client_phone'] !== null): ?>
-                    <span class="text-xs text-ink-light ml-1 tabular-nums"><?= e($appointment['client_phone']) ?></span>
-                  <?php endif; ?>
-                </span>
-                <span class="text-xs text-ink-muted"><?= e($appointment['therapist_name']) ?></span>
-                <span class="text-xs text-ink-light"><?= e(Scheduling::locationLabel($appointment['location'])) ?></span>
-                <span class="text-xs px-2 py-0.5 rounded-full <?= $tone ?>"><?= e(Scheduling::statusLabel($appointment['status'])) ?></span>
-              </div>
-
-              <?php if ($appointment['note'] !== null): ?>
-                <p class="text-xs text-ink-light mt-1.5 pl-0 sm:pl-32"><?= e($appointment['note']) ?></p>
-              <?php endif; ?>
-              <?php if ($appointment['status'] === 'cancelled' && $appointment['cancel_reason'] !== null): ?>
-                <p class="text-xs text-accent-dark mt-1.5 pl-0 sm:pl-32">İptal gerekçesi: <?= e($appointment['cancel_reason']) ?></p>
-              <?php endif; ?>
-
-              <?php if ($canEdit && $appointment['status'] !== 'cancelled'): ?>
-                <div class="flex flex-wrap items-center gap-2 mt-2 pl-0 sm:pl-32">
-                  <a href="<?= e(url("/randevular/{$appointment['id']}/duzenle")) ?>" class="text-xs text-primary hover:text-primary-dark font-medium">Düzenle</a>
-
-                  <?php // Seans notu yalnız randevunun kendi terapistine görünür. ?>
-                  <?php if ($canWriteNotes && (int) $appointment['therapist_id'] === (int) $actor['id']): ?>
-                    <a href="<?= e(url("/randevular/{$appointment['id']}/not")) ?>" class="text-xs text-primary hover:text-primary-dark font-medium">
-                      <?= $appointment['has_note'] ? 'Seans notu ✓' : 'Seans notu' ?>
-                    </a>
-                  <?php endif; ?>
-
-                  <?php
-                  $quick = [
-                      'confirmed' => 'Onayla',
-                      'completed' => 'Tamamlandı',
-                      'no_show'   => 'Gelmedi',
-                  ];
-                  ?>
-                  <?php foreach ($quick as $status => $label): ?>
-                    <?php if ($appointment['status'] !== $status): ?>
-                      <form method="post" action="<?= e(url("/randevular/{$appointment['id']}/durum")) ?>">
-                        <?= Csrf::field() ?>
-                        <input type="hidden" name="status" value="<?= e($status) ?>">
-                        <button class="text-xs text-ink-muted hover:text-ink"><?= e($label) ?></button>
-                      </form>
-                    <?php endif; ?>
-                  <?php endforeach; ?>
-
-                  <?php if ($canCancel): ?>
-                    <details class="inline-block">
-                      <summary class="text-xs text-accent-dark hover:text-accent cursor-pointer">İptal et</summary>
-                      <form method="post" action="<?= e(url("/randevular/{$appointment['id']}/iptal")) ?>"
-                            class="mt-2 flex flex-wrap items-center gap-2">
-                        <?= Csrf::field() ?>
-                        <input type="text" name="cancel_reason" maxlength="255" placeholder="İptal gerekçesi (isteğe bağlı)"
-                               class="px-3 py-1.5 rounded-lg border border-warm-tertiary bg-warm text-xs w-64 focus:bg-white focus:border-primary focus:outline-none">
-                        <label class="flex items-center gap-1.5 text-xs text-ink-muted cursor-pointer">
-                          <input type="checkbox" name="notify" value="1" class="w-3.5 h-3.5 accent-primary" checked>
-                          bildir
-                        </label>
-                        <button class="text-xs text-white bg-accent-dark hover:bg-accent px-3 py-1.5 rounded-lg">Randevuyu iptal et</button>
-                      </form>
-                    </details>
-                  <?php endif; ?>
-                </div>
-              <?php endif; ?>
-            </li>
-          <?php endforeach; ?>
-        </ul>
+    <div class="flex items-center justify-between gap-3 px-5 py-2.5 border-b border-warm-tertiary <?= $isToday ? 'bg-primary-soft' : 'bg-warm' ?>">
+      <h2 class="text-[0.8125rem] font-medium <?= $isToday ? 'text-primary-dark' : 'text-ink-muted' ?>">
+        <?= e(tr_date_label($date, true, false)) ?>
+        <?php if ($isToday): ?><span class="eyebrow ml-1.5 text-primary">Bugün</span><?php endif; ?>
+      </h2>
+      <?php if ($canCreate): ?>
+        <a href="<?= e(url('/randevular/yeni?tarih=' . $date)) ?>" class="btn-text btn-text-quiet">Ekle</a>
       <?php endif; ?>
-    </section>
+    </div>
+
+    <?php if ($items === []): ?>
+      <p class="px-5 py-3 text-sm text-ink-light border-b border-warm-tertiary">Randevu yok.</p>
+    <?php else: ?>
+      <ul class="border-b border-warm-tertiary">
+        <?php foreach ($items as $index => $appointment): ?>
+          <?php
+          $start = new DateTimeImmutable((string) $appointment['starts_at']);
+          $end   = $start->modify('+' . (int) $appointment['duration_min'] . ' minutes');
+          $off   = in_array($appointment['status'], ['cancelled', 'no_show'], true);
+          ?>
+          <li class="px-5 py-3 <?= $index > 0 ? 'border-t border-warm-secondary' : '' ?>">
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+              <span class="text-sm num w-28 shrink-0 <?= $off ? 'text-ink-light line-through' : 'text-ink' ?>">
+                <?= e($start->format('H:i')) ?>–<?= e($end->format('H:i')) ?>
+              </span>
+              <span class="flex-1 min-w-40">
+                <a href="<?= e(url("/danisanlar/{$appointment['client_id']}")) ?>" class="person text-sm text-ink hover:text-primary">
+                  <?= e($appointment['client_name']) ?>
+                </a>
+                <?php if ($appointment['client_phone'] !== null): ?>
+                  <span class="text-xs text-ink-light ml-1.5 num"><?= e($appointment['client_phone']) ?></span>
+                <?php endif; ?>
+              </span>
+              <span class="text-xs text-ink-muted"><?= e($appointment['therapist_name']) ?></span>
+              <span class="text-xs text-ink-light"><?= e(Scheduling::locationLabel($appointment['location'])) ?></span>
+              <span class="chip <?= $chip[$appointment['status']] ?? 'chip-neutral' ?>"><?= e(Scheduling::statusLabel($appointment['status'])) ?></span>
+            </div>
+
+            <?php if ($appointment['note'] !== null): ?>
+              <p class="text-xs text-ink-light mt-1.5 sm:pl-32"><?= e($appointment['note']) ?></p>
+            <?php endif; ?>
+            <?php if ($appointment['status'] === 'cancelled' && $appointment['cancel_reason'] !== null): ?>
+              <p class="text-xs text-ink-muted mt-1.5 sm:pl-32">İptal gerekçesi: <?= e($appointment['cancel_reason']) ?></p>
+            <?php endif; ?>
+
+            <?php if ($canEdit && $appointment['status'] !== 'cancelled'): ?>
+              <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2 sm:pl-32">
+                <a href="<?= e(url("/randevular/{$appointment['id']}/duzenle")) ?>" class="btn-text btn-text-quiet">Düzenle</a>
+
+                <?php // Seans notu yalnız randevunun kendi terapistine görünür. ?>
+                <?php if ($canWriteNotes && (int) $appointment['therapist_id'] === (int) $actor['id']): ?>
+                  <a href="<?= e(url("/randevular/{$appointment['id']}/not")) ?>" class="btn-text btn-text-quiet">
+                    <?= $appointment['has_note'] ? 'Seans notu ✓' : 'Seans notu' ?>
+                  </a>
+                <?php endif; ?>
+
+                <?php
+                $quick = [
+                    'confirmed' => 'Onayla',
+                    'completed' => 'Tamamlandı',
+                    'no_show'   => 'Gelmedi',
+                ];
+                ?>
+                <?php foreach ($quick as $status => $label): ?>
+                  <?php if ($appointment['status'] !== $status): ?>
+                    <form method="post" action="<?= e(url("/randevular/{$appointment['id']}/durum")) ?>">
+                      <?= Csrf::field() ?>
+                      <input type="hidden" name="status" value="<?= e($status) ?>">
+                      <button class="btn-text btn-text-quiet"><?= e($label) ?></button>
+                    </form>
+                  <?php endif; ?>
+                <?php endforeach; ?>
+
+                <?php if ($canCancel): ?>
+                  <details class="inline-block">
+                    <summary class="btn-text btn-text-quiet hover:text-accent-dark">İptal et</summary>
+                    <form method="post" action="<?= e(url("/randevular/{$appointment['id']}/iptal")) ?>"
+                          class="mt-2 flex flex-wrap items-center gap-2">
+                      <?= Csrf::field() ?>
+                      <input type="text" name="cancel_reason" maxlength="255" placeholder="İptal gerekçesi (isteğe bağlı)"
+                             class="field w-64 py-1.5 text-xs">
+                      <label class="flex items-center gap-1.5 text-xs text-ink-muted cursor-pointer">
+                        <input type="checkbox" name="notify" value="1" class="w-3.5 h-3.5 accent-primary" checked>
+                        bildir
+                      </label>
+                      <button class="btn btn-danger btn-sm">Randevuyu iptal et</button>
+                    </form>
+                  </details>
+                <?php endif; ?>
+              </div>
+            <?php endif; ?>
+          </li>
+        <?php endforeach; ?>
+      </ul>
+    <?php endif; ?>
   <?php endforeach; ?>
 </div>
