@@ -10,10 +10,12 @@ $nav = array_values(array_filter([
     ['path' => '/randevular',   'label' => 'Randevular',       'permissions' => ['appointment.view.all', 'appointment.view.own']],
     ['path' => '/danisanlar',   'label' => 'Danışanlar',       'permissions' => ['client.view.all', 'client.view.own']],
     ['path' => '/musaitlik',    'label' => 'Müsaitlik',        'permissions' => ['availability.manage.all', 'availability.manage.own']],
+    ['path' => '/odemeler',     'label' => 'Ödemeler',         'permissions' => ['payment.view.all', 'payment.view.own']],
     ['path' => '/kullanicilar', 'label' => 'Kullanıcılar',     'permissions' => ['user.view']],
     ['path' => '/icerik',       'label' => 'Site İçeriği',     'permissions' => ['content.manage']],
     ['path' => '/kvkk',         'label' => 'KVKK Metni',       'permissions' => ['consent.manage']],
     ['path' => '/kayitlar',     'label' => 'Sistem Kayıtları', 'permissions' => ['audit.view']],
+    ['path' => '/sistem',       'label' => 'Sistem',           'permissions' => ['settings.manage']],
     ['path' => '/profil',       'label' => 'Profilim',         'permissions' => ['profile.self']],
 ], static fn (array $item): bool => Rbac::canAny($authUser, $item['permissions'])));
 

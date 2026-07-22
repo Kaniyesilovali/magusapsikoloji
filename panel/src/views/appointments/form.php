@@ -128,6 +128,19 @@ $needsAck    = error_for('confirm_warnings') !== null;
     <?php endif; ?>
   </div>
 
+  <?php if (Panel\Schema::paymentsReady() && Rbac::canAny($actor, ['payment.view.all', 'payment.view.own'])): ?>
+    <div class="sm:w-48">
+      <label for="fee" class="block text-sm font-medium text-ink mb-1.5">Seans ücreti (₺)</label>
+      <input type="text" id="fee" name="fee" inputmode="decimal" class="<?= $inputCls ?>"
+             value="<?= e($field('fee', ($appointment['fee'] ?? null) !== null ? number_format((float) $appointment['fee'], 2, ',', '.') : '')) ?>">
+      <?php if ($message = error_for('fee')): ?>
+        <p class="text-xs text-accent-dark mt-1.5"><?= e($message) ?></p>
+      <?php else: ?>
+        <p class="text-xs text-ink-light mt-1.5">Boş bırakılabilir, sonradan Ödemeler ekranından da girilebilir.</p>
+      <?php endif; ?>
+    </div>
+  <?php endif; ?>
+
   <div>
     <label for="note" class="block text-sm font-medium text-ink mb-1.5">İdari not <span class="text-ink-light font-normal">(isteğe bağlı)</span></label>
     <input type="text" id="note" name="note" maxlength="255" class="<?= $inputCls ?>"

@@ -197,6 +197,53 @@ görev (cron) gerektirir.
 
 ---
 
+## Ödemeler
+
+`/odemeler` — [`PaymentController`](../panel/src/Controllers/PaymentController.php).
+
+Ücret **randevunun alanıdır** ve her randevuda elle girilir; varsayılan ücret yoktur.
+`NULL` "ücret belirlenmedi" demektir ve `0,00` (ücretsiz seans) ile aynı şey değildir.
+
+Tahsilatlar ayrı satırlar hâlinde tutulur, tek bir "ödendi" bayrağı yoktur. Böylece
+kısmi ödeme, taksit ve "ne zaman, hangi yöntemle alındı" bilgisi durur. **Ödeme durumu
+saklanmaz, hesaplanır:** `fee` ile tahsilat toplamı karşılaştırılır. Bayrak tutulsaydı
+bir tahsilat silindiğinde geride kalır ve kayıtlar birbirini tutmazdı.
+
+| Durum | Anlamı |
+|---|---|
+| Ücret girilmedi | `fee IS NULL` |
+| Ödenmedi | tahsilat yok |
+| Kısmi | 0 < tahsilat < ücret |
+| Ödendi | tahsilat ≥ ücret |
+
+Yetki ayrımı: terapist kendi randevularının ücretini **görür ve girer**, ama tahsilat
+kaydedemez — para alma işi merkez yönetimindedir (`payment.manage`). İptal edilmiş
+seanslar "bekleyen" toplamına girmez; tahsil edilmişse tahsilat toplamında kalır.
+
+Tutarlar PHP tarafında float'a çevrilmez ([`Money`](../panel/src/Money.php)); toplamlar
+kuruş cinsinden tam sayı olarak toplanır, aksi hâlde uzun listelerde kasa kuruş kaydırır.
+
+---
+
+## Veritabanı güncellemeleri
+
+`/sistem` — [`SystemController`](../panel/src/Controllers/SystemController.php), yalnız süper admin.
+
+İlk kurulum ekranı ilk hesap açılınca kalıcı olarak kapanıyor ve cPanel'de SSH garantisi
+yok. Bu ikisi birleşince kurulmuş bir panelde yeni migration uygulamanın yolu kalmıyordu.
+Sistem ekranı bekleyen `migrations/*.sql` dosyalarını gösterir ve tek düğmeyle uygular;
+ayrıca PHP sürümü, eklentiler, şifreleme ve GitHub erişimi için durum listesi verir.
+
+Deploy ile güncelleme arasında bir boşluk vardır: yeni kod sunucuya çıkar ama sütunlar
+henüz yoktur. Bu aralıkta ilgisiz ekranların çökmemesi için yeni alanlar
+[`Schema::hasColumn`](../panel/src/Schema.php) ile kontrol edilerek kullanılır —
+randevu ekranı ücret alanı olmadan çalışmaya devam eder, Ödemeler ekranı ise SQL hatası
+yerine "önce güncellemeyi uygulayın" der.
+
+> Güncelleme geri alınamaz. Uygulamadan önce cPanel'den veritabanı yedeği alın.
+
+---
+
 ## Seans notları
 
 `/randevular/{id}/not` — [`NoteController`](../panel/src/Controllers/NoteController.php).
@@ -325,7 +372,8 @@ Kurumun tamamlaması gerekenler:
 | 1c | Şifreli seans notları, e-posta bildirimleri, KVKK metinleri | ✅ tamam |
 | 2a | Site verileri ve SSS içeriği (GitHub Contents API) | ✅ tamam |
 | 2b | Blog yazılarının panele taşınması, Sveltia'nın kaldırılması | ✗ yapılmayacak |
-| 3  | Süper admin için TOTP 2FA, WhatsApp/SMS hatırlatma, raporlar | opsiyonel |
+| 3a | Seans ücreti ve tahsilat takibi | ✅ tamam |
+| 3b | Süper admin için TOTP 2FA, WhatsApp/SMS hatırlatma, raporlar | opsiyonel |
 
 ### Sveltia neden kalıyor
 

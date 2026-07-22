@@ -31,6 +31,7 @@ final class Rbac
             'client.view.all', 'client.create', 'client.update', 'client.delete',
             'appointment.view.all', 'appointment.create', 'appointment.update', 'appointment.cancel',
             'availability.manage.all',
+            'payment.view.all', 'payment.manage',
             'audit.view', 'settings.manage', 'consent.manage', 'content.manage',
             'profile.self',
         ],
@@ -40,6 +41,7 @@ final class Rbac
             'client.view.all', 'client.create', 'client.update',
             'appointment.view.all', 'appointment.create', 'appointment.update', 'appointment.cancel',
             'availability.manage.all',
+            'payment.view.all', 'payment.manage',
             // KVKK metni işletme belgesidir, güvenlik ayarı değil: admin de düzenleyebilir.
             'consent.manage', 'content.manage',
             'profile.self',
@@ -49,6 +51,9 @@ final class Rbac
             'client.view.own', 'client.update',
             'appointment.view.own', 'appointment.create', 'appointment.update', 'appointment.cancel',
             'availability.manage.own',
+            // Terapist kendi seanslarının ücret/ödeme durumunu görür ve ücreti
+            // girebilir; tahsilat kaydı (payment.manage) merkez yönetimindedir.
+            'payment.view.own',
             'note.write', 'note.read.own',
             'profile.self',
         ],

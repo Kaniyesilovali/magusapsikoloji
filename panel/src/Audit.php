@@ -36,6 +36,10 @@ final class Audit
         'availability.time_off' => 'İzin kaydı değişti',
         'consent.updated'     => 'KVKK metni güncellendi',
         'content.updated'     => 'Site içeriği güncellendi',
+        'payment.fee_set'     => 'Seans ücreti belirlendi',
+        'payment.recorded'    => 'Tahsilat kaydedildi',
+        'payment.deleted'     => 'Tahsilat kaydı silindi',
+        'system.migrated'     => 'Veritabanı güncellemesi uygulandı',
         'note.read'           => 'Seans notu okundu',
         'note.written'        => 'Seans notu yazıldı',
     ];

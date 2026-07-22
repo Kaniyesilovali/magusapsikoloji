@@ -42,8 +42,10 @@ use Panel\Controllers\ContentController;
 use Panel\Controllers\DashboardController;
 use Panel\Controllers\FaqController;
 use Panel\Controllers\NoteController;
+use Panel\Controllers\PaymentController;
 use Panel\Controllers\ProfileController;
 use Panel\Controllers\SetupController;
+use Panel\Controllers\SystemController;
 use Panel\Controllers\UserController;
 use Panel\Router;
 
@@ -127,6 +129,15 @@ $router->get('/profil',         [ProfileController::class, 'edit']);
 $router->post('/profil',        [ProfileController::class, 'update']);
 $router->get('/profil/sifre',   [ProfileController::class, 'passwordForm']);
 $router->post('/profil/sifre',  [ProfileController::class, 'updatePassword']);
+
+$router->get('/odemeler',                    [PaymentController::class, 'index']);
+$router->get('/odemeler/{id}',               [PaymentController::class, 'show']);
+$router->post('/odemeler/{id}/ucret',        [PaymentController::class, 'setFee']);
+$router->post('/odemeler/{id}/tahsilat',     [PaymentController::class, 'storePayment']);
+$router->post('/odemeler/tahsilat/{id}/sil', [PaymentController::class, 'destroyPayment']);
+
+$router->get('/sistem',          [SystemController::class, 'index']);
+$router->post('/sistem/guncelle', [SystemController::class, 'migrate']);
 
 $router->get('/icerik',               [ContentController::class, 'index']);
 $router->get('/icerik/iletisim',      [ContentController::class, 'contact']);

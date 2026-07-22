@@ -9,9 +9,11 @@ use Panel\Audit;
 use Panel\Auth;
 use Panel\ClientScope;
 use Panel\Db;
+use Panel\Money;
 use Panel\Notifications;
 use Panel\Rbac;
 use Panel\Scheduling;
+use Panel\Schema;
 use Panel\View;
 
 /**
@@ -129,6 +131,8 @@ final class AppointmentController
             ]
         );
 
+        $this->applyFee($appointmentId, $input['fee']);
+
         Audit::log('appointment.created', 'appointment', $appointmentId, [
             'starts_at' => $start->format('Y-m-d H:i'),
             'therapist' => (int) $input['therapist_id'],
@@ -189,6 +193,8 @@ final class AppointmentController
                 $id,
             ]
         );
+
+        $this->applyFee($id, $input['fee']);
 
         Audit::log('appointment.updated', 'appointment', $id, [
             'starts_at' => $start->format('Y-m-d H:i'),
@@ -314,7 +320,27 @@ final class AppointmentController
             'status'            => post('status', 'scheduled'),
             'confirm_warnings'  => post('confirm_warnings'),
             'notify'            => isset($_POST['notify']),
+            'fee'               => post('fee'),
         ];
+    }
+
+    /**
+     * Ücret ayrı bir UPDATE ile yazılır: sütun, veritabanı güncellemesi elle
+     * uygulanana kadar mevcut olmayabilir ve ana INSERT'i ona bağlamak, güncelleme
+     * yapılmadan randevu oluşturmayı tamamen bozardı.
+     *
+     * Alan formda hiç yoksa (yetkisi olmayan kullanıcı) dokunulmaz — aksi hâlde
+     * boş POST, girilmiş ücreti sessizce silerdi.
+     */
+    private function applyFee(int $appointmentId, string $raw): void
+    {
+        if (!array_key_exists('fee', $_POST) || !Schema::paymentsReady()) {
+            return;
+        }
+        Db::run(
+            'UPDATE appointments SET fee = ? WHERE id = ?',
+            [$raw === '' ? null : Money::parse($raw), $appointmentId]
+        );
     }
 
     /**
@@ -370,6 +396,10 @@ final class AppointmentController
 
         if (!array_key_exists($input['location'], Scheduling::LOCATIONS)) {
             $errors['location'] = 'Görüşme yerini seçin.';
+        }
+
+        if ($input['fee'] !== '' && Money::parse($input['fee']) === null) {
+            $errors['fee'] = 'Ücreti sayı olarak girin (ör. 1500 ya da 1.500,00).';
         }
 
         // İptal, gerekçe alındığı için yalnız kendi akışından yapılır; düzenleme
