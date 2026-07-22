@@ -173,6 +173,40 @@ function tr_month_name(int $month): string
 }
 
 /**
+ * Takvim ay seçicisinin seçenekleri: ['2026-07-01' => 'Temmuz 2026', …]
+ *
+ * Pencere bugünün bir yıl öncesinden bir yıl sonrasına uzanır ama her zaman
+ * bulunulan ayı da kapsar: ileri geri adımlayarak 2029'a giden biri seçicide
+ * kendini bulamazsa liste bozuk görünürdü. Uçlar bu yüzden çapaya göre esner,
+ * araya boşluk girmez.
+ *
+ * Bulunulan ayın değeri ayın biri değil, çapanın kendisidir. Aynı form terapist
+ * filtresini de taşıyor; ay seçicisine dokunmadan "Göster"e basan biri o an
+ * baktığı haftadan ayın başına fırlatılmamalı.
+ *
+ * @return array<string, string>
+ */
+function tr_month_options(DateTimeImmutable $anchor): array
+{
+    $thisYear   = (int) (new DateTimeImmutable('today'))->format('Y');
+    $anchorYear = (int) $anchor->format('Y');
+    $anchorNum  = (int) $anchor->format('n');
+
+    $options = [];
+    for ($year = min($thisYear - 1, $anchorYear); $year <= max($thisYear + 1, $anchorYear); $year++) {
+        for ($month = 1; $month <= 12; $month++) {
+            $value = $year === $anchorYear && $month === $anchorNum
+                ? $anchor->format('Y-m-d')
+                : sprintf('%04d-%02d-01', $year, $month);
+
+            $options[$value] = tr_month_name($month) . ' ' . $year;
+        }
+    }
+
+    return $options;
+}
+
+/**
  * "20 – 26 Temmuz 2026" — aralık başlıkları için. Ay ve yıl iki tarafta da
  * aynıysa bir kez yazılır; "20 Temmuz 2026 – 26 Temmuz 2026" gereksiz uzundu.
  */

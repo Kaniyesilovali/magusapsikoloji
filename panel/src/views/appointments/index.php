@@ -77,11 +77,22 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
     </nav>
   </div>
 
-  <?php if ($therapists !== []): ?>
-    <form method="get" action="<?= e(url('/randevular')) ?>" class="flex items-center gap-2">
-      <input type="hidden" name="gorunum" value="<?= e($mode) ?>">
-      <input type="hidden" name="tarih" value="<?= e($anchor->format('Y-m-d')) ?>">
-      <label for="terapist" class="eyebrow">Terapist</label>
+  <?php // Ay ve terapist tek formda: ikisi de "neye bakıyorum" sorusunun parçası,
+        // ayrı ayrı iki "Göster" düğmesi aynı satırda gereksiz bir seçim yaratırdı. ?>
+  <form method="get" action="<?= e(url('/randevular')) ?>" class="flex flex-wrap items-center gap-2">
+    <input type="hidden" name="gorunum" value="<?= e($mode) ?>">
+
+    <label for="tarih" class="eyebrow">Ay</label>
+    <select id="tarih" name="tarih" class="field w-auto py-1.5 text-[0.8125rem]">
+      <?php foreach (tr_month_options($anchor) as $value => $label): ?>
+        <option value="<?= e($value) ?>" <?= $value === $anchor->format('Y-m-d') ? 'selected' : '' ?>>
+          <?= e($label) ?>
+        </option>
+      <?php endforeach; ?>
+    </select>
+
+    <?php if ($therapists !== []): ?>
+      <label for="terapist" class="eyebrow ml-1">Terapist</label>
       <select id="terapist" name="terapist" class="field w-auto py-1.5 text-[0.8125rem]">
         <option value="">Tümü</option>
         <?php foreach ($therapists as $therapist): ?>
@@ -90,9 +101,10 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
           </option>
         <?php endforeach; ?>
       </select>
-      <button class="btn-text">Göster</button>
-    </form>
-  <?php endif; ?>
+    <?php endif; ?>
+
+    <button class="btn-text">Göster</button>
+  </form>
 </div>
 
 <?php require __DIR__ . '/_' . ($mode === 'ay' ? 'month' : ($mode === 'liste' ? 'list' : 'week')) . '.php'; ?>
