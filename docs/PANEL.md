@@ -1,5 +1,8 @@
 # Yönetim Paneli — Mimari ve Kurulum
 
+> Panel canlıda ama henüz devreye alınmadı. Yapılacaklar adım adım
+> [DEVREYE-ALMA.md](DEVREYE-ALMA.md) dosyasında.
+
 `/panel` altında çalışan PHP + MySQL yönetim paneli. Public site (Eleventy) ile aynı
 depoda durur ve aynı FTP hattından yayınlanır; ayrı bir yükleme adımı yoktur.
 
