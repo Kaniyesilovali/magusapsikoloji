@@ -119,3 +119,43 @@ function dt(?string $sqlDateTime, string $format = 'd.m.Y H:i'): string
         return '—';
     }
 }
+
+/**
+ * "22 Temmuz 2026, Çarşamba" — takvim başlıkları için.
+ * PHP'nin yerelleştirmesi (intl) her hostta bulunmadığından adlar elle tutulur.
+ */
+function tr_date_label(?string $sqlDate, bool $withWeekday = true): string
+{
+    static $months = [
+        1 => 'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+        'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
+    ];
+
+    if (!$sqlDate) {
+        return '—';
+    }
+    try {
+        $date = new DateTimeImmutable($sqlDate);
+    } catch (Exception) {
+        return '—';
+    }
+
+    $label = $date->format('j') . ' ' . $months[(int) $date->format('n')] . ' ' . $date->format('Y');
+
+    return $withWeekday
+        ? $label . ', ' . Panel\Scheduling::weekdayLabel((int) $date->format('N'))
+        : $label;
+}
+
+/** Danışan yaşı — doğum tarihi girilmişse. */
+function age_from(?string $birthDate): ?int
+{
+    if (!$birthDate) {
+        return null;
+    }
+    try {
+        return (new DateTimeImmutable($birthDate))->diff(new DateTimeImmutable())->y;
+    } catch (Exception) {
+        return null;
+    }
+}

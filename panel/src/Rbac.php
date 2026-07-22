@@ -30,7 +30,8 @@ final class Rbac
             'user.view', 'user.create', 'user.update', 'user.delete', 'user.manage_admins',
             'client.view.all', 'client.create', 'client.update', 'client.delete',
             'appointment.view.all', 'appointment.create', 'appointment.update', 'appointment.cancel',
-            'audit.view', 'settings.manage',
+            'availability.manage.all',
+            'audit.view', 'settings.manage', 'consent.manage',
             'profile.self',
         ],
         self::ADMIN => [
@@ -38,12 +39,16 @@ final class Rbac
             'user.view', 'user.create', 'user.update', 'user.delete',
             'client.view.all', 'client.create', 'client.update',
             'appointment.view.all', 'appointment.create', 'appointment.update', 'appointment.cancel',
+            'availability.manage.all',
+            // KVKK metni işletme belgesidir, güvenlik ayarı değil: admin de düzenleyebilir.
+            'consent.manage',
             'profile.self',
         ],
         self::THERAPIST => [
             'dashboard.view',
-            'client.view.own',
+            'client.view.own', 'client.update',
             'appointment.view.own', 'appointment.create', 'appointment.update', 'appointment.cancel',
+            'availability.manage.own',
             'note.write', 'note.read.own',
             'profile.self',
         ],
@@ -70,6 +75,17 @@ final class Rbac
             return false;
         }
         return in_array($permission, self::MATRIX[$user['role']] ?? [], true);
+    }
+
+    /** Verilen yetkilerden herhangi biri yeterli — "hepsi" ya da "yalnız kendi" ayrımı olan ekranlar için. */
+    public static function canAny(?array $user, array $permissions): bool
+    {
+        foreach ($permissions as $permission) {
+            if (self::can($user, $permission)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

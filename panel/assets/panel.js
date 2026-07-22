@@ -31,6 +31,12 @@
     }
   });
 
+  // Yazdırma düğmesi. CSP inline script'e izin vermediği için buradan bağlanır.
+  document.addEventListener('click', function (event) {
+    var trigger = event.target.closest('[data-print]');
+    if (trigger) window.print();
+  });
+
   // data-confirm taşıyan formlar gönderilmeden önce onay ister.
   document.addEventListener('submit', function (event) {
     var form = event.target;

@@ -3,12 +3,17 @@
 use Panel\Csrf;
 use Panel\Rbac;
 
+// Bir satır için listelenen yetkilerden herhangi biri yeterli: "hepsini gör" ile
+// "yalnız kendininkini gör" aynı ekrana çıkar, kapsamı ekranın kendisi daraltır.
 $nav = array_values(array_filter([
-    ['path' => '/',             'label' => 'Panel',            'permission' => 'dashboard.view'],
-    ['path' => '/kullanicilar', 'label' => 'Kullanıcılar',     'permission' => 'user.view'],
-    ['path' => '/kayitlar',     'label' => 'Sistem Kayıtları', 'permission' => 'audit.view'],
-    ['path' => '/profil',       'label' => 'Profilim',         'permission' => 'profile.self'],
-], static fn (array $item): bool => Rbac::can($authUser, $item['permission'])));
+    ['path' => '/',             'label' => 'Panel',            'permissions' => ['dashboard.view']],
+    ['path' => '/randevular',   'label' => 'Randevular',       'permissions' => ['appointment.view.all', 'appointment.view.own']],
+    ['path' => '/danisanlar',   'label' => 'Danışanlar',       'permissions' => ['client.view.all', 'client.view.own']],
+    ['path' => '/musaitlik',    'label' => 'Müsaitlik',        'permissions' => ['availability.manage.all', 'availability.manage.own']],
+    ['path' => '/kullanicilar', 'label' => 'Kullanıcılar',     'permissions' => ['user.view']],
+    ['path' => '/kayitlar',     'label' => 'Sistem Kayıtları', 'permissions' => ['audit.view']],
+    ['path' => '/profil',       'label' => 'Profilim',         'permissions' => ['profile.self']],
+], static fn (array $item): bool => Rbac::canAny($authUser, $item['permissions'])));
 
 $here = current_path();
 ?>

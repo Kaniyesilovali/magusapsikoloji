@@ -32,8 +32,11 @@ define('PANEL_BASE', rtrim(str_replace('\\', '/', dirname((string) ($_SERVER['SC
 require __DIR__ . '/src/bootstrap.php';
 
 use Panel\Auth;
+use Panel\Controllers\AppointmentController;
 use Panel\Controllers\AuditController;
 use Panel\Controllers\AuthController;
+use Panel\Controllers\AvailabilityController;
+use Panel\Controllers\ClientController;
 use Panel\Controllers\DashboardController;
 use Panel\Controllers\ProfileController;
 use Panel\Controllers\SetupController;
@@ -89,6 +92,32 @@ $router->get('/kullanicilar/{id}/duzenle',       [UserController::class, 'editFo
 $router->post('/kullanicilar/{id}/duzenle',      [UserController::class, 'update']);
 $router->post('/kullanicilar/{id}/sil',          [UserController::class, 'destroy']);
 $router->post('/kullanicilar/{id}/davet-gonder', [UserController::class, 'resendInvite']);
+
+$router->get('/danisanlar',               [ClientController::class, 'index']);
+$router->get('/danisanlar/yeni',          [ClientController::class, 'createForm']);
+$router->post('/danisanlar/yeni',         [ClientController::class, 'store']);
+$router->get('/danisanlar/{id}',          [ClientController::class, 'show']);
+$router->get('/danisanlar/{id}/duzenle',  [ClientController::class, 'editForm']);
+$router->post('/danisanlar/{id}/duzenle', [ClientController::class, 'update']);
+$router->post('/danisanlar/{id}/arsivle', [ClientController::class, 'archive']);
+$router->post('/danisanlar/{id}/sil',     [ClientController::class, 'destroy']);
+$router->get('/danisanlar/{id}/riza',     [ConsentController::class, 'printForm']);
+
+$router->get('/randevular',               [AppointmentController::class, 'index']);
+$router->get('/randevular/yeni',          [AppointmentController::class, 'createForm']);
+$router->post('/randevular/yeni',         [AppointmentController::class, 'store']);
+$router->get('/randevular/{id}/duzenle',  [AppointmentController::class, 'editForm']);
+$router->post('/randevular/{id}/duzenle', [AppointmentController::class, 'update']);
+$router->post('/randevular/{id}/durum',   [AppointmentController::class, 'setStatus']);
+$router->post('/randevular/{id}/iptal',   [AppointmentController::class, 'cancel']);
+$router->get('/randevular/{id}/not',      [NoteController::class, 'form']);
+$router->post('/randevular/{id}/not',     [NoteController::class, 'save']);
+
+$router->get('/musaitlik',                [AvailabilityController::class, 'index']);
+$router->post('/musaitlik/saat-ekle',     [AvailabilityController::class, 'addHours']);
+$router->post('/musaitlik/saat/{id}/sil', [AvailabilityController::class, 'removeHours']);
+$router->post('/musaitlik/izin-ekle',     [AvailabilityController::class, 'addTimeOff']);
+$router->post('/musaitlik/izin/{id}/sil', [AvailabilityController::class, 'removeTimeOff']);
 
 $router->get('/profil',         [ProfileController::class, 'edit']);
 $router->post('/profil',        [ProfileController::class, 'update']);

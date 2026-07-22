@@ -25,10 +25,20 @@ aksi hâlde `npm run build` onları `_site/panel/` içine kopyalar ve yayına ç
 | Kullanıcı oluştur/düzenle/sil | ✔ | ✔ (yalnız terapist + danışan) | — | — |
 | Süper admin / admin hesaplarını yönet | ✔ | — | — | — |
 | Tüm danışan kayıtları | ✔ | ✔ | kendi danışanları | — |
+| Danışan kaydı oluştur / terapist ata | ✔ | ✔ | — | — |
+| Danışan iletişim bilgisini düzelt | ✔ | ✔ | kendi danışanları | — |
+| Danışan kaydını kalıcı sil | ✔ | — | — | — |
 | Tüm randevular | ✔ | ✔ | kendi randevuları | kendi randevuları (salt okunur) |
+| Randevu oluştur/düzenle/iptal | ✔ | ✔ | kendi takvimine | — |
+| Çalışma saati ve izin tanımla | ✔ | ✔ | kendi müsaitliği | — |
 | **Seans notu okuma/yazma** | **—** | **—** | **yalnız kendi yazdığı** | — |
 | Sistem kayıtları (audit log) | ✔ | — | — | — |
 | Kendi profili | ✔ | ✔ | ✔ | ✔ |
+
+Terapistin "kendi danışanı" iki yoldan tanımlıdır: birincil terapisti olduğu kişiler
+ve fiilen randevusunu gördüğü kişiler. Kural tek yerde:
+[`panel/src/ClientScope.php`](../panel/src/ClientScope.php). Terapist bir danışanı
+kendine atayamaz — birincil terapist ataması ve panel hesabı bağlama yöneticide kalır.
 
 Kurallar tek yerde: [`panel/src/Rbac.php`](../panel/src/Rbac.php).
 
@@ -149,6 +159,31 @@ Eleventy dev sunucusu PHP yorumlamaz; panel her zaman ayrı portta çalışır.
 
 ---
 
+## Randevu kuralları
+
+Zamanlama kararları tek yerde: [`panel/src/Scheduling.php`](../panel/src/Scheduling.php).
+
+**Engel (kayıt geçmez).** Aynı anda başka randevusu olan taraf. Kontrol hem terapist
+hem danışan için yapılır — bir danışanın aynı saatte iki farklı terapiste yazılması da
+gerçek bir çakışmadır ve yalnız terapist takvimine bakmak bunu kaçırırdı. İptal edilen
+ve "gelmedi" işaretli randevular saati serbest bırakır.
+
+**Uyarı (onaylanırsa geçer).** Terapistin çalışma saatleri dışı, izin aralığı, geçmiş
+tarih. Bunlar engellenmez; form uyarıyı gösterir ve kullanıcı onay kutusunu işaretleyip
+tekrar gönderirse kayıt geçer. Acil görüşme ve telafi seansı meşru ihtiyaçlardır.
+
+**Müsaitlik şablonu boşsa uyarı da çıkmaz.** Hiç çalışma saati girilmemiş bir terapist
+için "her saat uygun" varsayılır; "hiçbir saat uygun değil" değil.
+
+İzin eklemek, o aralıktaki planlı randevuları otomatik iptal etmez — kaç randevunun
+etkilendiği söylenir, kararı kullanıcı verir.
+
+> Randevu kartındaki **idari not** alanı klinik içerik için değildir; organizasyon
+> notudur (ör. "faturayı kurum ödeyecek"). Klinik içerik Faz 1c'deki şifreli seans
+> notlarına yazılacak.
+
+---
+
 ## Güvenlik
 
 Uygulanan önlemler:
@@ -196,13 +231,14 @@ Kurumun tamamlaması gerekenler:
 | Faz | Kapsam | Durum |
 |---|---|---|
 | 1a | İskelet, kimlik doğrulama, roller, kullanıcı yönetimi, profil, audit log | ✅ tamam |
-| 1b | Danışan kayıtları, terapist müsaitliği, randevu takvimi, çakışma kontrolü | sırada |
-| 1c | Şifreli seans notları, e-posta bildirimleri, KVKK metinleri | planlı |
+| 1b | Danışan kayıtları, terapist müsaitliği, randevu takvimi, çakışma kontrolü | ✅ tamam |
+| 1c | Şifreli seans notları, e-posta bildirimleri, KVKK metinleri | sırada |
 | 2  | İçerik yönetimi (GitHub Contents API üzerinden), Sveltia CMS'in kaldırılması | planlı |
 | 3  | Süper admin için TOTP 2FA, WhatsApp/SMS hatırlatma, raporlar | opsiyonel |
 
-Faz 1b/1c için tablolar (`clients`, `appointments`, `session_notes`, `working_hours`,
-`time_off`) şemada hazır; yalnız arayüzleri eksik.
+Faz 1b şema değişikliği getirmedi — `clients`, `appointments`, `working_hours` ve
+`time_off` tabloları 001_init.sql'de zaten vardı, eksik olan arayüzlerdi. Faz 1c için
+`session_notes` de hazır bekliyor.
 
 ---
 

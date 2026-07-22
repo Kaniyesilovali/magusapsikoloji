@@ -1,14 +1,8 @@
 <?php
 use Panel\Rbac;
+use Panel\Scheduling;
 /** @var array $user @var array $stats @var array $appointments */
 
-$statusLabels = [
-    'scheduled' => 'Planlandı',
-    'confirmed' => 'Onaylandı',
-    'completed' => 'Tamamlandı',
-    'cancelled' => 'İptal',
-    'no_show'   => 'Gelmedi',
-];
 $isStaff = Rbac::can($user, 'appointment.view.all') || $user['role'] === Rbac::THERAPIST;
 ?>
 
@@ -29,8 +23,9 @@ $isStaff = Rbac::can($user, 'appointment.view.all') || $user['role'] === Rbac::T
 <?php endif; ?>
 
 <section class="bg-white border border-warm-tertiary rounded-2xl overflow-hidden">
-  <div class="px-5 py-4 border-b border-warm-tertiary">
+  <div class="px-5 py-4 border-b border-warm-tertiary flex items-center justify-between">
     <h2 class="font-medium text-ink"><?= $isStaff ? 'Yaklaşan randevular' : 'Randevularım' ?></h2>
+    <a href="<?= e(url('/randevular')) ?>" class="text-xs text-primary hover:text-primary-dark">Takvimi aç →</a>
   </div>
 
   <?php if ($appointments === []): ?>
@@ -46,16 +41,12 @@ $isStaff = Rbac::can($user, 'appointment.view.all') || $user['role'] === Rbac::T
           <span class="text-sm text-ink flex-1 min-w-40">
             <?= e($isStaff ? $appointment['client_name'] : $appointment['therapist_name']) ?>
           </span>
-          <span class="text-xs text-ink-light"><?= $appointment['location'] === 'online' ? 'Online' : 'Merkezde' ?></span>
+          <span class="text-xs text-ink-light"><?= e(Scheduling::locationLabel($appointment['location'])) ?></span>
           <span class="text-xs px-2 py-0.5 rounded-full bg-warm-secondary text-ink-muted">
-            <?= e($statusLabels[$appointment['status']] ?? $appointment['status']) ?>
+            <?= e(Scheduling::statusLabel($appointment['status'])) ?>
           </span>
         </li>
       <?php endforeach; ?>
     </ul>
   <?php endif; ?>
 </section>
-
-<p class="text-xs text-ink-light mt-6">
-  Randevu ve danışan yönetimi ekranları bir sonraki sürümde açılacak. Bu sürümde kullanıcı hesapları ve profil yönetimi kullanılabilir.
-</p>
