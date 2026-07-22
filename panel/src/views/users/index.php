@@ -30,10 +30,13 @@ $manualInvite = $_SESSION['_invite_link'] ?? null;
 unset($_SESSION['_invite_link']);
 ?>
 <?php if ($manualInvite !== null): ?>
-  <div class="mb-4 bg-white border border-amber-200 rounded-2xl p-5">
+  <div class="mb-4 bg-white border border-warm-tertiary rounded-2xl p-5">
     <p class="text-sm font-medium text-ink"><?= e($manualInvite['name']) ?> için şifre belirleme bağlantısı</p>
     <p class="text-xs text-ink-light mt-1 mb-3">
-      48 saat geçerli ve tek kullanımlık. Yalnızca kişinin kendisine iletin —
+      <?= !empty($manualInvite['sent'])
+          ? 'E-posta gönderildi. Ulaşmazsa (spam filtresi, yanlış adres) bu bağlantıyı doğrudan iletebilirsiniz.'
+          : 'E-posta gönderilemedi; bu bağlantıyı kullanıcıya kendiniz iletin.' ?>
+      48 saat geçerli ve tek kullanımlık. Yalnızca kişinin kendisine verin —
       bağlantıyı alan herkes bu hesabın şifresini belirleyebilir.
     </p>
     <div class="flex gap-2">

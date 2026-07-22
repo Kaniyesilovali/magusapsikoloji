@@ -96,12 +96,8 @@ final class UserController
         Audit::log('user.created', 'user', $userId, ['role' => $input['role'], 'email' => $input['email']]);
 
         $invite = $this->sendInvite($userId, $input['full_name'], $input['email'], $actor['full_name']);
-        if ($invite['sent']) {
-            flash('success', "Kullanıcı oluşturuldu. Şifre belirleme bağlantısı {$input['email']} adresine gönderildi.");
-        } else {
-            flash('info', 'Kullanıcı oluşturuldu.');
-            $this->offerManualInvite($input['full_name'], $invite);
-        }
+        flash('info', 'Kullanıcı oluşturuldu.');
+        $this->shareInvite($input['full_name'], $input['email'], $invite);
 
         redirect('/kullanicilar');
     }
@@ -213,11 +209,7 @@ final class UserController
         $invite = $this->sendInvite((int) $target['id'], (string) $target['full_name'], (string) $target['email'], (string) $actor['full_name']);
         Audit::log('user.invite_resent', 'user', (int) $target['id'], ['sent' => $invite['sent']]);
 
-        if ($invite['sent']) {
-            flash('success', "Şifre belirleme bağlantısı {$target['email']} adresine gönderildi.");
-        } else {
-            $this->offerManualInvite((string) $target['full_name'], $invite);
-        }
+        $this->shareInvite((string) $target['full_name'], (string) $target['email'], $invite);
         redirect('/kullanicilar');
     }
 
@@ -305,13 +297,29 @@ final class UserController
         return ['sent' => $sent, 'link' => $link, 'error' => Mailer::lastError()];
     }
 
-    /** E-posta gidemediğinde bağlantı kullanıcı listesinde elle iletilmek üzere gösterilir. */
-    private function offerManualInvite(string $name, array $invite): void
+    /**
+     * Davet bağlantısını kullanıcı listesinde gösterir — gönderim başarılı olsa bile.
+     *
+     * mail() başarı döndürmesi yalnızca iletinin sunucunun posta servisine teslim
+     * edildiği anlamına gelir; teslim edilip edilmediğini garanti etmez (spam filtresi,
+     * SPF/DKIM, alıcı reddi devrede). Bağlantıyı her hâlükârda göstermek, yöneticiyi
+     * e-postanın gerçekten ulaşmasına bağımlı olmaktan çıkarır.
+     */
+    private function shareInvite(string $name, string $email, array $invite): void
     {
-        $_SESSION['_invite_link'] = ['name' => $name, 'url' => $invite['link']];
+        $_SESSION['_invite_link'] = [
+            'name' => $name,
+            'url'  => $invite['link'],
+            'sent' => $invite['sent'],
+        ];
+
+        if ($invite['sent']) {
+            flash('success', "Davet e-postası {$email} adresine gönderildi.");
+            return;
+        }
 
         flash('warning', 'Davet e-postası gönderilemedi'
             . ($invite['error'] !== null ? ' (' . $invite['error'] . ')' : '')
-            . '. Aşağıdaki bağlantıyı kullanıcıya kendiniz iletebilirsiniz.');
+            . '.');
     }
 }
