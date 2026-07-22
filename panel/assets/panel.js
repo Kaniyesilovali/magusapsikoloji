@@ -5,6 +5,32 @@
 (function () {
   'use strict';
 
+  // data-copy="#hedef" taşıyan düğmeler hedef alanın içeriğini panoya kopyalar.
+  // CSP inline betiğe izin vermediği için olay burada bağlanır.
+  document.addEventListener('click', function (event) {
+    var button = event.target.closest('[data-copy]');
+    if (!button) return;
+
+    var field = document.querySelector(button.getAttribute('data-copy'));
+    if (!field) return;
+
+    field.select();
+    field.setSelectionRange(0, field.value.length);
+
+    var done = function () {
+      var original = button.textContent;
+      button.textContent = 'Kopyalandı';
+      window.setTimeout(function () { button.textContent = original; }, 1500);
+    };
+
+    // clipboard API yalnız güvenli bağlamda çalışır; yoksa metin zaten seçili kalır.
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(field.value).then(done, function () {});
+    } else {
+      done();
+    }
+  });
+
   // data-confirm taşıyan formlar gönderilmeden önce onay ister.
   document.addEventListener('submit', function (event) {
     var form = event.target;

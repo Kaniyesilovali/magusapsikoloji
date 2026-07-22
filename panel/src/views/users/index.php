@@ -23,6 +23,30 @@ $statusBadge = [
   <?php endif; ?>
 </header>
 
+<?php
+// E-posta gönderilemediğinde davet bağlantısı burada gösterilir; yönetici
+// WhatsApp gibi başka bir kanaldan iletir. Tek kullanımlık, 48 saat geçerli.
+$manualInvite = $_SESSION['_invite_link'] ?? null;
+unset($_SESSION['_invite_link']);
+?>
+<?php if ($manualInvite !== null): ?>
+  <div class="mb-4 bg-white border border-amber-200 rounded-2xl p-5">
+    <p class="text-sm font-medium text-ink"><?= e($manualInvite['name']) ?> için şifre belirleme bağlantısı</p>
+    <p class="text-xs text-ink-light mt-1 mb-3">
+      48 saat geçerli ve tek kullanımlık. Yalnızca kişinin kendisine iletin —
+      bağlantıyı alan herkes bu hesabın şifresini belirleyebilir.
+    </p>
+    <div class="flex gap-2">
+      <input id="inviteLink" type="text" readonly value="<?= e($manualInvite['url']) ?>"
+             class="flex-1 min-w-0 px-3 py-2 rounded-xl border border-warm-tertiary bg-warm text-xs text-ink-muted font-mono">
+      <button type="button" data-copy="#inviteLink"
+              class="shrink-0 bg-primary hover:bg-primary-hover text-white text-sm font-medium px-4 py-2 rounded-xl transition-colors">
+        Kopyala
+      </button>
+    </div>
+  </div>
+<?php endif; ?>
+
 <form method="get" action="<?= e(url('/kullanicilar')) ?>" class="mb-4">
   <input type="search" name="q" value="<?= e($search) ?>" placeholder="Ad veya e-posta ile ara…"
          class="w-full sm:w-72 px-3 py-2 rounded-xl border border-warm-tertiary bg-white focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm">

@@ -7,26 +7,46 @@ use RuntimeException;
 
 /**
  * Üç sürücülü basit e-posta gönderici:
- *   smtp — cPanel posta hesabı üzerinden (üretim için önerilen; mail() spam'e düşüyor)
- *   mail — PHP mail()
+ *   mail — PHP mail() → sunucunun kendi posta servisi. cPanel'de en güvenilir yol:
+ *          ağa çıkmaz, alan adı Cloudflare arkasındayken de çalışır, SPF doğal geçer.
+ *   smtp — uzak SMTP sunucusu (AUTH LOGIN + SSL/STARTTLS)
  *   log  — dosyaya yazar (yerel geliştirme)
  *
  * Harici bağımlılık yok: cPanel'de composer garantisi olmadığı için SMTP istemcisi
- * burada elle yazılmıştır (AUTH LOGIN + SSL/STARTTLS).
+ * burada elle yazılmıştır.
+ *
+ * ⚠ smtp kullanılacaksa host, Cloudflare tarafından proxy'lenen bir ad OLMAMALI
+ * (ör. mail.<alanadi>): Cloudflare SMTP portlarını geçirmez, bağlantı zaman aşımına
+ * uğrar. Ya 'mail' sürücüsünü ya da sunucunun proxy'siz gerçek adını kullanın.
  */
 final class Mailer
 {
+    private static ?string $lastError = null;
+
+    /** Son gönderim neden başarısız oldu? Yöneticiye gösterilir. */
+    public static function lastError(): ?string
+    {
+        return self::$lastError;
+    }
+
     public static function send(string $to, string $subject, string $htmlBody): bool
     {
         $driver = (string) Config::get('mail.driver', 'log');
+        self::$lastError = null;
 
         try {
-            return match ($driver) {
+            $sent = match ($driver) {
                 'smtp'  => self::sendSmtp($to, $subject, $htmlBody),
                 'mail'  => self::sendMail($to, $subject, $htmlBody),
                 default => self::sendLog($to, $subject, $htmlBody),
             };
+
+            if (!$sent) {
+                self::$lastError = "'{$driver}' sürücüsü gönderimi reddetti.";
+            }
+            return $sent;
         } catch (\Throwable $e) {
+            self::$lastError = $e->getMessage();
             error_log('[panel] e-posta gönderilemedi: ' . $e->getMessage());
             return false;
         }
@@ -53,7 +73,18 @@ final class Mailer
         foreach (self::headers() as $key => $value) {
             $headers[] = "{$key}: {$value}";
         }
-        return mail($to, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, implode("\r\n", $headers));
+
+        // 5. parametre zarf göndericisini (-f) ayarlar. Bu olmadan zarf adresi
+        // sunucunun varsayılan hesabı olur, SPF hizalanmaz ve ileti spam'e düşer.
+        $from = (string) Config::get('mail.from');
+
+        return mail(
+            $to,
+            '=?UTF-8?B?' . base64_encode($subject) . '?=',
+            $body,
+            implode("\r\n", $headers),
+            '-f' . $from
+        );
     }
 
     private static function sendLog(string $to, string $subject, string $body): bool

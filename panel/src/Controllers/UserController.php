@@ -95,10 +95,13 @@ final class UserController
 
         Audit::log('user.created', 'user', $userId, ['role' => $input['role'], 'email' => $input['email']]);
 
-        $sent = $this->sendInvite($userId, $input['full_name'], $input['email'], $actor['full_name']);
-        flash($sent ? 'success' : 'warning', $sent
-            ? "Kullanıcı oluşturuldu. Şifre belirleme bağlantısı {$input['email']} adresine gönderildi."
-            : 'Kullanıcı oluşturuldu, ancak davet e-postası gönderilemedi. Listeden "Daveti yeniden gönder" ile tekrar deneyin.');
+        $invite = $this->sendInvite($userId, $input['full_name'], $input['email'], $actor['full_name']);
+        if ($invite['sent']) {
+            flash('success', "Kullanıcı oluşturuldu. Şifre belirleme bağlantısı {$input['email']} adresine gönderildi.");
+        } else {
+            flash('info', 'Kullanıcı oluşturuldu.');
+            $this->offerManualInvite($input['full_name'], $invite);
+        }
 
         redirect('/kullanicilar');
     }
@@ -207,12 +210,14 @@ final class UserController
         $actor  = Auth::requirePermission('user.update');
         $target = $this->findManageable($id, $actor);
 
-        $sent = $this->sendInvite((int) $target['id'], (string) $target['full_name'], (string) $target['email'], (string) $actor['full_name']);
-        Audit::log('user.invite_resent', 'user', (int) $target['id'], ['sent' => $sent]);
+        $invite = $this->sendInvite((int) $target['id'], (string) $target['full_name'], (string) $target['email'], (string) $actor['full_name']);
+        Audit::log('user.invite_resent', 'user', (int) $target['id'], ['sent' => $invite['sent']]);
 
-        flash($sent ? 'success' : 'error', $sent
-            ? "Şifre belirleme bağlantısı {$target['email']} adresine gönderildi."
-            : 'E-posta gönderilemedi. SMTP ayarlarını kontrol edin.');
+        if ($invite['sent']) {
+            flash('success', "Şifre belirleme bağlantısı {$target['email']} adresine gönderildi.");
+        } else {
+            $this->offerManualInvite((string) $target['full_name'], $invite);
+        }
         redirect('/kullanicilar');
     }
 
@@ -274,12 +279,18 @@ final class UserController
         );
     }
 
-    private function sendInvite(int $userId, string $name, string $email, string $inviterName): bool
+    /**
+     * Daveti gönderir. E-posta çalışmasa bile bağlantı üretilmiştir; çağıran taraf
+     * onu ekranda gösterir ki yönetici WhatsApp gibi başka bir kanaldan iletebilsin.
+     *
+     * @return array{sent:bool,link:string,error:?string}
+     */
+    private function sendInvite(int $userId, string $name, string $email, string $inviterName): array
     {
         $token = Auth::createToken($userId, 'invite', 48);
         $link  = rtrim((string) Config::get('app.url'), '/') . '/sifre-belirle?token=' . $token;
 
-        return Mailer::send(
+        $sent = Mailer::send(
             $email,
             'Mağusa Psikoloji paneline davet edildiniz',
             Mailer::template(
@@ -290,5 +301,17 @@ final class UserController
                 'Bu bağlantıyı kimseyle paylaşmayın. Süresi dolarsa yöneticinizden yeni bir davet isteyin.'
             )
         );
+
+        return ['sent' => $sent, 'link' => $link, 'error' => Mailer::lastError()];
+    }
+
+    /** E-posta gidemediğinde bağlantı kullanıcı listesinde elle iletilmek üzere gösterilir. */
+    private function offerManualInvite(string $name, array $invite): void
+    {
+        $_SESSION['_invite_link'] = ['name' => $name, 'url' => $invite['link']];
+
+        flash('warning', 'Davet e-postası gönderilemedi'
+            . ($invite['error'] !== null ? ' (' . $invite['error'] . ')' : '')
+            . '. Aşağıdaki bağlantıyı kullanıcıya kendiniz iletebilirsiniz.');
     }
 }
