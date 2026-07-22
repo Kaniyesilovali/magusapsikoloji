@@ -40,6 +40,7 @@ $sections = [
 </div>
 
 <p class="text-xs text-ink-light mt-6">
-  Blog yazıları ve sayfa metinleri şimdilik <a href="/admin/" class="text-primary hover:text-primary-dark">Sveltia CMS</a>
-  üzerinden düzenleniyor; panele taşınması sonraki adımda.
+  Blog yazıları ve sayfa içeriği <a href="/admin/" class="text-primary hover:text-primary-dark">Sveltia CMS</a>
+  üzerinden düzenlenir. Bu bilinçli bir ayrım: yazılar iç içe geçmiş yapısal bloklardan
+  oluşuyor ve Sveltia bunun için tasarlanmış bir editör sunuyor.
 </p>

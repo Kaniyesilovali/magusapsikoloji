@@ -324,8 +324,35 @@ Kurumun tamamlaması gerekenler:
 | 1b | Danışan kayıtları, terapist müsaitliği, randevu takvimi, çakışma kontrolü | ✅ tamam |
 | 1c | Şifreli seans notları, e-posta bildirimleri, KVKK metinleri | ✅ tamam |
 | 2a | Site verileri ve SSS içeriği (GitHub Contents API) | ✅ tamam |
-| 2b | Blog yazıları ve sayfa metinleri, Sveltia CMS'in kaldırılması | sırada |
+| 2b | Blog yazılarının panele taşınması, Sveltia'nın kaldırılması | ✗ yapılmayacak |
 | 3  | Süper admin için TOTP 2FA, WhatsApp/SMS hatırlatma, raporlar | opsiyonel |
+
+### Sveltia neden kalıyor
+
+Yol haritası "içerik yönetimi panele taşınsın, Sveltia kalksın" diye yazılmıştı; blog
+dosyalarına bakılınca bu hedefin kötü bir takas olduğu görüldü.
+
+Blog yazılarının **gövdesi boş**. İçeriğin tamamı front-matter'daki `blocks:` listesinde
+duruyor: `metin`, `kart-grid`, `kart-yigini`, `numarali-liste`, `bilgi-kutusu`, `adimlar`,
+`onayli-liste`, `ozel` — sekiz blok tipi, üç seviyeye kadar iç içe geçen listelerle
+(bloklar → kartlar → maddeler). Yani bu bir markdown yazı değil, yapılandırılmış bir
+içerik modeli ve [`admin/config.yml`](../admin/config.yml) onu 684 satırla zaten modelliyor.
+
+Paneli yerine koymak iki şey gerektirirdi: elle yazılmış bir YAML ayrıştırıcı/üretici
+(`|-` blok metinleri, tırnak içinde tırnak, iç içe liste-map'ler) ve JavaScript'siz
+formlarla üç seviyeli bir blok editörü. Round-trip'teki tek hata 43 yazının içeriğini
+bozar ve bu ancak site yayınlandıktan sonra fark edilir. Karşılığında kazanılan tek şey
+"tek yerden giriş" olurdu.
+
+Bu yüzden iş bölümü şöyle bırakıldı:
+
+| | Yönetir |
+|---|---|
+| **Panel** | Klinik işleyiş (danışan, randevu, seans notu) + operasyonel veri (iletişim, SSS, KVKK) |
+| **Sveltia** | Blog yazıları ve yapısal sayfa içeriği |
+
+Statik sayfalar (`hakkimizda`, `index`) 120–380 satırlık Nunjucks gövdesine sahip; onlar
+içerik değil şablon kodudur ve hiçbir CMS'e taşınmamalıdır.
 
 Faz 1b ve 1c şema değişikliği getirmedi — `clients`, `appointments`, `working_hours`,
 `time_off` ve `session_notes` tabloları 001_init.sql'de zaten vardı; eksik olan
