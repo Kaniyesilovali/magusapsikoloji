@@ -11,7 +11,8 @@
     "build:css": "npx @tailwindcss/cli -i ./src/input.css -o ./dist/output.css --minify",
     "build:css:panel": "npx @tailwindcss/cli -i ./src/panel.css -o ./panel/assets/panel.css --minify",
     "build": "npm run build:css && npm run build:css:panel && npx @11ty/eleventy",
-    "check": "node scripts/check-site.js"
+    "check": "node scripts/check-site.js",
+    "check:live": "node scripts/check-live.js"
   },
   "keywords": [],
   "author": "",
