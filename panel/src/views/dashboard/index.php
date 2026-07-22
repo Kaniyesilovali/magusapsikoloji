@@ -9,8 +9,15 @@ $canBook  = Rbac::can($user, 'appointment.create');
 $seesAll  = Rbac::can($user, 'appointment.view.all');
 
 // Günün özeti tek cümlede: kaç seans, ilki ne zaman, sonuncusu ne zaman biter.
+// Bitiş en geç **biten** seanstan gelir, en geç başlayandan değil: 16:00'daki
+// 90 dakikalık seans, 16:30'daki yarım saatlikten sonra biter.
 $first = $today[0] ?? null;
-$last  = $rail['slots'] === [] ? null : end($rail['slots']);
+$endsAt = null;
+foreach ($rail['slots'] as $slot) {
+    if ($endsAt === null || $slot['end'] > $endsAt) {
+        $endsAt = $slot['end'];
+    }
+}
 
 $tone = [
     'scheduled' => '',
@@ -39,7 +46,7 @@ $chip = [
       <?php else: ?>
         <span class="num"><?= count($today) ?></span> seans ·
         <span class="num"><?= e($first === null ? '' : (new DateTimeImmutable($first['starts_at']))->format('H:i')) ?></span>–<span
-              class="num"><?= e($last === null ? '' : $last['end']->format('H:i')) ?></span>
+              class="num"><?= e($endsAt === null ? '' : $endsAt->format('H:i')) ?></span>
       <?php endif; ?>
     </p>
   </div>
@@ -103,7 +110,7 @@ $chip = [
               </span>
             <?php else: ?>
               <span class="flex items-center justify-between gap-2">
-                <span class="rail-time num"><?= e($slot['start']->format('H:i')) ?>–<?= e($slot['end']->format('H:i')) ?></span>
+                <span class="rail-time num"><?= e($slot['start']->format('H:i')) ?><span class="rail-end">–<?= e($slot['end']->format('H:i')) ?></span></span>
                 <span class="chip <?= $chip[$row['status']] ?? 'chip-neutral' ?>"><?= e(Scheduling::statusLabel($row['status'])) ?></span>
               </span>
               <span class="rail-name block truncate"><?= e($row['client_name']) ?></span>

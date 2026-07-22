@@ -1,77 +1,76 @@
 <?php
 use Panel\Rbac;
 /** @var array $clients @var string $search @var string $status @var array $actor */
-
-$inputCls = 'px-3 py-2 rounded-xl border border-warm-tertiary bg-white focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm';
 ?>
 
-<header class="flex flex-wrap items-center justify-between gap-3 mb-6">
+<header class="flex flex-wrap items-end justify-between gap-4 mb-6">
   <div>
-    <h1 class="text-2xl font-semibold text-ink">Danışanlar</h1>
-    <p class="text-sm text-ink-light mt-1">
-      <?= count($clients) ?> kayıt
+    <p class="eyebrow">Merkez</p>
+    <h1 class="page-title mt-2">Danışanlar</h1>
+    <p class="page-sub">
+      <span class="num"><?= count($clients) ?></span> kayıt
       <?php if (!Rbac::can($actor, 'client.view.all')): ?> — yalnız kendi danışanlarınız<?php endif; ?>
     </p>
   </div>
   <?php if (Rbac::can($actor, 'client.create')): ?>
-    <a href="<?= e(url('/danisanlar/yeni')) ?>"
-       class="bg-primary hover:bg-primary-hover text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors">
-      Yeni danışan
-    </a>
+    <a href="<?= e(url('/danisanlar/yeni')) ?>" class="btn btn-primary">Yeni danışan</a>
   <?php endif; ?>
 </header>
 
-<form method="get" action="<?= e(url('/danisanlar')) ?>" class="mb-4 flex flex-wrap gap-2">
-  <input type="search" name="q" value="<?= e($search) ?>" placeholder="Ad, telefon veya e-posta…"
-         class="w-full sm:w-72 <?= $inputCls ?>">
-  <select name="durum" class="<?= $inputCls ?>">
+<form method="get" action="<?= e(url('/danisanlar')) ?>" class="mb-4 flex flex-wrap items-center gap-2">
+  <?php // Arama kutusunun yer tutucusu kendini anlatıyor; etiket ekran okuyucu için. ?>
+  <label for="q" class="sr-only">Ara</label>
+  <input type="search" id="q" name="q" value="<?= e($search) ?>" placeholder="Ad, telefon veya e-posta…"
+         class="field w-full sm:w-72 py-1.5 text-[0.8125rem]">
+  <label for="durum" class="eyebrow">Durum</label>
+  <select id="durum" name="durum" class="field w-auto py-1.5 text-[0.8125rem]">
     <option value="active"   <?= $status === 'active'   ? 'selected' : '' ?>>Aktif</option>
     <option value="archived" <?= $status === 'archived' ? 'selected' : '' ?>>Arşiv</option>
     <option value="all"      <?= $status === 'all'      ? 'selected' : '' ?>>Tümü</option>
   </select>
-  <button class="text-sm text-primary hover:text-primary-dark font-medium px-2">Filtrele</button>
+  <button class="btn-text">Filtrele</button>
 </form>
 
-<div class="bg-white border border-warm-tertiary rounded-2xl overflow-hidden">
+<div class="sheet">
   <?php if ($clients === []): ?>
-    <p class="px-5 py-10 text-sm text-ink-light text-center">Kayıt bulunamadı.</p>
+    <p class="sheet-empty">Kayıt bulunamadı.</p>
   <?php else: ?>
     <div class="overflow-x-auto">
-      <table class="w-full text-sm">
-        <thead class="bg-warm text-ink-muted text-xs uppercase tracking-wide">
+      <table class="tbl">
+        <thead>
           <tr>
-            <th class="text-left font-medium px-5 py-3">Ad Soyad</th>
-            <th class="text-left font-medium px-5 py-3">Terapist</th>
-            <th class="text-left font-medium px-5 py-3">Sonraki randevu</th>
-            <th class="text-left font-medium px-5 py-3">Açık rıza</th>
-            <th class="px-5 py-3"></th>
+            <th>Ad Soyad</th>
+            <th>Terapist</th>
+            <th>Sonraki randevu</th>
+            <th>Açık rıza</th>
+            <th></th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-warm-secondary">
+        <tbody>
           <?php foreach ($clients as $row): ?>
-            <tr class="hover:bg-warm/60">
-              <td class="px-5 py-3">
-                <a href="<?= e(url("/danisanlar/{$row['id']}")) ?>" class="font-medium text-ink hover:text-primary">
+            <tr>
+              <td>
+                <a href="<?= e(url("/danisanlar/{$row['id']}")) ?>" class="person text-ink hover:text-primary">
                   <?= e($row['full_name']) ?>
                 </a>
                 <?php if ($row['status'] === 'archived'): ?>
-                  <span class="text-xs px-2 py-0.5 rounded-full bg-warm-secondary text-ink-muted ml-1">Arşiv</span>
+                  <span class="chip chip-done ml-1.5">Arşiv</span>
                 <?php endif; ?>
                 <?php if ($row['phone'] !== null): ?>
-                  <br><span class="text-xs text-ink-light tabular-nums"><?= e($row['phone']) ?></span>
+                  <br><span class="text-xs text-ink-light num"><?= e($row['phone']) ?></span>
                 <?php endif; ?>
               </td>
-              <td class="px-5 py-3 text-ink-muted"><?= e($row['therapist_name'] ?? '—') ?></td>
-              <td class="px-5 py-3 text-ink-muted text-xs tabular-nums"><?= e(dt($row['next_at'])) ?></td>
-              <td class="px-5 py-3">
+              <td class="text-ink-muted"><?= e($row['therapist_name'] ?? '—') ?></td>
+              <td class="text-xs text-ink-muted num"><?= e(dt($row['next_at'])) ?></td>
+              <td>
                 <?php if ($row['consent_at'] !== null): ?>
-                  <span class="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary-dark">Alındı</span>
+                  <span class="chip chip-go">Alındı</span>
                 <?php else: ?>
-                  <span class="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-900">Eksik</span>
+                  <span class="chip chip-stop">Eksik</span>
                 <?php endif; ?>
               </td>
-              <td class="px-5 py-3 text-right whitespace-nowrap">
-                <a href="<?= e(url("/danisanlar/{$row['id']}")) ?>" class="text-primary hover:text-primary-dark text-xs font-medium">Aç</a>
+              <td class="text-right whitespace-nowrap">
+                <a href="<?= e(url("/danisanlar/{$row['id']}")) ?>" class="btn-text btn-text-quiet">Aç</a>
               </td>
             </tr>
           <?php endforeach; ?>

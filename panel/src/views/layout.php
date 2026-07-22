@@ -49,7 +49,7 @@ $isActive = static fn (string $path): bool
 <meta name="robots" content="noindex, nofollow">
 <title><?= e($title ?? 'Panel') ?> — Mağusa Psikoloji</title>
 <link rel="icon" href="/assets/images/favicon.png">
-<link rel="stylesheet" href="<?= e(url('/assets/panel.css')) ?>">
+<link rel="stylesheet" href="<?= e(asset('/assets/panel.css')) ?>">
 </head>
 <body class="min-h-screen font-sans">
 
@@ -148,6 +148,6 @@ $isActive = static fn (string $path): bool
   </main>
 </div>
 
-<script src="<?= e(url('/assets/panel.js')) ?>" defer></script>
+<script src="<?= e(asset('/assets/panel.js')) ?>" defer></script>
 </body>
 </html>

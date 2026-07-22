@@ -56,8 +56,7 @@ final class Rail
 
         usort($items, static fn (array $a, array $b): int => $a['startMin'] <=> $b['startMin']);
 
-        // 2) Pencere: randevuları tam saate yuvarlayarak sar. "Şimdi" bugünün
-        //    penceresine girmiyorsa çizgi de görünmez, o yüzden onu da kapsa.
+        // 2) Pencere: randevuları tam saate yuvarlayarak sar.
         $nowMin = ($now !== null && $now->format('Y-m-d') === $dayKey)
             ? (int) $now->format('G') * 60 + (int) $now->format('i')
             : null;
@@ -73,9 +72,17 @@ final class Rail
             )) / 60);
         }
 
+        // "Şimdi" pencereye bitişikse pencere onu kapsayacak kadar genişler.
+        // Uzaktaysa (gün bittikten saatler sonra) çizgi hiç çizilmez — yoksa
+        // gece 23:00'te sırf çizgiyi göstermek için 14 saatlik cetvel çizilirdi.
         if ($nowMin !== null) {
-            $startHour = min($startHour, (int) floor($nowMin / 60));
-            $endHour   = max($endHour, (int) ceil(($nowMin + 30) / 60));
+            $nowHour = (int) floor($nowMin / 60);
+            if ($nowHour >= $startHour - 1 && $nowHour <= $endHour) {
+                $startHour = min($startHour, $nowHour);
+                $endHour   = max($endHour, $nowHour + 1);
+            } else {
+                $nowMin = null;
+            }
         }
 
         // En az 4 saat göster: tek randevulu bir gün ezilmiş bir şerit olmasın.
@@ -92,38 +99,55 @@ final class Rail
 
         // 3) Şerit dağıtımı. Üst üste binen randevular yan yana durur — ön büro
         //    tüm terapistleri tek cetvelde görüyor, çakışma orada normaldir.
-        $laneEnds = [];   // şerit → o şeritteki son randevunun bitiş dakikası
-        foreach ($items as $index => $item) {
-            $lane = 0;
-            while (isset($laneEnds[$lane]) && $laneEnds[$lane] > $item['startMin']) {
-                $lane++;
+        //
+        //    Şerit sayısı randevu başına değil **küme** başına hesaplanır. Zincir
+        //    çakışmada (A-B çakışır, B-C çakışır, A-C çakışmaz) randevu başına
+        //    saymak A'ya 1/2, B'ye 2/3 verirdi ve iki kutu birbirinin üstüne
+        //    binerdi. Küme = birbirine değen randevuların tamamı; hepsi aynı
+        //    bölmeyi paylaşır. Sabah tek başına duran seans da öğleden sonraki
+        //    üçlü çakışma yüzünden daralmaz, çünkü o ayrı bir kümedir.
+        $clusters    = [];
+        $current     = [];
+        $clusterEnd  = null;
+
+        foreach ($items as $item) {
+            if ($clusterEnd !== null && $item['startMin'] >= $clusterEnd) {
+                $clusters[] = $current;
+                $current    = [];
+                $clusterEnd = null;
             }
-            $laneEnds[$lane]        = $item['startMin'] + $item['durMin'];
-            $items[$index]['lane']  = $lane;
+            $current[]  = $item;
+            $clusterEnd = max($clusterEnd ?? 0, $item['startMin'] + $item['durMin']);
+        }
+        if ($current !== []) {
+            $clusters[] = $current;
         }
 
-        // Kaç şerit gerektiğini randevunun kendi kümesi belirler: sabah tek başına
-        // duran bir seans, öğleden sonraki üçlü çakışma yüzünden daralmasın.
         $slots = [];
-        foreach ($items as $item) {
-            $concurrent = 0;
-            foreach ($items as $other) {
-                if ($other['startMin'] < $item['startMin'] + $item['durMin']
-                    && $item['startMin'] < $other['startMin'] + $other['durMin']) {
-                    $concurrent++;
+        foreach ($clusters as $cluster) {
+            $laneEnds = [];   // şerit → o şeritteki son randevunun bitiş dakikası
+            $assigned = [];
+            foreach ($cluster as $item) {
+                $lane = 0;
+                while (isset($laneEnds[$lane]) && $laneEnds[$lane] > $item['startMin']) {
+                    $lane++;
                 }
+                $laneEnds[$lane] = $item['startMin'] + $item['durMin'];
+                $assigned[]      = [$item, $lane];
             }
-            $lanes = min(self::MAX_LANES, max(1, $concurrent));
+            $lanes = min(self::MAX_LANES, max(1, count($laneEnds)));
 
-            $slots[] = [
-                'row'   => $item['row'],
-                'start' => $item['start'],
-                'end'   => $item['end'],
-                'at'    => self::clampUnits((int) round(($item['startMin'] - $windowStart) / self::UNIT), self::MAX_UNITS),
-                'dur'   => max(1, self::clampUnits((int) round($item['durMin'] / self::UNIT), self::MAX_DUR)),
-                'lane'  => min($lanes, $item['lane'] + 1),
-                'lanes' => $lanes,
-            ];
+            foreach ($assigned as [$item, $lane]) {
+                $slots[] = [
+                    'row'   => $item['row'],
+                    'start' => $item['start'],
+                    'end'   => $item['end'],
+                    'at'    => self::clampUnits((int) round(($item['startMin'] - $windowStart) / self::UNIT), self::MAX_UNITS),
+                    'dur'   => max(1, self::clampUnits((int) round($item['durMin'] / self::UNIT), self::MAX_DUR)),
+                    'lane'  => min($lanes, $lane + 1),
+                    'lanes' => $lanes,
+                ];
+            }
         }
 
         return [

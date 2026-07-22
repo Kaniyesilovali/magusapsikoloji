@@ -17,6 +17,22 @@ function url(string $path = '/'): string
     return PANEL_BASE . '/' . ltrim($path, '/');
 }
 
+/**
+ * Panel varlığının sürümlü adresi: /panel/assets/panel.css?v=1753203041
+ *
+ * Yalnız no-cache başlığına güvenmek yetmedi — hem Cloudflare hem tarayıcı
+ * yeniden doğrulamadan eski kopyayı sunabiliyor ve panel bir deploy sonrası
+ * eski CSS ile açılıyordu (bkz. c5bc4b1, f9f122d). Dosya değiştiğinde adres de
+ * değişirse hiçbir önbellek eskisini veremez; başlıklara gerek kalmaz.
+ */
+function asset(string $path): string
+{
+    $file = PANEL_ROOT . '/' . ltrim($path, '/');
+    $stamp = is_file($file) ? filemtime($file) : false;
+
+    return url($path) . ($stamp === false ? '' : '?v=' . $stamp);
+}
+
 /** Panel köküne göre geçerli yol — menüde aktif bağlantıyı işaretlemek için. */
 function current_path(): string
 {

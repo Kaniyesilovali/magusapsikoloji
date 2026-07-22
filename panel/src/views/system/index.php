@@ -4,51 +4,54 @@ use Panel\Csrf;
 ?>
 
 <header class="mb-6">
-  <h1 class="text-2xl font-semibold text-ink">Sistem</h1>
-  <p class="text-sm text-ink-light mt-1">Sunucu durumu ve veritabanı güncellemeleri.</p>
+  <p class="eyebrow">Yönetim</p>
+  <h1 class="page-title mt-2">Sistem</h1>
+  <p class="page-sub">Sunucu durumu ve veritabanı güncellemeleri.</p>
 </header>
 
 <?php if ($pending !== []): ?>
-  <section class="bg-white border border-amber-200 rounded-2xl p-6 mb-6">
-    <h2 class="font-medium text-ink mb-1">Bekleyen veritabanı güncellemesi</h2>
-    <p class="text-sm text-ink-muted mb-4">
-      Panelin yeni sürümü, veritabanında henüz bulunmayan tablo veya alanlar kullanıyor.
-      Uygulanmadan ilgili ekranlar hata verir.
-    </p>
+  <?php // Bekleyen göç bir uyarı değil, bir karar: rozet clay, yaprağın kendisi sakin. ?>
+  <section class="sheet mb-6">
+    <div class="sheet-head">
+      <h2 class="sheet-title">Bekleyen veritabanı güncellemesi</h2>
+      <span class="chip chip-stop">uygulanmadı</span>
+    </div>
+    <div class="sheet-body">
+      <p class="text-sm text-ink-muted mb-4">
+        Panelin yeni sürümü, veritabanında henüz bulunmayan tablo veya alanlar kullanıyor.
+        Uygulanmadan ilgili ekranlar hata verir.
+      </p>
 
-    <ul class="text-sm text-ink font-mono bg-warm rounded-xl px-4 py-3 mb-4 space-y-1">
-      <?php foreach ($pending as $file): ?>
-        <li><?= e($file) ?></li>
-      <?php endforeach; ?>
-    </ul>
+      <ul class="text-sm text-ink font-mono bg-warm rounded-md px-4 py-3 mb-4 space-y-1">
+        <?php foreach ($pending as $file): ?>
+          <li><?= e($file) ?></li>
+        <?php endforeach; ?>
+      </ul>
 
-    <form method="post" action="<?= e(url('/sistem/guncelle')) ?>"
-          data-confirm="Veritabanı güncellemesi uygulanacak. Bu işlem geri alınamaz. Önce yedek aldığınızdan emin olun. Devam edilsin mi?">
-      <?= Csrf::field() ?>
-      <button class="bg-primary hover:bg-primary-hover text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors">
-        Bekleyen güncellemeleri uygula
-      </button>
-    </form>
+      <form method="post" action="<?= e(url('/sistem/guncelle')) ?>"
+            data-confirm="Veritabanı güncellemesi uygulanacak. Bu işlem geri alınamaz. Önce yedek aldığınızdan emin olun. Devam edilsin mi?">
+        <?= Csrf::field() ?>
+        <button class="btn btn-primary">Bekleyen güncellemeleri uygula</button>
+      </form>
 
-    <p class="text-xs text-ink-light mt-3">
-      Uygulamadan önce cPanel → yedekleme ekranından veritabanının yedeğini almanız önerilir.
-    </p>
+      <p class="field-hint">
+        Uygulamadan önce cPanel → yedekleme ekranından veritabanının yedeğini almanız önerilir.
+      </p>
+    </div>
   </section>
 <?php else: ?>
-  <div class="mb-6 px-4 py-3 rounded-xl border border-warm-tertiary bg-white text-sm text-ink-muted">
-    Veritabanı güncel — bekleyen güncelleme yok.
-  </div>
+  <div class="note note-info mb-6">Veritabanı güncel — bekleyen güncelleme yok.</div>
 <?php endif; ?>
 
-<section class="bg-white border border-warm-tertiary rounded-2xl overflow-hidden mb-6">
-  <div class="px-5 py-4 border-b border-warm-tertiary">
-    <h2 class="font-medium text-ink">Sunucu durumu</h2>
+<section class="sheet mb-6">
+  <div class="sheet-head">
+    <h2 class="sheet-title">Sunucu durumu</h2>
   </div>
   <ul class="divide-y divide-warm-secondary">
     <?php foreach ($checks as $check): ?>
       <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
         <span class="text-sm text-ink w-56 shrink-0"><?= e($check['label']) ?></span>
-        <span class="text-xs px-2 py-0.5 rounded-full <?= $check['ok'] ? 'bg-primary/10 text-primary-dark' : 'bg-amber-100 text-amber-900' ?>">
+        <span class="chip <?= $check['ok'] ? 'chip-go' : 'chip-stop' ?>">
           <?= $check['ok'] ? 'tamam' : 'dikkat' ?>
         </span>
         <span class="text-xs text-ink-light flex-1 min-w-48"><?= e($check['detail']) ?></span>
@@ -57,13 +60,15 @@ use Panel\Csrf;
   </ul>
 </section>
 
-<section class="bg-white border border-warm-tertiary rounded-2xl overflow-hidden mb-6">
-  <div class="px-5 py-4 border-b border-warm-tertiary">
-    <h2 class="font-medium text-ink">Randevu hatırlatmaları</h2>
-    <p class="text-xs text-ink-light mt-1">
-      Danışanlara, randevudan <?= (int) $reminder['hours'] ?> saat önce e-posta gider.
-      Gönderimi cPanel'deki cron çalıştırır; panel kendi kendine tetiklemez.
-    </p>
+<section class="sheet mb-6">
+  <div class="sheet-head">
+    <div>
+      <h2 class="sheet-title">Randevu hatırlatmaları</h2>
+      <p class="text-xs text-ink-light mt-1">
+        Danışanlara, randevudan <span class="num"><?= (int) $reminder['hours'] ?></span> saat önce e-posta gider.
+        Gönderimi cPanel'deki cron çalıştırır; panel kendi kendine tetiklemez.
+      </p>
+    </div>
   </div>
 
   <?php if (!$reminder['ready']): ?>
@@ -74,7 +79,7 @@ use Panel\Csrf;
     <ul class="divide-y divide-warm-secondary">
       <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
         <span class="text-sm text-ink w-56 shrink-0">Durum</span>
-        <span class="text-xs px-2 py-0.5 rounded-full <?= $reminder['enabled'] ? 'bg-primary/10 text-primary-dark' : 'bg-warm-secondary text-ink-muted' ?>">
+        <span class="chip <?= $reminder['enabled'] ? 'chip-go' : 'chip-neutral' ?>">
           <?= $reminder['enabled'] ? 'açık' : 'kapalı' ?>
         </span>
         <span class="text-xs text-ink-light flex-1 min-w-48">
@@ -83,10 +88,10 @@ use Panel\Csrf;
       </li>
       <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
         <span class="text-sm text-ink w-56 shrink-0">Son çalışma</span>
-        <span class="text-xs px-2 py-0.5 rounded-full <?= $reminder['lastRun'] === null ? 'bg-amber-100 text-amber-900' : 'bg-primary/10 text-primary-dark' ?>">
+        <span class="chip <?= $reminder['lastRun'] === null ? 'chip-stop' : 'chip-go' ?>">
           <?= $reminder['lastRun'] === null ? 'hiç çalışmadı' : 'çalıştı' ?>
         </span>
-        <span class="text-xs text-ink-light flex-1 min-w-48 tabular-nums">
+        <span class="text-xs text-ink-light flex-1 min-w-48 num">
           <?php if ($reminder['lastRun'] === null): ?>
             Cron kurulmamış olabilir — aşağıdaki komutu cPanel → Cron Jobs ekranına ekleyin.
           <?php else: ?>
@@ -97,33 +102,33 @@ use Panel\Csrf;
       <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
         <span class="text-sm text-ink w-56 shrink-0">Sıradaki gönderim</span>
         <span class="text-xs text-ink-light flex-1 min-w-48">
-          <?= (int) $reminder['queued'] ?> randevu bekliyor
-          (önümüzdeki <?= (int) $reminder['hours'] ?> saat, e-posta adresi kayıtlı olanlar)
+          <span class="num"><?= (int) $reminder['queued'] ?></span> randevu bekliyor
+          (önümüzdeki <span class="num"><?= (int) $reminder['hours'] ?></span> saat, e-posta adresi kayıtlı olanlar)
         </span>
       </li>
     </ul>
 
-    <div class="px-5 py-4 border-t border-warm-tertiary bg-warm/50">
+    <div class="sheet-foot">
       <p class="text-xs text-ink-muted mb-2">
         cPanel → <strong>Cron Jobs</strong> → “Saatte bir” (<code>0 * * * *</code>) seçip komutu yapıştırın:
       </p>
-      <pre class="text-xs bg-white border border-warm-tertiary rounded-xl p-3 overflow-x-auto"><code>/usr/local/bin/php <?= e(dirname(PANEL_ROOT)) ?>/panel/cron/reminders.php</code></pre>
+      <pre class="text-xs bg-white border border-warm-tertiary rounded-md p-3 overflow-x-auto"><code>/usr/local/bin/php <?= e(dirname(PANEL_ROOT)) ?>/panel/cron/reminders.php</code></pre>
     </div>
   <?php endif; ?>
 </section>
 
-<section class="bg-white border border-warm-tertiary rounded-2xl overflow-hidden">
-  <div class="px-5 py-4 border-b border-warm-tertiary">
-    <h2 class="font-medium text-ink">Uygulanmış güncellemeler</h2>
+<section class="sheet">
+  <div class="sheet-head">
+    <h2 class="sheet-title">Uygulanmış güncellemeler</h2>
   </div>
   <?php if ($applied === []): ?>
-    <p class="px-5 py-6 text-sm text-ink-light">Kayıt yok.</p>
+    <p class="sheet-empty">Kayıt yok.</p>
   <?php else: ?>
     <ul class="divide-y divide-warm-secondary">
       <?php foreach ($applied as $row): ?>
         <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
           <span class="text-sm text-ink font-mono flex-1 min-w-48"><?= e($row['filename']) ?></span>
-          <span class="text-xs text-ink-light tabular-nums"><?= e(dt($row['applied_at'])) ?></span>
+          <span class="text-xs text-ink-light num"><?= e(dt($row['applied_at'])) ?></span>
         </li>
       <?php endforeach; ?>
     </ul>

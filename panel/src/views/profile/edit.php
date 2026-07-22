@@ -2,55 +2,63 @@
 use Panel\Csrf;
 use Panel\Rbac;
 /** @var array $user */
-$inputCls = 'w-full px-3 py-2.5 rounded-xl border border-warm-tertiary bg-warm focus:bg-white focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm';
+// E-posta değiştirilemez; alan gibi görünsün ama alan olmadığı belli olsun.
+$readonlyCls = 'field bg-warm-secondary text-ink-muted';
 ?>
 
+<div class="max-w-2xl">
+
 <header class="mb-6">
-  <h1 class="text-2xl font-semibold text-ink">Profilim</h1>
-  <p class="text-sm text-ink-light mt-1"><?= e(Rbac::label($user['role'])) ?></p>
+  <p class="eyebrow">Hesap</p>
+  <h1 class="page-title mt-2">Profilim</h1>
+  <p class="page-sub"><?= e(Rbac::label($user['role'])) ?></p>
 </header>
 
-<form method="post" action="<?= e(url('/profil')) ?>" class="bg-white border border-warm-tertiary rounded-2xl p-6 space-y-5 max-w-xl">
-  <?= Csrf::field() ?>
+<form method="post" action="<?= e(url('/profil')) ?>" class="sheet">
+  <div class="sheet-body space-y-5">
+    <?= Csrf::field() ?>
 
-  <div>
-    <label for="full_name" class="block text-sm font-medium text-ink mb-1.5">Ad Soyad</label>
-    <input type="text" id="full_name" name="full_name" required class="<?= $inputCls ?>"
-           value="<?= e(old('full_name', (string) $user['full_name'])) ?>">
-    <?php if ($message = error_for('full_name')): ?>
-      <p class="text-xs text-accent-dark mt-1.5"><?= e($message) ?></p>
-    <?php endif; ?>
+    <div>
+      <label for="full_name" class="field-label">Ad Soyad</label>
+      <input type="text" id="full_name" name="full_name" required class="field"
+             value="<?= e(old('full_name', (string) $user['full_name'])) ?>">
+      <?php if ($message = error_for('full_name')): ?>
+        <p class="field-error"><?= e($message) ?></p>
+      <?php endif; ?>
+    </div>
+
+    <div>
+      <label for="phone" class="field-label">Telefon</label>
+      <input type="tel" id="phone" name="phone" class="field"
+             value="<?= e(old('phone', (string) ($user['phone'] ?? ''))) ?>">
+      <?php if ($message = error_for('phone')): ?>
+        <p class="field-error"><?= e($message) ?></p>
+      <?php endif; ?>
+    </div>
+
+    <div>
+      <?php // Girdi olmadığı için <label> değil: label'ın "for"u yalnız alanları gösterebilir. ?>
+      <p class="field-label">E-posta</p>
+      <p class="<?= $readonlyCls ?>"><?= e($user['email']) ?></p>
+      <p class="field-hint">
+        E-posta aynı zamanda giriş bilginizdir; değişikliği yöneticinizden isteyin.
+      </p>
+    </div>
   </div>
 
-  <div>
-    <label for="phone" class="block text-sm font-medium text-ink mb-1.5">Telefon</label>
-    <input type="tel" id="phone" name="phone" class="<?= $inputCls ?>"
-           value="<?= e(old('phone', (string) ($user['phone'] ?? ''))) ?>">
-    <?php if ($message = error_for('phone')): ?>
-      <p class="text-xs text-accent-dark mt-1.5"><?= e($message) ?></p>
-    <?php endif; ?>
-  </div>
-
-  <div>
-    <label class="block text-sm font-medium text-ink mb-1.5">E-posta</label>
-    <p class="px-3 py-2.5 rounded-xl bg-warm-secondary text-sm text-ink-muted"><?= e($user['email']) ?></p>
-    <p class="text-xs text-ink-light mt-1.5">E-posta aynı zamanda giriş bilginizdir; değişikliği yöneticinizden isteyin.</p>
-  </div>
-
-  <div class="pt-1">
-    <button type="submit" class="bg-primary hover:bg-primary-hover text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors">
-      Kaydet
-    </button>
+  <div class="sheet-foot">
+    <button type="submit" class="btn btn-primary">Kaydet</button>
   </div>
 </form>
 
-<div class="bg-white border border-warm-tertiary rounded-2xl p-6 mt-4 max-w-xl">
-  <h2 class="font-medium text-ink">Şifre</h2>
-  <p class="text-sm text-ink-light mt-1 mb-4">
-    Son giriş: <?= e(dt($user['last_login_at'])) ?>
-  </p>
-  <a href="<?= e(url('/profil/sifre')) ?>"
-     class="inline-block border border-warm-tertiary hover:border-primary hover:text-primary text-sm font-medium px-4 py-2.5 rounded-xl transition-colors">
-    Şifremi değiştir
-  </a>
+<div class="sheet mt-4">
+  <div class="sheet-body">
+    <h2 class="sheet-title">Şifre</h2>
+    <p class="text-sm text-ink-light mt-1 mb-4">
+      Son giriş: <span class="num"><?= e(dt($user['last_login_at'])) ?></span>
+    </p>
+    <a href="<?= e(url('/profil/sifre')) ?>" class="btn btn-quiet">Şifremi değiştir</a>
+  </div>
+</div>
+
 </div>

@@ -253,6 +253,12 @@ details > summary::-webkit-details-marker {
     color: var(--color-ink-light);
     margin-top: 0.35rem;
   }
+  /* Alan altı hata metni. field-hint'in soluk grisi hata için yeterli değildi. */
+  .field-error {
+    font-size: 0.75rem;
+    color: var(--color-accent-dark);
+    margin-top: 0.35rem;
+  }
 
   /* ── Rozet ─────────────────────────────────────────────────────────── */
   .chip {
@@ -297,7 +303,7 @@ details > summary::-webkit-details-marker {
   }
   .note-ok   { border-color: var(--color-primary); background: var(--color-primary-soft); color: var(--color-primary-dark); }
   .note-stop { border-color: var(--color-accent);  background: var(--color-accent-soft);  color: var(--color-accent-dark); }
-  .note-info { border-color: var(--color-warm-tertiary); background: #fff; color: var(--color-ink-muted); }
+  .note-info { border-color: var(--color-warm-tertiary); background: var(--color-warm); color: var(--color-ink-muted); }
 
   /* ── Kenar çubuğu ──────────────────────────────────────────────────── */
   .nav-link {
@@ -399,7 +405,12 @@ details > summary::-webkit-details-marker {
 /* Gelmedi: saat planlanmıştı ama seans olmadı — yeri durur, dolgusu durmaz. */
 .rail-slot.is-off       { background: transparent; border-style: dashed; border-color: rgb(158 82 56 / 0.55); }
 .rail-slot.is-off .rail-name { color: var(--color-ink-muted); }
-.rail-time { font-size: 0.75rem; font-variant-numeric: tabular-nums; color: var(--color-ink-muted); }
+.rail-time { font-size: 0.75rem; font-variant-numeric: tabular-nums; color: var(--color-ink-muted); white-space: nowrap; }
+/* Dar ekranda yan yana duran iki seansta saat aralığı iki satıra kırılıp altındaki
+   satırı kutunun dışına itiyordu. Çakışma yoksa aralık tam yazılır. */
+@media (max-width: 40rem) {
+  .rail-slot:not(.lane-1-1) .rail-end { display: none; }
+}
 .rail-name { font-family: var(--font-serif); font-size: 0.9375rem; font-weight: 500; color: var(--color-ink); }
 .rail-meta { font-size: 0.6875rem; color: var(--color-ink-light); }
 

@@ -6,22 +6,25 @@ $editUrl = static fn (string $type, string $key, string $lang): string
 ?>
 
 <header class="mb-6">
-  <h1 class="text-2xl font-semibold text-ink">SSS içeriği</h1>
-  <p class="text-sm text-ink-light mt-1">
+  <p class="eyebrow">Site içeriği</p>
+  <h1 class="page-title mt-2">SSS içeriği</h1>
+  <p class="page-sub">
     Sayfalara gömülen konu blokları ve SSS sayfasının kategorileri. Değişiklik kaydedildiğinde
     site yeniden yayınlanır.
   </p>
 </header>
 
-<section class="bg-white border border-warm-tertiary rounded-2xl overflow-hidden mb-6">
-  <div class="px-5 py-4 border-b border-warm-tertiary">
-    <h2 class="font-medium text-ink">SSS sayfası kategorileri</h2>
-    <p class="text-xs text-ink-light mt-1">Sitedeki SSS sayfasında başlıklar hâlinde görünür.</p>
+<section class="sheet mb-6">
+  <div class="sheet-head">
+    <div>
+      <h2 class="sheet-title">SSS sayfası kategorileri</h2>
+      <p class="text-xs text-ink-light mt-1">Sitedeki SSS sayfasında başlıklar hâlinde görünür.</p>
+    </div>
   </div>
 
   <?php foreach ($langs as $lang => $langLabel): ?>
     <div class="px-5 py-4 <?= $lang !== array_key_first($langs) ? 'border-t border-warm-secondary' : '' ?>">
-      <p class="text-xs uppercase tracking-wide text-ink-muted mb-2"><?= e($langLabel) ?></p>
+      <p class="eyebrow mb-2"><?= e($langLabel) ?></p>
       <?php if (empty($categories[$lang])): ?>
         <p class="text-sm text-ink-light">Kategori yok.</p>
       <?php else: ?>
@@ -29,9 +32,9 @@ $editUrl = static fn (string $type, string $key, string $lang): string
           <?php foreach ($categories[$lang] as $category): ?>
             <li class="py-2.5 flex flex-wrap items-center gap-x-4 gap-y-1">
               <span class="text-sm text-ink flex-1 min-w-48"><?= e($category['title']) ?></span>
-              <span class="text-xs text-ink-light"><?= (int) $category['count'] ?> soru</span>
+              <span class="text-xs text-ink-light"><span class="num"><?= (int) $category['count'] ?></span> soru</span>
               <a href="<?= e($editUrl('sayfa', $category['id'], $lang)) ?>"
-                 class="text-xs text-primary hover:text-primary-dark font-medium">Düzenle</a>
+                 class="btn-text btn-text-quiet">Düzenle</a>
             </li>
           <?php endforeach; ?>
         </ul>
@@ -40,33 +43,35 @@ $editUrl = static fn (string $type, string $key, string $lang): string
   <?php endforeach; ?>
 </section>
 
-<section class="bg-white border border-warm-tertiary rounded-2xl overflow-hidden">
-  <div class="px-5 py-4 border-b border-warm-tertiary">
-    <h2 class="font-medium text-ink">Konu blokları</h2>
-    <p class="text-xs text-ink-light mt-1">
-      <?= count($topics) ?> konu. Blog yazılarının ve hizmet sayfalarının altındaki
-      soru-cevap bölümlerini besler; arama motorlarına da bu içerik sunulur.
-    </p>
+<section class="sheet">
+  <div class="sheet-head">
+    <div>
+      <h2 class="sheet-title">Konu blokları</h2>
+      <p class="text-xs text-ink-light mt-1">
+        <span class="num"><?= count($topics) ?></span> konu. Blog yazılarının ve hizmet sayfalarının
+        altındaki soru-cevap bölümlerini besler; arama motorlarına da bu içerik sunulur.
+      </p>
+    </div>
   </div>
 
   <div class="overflow-x-auto">
-    <table class="w-full text-sm">
-      <thead class="bg-warm text-ink-muted text-xs uppercase tracking-wide">
+    <table class="tbl">
+      <thead>
         <tr>
-          <th class="text-left font-medium px-5 py-3">Konu</th>
+          <th>Konu</th>
           <?php foreach ($langs as $langLabel): ?>
-            <th class="text-left font-medium px-5 py-3"><?= e($langLabel) ?></th>
+            <th><?= e($langLabel) ?></th>
           <?php endforeach; ?>
         </tr>
       </thead>
-      <tbody class="divide-y divide-warm-secondary">
+      <tbody>
         <?php foreach ($topics as $slug => $counts): ?>
-          <tr class="hover:bg-warm/60">
-            <td class="px-5 py-3 text-ink font-medium"><?= e($slug) ?></td>
+          <tr>
+            <td class="text-ink font-medium"><?= e($slug) ?></td>
             <?php foreach ($langs as $lang => $ignored): ?>
-              <td class="px-5 py-3">
-                <a href="<?= e($editUrl('konu', (string) $slug, $lang)) ?>" class="text-primary hover:text-primary-dark">
-                  <?= (int) $counts[$lang] ?> soru
+              <td>
+                <a href="<?= e($editUrl('konu', (string) $slug, $lang)) ?>" class="btn-text">
+                  <span class="num"><?= (int) $counts[$lang] ?></span> soru
                 </a>
               </td>
             <?php endforeach; ?>

@@ -3,29 +3,32 @@ use Panel\Csrf;
 /** @var string $type @var string $key @var string $lang @var string $label @var string $heading */
 /** @var array $items @var string $sha @var array $langs @var array $actor */
 
-$inputCls = 'w-full px-3 py-2.5 rounded-xl border border-warm-tertiary bg-warm focus:bg-white focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm';
-$rows     = count($items);
+$rows = count($items);
 ?>
 
+<div class="max-w-2xl">
+
 <header class="mb-6">
-  <a href="<?= e(url('/icerik/sss')) ?>" class="text-sm text-ink-muted hover:text-ink">← SSS içeriği</a>
-  <h1 class="text-2xl font-semibold text-ink mt-2"><?= e($heading) ?></h1>
-  <p class="text-sm text-ink-light mt-1">
-    <?= e($label) ?> · <?= e($langs[$lang] ?? $lang) ?> · <?= $rows ?> soru
+  <a href="<?= e(url('/icerik/sss')) ?>" class="btn-text btn-text-quiet">← SSS içeriği</a>
+  <p class="eyebrow mt-3">SSS içeriği</p>
+  <h1 class="page-title mt-2"><?= e($heading) ?></h1>
+  <p class="page-sub">
+    <?= e($label) ?> · <?= e($langs[$lang] ?? $lang) ?> · <span class="num"><?= $rows ?></span> soru
   </p>
 
   <?php // Aynı içeriğin diğer dildeki karşılığına hızlı geçiş. ?>
   <nav class="flex gap-2 mt-3">
     <?php foreach ($langs as $code => $langLabel): ?>
       <a href="<?= e(url('/icerik/sss-duzenle?tip=' . rawurlencode($type) . '&anahtar=' . rawurlencode($key) . '&dil=' . $code)) ?>"
-         class="text-xs px-3 py-1.5 rounded-lg <?= $code === $lang ? 'bg-primary text-white' : 'bg-white border border-warm-tertiary text-ink-muted hover:text-ink' ?>">
+         class="btn btn-sm <?= $code === $lang ? 'btn-primary' : 'btn-quiet' ?>"
+         <?= $code === $lang ? 'aria-current="page"' : '' ?>>
         <?= e($langLabel) ?>
       </a>
     <?php endforeach; ?>
   </nav>
 </header>
 
-<div class="mb-4 px-4 py-3 rounded-xl border border-warm-tertiary bg-white text-sm text-ink-muted">
+<div class="note note-info mb-4">
   Kaydettiğinizde değişiklik depoya işlenir ve site yeniden yayınlanır — yayına yansıması
   birkaç dakika sürer. İki dil ayrı ayrı kaydedilir.
 </div>
@@ -38,9 +41,12 @@ $rows     = count($items);
   <input type="hidden" name="dil" value="<?= e($lang) ?>">
 
   <?php if ($type === 'sayfa'): ?>
-    <div class="bg-white border border-warm-tertiary rounded-2xl p-5">
-      <label for="kategori_basligi" class="block text-sm font-medium text-ink mb-1.5">Kategori başlığı</label>
-      <input type="text" id="kategori_basligi" name="kategori_basligi" class="<?= $inputCls ?>" value="<?= e($heading) ?>">
+    <div class="sheet">
+      <div class="sheet-body">
+        <label for="kategori_basligi" class="field-label">Kategori başlığı</label>
+        <input type="text" id="kategori_basligi" name="kategori_basligi" class="field"
+               value="<?= e($heading) ?>">
+      </div>
     </div>
   <?php endif; ?>
 
@@ -53,32 +59,38 @@ $rows     = count($items);
     $question = (string) ($item['q'] ?? '');
     $answer   = (string) ($item['a'] ?? '');
     ?>
-    <div class="bg-white border rounded-2xl p-5 space-y-3 <?= $isNew ? 'border-dashed border-warm-tertiary' : 'border-warm-tertiary' ?>">
-      <div class="flex items-center justify-between gap-3">
-        <span class="text-xs text-ink-light"><?= $isNew ? 'Yeni kayıt' : '#' . ($i + 1) ?></span>
-        <?php if (!$isNew): ?>
-          <label class="flex items-center gap-1.5 text-xs text-accent-dark cursor-pointer">
-            <input type="checkbox" name="sil[<?= $i ?>]" value="1" class="w-3.5 h-3.5 accent-primary">
-            bu satırı sil
-          </label>
-        <?php endif; ?>
-      </div>
+    <?php // Boş satırlar kesikli çerçeveyle "henüz doldurulmadı" der. ?>
+    <div class="sheet <?= $isNew ? 'border-dashed' : '' ?>">
+      <div class="sheet-body space-y-3">
+        <div class="flex items-center justify-between gap-3">
+          <span class="text-xs text-ink-light"><?= $isNew ? 'Yeni kayıt' : '#' . ($i + 1) ?></span>
+          <?php if (!$isNew): ?>
+            <label for="sil_<?= $i ?>"
+                   class="flex items-center gap-1.5 text-xs text-ink-light hover:text-accent-dark cursor-pointer">
+              <input type="checkbox" id="sil_<?= $i ?>" name="sil[<?= $i ?>]" value="1"
+                     class="w-3.5 h-3.5 accent-primary">
+              bu satırı sil
+            </label>
+          <?php endif; ?>
+        </div>
 
-      <div>
-        <label class="block text-xs text-ink-muted mb-1">Soru</label>
-        <input type="text" name="q[<?= $i ?>]" class="<?= $inputCls ?>" value="<?= e($question) ?>">
-      </div>
-      <div>
-        <label class="block text-xs text-ink-muted mb-1">Cevap</label>
-        <textarea name="a[<?= $i ?>]" rows="4" class="<?= $inputCls ?> leading-relaxed"><?= e($answer) ?></textarea>
+        <div>
+          <label for="q_<?= $i ?>" class="field-label">Soru</label>
+          <input type="text" id="q_<?= $i ?>" name="q[<?= $i ?>]" class="field" value="<?= e($question) ?>">
+        </div>
+        <div>
+          <label for="a_<?= $i ?>" class="field-label">Cevap</label>
+          <textarea id="a_<?= $i ?>" name="a[<?= $i ?>]" rows="4"
+                    class="field leading-relaxed"><?= e($answer) ?></textarea>
+        </div>
       </div>
     </div>
   <?php endfor; ?>
 
-  <div class="flex gap-3 pt-1">
-    <button type="submit" class="bg-primary hover:bg-primary-hover text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors">
-      Kaydet ve yayınla
-    </button>
-    <a href="<?= e(url('/icerik/sss')) ?>" class="text-sm text-ink-muted hover:text-ink px-4 py-2.5">Vazgeç</a>
+  <div class="flex items-center gap-4 pt-1">
+    <button type="submit" class="btn btn-primary">Kaydet ve yayınla</button>
+    <a href="<?= e(url('/icerik/sss')) ?>" class="btn-text btn-text-quiet">Vazgeç</a>
   </div>
 </form>
+
+</div>

@@ -9,7 +9,7 @@
 <meta name="robots" content="noindex, nofollow">
 <title><?= e($title ?? 'Giriş') ?> — Mağusa Psikoloji</title>
 <link rel="icon" href="/assets/images/favicon.png">
-<link rel="stylesheet" href="<?= e(url('/assets/panel.css')) ?>">
+<link rel="stylesheet" href="<?= e(asset('/assets/panel.css')) ?>">
 </head>
 <?php // Giriş ekranı panelin koyu chrome rengini kaplar; giriş yapıldığında aynı
       // renk kenar çubuğuna çekilir. Kapıdan içeri girme hissi bundan geliyor. ?>
