@@ -78,12 +78,16 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
   </div>
 
   <?php // Ay ve terapist tek formda: ikisi de "neye bakıyorum" sorusunun parçası,
-        // ayrı ayrı iki "Göster" düğmesi aynı satırda gereksiz bir seçim yaratırdı. ?>
-  <form method="get" action="<?= e(url('/randevular')) ?>" class="flex flex-wrap items-center gap-2">
+        // ayrı ayrı iki "Göster" düğmesi aynı satırda gereksiz bir seçim yaratırdı.
+        //
+        // Ay seçicinin görünür etiketi yok: yanı başındaki görünüm düğmelerinden
+        // biri de "Ay" ve ikisi farklı şey — aynı satırda iki "Ay" hangisinin ne
+        // yaptığını okunmaz kılıyordu. Kutunun kendisi zaten "Temmuz 2026" yazıyor. ?>
+  <form method="get" action="<?= e(url('/randevular')) ?>" data-autosubmit
+        class="flex flex-wrap items-center gap-2">
     <input type="hidden" name="gorunum" value="<?= e($mode) ?>">
 
-    <label for="tarih" class="eyebrow">Ay</label>
-    <select id="tarih" name="tarih" class="field w-auto py-1.5 text-[0.8125rem]">
+    <select id="tarih" name="tarih" aria-label="Ay seç" class="field w-auto py-1.5 text-[0.8125rem]">
       <?php foreach (tr_month_options($anchor) as $value => $label): ?>
         <option value="<?= e($value) ?>" <?= $value === $anchor->format('Y-m-d') ? 'selected' : '' ?>>
           <?= e($label) ?>
@@ -93,6 +97,7 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
 
     <?php if ($therapists !== []): ?>
       <label for="terapist" class="eyebrow ml-1">Terapist</label>
+      <?php // Terapistin etiketi kalıyor: "Tümü" tek başına neyin tümü olduğunu söylemez. ?>
       <select id="terapist" name="terapist" class="field w-auto py-1.5 text-[0.8125rem]">
         <option value="">Tümü</option>
         <?php foreach ($therapists as $therapist): ?>
@@ -103,7 +108,7 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
       </select>
     <?php endif; ?>
 
-    <button class="btn-text">Göster</button>
+    <button class="btn-text" data-no-js>Göster</button>
   </form>
 </div>
 

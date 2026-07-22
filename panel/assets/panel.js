@@ -37,6 +37,23 @@
     if (trigger) window.print();
   });
 
+  // data-autosubmit taşıyan filtre formları seçim değişir değişmez yenilenir.
+  // Küçük bir "Göster" yazısını bulup tıklamak, filtrenin çalışmadığı sanılan
+  // bir bekleme yaratıyordu. Yalnız <select> dinlenir: tarih alanında her tuş
+  // vuruşunda sayfayı yenilemek yazmayı imkânsız kılardı.
+  document.querySelectorAll('form[data-autosubmit]').forEach(function (form) {
+    form.addEventListener('change', function (event) {
+      if (event.target.tagName !== 'SELECT') return;
+      if (form.requestSubmit) form.requestSubmit(); else form.submit();
+    });
+  });
+
+  // JS açıkken gereksizleşen öğeler — autosubmit formlarının "Göster" düğmesi
+  // gibi. Silinmiyor, gizleniyor: JS kapalıyken formun tek gönderme yolu odur.
+  document.querySelectorAll('[data-no-js]').forEach(function (el) {
+    el.hidden = true;
+  });
+
   // data-confirm taşıyan formlar gönderilmeden önce onay ister.
   document.addEventListener('submit', function (event) {
     var form = event.target;

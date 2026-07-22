@@ -184,8 +184,9 @@ function tr_month_name(int $month): string
  *
  *   'Y-m-d'  takvim ekranları — "şu güne git". Bulunulan ayın değeri ayın biri
  *            değil, çapanın kendisidir: aynı form terapist filtresini de
- *            taşıyor, ay seçicisine dokunmadan "Göster"e basan biri o an
- *            baktığı haftadan ayın başına fırlatılmamalı.
+ *            taşıyor ve seçim değişir değişmez gönderiliyor; ay seçicisine
+ *            dokunmadan terapist değiştiren biri o an baktığı haftadan ayın
+ *            başına fırlatılmamalı.
  *   'Y-m'    ödemeler ekranı — "şu ayın tamamına git". Orada seçim zaten bir
  *            aralık demek, gün taşımanın karşılığı yok.
  *
@@ -193,23 +194,30 @@ function tr_month_name(int $month): string
  */
 function tr_month_options(DateTimeImmutable $anchor, string $format = 'Y-m-d'): array
 {
-    $thisYear   = (int) (new DateTimeImmutable('today'))->format('Y');
-    $anchorYear = (int) $anchor->format('Y');
-    $anchorNum  = (int) $anchor->format('n');
+    // Pencere bugüne göre kurulur, tam yıllara göre değil: geçen yıldan gelecek
+    // yıla kadar listelemek kutuyu 36 satıra çıkarıyor ve açılınca ekranın
+    // yarısını kaplıyordu. Geriye altı ay geçmiş kayda bakmaya, ileriye bir yıl
+    // randevu vermeye yeter; dışına Önceki/Sonraki ile çıkılır.
+    $first  = (new DateTimeImmutable('today'))->modify('first day of this month');
+    $months = [];
+    for ($step = -6; $step <= 12; $step++) {
+        $month = $first->modify(sprintf('%+d months', $step));
+        $months[$month->format('Y-m')] = $month;
+    }
+
+    // Çapa pencerenin dışında kalıyorsa yine de listede olmalı — yoksa kutu
+    // bakılan ayı değil, ona en yakın başka bir ayı seçili gösterir.
+    $anchorKey            = $anchor->format('Y-m');
+    $months[$anchorKey]   = $anchor->modify('first day of this month');
+    ksort($months);
 
     $options = [];
-    for ($year = min($thisYear - 1, $anchorYear); $year <= max($thisYear + 1, $anchorYear); $year++) {
-        for ($month = 1; $month <= 12; $month++) {
-            if ($format === 'Y-m') {
-                $value = sprintf('%04d-%02d', $year, $month);
-            } else {
-                $value = $year === $anchorYear && $month === $anchorNum
-                    ? $anchor->format('Y-m-d')
-                    : sprintf('%04d-%02d-01', $year, $month);
-            }
+    foreach ($months as $key => $month) {
+        $value = $format === 'Y-m'
+            ? $key
+            : ($key === $anchorKey ? $anchor->format('Y-m-d') : $key . '-01');
 
-            $options[$value] = tr_month_name($month) . ' ' . $year;
-        }
+        $options[$value] = tr_month_name((int) $month->format('n')) . ' ' . $month->format('Y');
     }
 
     return $options;

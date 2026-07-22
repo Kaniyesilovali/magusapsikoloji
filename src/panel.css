@@ -92,6 +92,11 @@
   }
 }
 
+/* panel.js, JS açıkken gereksizleşen öğeleri hidden ile gizler (filtre
+   formlarının "Göster" düğmesi gibi). Bu kural olmadan display veren herhangi
+   bir sınıf tarayıcının [hidden] varsayılanını yener ve düğme görünür kalırdı. */
+[hidden] { display: none !important; }
+
 /* Klavye odağı her yerde görünür olsun — panel klavyeyle de kullanılıyor. */
 :focus-visible {
   outline: 2px solid var(--color-primary);

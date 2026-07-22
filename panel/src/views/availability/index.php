@@ -49,7 +49,8 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
 <?php else: ?>
 
 <?php if ($isManager && $therapists !== []): ?>
-  <form method="get" action="<?= e(url('/musaitlik')) ?>" class="mb-4 flex flex-wrap items-center gap-2">
+  <form method="get" action="<?= e(url('/musaitlik')) ?>" data-autosubmit
+        class="mb-4 flex flex-wrap items-center gap-2">
     <input type="hidden" name="gorunum" value="<?= e($mode) ?>">
     <input type="hidden" name="tarih" value="<?= e($anchor->format('Y-m-d')) ?>">
     <label for="terapist" class="eyebrow">Terapist</label>
@@ -60,7 +61,7 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
         </option>
       <?php endforeach; ?>
     </select>
-    <button class="btn-text">Göster</button>
+    <button class="btn-text" data-no-js>Göster</button>
   </form>
 <?php endif; ?>
 
@@ -94,20 +95,22 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
       <?php // Terapist seçici sayfanın tamamına ait (şablon ve izin listeleri de
             // ona bağlı), bu yüzden yukarıda ayrı duruyor; ay yalnız takvimi
             // ilgilendirdiği için burada. ?>
-      <form method="get" action="<?= e(url('/musaitlik')) ?>" class="flex flex-wrap items-center gap-2">
+      <form method="get" action="<?= e(url('/musaitlik')) ?>" data-autosubmit
+            class="flex flex-wrap items-center gap-2">
         <input type="hidden" name="gorunum" value="<?= e($mode) ?>">
         <?php if ($isManager): ?>
           <input type="hidden" name="terapist" value="<?= (int) $therapist['id'] ?>">
         <?php endif; ?>
-        <label for="tarih" class="eyebrow">Ay</label>
-        <select id="tarih" name="tarih" class="field w-auto py-1.5 text-[0.8125rem]">
+        <?php // Görünüm düğmelerinden biri de "Ay"; ikinci bir "Ay" etiketi yanı
+              // başında dururken hangisinin ne yaptığı okunmuyordu. ?>
+        <select id="tarih" name="tarih" aria-label="Ay seç" class="field w-auto py-1.5 text-[0.8125rem]">
           <?php foreach (tr_month_options($anchor) as $value => $label): ?>
             <option value="<?= e($value) ?>" <?= $value === $anchor->format('Y-m-d') ? 'selected' : '' ?>>
               <?= e($label) ?>
             </option>
           <?php endforeach; ?>
         </select>
-        <button class="btn-text">Göster</button>
+        <button class="btn-text" data-no-js>Göster</button>
       </form>
     </div>
   </div>

@@ -84,7 +84,11 @@ $isClient = ($actor['role'] ?? '') === Rbac::CLIENT;
     <?php endif; ?>
   </div>
 
-  <form method="get" action="<?= e(url('/odemeler')) ?>" class="flex flex-wrap items-center gap-2">
+  <?php // Tek seçimlik "şu aya git" denetimi: seçer seçmez gider. Aşağıdaki
+        // aralık formu düğmesini korur — orada birkaç alan birlikte kurulur ve
+        // her değişiklikte sayfayı yenilemek yarım kalmış bir aralığı uygulardı. ?>
+  <form method="get" action="<?= e(url('/odemeler')) ?>" data-autosubmit
+        class="flex flex-wrap items-center gap-2">
     <?php if ($status !== 'hepsi'): ?>
       <input type="hidden" name="durum" value="<?= e($status) ?>">
     <?php endif; ?>
@@ -99,7 +103,7 @@ $isClient = ($actor['role'] ?? '') === Rbac::CLIENT;
         </option>
       <?php endforeach; ?>
     </select>
-    <button class="btn-text">Aya git</button>
+    <button class="btn-text" data-no-js>Aya git</button>
   </form>
 </div>
 
