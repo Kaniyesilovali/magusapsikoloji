@@ -1,11 +1,16 @@
 <?php
 use Panel\Csrf;
 use Panel\Money;
+use Panel\Rbac;
 use Panel\Scheduling;
 /** @var array $appointment @var array $payments @var string $status @var array $statusLabels */
 /** @var array $methods @var bool $canManage @var bool $canSetFee @var array $actor */
 
 $day = substr((string) $appointment['starts_at'], 0, 10);
+
+// Danışan kendi seansına bakıyor: başlıkta kendi adı yerine seansın kendisi
+// durur, tahsilatı kimin kaydettiği de gösterilmez — o merkezin iç bilgisi.
+$isClient = ($actor['role'] ?? '') === Rbac::CLIENT;
 
 // Kalan tutar: ücret girilmemişse "kalan" kavramı da yok.
 $remaining = $appointment['fee'] === null
@@ -15,9 +20,12 @@ $remaining = $appointment['fee'] === null
 
 <header class="mb-6">
   <a href="<?= e(url('/odemeler')) ?>" class="btn-text btn-text-quiet">← Ödemeler</a>
-  <h1 class="page-title mt-2"><?= e($appointment['client_name']) ?></h1>
+  <h1 class="page-title mt-2">
+    <?= e($isClient ? tr_date_label($day) . ' seansı' : $appointment['client_name']) ?>
+  </h1>
   <p class="page-sub">
-    <?= e(tr_date_label($day)) ?> saat <span class="num"><?= e(dt($appointment['starts_at'], 'H:i')) ?></span> ·
+    <?php if (!$isClient): ?><?= e(tr_date_label($day)) ?> <?php endif; ?>saat
+    <span class="num"><?= e(dt($appointment['starts_at'], 'H:i')) ?></span> ·
     <?= e($appointment['therapist_name']) ?> ·
     <?= e(Scheduling::statusLabel($appointment['status'])) ?>
   </p>
@@ -83,7 +91,9 @@ $remaining = $appointment['fee'] === null
           <span class="text-xs text-ink-muted w-24"><?= e($methods[$payment['method']] ?? $payment['method']) ?></span>
           <span class="text-xs text-ink-light num w-32"><?= e(dt($payment['paid_at'], 'd.m.Y')) ?></span>
           <span class="text-sm text-ink-muted flex-1 min-w-32"><?= e($payment['note'] ?? '') ?></span>
-          <span class="text-xs text-ink-light"><?= e($payment['recorded_by'] ?? '—') ?></span>
+          <?php if (!$isClient): ?>
+            <span class="text-xs text-ink-light"><?= e($payment['recorded_by'] ?? '—') ?></span>
+          <?php endif; ?>
           <?php if ($canManage): ?>
             <form method="post" action="<?= e(url("/odemeler/tahsilat/{$payment['id']}/sil")) ?>"
                   data-confirm="<?= e(Money::format($payment['amount'])) ?> tutarındaki tahsilat kaydı silinsin mi?">
@@ -128,7 +138,9 @@ $remaining = $appointment['fee'] === null
     </form>
   <?php else: ?>
     <p class="sheet-foot text-xs text-ink-light">
-      Tahsilat kaydı merkez yönetimi tarafından girilir. Ücreti siz belirleyebilirsiniz.
+      <?= $isClient
+          ? 'Ödemeleriniz merkez tarafından kaydedilir; burada göründükleri hâl kayıtlardaki hâlleridir. Eksik ya da hatalı gördüğünüz bir tutar varsa merkeze bildirin.'
+          : 'Tahsilat kaydı merkez yönetimi tarafından girilir. Ücreti siz belirleyebilirsiniz.' ?>
     </p>
   <?php endif; ?>
 </section>

@@ -226,9 +226,12 @@ final class PaymentController
             View::error(
                 503,
                 'Ödeme takibi henüz kurulmadı',
-                Rbac::can($user, 'settings.manage')
-                    ? 'Sistem ekranından bekleyen veritabanı güncellemesini uygulayın.'
-                    : 'Veritabanı güncellemesi bekleniyor. Süper admin ile görüşün.'
+                match (true) {
+                    Rbac::can($user, 'settings.manage') => 'Sistem ekranından bekleyen veritabanı güncellemesini uygulayın.',
+                    // Danışana ekibin iç işleyişi anlatılmaz; ne yapacağı söylenir.
+                    $user['role'] === Rbac::CLIENT      => 'Ödeme bilgileri şu an görüntülenemiyor. Merkezle görüşebilirsiniz.',
+                    default                             => 'Veritabanı güncellemesi bekleniyor. Süper admin ile görüşün.',
+                }
             );
             exit;
         }
@@ -242,7 +245,13 @@ final class PaymentController
         if (Rbac::can($actor, 'payment.view.all')) {
             return ['1 = 1', []];
         }
-        return ['a.therapist_id = ?', [$actor['id']]];
+        if ($actor['role'] === Rbac::THERAPIST) {
+            return ['a.therapist_id = ?', [$actor['id']]];
+        }
+        // Danışan: yalnız kendi kaydına bağlı seanslar. Bağ users.id ↔ clients.user_id
+        // üzerinden gider; panel hesabı hiçbir danışan kaydına bağlı değilse
+        // hiçbir satır dönmez — randevu kapsamıyla (AppointmentController) aynı kural.
+        return ['c.user_id = ?', [$actor['id']]];
     }
 
     private function find(int $appointmentId, array $actor): array
@@ -268,11 +277,18 @@ final class PaymentController
         return $appointment;
     }
 
-    /** Ücreti yönetim ya da randevunun kendi terapisti belirleyebilir. */
+    /**
+     * Ücreti yönetim ya da randevunun kendi terapisti belirleyebilir.
+     *
+     * Rol açıkça aranır: `payment.view.own` artık danışanda da var ve o yetki
+     * tek başına ücret yazma hakkı vermez. Kimlik karşılaştırması bunu bugün
+     * zaten engelliyor (danışanın hesabı bir randevunun therapist_id'si olamaz)
+     * ama kural kimliğe değil role dayanmalı.
+     */
     private function canSetFee(array $actor, array $appointment): bool
     {
         return Rbac::can($actor, 'payment.manage')
-            || (Rbac::can($actor, 'payment.view.own') && (int) $appointment['therapist_id'] === (int) $actor['id']);
+            || ($actor['role'] === Rbac::THERAPIST && (int) $appointment['therapist_id'] === (int) $actor['id']);
     }
 
     private function statusOf(array $row): string

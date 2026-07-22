@@ -60,6 +60,11 @@ final class Rbac
         self::CLIENT => [
             'dashboard.view',
             'appointment.view.own',
+            // Danışan kendi seanslarının ücretini ve kendisi adına girilmiş
+            // tahsilatları görür — kendi borcunu sormak için merkezi aramak
+            // zorunda kalmasın diye. Yazma yetkisi yok: ücreti de tahsilatı da
+            // merkez girer.
+            'payment.view.own',
             'profile.self',
         ],
     ];

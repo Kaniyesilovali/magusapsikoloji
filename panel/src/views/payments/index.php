@@ -24,6 +24,11 @@ $statusChip = [
     'kismi'    => 'chip-stop',
     'odendi'   => 'chip-go',
 ];
+
+// Danışan bu listede yalnız kendi seanslarını görür: her satırda kendi adını
+// tekrarlamak bilgi taşımaz, o yüzden "Danışan" sütunu ona çizilmez. Ad, danışan
+// kaydına bağlantıdır ve danışanın o kaydı açma yetkisi de yok.
+$isClient = ($actor['role'] ?? '') === Rbac::CLIENT;
 ?>
 
 <header class="mb-6">
@@ -143,7 +148,7 @@ $statusChip = [
         <thead>
           <tr>
             <th>Tarih</th>
-            <th>Danışan</th>
+            <?php if (!$isClient): ?><th>Danışan</th><?php endif; ?>
             <th>Terapist</th>
             <th class="text-right">Ücret</th>
             <th class="text-right">Tahsil</th>
@@ -154,15 +159,23 @@ $statusChip = [
         <tbody>
           <?php foreach ($rows as $row): ?>
             <tr>
-              <td class="text-xs text-ink-muted num whitespace-nowrap"><?= e(dt($row['starts_at'])) ?></td>
-              <td>
-                <a href="<?= e(url("/danisanlar/{$row['client_id']}")) ?>" class="person text-ink hover:text-primary">
-                  <?= e($row['client_name']) ?>
-                </a>
-                <?php if ($row['status'] === 'cancelled'): ?>
+              <td class="text-xs text-ink-muted num whitespace-nowrap">
+                <?= e(dt($row['starts_at'])) ?>
+                <?php // Sütun gizlendiğinde iptal rozeti de onunla birlikte kaybolmasın. ?>
+                <?php if ($isClient && $row['status'] === 'cancelled'): ?>
                   <span class="chip chip-done ml-1.5">İptal</span>
                 <?php endif; ?>
               </td>
+              <?php if (!$isClient): ?>
+                <td>
+                  <a href="<?= e(url("/danisanlar/{$row['client_id']}")) ?>" class="person text-ink hover:text-primary">
+                    <?= e($row['client_name']) ?>
+                  </a>
+                  <?php if ($row['status'] === 'cancelled'): ?>
+                    <span class="chip chip-done ml-1.5">İptal</span>
+                  <?php endif; ?>
+                </td>
+              <?php endif; ?>
               <td class="text-ink-muted"><?= e($row['therapist_name']) ?></td>
               <td class="text-right num text-ink"><?= e(Money::format($row['fee'])) ?></td>
               <td class="text-right num text-ink-muted"><?= e(Money::format($row['paid'])) ?></td>
