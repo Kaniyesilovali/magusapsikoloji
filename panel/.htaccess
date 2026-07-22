@@ -39,9 +39,17 @@ Options -Indexes
 # sonra panel eski CSS/JS ile açılıyordu. no-cache önbelleği kapatmaz, her istekte
 # doğrulama yapılmasını zorunlu kılar: dosya değişmediyse 304 döner (ucuz),
 # değiştiyse yenisi gelir. Panel düşük trafikli olduğu için maliyeti ihmal edilebilir.
+# mod_expires, mod_headers'tan SONRA çalışır ve max-age'i geri yazar; bu yüzden
+# önce panel dizini için tamamen kapatılıyor. Aksi hâlde aşağıdaki Header satırı
+# yazılıyor ama sunucu üstüne "max-age=14400" ekleyip etkisiz bırakıyor.
+<IfModule mod_expires.c>
+  ExpiresActive Off
+</IfModule>
+
 <IfModule mod_headers.c>
   <FilesMatch "\.(css|js)$">
-    Header set Cache-Control "no-cache, must-revalidate"
+    Header unset Expires
+    Header always set Cache-Control "no-cache, must-revalidate"
   </FilesMatch>
 </IfModule>
 
