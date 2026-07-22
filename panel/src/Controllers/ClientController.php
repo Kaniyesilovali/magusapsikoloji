@@ -10,6 +10,7 @@ use Panel\Auth;
 use Panel\ClientScope;
 use Panel\Db;
 use Panel\Rbac;
+use Panel\Schema;
 use Panel\Settings;
 use Panel\View;
 use PDOException;
@@ -94,14 +95,24 @@ final class ClientController
             $params
         );
 
+        // Dosya bağlantısı yalnız terapiste gösterilir; varlığı da yalnız
+        // kendi dosyası için sorgulanır, başkasınınki hiç aranmaz.
+        $canOpenCaseFile = Schema::caseFilesReady() && Rbac::canAny($actor, ['note.write', 'note.read.own']);
+        $hasCaseFile     = $canOpenCaseFile && Db::value(
+            'SELECT id FROM case_files WHERE client_id = ? AND therapist_id = ?',
+            [$id, $actor['id']]
+        ) !== null;
+
         // KVKK: hassas kayıt görüntülemeleri de izlenebilir olmalı.
         Audit::log('client.viewed', 'client', $id);
 
         View::render('clients/show', [
-            'title'        => $client['full_name'],
-            'client'       => $client,
-            'appointments' => $appointments,
-            'actor'        => $actor,
+            'title'           => $client['full_name'],
+            'client'          => $client,
+            'appointments'    => $appointments,
+            'canOpenCaseFile' => $canOpenCaseFile,
+            'hasCaseFile'     => $hasCaseFile,
+            'actor'           => $actor,
         ]);
     }
 

@@ -3,6 +3,7 @@ use Panel\Csrf;
 use Panel\Rbac;
 use Panel\Scheduling;
 /** @var array $client @var array $appointments @var array $actor */
+/** @var bool $canOpenCaseFile @var bool $hasCaseFile */
 
 $age      = age_from($client['birth_date']);
 $isActive = $client['status'] === 'active';
@@ -28,6 +29,13 @@ $isActive = $client['status'] === 'active';
         <a href="<?= e(url('/randevular/yeni?danisan=' . (int) $client['id'])) ?>"
            class="bg-primary hover:bg-primary-hover text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors">
           Randevu ver
+        </a>
+      <?php endif; ?>
+      <?php // Dosya yalnız terapistlerde: içerik şifreli ve yalnız yazarına açık. ?>
+      <?php if ($canOpenCaseFile): ?>
+        <a href="<?= e(url("/danisanlar/{$client['id']}/dosya")) ?>"
+           class="text-sm text-ink-muted hover:text-ink border border-warm-tertiary bg-white px-4 py-2.5 rounded-xl">
+          <?= $hasCaseFile ? 'Dosya ✓' : 'Dosya' ?>
         </a>
       <?php endif; ?>
       <?php if (Rbac::can($actor, 'client.update')): ?>

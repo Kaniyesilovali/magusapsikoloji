@@ -36,6 +36,7 @@ use Panel\Controllers\AppointmentController;
 use Panel\Controllers\AuditController;
 use Panel\Controllers\AuthController;
 use Panel\Controllers\AvailabilityController;
+use Panel\Controllers\CaseFileController;
 use Panel\Controllers\ClientController;
 use Panel\Controllers\ConsentController;
 use Panel\Controllers\ContentController;
@@ -108,6 +109,8 @@ $router->post('/danisanlar/{id}/duzenle', [ClientController::class, 'update']);
 $router->post('/danisanlar/{id}/arsivle', [ClientController::class, 'archive']);
 $router->post('/danisanlar/{id}/sil',     [ClientController::class, 'destroy']);
 $router->get('/danisanlar/{id}/riza',     [ConsentController::class, 'printForm']);
+$router->get('/danisanlar/{id}/dosya',    [CaseFileController::class, 'form']);
+$router->post('/danisanlar/{id}/dosya',   [CaseFileController::class, 'save']);
 
 $router->get('/randevular',               [AppointmentController::class, 'index']);
 $router->get('/randevular/yeni',          [AppointmentController::class, 'createForm']);

@@ -9,6 +9,8 @@ use Panel\Crypto;
 use Panel\Db;
 use Panel\Github;
 use Panel\Migrator;
+use Panel\Schema;
+use Panel\Settings;
 use Panel\View;
 use Throwable;
 
@@ -29,11 +31,12 @@ final class SystemController
         $actor = Auth::requirePermission('settings.manage');
 
         View::render('system/index', [
-            'title'   => 'Sistem',
-            'pending' => Migrator::pending(),
-            'applied' => Db::all('SELECT * FROM schema_migrations ORDER BY filename'),
-            'checks'  => $this->checks(),
-            'actor'   => $actor,
+            'title'    => 'Sistem',
+            'pending'  => Migrator::pending(),
+            'applied'  => Db::all('SELECT * FROM schema_migrations ORDER BY filename'),
+            'checks'   => $this->checks(),
+            'reminder' => $this->reminderStatus(),
+            'actor'    => $actor,
         ]);
     }
 
@@ -63,6 +66,43 @@ final class SystemController
     }
 
     // ── Yardımcılar ─────────────────────────────────────────────
+
+    /**
+     * Hatırlatma cron'unun durumu. Cron kurulmadıysa hiç çalışmamış olur ve
+     * bunu ancak buradan görebilirsiniz — sessizce göndermemek, gönderdiğini
+     * sanmaktan daha kötü bir hata değil ama fark edilmesi gerekir.
+     *
+     * @return array{ready:bool,enabled:bool,hours:int,lastRun:?string,lastResult:?string,queued:?int}
+     */
+    private function reminderStatus(): array
+    {
+        $ready = Schema::remindersReady();
+        $hours = max(1, min(168, (int) Settings::get('reminder_hours_before', '24')));
+
+        $queued = null;
+        if ($ready) {
+            $queued = (int) Db::value(
+                "SELECT COUNT(*)
+                   FROM appointments a
+                   JOIN clients c ON c.id = a.client_id
+                  WHERE a.reminder_sent_at IS NULL
+                    AND a.status IN ('scheduled','confirmed')
+                    AND a.starts_at > NOW()
+                    AND a.starts_at <= DATE_ADD(NOW(), INTERVAL ? HOUR)
+                    AND c.email IS NOT NULL AND c.email <> ''",
+                [$hours]
+            );
+        }
+
+        return [
+            'ready'      => $ready,
+            'enabled'    => Settings::get('reminders_enabled', '1') === '1',
+            'hours'      => $hours,
+            'lastRun'    => Settings::get('reminder_last_run') ?: null,
+            'lastResult' => Settings::get('reminder_last_result') ?: null,
+            'queued'     => $queued,
+        ];
+    }
 
     /** @return list<array{label:string,ok:bool,detail:string}> */
     private function checks(): array

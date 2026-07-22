@@ -22,6 +22,36 @@ final class Notifications
     ];
 
     /**
+     * Yaklaşan randevu hatırlatması. Yalnız danışana gider — terapist zaten
+     * kendi takvimine bakıyor ve her seans için ikinci bir e-posta gürültüdür.
+     *
+     * @param array<string,mixed> $row appointment + client_name + client_email + therapist_name
+     */
+    public static function reminder(array $row): bool
+    {
+        if (($row['client_email'] ?? null) === null) {
+            return false;
+        }
+
+        $when = tr_date_label(substr((string) $row['starts_at'], 0, 10))
+            . ' saat ' . dt($row['starts_at'], 'H:i');
+
+        return Mailer::send(
+            (string) $row['client_email'],
+            'Randevu hatırlatması — Mağusa Psikoloji',
+            Mailer::template(
+                'Yaklaşan randevunuz',
+                "Merhaba {$row['client_name']},\n\nRandevunuzu hatırlatmak istedik.\n\n"
+                . "Zaman: {$when}\nTerapist: {$row['therapist_name']}\n"
+                . 'Görüşme: ' . Scheduling::locationLabel($row['location']),
+                null,
+                null,
+                'Gelemeyecekseniz lütfen merkezimizi arayın; saatinizi başka bir danışana açabiliriz.'
+            )
+        );
+    }
+
+    /**
      * @param  string $event created | updated | cancelled
      * @param  int|null $actorId İşlemi yapan kişiye kendi eylemi bildirilmez.
      * @return list<string> Gönderilemeyen adresler.

@@ -43,4 +43,32 @@ final class Schema
     {
         return self::hasColumn('appointments', 'fee');
     }
+
+    /** Hatırlatma e-postaları (003_reminders) uygulanmış mı? */
+    public static function remindersReady(): bool
+    {
+        return self::hasColumn('appointments', 'reminder_sent_at');
+    }
+
+    /** Danışan dosyası (004_case_files) uygulanmış mı? */
+    public static function caseFilesReady(): bool
+    {
+        return self::hasTable('case_files');
+    }
+
+    public static function hasTable(string $table): bool
+    {
+        $key = 'table:' . $table;
+        if (isset(self::$cache[$key])) {
+            return self::$cache[$key];
+        }
+
+        try {
+            $found = Db::one('SHOW TABLES LIKE ?', [$table]) !== null;
+        } catch (PDOException) {
+            $found = false;
+        }
+
+        return self::$cache[$key] = $found;
+    }
 }

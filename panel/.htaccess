@@ -15,7 +15,7 @@ Options -Indexes
   RewriteBase /panel/
 
   # Kaynak dizinlerine doğrudan erişim yok
-  RewriteRule ^(src|migrations)(/|$) - [F,L]
+  RewriteRule ^(src|migrations|cron)(/|$) - [F,L]
 
   # Gerçek dosya/dizin değilse tek giriş noktasına
   RewriteCond %{REQUEST_FILENAME} !-f

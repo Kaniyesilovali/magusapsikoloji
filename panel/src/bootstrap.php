@@ -13,12 +13,16 @@ define('PANEL_ROOT', dirname(__DIR__));
 // yerel config'i _site/panel/ içine kopyalar ve sırlar yayına çıkardı.
 //   üretim (cPanel): /home/<kullanici>/magusa-panel-config/config.php
 //   yerel (php -S -t panel): <repo>/magusa-panel-config/config.php
+// Son aday CLI içindir: komut satırında DOCUMENT_ROOT yoktur, bu yüzden
+// public_html'in bir üstü ancak panel dizininden iki seviye yukarı çıkarak
+// bulunur. Bu olmadan cron ve migrate.php üretimde config'i bulamazdı.
 $configCandidates = array_filter([
     getenv('MAGUSA_PANEL_CONFIG') ?: null,
     isset($_SERVER['DOCUMENT_ROOT']) && $_SERVER['DOCUMENT_ROOT'] !== ''
         ? dirname($_SERVER['DOCUMENT_ROOT']) . '/magusa-panel-config/config.php'
         : null,
     dirname(PANEL_ROOT) . '/magusa-panel-config/config.php',
+    dirname(PANEL_ROOT, 2) . '/magusa-panel-config/config.php',
 ]);
 
 $config = null;

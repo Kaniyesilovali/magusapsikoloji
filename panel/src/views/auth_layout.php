@@ -11,32 +11,33 @@
 <link rel="icon" href="/assets/images/favicon.png">
 <link rel="stylesheet" href="<?= e(url('/assets/panel.css')) ?>">
 </head>
-<body class="min-h-screen font-sans flex items-center justify-center px-4 py-12 bg-warm">
+<?php // Giriş ekranı panelin koyu chrome rengini kaplar; giriş yapıldığında aynı
+      // renk kenar çubuğuna çekilir. Kapıdan içeri girme hissi bundan geliyor. ?>
+<body class="min-h-screen font-sans flex items-center justify-center px-4 py-12 bg-chrome">
 
 <div class="w-full max-w-sm">
-  <div class="text-center mb-8">
-    <p class="font-semibold text-ink text-lg">Mağusa Psikoloji</p>
-    <p class="text-sm text-ink-light mt-0.5">Yönetim Paneli</p>
+  <div class="mb-7">
+    <p class="font-serif text-white text-lg">Mağusa Psikoloji</p>
+    <p class="eyebrow text-white/40 mt-1">Yönetim paneli</p>
   </div>
 
   <?php foreach ($flashes as $flash): ?>
     <?php
     $tone = match ($flash['type']) {
-        'success' => 'bg-primary/10 text-primary-dark border-primary/25',
-        'error'   => 'bg-accent/10 text-accent-dark border-accent/30',
-        'warning' => 'bg-amber-50 text-amber-900 border-amber-200',
-        default   => 'bg-white text-ink-muted border-warm-tertiary',
+        'success'          => 'note-ok',
+        'error', 'warning' => 'note-stop',
+        default            => 'note-info',
     };
     ?>
-    <div class="mb-4 px-4 py-3 rounded-xl border text-sm <?= $tone ?>"><?= e($flash['message']) ?></div>
+    <div class="note <?= $tone ?> mb-4"><?= e($flash['message']) ?></div>
   <?php endforeach; ?>
 
-  <div class="bg-white border border-warm-tertiary rounded-2xl p-6 shadow-sm">
+  <div class="sheet p-6">
     <?= $content ?>
   </div>
 
-  <p class="text-center text-xs text-ink-light mt-6">
-    <a href="/" class="hover:text-ink-muted">← magusapsikoloji.com</a>
+  <p class="mt-6">
+    <a href="/" class="text-xs text-white/40 hover:text-white/70">← magusapsikoloji.com</a>
   </p>
 </div>
 

@@ -192,8 +192,46 @@ E-posta içeriği bilinçli olarak yalındır: tarih, saat, terapist, görüşme
 not ve danışanın diğer bilgileri gönderilmez — e-posta şifresiz bir kanaldır.
 Gönderim başarısız olursa **kayıt geri alınmaz**, yalnız uyarı gösterilir.
 
-Hatırlatma e-postaları (ör. "randevunuza 1 gün kaldı") bu sürümde yok; zamanlanmış
-görev (cron) gerektirir.
+### Hatırlatmalar (cron)
+
+Danışanlara, randevudan varsayılan olarak 24 saat önce hatırlatma e-postası gider.
+Gönderimi panel kendi kendine tetiklemez — cPanel cron'u
+[`panel/cron/reminders.php`](../panel/cron/reminders.php) betiğini çalıştırır:
+
+```
+cPanel → Cron Jobs → Saatte bir (0 * * * *)
+/usr/local/bin/php /home/<kullanıcı>/public_html/panel/cron/reminders.php
+```
+
+Saatte bir çalışması güvenlidir: her randevu `reminder_sent_at` ile bir kez işaretlenir.
+Gönderim başarısız olursa alan boş bırakılır ve sonraki koşuda yeniden denenir; deneme,
+randevu pencereden çıkınca kendiliğinden durur. Cron günlerce durmuş olsa bile **geçmiş
+randevular için uyarı gitmez** — sorgu yalnız gelecekteki randevuları alır.
+
+Hatırlatma yalnız danışana gider; terapist zaten kendi takvimine bakıyor ve her seans için
+ikinci bir e-posta gürültü olurdu.
+
+Ayarlar `settings` tablosunda: `reminder_hours_before` (varsayılan 24) ve
+`reminders_enabled` (varsayılan 1). Cron'un çalışıp çalışmadığı, son sonucu ve kuyrukta
+kaç randevu olduğu **Sistem** ekranında görünür — kurulmamış bir cron'un tek belirtisi
+"hiç çalışmadı" satırıdır.
+
+> Betik `cron/` dizinindedir ve `.htaccess` bu dizine web'den erişimi kapatır.
+
+---
+
+## Danışan dosyası
+
+`/danisanlar/{id}/dosya` — [`CaseFileController`](../panel/src/Controllers/CaseFileController.php).
+
+Seans notundan ayrıdır çünkü ayrı sorulara cevap verirler: seans notu "o gün ne oldu",
+dosya "bu kişiyle ne üzerinde çalışıyoruz" (başvuru nedeni, öykü, formülasyon, plan).
+Terapist ikincisini her seans öncesi okumak ister ve bunun için on iki seans notunu tek
+tek açmak zorunda kalmamalıdır.
+
+Saklama kuralı seans notuyla aynı: yalnız şifreli, yalnız yazarına açık, içeriği audit
+kaydına asla yazılmaz. Kayıt **(danışan, terapist) çifti başına tektir** — devir hâlinde
+devralan terapist öncekinin dosyasını açamaz, kendi formülasyonunu yazar.
 
 ---
 
@@ -373,7 +411,8 @@ Kurumun tamamlaması gerekenler:
 | 2a | Site verileri ve SSS içeriği (GitHub Contents API) | ✅ tamam |
 | 2b | Blog yazılarının panele taşınması, Sveltia'nın kaldırılması | ✗ yapılmayacak |
 | 3a | Seans ücreti ve tahsilat takibi | ✅ tamam |
-| 3b | Süper admin için TOTP 2FA, WhatsApp/SMS hatırlatma, raporlar | opsiyonel |
+| 3b | Randevu hatırlatmaları, danışan dosyası, bugün ekranı | ✅ tamam |
+| 3c | Süper admin için TOTP 2FA, WhatsApp/SMS, raporlar | opsiyonel |
 
 ### Sveltia neden kalıyor
 

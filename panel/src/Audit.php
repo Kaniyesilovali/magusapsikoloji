@@ -42,6 +42,8 @@ final class Audit
         'system.migrated'     => 'Veritabanı güncellemesi uygulandı',
         'note.read'           => 'Seans notu okundu',
         'note.written'        => 'Seans notu yazıldı',
+        'case.read'           => 'Danışan dosyası okundu',
+        'case.written'        => 'Danışan dosyası yazıldı',
     ];
 
     public static function log(string $action, ?string $entityType = null, ?int $entityId = null, array $meta = []): void
