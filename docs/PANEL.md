@@ -216,6 +216,48 @@ sebebini gösterir — yarı şifreli, sessizce düz metne düşen bir davranı�
 
 ---
 
+## Site içeriği
+
+`/icerik` — [`ContentController`](../panel/src/Controllers/ContentController.php) ve
+[`FaqController`](../panel/src/Controllers/FaqController.php).
+
+Panel içerik dosyalarını **sunucuya değil depoya** yazar
+([`Github`](../panel/src/Github.php), Contents API). Site Eleventy ile derlenip FTPS ile
+atıldığı için sunucudaki `_site` çıktısına yazmak bir sonraki deploy'da silinirdi. Depo
+tek gerçek kaynaktır; panel commit atar, GitHub Actions siteyi yeniden yayınlar. Yani
+**kaydetmek = yayınlamak**, birkaç dakika sürer ve ekranlar bunu söyler.
+
+Şu an düzenlenebilenler:
+
+| Ekran | Dosya |
+|---|---|
+| İletişim bilgileri | `_data/contact.json` |
+| SSS içeriği | `_data/faqdata.json` |
+
+Kurallar:
+
+- **Ham JSON düzenletilmez.** Alan alan form gösterilir; tek bir eksik virgül siteyi
+  derlenemez hâle getirir ve hata ancak deploy başarısız olunca fark edilirdi.
+- **Tanınmayan anahtarlar korunur.** Panel dosyayı yeniden okur, yalnız bildiği alanları
+  değiştirir; sonradan eklenmiş bir alan silinmez.
+- **Biçim korunur.** Çıktı 2 boşluk girintiyle ve Unicode kaçırılmadan yazılır
+  ([`Json::pretty`](../panel/src/Json.php)) — aksi hâlde tek kelimelik bir düzeltme,
+  86 KB'lık `faqdata.json` dosyasının tamamını yeniden biçimlendiren bir commit üretirdi.
+- **Çakışma yazmayı durdurur.** Form açılırken dosyanın `sha` değeri alınır, kaydederken
+  geri gönderilir. Arada başkası aynı dosyayı değiştirdiyse kayıt reddedilir ve sayfayı
+  yenilemeniz istenir; sessiz üzerine yazma olmaz.
+- **Konu anahtarları ve kategori kimlikleri panelden değiştirilemez.** Şablonlar bunlara
+  ada göre başvuruyor; yeniden adlandırmak sitedeki bölümü sessizce boşaltırdı.
+
+### GitHub anahtarı
+
+Fine-grained personal access token, **yalnız bu depo**, tek izin: `Contents: Read and write`.
+Değer `config.php`'deki `github` bloğuna yazılır (bkz.
+[`config.example.php`](../panel/config.example.php)). Anahtar yoksa içerik ekranları
+kurulum yönergesi gösterir, panelin geri kalanı etkilenmez.
+
+---
+
 ## KVKK metni
 
 `/kvkk` — aydınlatma metni ve açık rıza beyanı `settings` tablosunda sürümlü tutulur.
@@ -281,7 +323,8 @@ Kurumun tamamlaması gerekenler:
 | 1a | İskelet, kimlik doğrulama, roller, kullanıcı yönetimi, profil, audit log | ✅ tamam |
 | 1b | Danışan kayıtları, terapist müsaitliği, randevu takvimi, çakışma kontrolü | ✅ tamam |
 | 1c | Şifreli seans notları, e-posta bildirimleri, KVKK metinleri | ✅ tamam |
-| 2  | İçerik yönetimi (GitHub Contents API üzerinden), Sveltia CMS'in kaldırılması | sırada |
+| 2a | Site verileri ve SSS içeriği (GitHub Contents API) | ✅ tamam |
+| 2b | Blog yazıları ve sayfa metinleri, Sveltia CMS'in kaldırılması | sırada |
 | 3  | Süper admin için TOTP 2FA, WhatsApp/SMS hatırlatma, raporlar | opsiyonel |
 
 Faz 1b ve 1c şema değişikliği getirmedi — `clients`, `appointments`, `working_hours`,

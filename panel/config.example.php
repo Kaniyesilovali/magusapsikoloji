@@ -59,4 +59,13 @@ return [
         // driver 'log' iken e-postalar bu dosyaya yazılır (yerel geliştirme)
         'log_path' => __DIR__ . '/mail.log',
     ],
+
+    // Panelden site içeriği düzenlemek için. Boş bırakılırsa içerik ekranları
+    // kurulum yönergesi gösterir, panelin geri kalanı etkilenmez.
+    // Fine-grained token: yalnız bu depo + "Contents: Read and write".
+    'github' => [
+        'token'  => '',                                   // github_pat_...
+        'repo'   => 'Kaniyesilovali/magusapsikoloji',
+        'branch' => 'main',
+    ],
 ];

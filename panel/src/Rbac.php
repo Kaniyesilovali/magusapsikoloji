@@ -31,7 +31,7 @@ final class Rbac
             'client.view.all', 'client.create', 'client.update', 'client.delete',
             'appointment.view.all', 'appointment.create', 'appointment.update', 'appointment.cancel',
             'availability.manage.all',
-            'audit.view', 'settings.manage', 'consent.manage',
+            'audit.view', 'settings.manage', 'consent.manage', 'content.manage',
             'profile.self',
         ],
         self::ADMIN => [
@@ -41,7 +41,7 @@ final class Rbac
             'appointment.view.all', 'appointment.create', 'appointment.update', 'appointment.cancel',
             'availability.manage.all',
             // KVKK metni işletme belgesidir, güvenlik ayarı değil: admin de düzenleyebilir.
-            'consent.manage',
+            'consent.manage', 'content.manage',
             'profile.self',
         ],
         self::THERAPIST => [

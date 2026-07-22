@@ -38,7 +38,9 @@ use Panel\Controllers\AuthController;
 use Panel\Controllers\AvailabilityController;
 use Panel\Controllers\ClientController;
 use Panel\Controllers\ConsentController;
+use Panel\Controllers\ContentController;
 use Panel\Controllers\DashboardController;
+use Panel\Controllers\FaqController;
 use Panel\Controllers\NoteController;
 use Panel\Controllers\ProfileController;
 use Panel\Controllers\SetupController;
@@ -125,6 +127,13 @@ $router->get('/profil',         [ProfileController::class, 'edit']);
 $router->post('/profil',        [ProfileController::class, 'update']);
 $router->get('/profil/sifre',   [ProfileController::class, 'passwordForm']);
 $router->post('/profil/sifre',  [ProfileController::class, 'updatePassword']);
+
+$router->get('/icerik',               [ContentController::class, 'index']);
+$router->get('/icerik/iletisim',      [ContentController::class, 'contact']);
+$router->post('/icerik/iletisim',     [ContentController::class, 'saveContact']);
+$router->get('/icerik/sss',           [FaqController::class, 'index']);
+$router->get('/icerik/sss-duzenle',   [FaqController::class, 'edit']);
+$router->post('/icerik/sss-duzenle',  [FaqController::class, 'save']);
 
 $router->get('/kvkk',  [ConsentController::class, 'index']);
 $router->post('/kvkk', [ConsentController::class, 'update']);

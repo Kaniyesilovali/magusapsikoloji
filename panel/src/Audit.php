@@ -35,6 +35,7 @@ final class Audit
         'availability.updated' => 'Çalışma saatleri değişti',
         'availability.time_off' => 'İzin kaydı değişti',
         'consent.updated'     => 'KVKK metni güncellendi',
+        'content.updated'     => 'Site içeriği güncellendi',
         'note.read'           => 'Seans notu okundu',
         'note.written'        => 'Seans notu yazıldı',
     ];
