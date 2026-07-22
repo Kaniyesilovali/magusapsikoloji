@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Panel;
 
-use PDOException;
-
 /**
  * Şemada bir sütun var mı?
  *
@@ -14,12 +12,20 @@ use PDOException;
  * çökertirdi. Bu yüzden yeni alanlar varlığı kontrol edilerek kullanılır ve
  * güncelleme uygulanmadan önce ekran sadece o alan olmadan çalışır.
  *
+ * Varlık kontrolü information_schema'dan yapılır, SHOW ile değil. SHOW ifadeleri
+ * MySQL'in sunucu tarafı hazırlanmış ifade protokolünde yer tutucu kabul etmiyor;
+ * Db bağlantısı ATTR_EMULATE_PREPARES=false ile açıldığı için `SHOW COLUMNS … LIKE ?`
+ * her çağrıda hata atıyordu ve hata yutulduğu için sonuç daima "sütun yok" oluyordu.
+ * Ödemeler ve danışan dosyası ekranları, migration uygulanmış olmasına rağmen
+ * bu yüzden 503 veriyordu. information_schema düz bir SELECT'tir; olmayan tablo
+ * ya da sütun hata değil, sıfır satır döndürür — bu yüzden try/catch de gerekmez.
+ *
  * Tablo ve sütun adları yalnız kod içindeki sabitlerden gelir, kullanıcı
  * girdisinden değil.
  */
 final class Schema
 {
-    /** @var array<string,bool> İstek başına önbellek — her çağrıda SHOW COLUMNS atılmasın. */
+    /** @var array<string,bool> İstek başına önbellek — her çağrıda information_schema'ya gidilmesin. */
     private static array $cache = [];
 
     public static function hasColumn(string $table, string $column): bool
@@ -29,11 +35,11 @@ final class Schema
             return self::$cache[$key];
         }
 
-        try {
-            $found = Db::one("SHOW COLUMNS FROM `{$table}` LIKE ?", [$column]) !== null;
-        } catch (PDOException) {
-            $found = false;
-        }
+        $found = (int) Db::value(
+            'SELECT COUNT(*) FROM information_schema.COLUMNS
+              WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?',
+            [$table, $column]
+        ) > 0;
 
         return self::$cache[$key] = $found;
     }
@@ -63,11 +69,11 @@ final class Schema
             return self::$cache[$key];
         }
 
-        try {
-            $found = Db::one('SHOW TABLES LIKE ?', [$table]) !== null;
-        } catch (PDOException) {
-            $found = false;
-        }
+        $found = (int) Db::value(
+            'SELECT COUNT(*) FROM information_schema.TABLES
+              WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?',
+            [$table]
+        ) > 0;
 
         return self::$cache[$key] = $found;
     }
