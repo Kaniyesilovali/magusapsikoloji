@@ -138,6 +138,21 @@ $needsAck    = error_for('confirm_warnings') !== null;
     </p>
   </div>
 
+  <?php // Hatalı gönderim sonrası kullanıcının son tercihi korunur, yoksa açık gelir. ?>
+  <?php $notifyChecked = errors() !== [] ? old('notify') !== '' : true; ?>
+  <div class="bg-warm rounded-xl p-4">
+    <label class="flex gap-3 items-start cursor-pointer">
+      <input type="checkbox" name="notify" value="1" class="mt-0.5 w-4 h-4 accent-primary" <?= $notifyChecked ? 'checked' : '' ?>>
+      <span class="text-sm text-ink">
+        E-posta ile bildir
+        <span class="block text-xs text-ink-muted mt-1">
+          Danışana (e-posta adresi kayıtlıysa) ve randevunun terapistine tarih/saat bilgisi gönderilir.
+          İdari not ve diğer kayıt bilgileri e-postaya konmaz.
+        </span>
+      </span>
+    </label>
+  </div>
+
   <?php if ($needsAck): ?>
     <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
       <label class="flex gap-3 items-start cursor-pointer">

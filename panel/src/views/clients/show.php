@@ -83,6 +83,10 @@ $isActive = $client['status'] === 'active';
     <?php else: ?>
       <p class="text-sm text-ink-muted">Rıza kaydı yok.</p>
     <?php endif; ?>
+    <a href="<?= e(url("/danisanlar/{$client['id']}/riza")) ?>" target="_blank" rel="noopener"
+       class="inline-block mt-3 text-xs text-primary hover:text-primary-dark font-medium">
+      Rıza formunu yazdır →
+    </a>
   </div>
 </div>
 

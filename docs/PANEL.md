@@ -31,6 +31,7 @@ aksi hâlde `npm run build` onları `_site/panel/` içine kopyalar ve yayına ç
 | Tüm randevular | ✔ | ✔ | kendi randevuları | kendi randevuları (salt okunur) |
 | Randevu oluştur/düzenle/iptal | ✔ | ✔ | kendi takvimine | — |
 | Çalışma saati ve izin tanımla | ✔ | ✔ | kendi müsaitliği | — |
+| KVKK metnini düzenle | ✔ | ✔ | — | — |
 | **Seans notu okuma/yazma** | **—** | **—** | **yalnız kendi yazdığı** | — |
 | Sistem kayıtları (audit log) | ✔ | — | — | — |
 | Kendi profili | ✔ | ✔ | ✔ | ✔ |
@@ -179,8 +180,55 @@ için "her saat uygun" varsayılır; "hiçbir saat uygun değil" değil.
 etkilendiği söylenir, kararı kullanıcı verir.
 
 > Randevu kartındaki **idari not** alanı klinik içerik için değildir; organizasyon
-> notudur (ör. "faturayı kurum ödeyecek"). Klinik içerik Faz 1c'deki şifreli seans
-> notlarına yazılacak.
+> notudur (ör. "faturayı kurum ödeyecek"). Klinik içerik şifreli seans notuna yazılır.
+
+### Bildirimler
+
+Randevu oluşturma, güncelleme ve iptal ekranlarında **"E-posta ile bildir"** kutusu
+vardır (varsayılan açık). Bildirim danışana (e-posta adresi kayıtlıysa) ve randevunun
+terapistine gider; işlemi yapan kişiye kendi eylemi bildirilmez.
+
+E-posta içeriği bilinçli olarak yalındır: tarih, saat, terapist, görüşme yeri. İdari
+not ve danışanın diğer bilgileri gönderilmez — e-posta şifresiz bir kanaldır.
+Gönderim başarısız olursa **kayıt geri alınmaz**, yalnız uyarı gösterilir.
+
+Hatırlatma e-postaları (ör. "randevunuza 1 gün kaldı") bu sürümde yok; zamanlanmış
+görev (cron) gerektirir.
+
+---
+
+## Seans notları
+
+`/randevular/{id}/not` — [`NoteController`](../panel/src/Controllers/NoteController.php).
+
+Üç kural:
+
+1. **Yalnız şifreli saklanır.** libsodium secretbox (XSalsa20-Poly1305); veritabanı
+   yedeği tek başına okunamaz, `note_key` olmadan içerik çözülemez.
+2. **Yalnız yazan terapist okur.** Yetki matrisinde `note.*` sadece terapistte olduğu
+   için yöneticiler ve süper admin ekrana hiç giremez. Sistem kayıtlarına "not yazıldı"
+   bilgisi düşer, **içerik asla loglanmaz**.
+3. **Devir notu taşımaz.** Randevu başka bir terapiste geçse bile eski not açılamaz ve
+   üzerine yazılamaz; ekran bunu açıkça söyler.
+
+`sodium` eklentisi kapalıysa ya da `note_key` geçersizse ekran not kabul etmez ve
+sebebini gösterir — yarı şifreli, sessizce düz metne düşen bir davranış yoktur.
+
+---
+
+## KVKK metni
+
+`/kvkk` — aydınlatma metni ve açık rıza beyanı `settings` tablosunda sürümlü tutulur.
+Danışan kaydındaki `consent_version`, rızanın hangi metne verildiğini gösterir; bu
+yüzden **metin değişince sürüm de değişmek zorundadır** ve panel sürümü yükseltmeden
+kaydetmeye izin vermez.
+
+Danışan sayfasındaki **"Rıza formunu yazdır"** bağlantısı, danışanın adıyla birlikte
+güncel metni imza alanlarıyla yazdırılabilir biçimde açar.
+
+> Paneldeki başlangıç metni bir **taslaktır**, hukuki tavsiye değildir. Köşeli
+> parantezli alanlar kurumun bilgileriyle doldurulmalı ve metin bir hukukçuya
+> onaylatılmalıdır.
 
 ---
 
@@ -232,13 +280,16 @@ Kurumun tamamlaması gerekenler:
 |---|---|---|
 | 1a | İskelet, kimlik doğrulama, roller, kullanıcı yönetimi, profil, audit log | ✅ tamam |
 | 1b | Danışan kayıtları, terapist müsaitliği, randevu takvimi, çakışma kontrolü | ✅ tamam |
-| 1c | Şifreli seans notları, e-posta bildirimleri, KVKK metinleri | sırada |
-| 2  | İçerik yönetimi (GitHub Contents API üzerinden), Sveltia CMS'in kaldırılması | planlı |
+| 1c | Şifreli seans notları, e-posta bildirimleri, KVKK metinleri | ✅ tamam |
+| 2  | İçerik yönetimi (GitHub Contents API üzerinden), Sveltia CMS'in kaldırılması | sırada |
 | 3  | Süper admin için TOTP 2FA, WhatsApp/SMS hatırlatma, raporlar | opsiyonel |
 
-Faz 1b şema değişikliği getirmedi — `clients`, `appointments`, `working_hours` ve
-`time_off` tabloları 001_init.sql'de zaten vardı, eksik olan arayüzlerdi. Faz 1c için
-`session_notes` de hazır bekliyor.
+Faz 1b ve 1c şema değişikliği getirmedi — `clients`, `appointments`, `working_hours`,
+`time_off` ve `session_notes` tabloları 001_init.sql'de zaten vardı; eksik olan
+arayüzlerdi. KVKK metni de mevcut `settings` tablosunda saklanır.
+
+Faz 1 kapsamı dışında bilerek bırakılanlar: randevu hatırlatma e-postaları (cron
+gerektirir), seans ücreti/tahsilat takibi, danışan portalinden randevu talebi.
 
 ---
 

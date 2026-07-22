@@ -25,7 +25,7 @@ final class NoteController
 {
     public function form(int $appointmentId): void
     {
-        $actor       = Auth::requirePermission('note.write');
+        $actor       = Auth::requirePermission('note.read.own');
         $appointment = $this->findAppointment($appointmentId, $actor);
         $note        = $this->findNote($appointmentId);
 

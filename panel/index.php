@@ -37,7 +37,9 @@ use Panel\Controllers\AuditController;
 use Panel\Controllers\AuthController;
 use Panel\Controllers\AvailabilityController;
 use Panel\Controllers\ClientController;
+use Panel\Controllers\ConsentController;
 use Panel\Controllers\DashboardController;
+use Panel\Controllers\NoteController;
 use Panel\Controllers\ProfileController;
 use Panel\Controllers\SetupController;
 use Panel\Controllers\UserController;
@@ -123,6 +125,9 @@ $router->get('/profil',         [ProfileController::class, 'edit']);
 $router->post('/profil',        [ProfileController::class, 'update']);
 $router->get('/profil/sifre',   [ProfileController::class, 'passwordForm']);
 $router->post('/profil/sifre',  [ProfileController::class, 'updatePassword']);
+
+$router->get('/kvkk',  [ConsentController::class, 'index']);
+$router->post('/kvkk', [ConsentController::class, 'update']);
 
 $router->get('/kayitlar', [AuditController::class, 'index']);
 

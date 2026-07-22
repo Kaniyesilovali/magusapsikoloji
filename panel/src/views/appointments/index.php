@@ -9,8 +9,9 @@ $weekEnd  = $weekStart->modify('+6 days');
 $filterQs = $therapistFilter > 0 ? '&terapist=' . $therapistFilter : '';
 $today    = date('Y-m-d');
 
-$canEdit   = Rbac::can($actor, 'appointment.update');
-$canCancel = Rbac::can($actor, 'appointment.cancel');
+$canEdit       = Rbac::can($actor, 'appointment.update');
+$canCancel     = Rbac::can($actor, 'appointment.cancel');
+$canWriteNotes = Rbac::canAny($actor, ['note.write', 'note.read.own']);
 
 $statusTone = [
     'scheduled' => 'bg-warm-secondary text-ink-muted',
@@ -116,6 +117,13 @@ $statusTone = [
                 <div class="flex flex-wrap items-center gap-2 mt-2 pl-0 sm:pl-32">
                   <a href="<?= e(url("/randevular/{$appointment['id']}/duzenle")) ?>" class="text-xs text-primary hover:text-primary-dark font-medium">Düzenle</a>
 
+                  <?php // Seans notu yalnız randevunun kendi terapistine görünür. ?>
+                  <?php if ($canWriteNotes && (int) $appointment['therapist_id'] === (int) $actor['id']): ?>
+                    <a href="<?= e(url("/randevular/{$appointment['id']}/not")) ?>" class="text-xs text-primary hover:text-primary-dark font-medium">
+                      <?= $appointment['has_note'] ? 'Seans notu ✓' : 'Seans notu' ?>
+                    </a>
+                  <?php endif; ?>
+
                   <?php
                   $quick = [
                       'confirmed' => 'Onayla',
@@ -141,6 +149,10 @@ $statusTone = [
                         <?= Csrf::field() ?>
                         <input type="text" name="cancel_reason" maxlength="255" placeholder="İptal gerekçesi (isteğe bağlı)"
                                class="px-3 py-1.5 rounded-lg border border-warm-tertiary bg-warm text-xs w-64 focus:bg-white focus:border-primary focus:outline-none">
+                        <label class="flex items-center gap-1.5 text-xs text-ink-muted cursor-pointer">
+                          <input type="checkbox" name="notify" value="1" class="w-3.5 h-3.5 accent-primary" checked>
+                          bildir
+                        </label>
                         <button class="text-xs text-white bg-accent-dark hover:bg-accent px-3 py-1.5 rounded-lg">Randevuyu iptal et</button>
                       </form>
                     </details>

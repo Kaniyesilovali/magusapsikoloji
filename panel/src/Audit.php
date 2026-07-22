@@ -34,6 +34,7 @@ final class Audit
         'appointment.cancelled' => 'Randevu iptal edildi',
         'availability.updated' => 'Çalışma saatleri değişti',
         'availability.time_off' => 'İzin kaydı değişti',
+        'consent.updated'     => 'KVKK metni güncellendi',
         'note.read'           => 'Seans notu okundu',
         'note.written'        => 'Seans notu yazıldı',
     ];

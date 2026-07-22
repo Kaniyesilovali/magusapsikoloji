@@ -9,6 +9,7 @@ use Panel\Audit;
 use Panel\Auth;
 use Panel\ClientScope;
 use Panel\Db;
+use Panel\Notifications;
 use Panel\Rbac;
 use Panel\Scheduling;
 use Panel\View;
@@ -44,7 +45,8 @@ final class AppointmentController
         }
 
         $rows = Db::all(
-            "SELECT a.*, c.full_name AS client_name, c.phone AS client_phone, t.full_name AS therapist_name
+            "SELECT a.*, c.full_name AS client_name, c.phone AS client_phone, t.full_name AS therapist_name,
+                    EXISTS (SELECT 1 FROM session_notes n WHERE n.appointment_id = a.id) AS has_note
                FROM appointments a
                JOIN clients c ON c.id = a.client_id
                JOIN users   t ON t.id = a.therapist_id
@@ -131,6 +133,7 @@ final class AppointmentController
             'starts_at' => $start->format('Y-m-d H:i'),
             'therapist' => (int) $input['therapist_id'],
         ]);
+        $this->notify($appointmentId, 'created', $actor, $input['notify']);
 
         flash('success', 'Randevu oluşturuldu: ' . tr_date_label($start->format('Y-m-d')) . ' ' . $start->format('H:i') . '.');
         redirect('/randevular?hafta=' . $start->format('Y-m-d'));
@@ -191,6 +194,7 @@ final class AppointmentController
             'starts_at' => $start->format('Y-m-d H:i'),
             'status'    => $input['status'],
         ]);
+        $this->notify($id, 'updated', $actor, $input['notify']);
 
         flash('success', 'Randevu güncellendi.');
         redirect('/randevular?hafta=' . $start->format('Y-m-d'));
@@ -231,6 +235,7 @@ final class AppointmentController
             [$reason !== '' ? $reason : null, $id]
         );
         Audit::log('appointment.cancelled', 'appointment', $id, ['reason' => $reason]);
+        $this->notify($id, 'cancelled', $actor, isset($_POST['notify']));
 
         flash('success', 'Randevu iptal edildi. Saat yeniden kullanılabilir.');
         redirect('/randevular?hafta=' . substr((string) $appointment['starts_at'], 0, 10));
@@ -308,7 +313,24 @@ final class AppointmentController
             'note'              => mb_substr(post('note'), 0, 255),
             'status'            => post('status', 'scheduled'),
             'confirm_warnings'  => post('confirm_warnings'),
+            'notify'            => isset($_POST['notify']),
         ];
+    }
+
+    /**
+     * Bildirim gönderimi kaydı geri almaz: randevunun kaydedilmiş olması,
+     * e-postanın gitmiş olmasından önemlidir. Başarısızlık yalnız bildirilir.
+     */
+    private function notify(int $appointmentId, string $event, array $actor, bool $wanted): void
+    {
+        if (!$wanted) {
+            return;
+        }
+        $failed = Notifications::appointment($appointmentId, $event, (int) $actor['id']);
+        if ($failed !== []) {
+            flash('warning', 'Randevu kaydedildi ama bildirim gönderilemedi: ' . implode(', ', $failed)
+                . '. E-posta ayarlarını kontrol edin.');
+        }
     }
 
     private function validate(array $input, ?DateTimeImmutable $start, array $actor, ?array $current): array
