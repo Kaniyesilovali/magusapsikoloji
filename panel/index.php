@@ -5,6 +5,27 @@ declare(strict_types=1);
  * Panelin tek giriş noktası. .htaccess tüm istekleri buraya yönlendirir.
  */
 
+// Sürüm kapısı — bu dosya bilinçli olarak PHP 7 ile de AYRIŞTIRILABİLİR sözdizimi
+// kullanır. Eski bir sürümde çalışılırsa diğer dosyalar ayrıştırma hatası verip
+// boş bir 500 döndürürdü; buradan anlaşılır bir mesaj gösterilir.
+if (PHP_VERSION_ID < 80100) {
+    http_response_code(500);
+    header('Content-Type: text/html; charset=utf-8');
+    exit(
+        '<!doctype html><html lang="tr"><head><meta charset="utf-8">'
+        . '<meta name="viewport" content="width=device-width, initial-scale=1">'
+        . '<title>PHP sürümü yetersiz</title></head>'
+        . '<body style="font-family:system-ui,sans-serif;max-width:34rem;margin:4rem auto;padding:0 1.5rem;color:#2C3830;line-height:1.6">'
+        . '<h1 style="font-size:1.25rem">PHP sürümü yetersiz</h1>'
+        . '<p>Panel en az <strong>PHP 8.1</strong> gerektiriyor (önerilen: 8.3). '
+        . 'Bu sunucuda çalışan sürüm: <strong>' . htmlspecialchars(PHP_VERSION, ENT_QUOTES, 'UTF-8') . '</strong>.</p>'
+        . '<p>cPanel → <strong>Select PHP Version</strong> ekranından sürümü 8.3 yapın ve '
+        . '<code>pdo_mysql</code>, <code>mbstring</code>, <code>openssl</code>, <code>sodium</code> '
+        . 'eklentilerini işaretleyin.</p>'
+        . '</body></html>'
+    );
+}
+
 // /panel/index.php → PANEL_BASE = "/panel"  (php -S ile kök çalışırken "")
 define('PANEL_BASE', rtrim(str_replace('\\', '/', dirname((string) ($_SERVER['SCRIPT_NAME'] ?? '/'))), '/'));
 
