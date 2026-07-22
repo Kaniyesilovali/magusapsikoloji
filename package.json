@@ -6,8 +6,11 @@
   "scripts": {
     "dev": "npx @11ty/eleventy --serve",
     "dev:css": "npx @tailwindcss/cli -i ./src/input.css -o ./dist/output.css --watch",
+    "dev:panel": "php -S localhost:8000 -t panel",
+    "dev:css:panel": "npx @tailwindcss/cli -i ./src/panel.css -o ./panel/assets/panel.css --watch",
     "build:css": "npx @tailwindcss/cli -i ./src/input.css -o ./dist/output.css --minify",
-    "build": "npm run build:css && npx @11ty/eleventy",
+    "build:css:panel": "npx @tailwindcss/cli -i ./src/panel.css -o ./panel/assets/panel.css --minify",
+    "build": "npm run build:css && npm run build:css:panel && npx @11ty/eleventy",
     "check": "node scripts/check-site.js"
   },
   "keywords": [],

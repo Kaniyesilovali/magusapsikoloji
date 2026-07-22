@@ -3,3 +3,9 @@ node_modules/
 deploy/
 _site/
 .snapshot/
+
+# Panel sırları — asla commit edilmez (DB şifresi, seans notu şifreleme anahtarı)
+magusa-panel-config/
+panel/config.php
+mail.log
+

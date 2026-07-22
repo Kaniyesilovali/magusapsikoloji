@@ -1,0 +1,65 @@
+/* Yönetim paneli stil girişi — public site CSS'inden ayrı derlenir ki
+   ziyaretçiye gereksiz sınıf gönderilmesin.
+   Derleme:  npm run build:css:panel  →  panel/assets/panel.css            */
+@import "tailwindcss";
+
+/* Tailwind yalnız panel şablonlarını tarasın */
+@source "../panel";
+
+/* Fontlar public sitedekilerle aynı dosyalardan gelir (GDPR: harici CDN yok).
+   Panel /panel altında çalıştığı için yollar köke göre mutlak yazılır. */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url('/assets/fonts/inter-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2212, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url('/assets/fonts/inter-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* Public site ile aynı renk paleti — panel siteden kopuk görünmesin */
+@theme {
+  --color-primary:        #4A7C6F;
+  --color-primary-light:  #6B9E91;
+  --color-primary-dark:   #2F5C52;
+  --color-primary-hover:  #3D6B5F;
+
+  --color-accent:         #C8785A;
+  --color-accent-dark:    #A85C42;
+
+  --color-warm:           #FAF8F5;
+  --color-warm-secondary: #F0EDE8;
+  --color-warm-tertiary:  #E4DDD5;
+
+  --color-sage:           #8FAF9F;
+  --color-sage-light:     #B4CBBF;
+
+  --color-ink:            #2C3830;
+  --color-ink-muted:      #5A6B62;
+  --color-ink-light:      #8A9E94;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background-color: #F0EDE8;
+  color: #2C3830;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Mobil menü oku — <details> ile JS'siz açılır menü kullanılıyor */
+details > summary {
+  list-style: none;
+  cursor: pointer;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}

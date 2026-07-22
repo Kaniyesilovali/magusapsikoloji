@@ -1,0 +1,53 @@
+# Mağusa Psikoloji — yönetim paneli
+# Bu dosya panel/ ile birlikte _site/panel/ altına kopyalanır (eleventy passthrough).
+
+Options -Indexes
+
+# --- HTTPS zorlama ---
+# Cloudflare origin'e HTTP ile bağlanabildiği için önce X-Forwarded-Proto'ya bakılır;
+# aksi halde sonsuz yönlendirme döngüsü oluşur.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+  RewriteBase /panel/
+
+  # Kaynak dizinlerine doğrudan erişim yok
+  RewriteRule ^(src|migrations)(/|$) - [F,L]
+
+  # Gerçek dosya/dizin değilse tek giriş noktasına
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ index.php [QSA,L]
+</IfModule>
+
+# --- Yapılandırma dosyaları hiçbir koşulda servis edilmez ---
+<FilesMatch "^(config\.php|config\.example\.php|.*\.sql|.*\.md)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# --- Güvenlik başlıkları ---
+<IfModule mod_headers.c>
+  Header always set X-Frame-Options "DENY"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "no-referrer"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+  Header always set X-Robots-Tag "noindex, nofollow"
+  Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# --- PHP oturum sertleştirmesi (host destekliyorsa) ---
+<IfModule mod_php.c>
+  php_flag session.cookie_httponly On
+  php_flag session.use_strict_mode On
+  php_flag display_errors Off
+</IfModule>

@@ -8,6 +8,9 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ 'static/robots.txt': 'robots.txt' });
   eleventyConfig.addPassthroughCopy({ 'static/.htaccess': '.htaccess' });
   eleventyConfig.addPassthroughCopy({ admin: 'admin' });
+  // PHP yönetim paneli: kaynak repoda durur, site ile aynı FTP hattından yayınlanır.
+  // Sırlar panel/ dizininin dışındaki config dosyasında olduğu için buraya kopyalanmaz.
+  eleventyConfig.addPassthroughCopy({ panel: 'panel' });
 
   eleventyConfig.setTemplateFormats(['html', 'md', 'njk']);
 
