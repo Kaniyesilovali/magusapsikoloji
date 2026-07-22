@@ -45,14 +45,26 @@ final class Migrator
         foreach (self::pending() as $name) {
             $path = self::DIR . '/' . $name;
 
+            // Önce tam satır yorumları temizlenir. Aksi hâlde bir ifadenin ÖNÜNDEKİ
+            // açıklama satırları parçanın başına düşüyor, parça "yorum" sanılıp
+            // atlanıyor ve tablo sessizce kurulmuyordu.
+            $sql = preg_replace('/^[ \t]*--.*$/m', '', (string) file_get_contents($path));
+
             // İfadeler satır sonundaki noktalı virgülle ayrılır; şema dosyalarında
             // dize içinde noktalı virgül bulunmaz.
-            foreach (preg_split('/;\s*[\r\n]+/', (string) file_get_contents($path)) ?: [] as $sql) {
-                $sql = trim($sql);
-                if ($sql === '' || str_starts_with($sql, '--')) {
+            foreach (preg_split('/;\s*[\r\n]+/', (string) $sql) ?: [] as $statement) {
+                $statement = trim($statement);
+                if ($statement === '') {
                     continue;
                 }
-                Db::pdo()->exec($sql);
+                try {
+                    Db::pdo()->exec($statement);
+                } catch (PDOException $e) {
+                    // Hangi ifadenin patladığı mesajda görünsün; yoksa yalnız
+                    // SQLSTATE kalıyor ve hata hangi tabloda anlaşılmıyor.
+                    $head = trim((string) strtok($statement, "\n"));
+                    throw new \RuntimeException("{$name} → {$head} … : " . $e->getMessage(), 0, $e);
+                }
             }
 
             Db::run('INSERT INTO schema_migrations (filename, applied_at) VALUES (?, NOW())', [$name]);
