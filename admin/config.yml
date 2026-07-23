@@ -48,11 +48,15 @@ collections:
       - name: title
         label: "Sayfa Başlığı (SEO)"
         widget: string
-        hint: "Google arama sonucunda görünen başlık. İdeal uzunluk 50–60 karakter."
+        minlength: 30
+        maxlength: 60
+        hint: "Google'da görünen başlık. Alanın altındaki sayaç canlı sayar — ideal 50–60 karakter. 60'ı aşarsa Google başlığı keser; kaydetmeden önce kısaltmanız istenir."
       - name: description
         label: "Meta Açıklama"
         widget: text
-        hint: "Google'da başlığın altında görünen kısa açıklama. İdeal uzunluk 140–160 karakter."
+        minlength: 110
+        maxlength: 160
+        hint: "Başlığın altında görünen açıklama. Sayaç canlı sayar — ideal 140–160 karakter. Boş bırakılamaz; 160'ı aşarsa Google keser."
       - name: permalink
         label: "Sayfa Adresi (URL)"
         widget: string
@@ -379,11 +383,15 @@ collections:
       - name: title
         label: "Sayfa Başlığı (SEO)"
         widget: string
-        hint: "Google arama sonucunda görünen başlık. İdeal uzunluk 50–60 karakter."
+        minlength: 30
+        maxlength: 60
+        hint: "Google'da görünen başlık. Alanın altındaki sayaç canlı sayar — ideal 50–60 karakter. 60'ı aşarsa Google başlığı keser; kaydetmeden önce kısaltmanız istenir."
       - name: description
         label: "Meta Açıklama"
         widget: text
-        hint: "Google'da başlığın altında görünen kısa açıklama. İdeal uzunluk 140–160 karakter."
+        minlength: 110
+        maxlength: 160
+        hint: "Başlığın altında görünen açıklama. Sayaç canlı sayar — ideal 140–160 karakter. Boş bırakılamaz; 160'ı aşarsa Google keser."
       - name: permalink
         label: "Sayfa Adresi (URL)"
         widget: string
