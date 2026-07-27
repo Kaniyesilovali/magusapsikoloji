@@ -258,6 +258,18 @@ details > summary::-webkit-details-marker {
     color: var(--color-ink-light);
     margin-top: 0.35rem;
   }
+  /* Şifre alanının "Göster" düğmesi. Yazdığını görememek, uzun bir şifreyi
+     iki kez aynı yazmanın önündeki en büyük engel; düğme alanın içinde,
+     metnin bittiği yerde durur. */
+  .field-reveal { position: relative; }
+  .field-reveal .field { padding-right: 4.25rem; }
+  .field-reveal-btn {
+    position: absolute;
+    top: 50%;
+    right: 0.7rem;
+    transform: translateY(-50%);
+  }
+
   /* Alan altı hata metni. field-hint'in soluk grisi hata için yeterli değildi. */
   .field-error {
     font-size: 0.75rem;

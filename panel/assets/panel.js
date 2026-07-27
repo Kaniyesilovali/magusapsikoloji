@@ -31,6 +31,26 @@
     }
   });
 
+  // data-reveal="#alan" taşıyan düğme şifre alanını okunur yapar. JS kapalıyken
+  // hiçbir işe yaramayacağı için düğme gizli geliyor, burada açılıyor.
+  document.querySelectorAll('[data-reveal]').forEach(function (button) {
+    button.hidden = false;
+  });
+
+  document.addEventListener('click', function (event) {
+    var button = event.target.closest('[data-reveal]');
+    if (!button) return;
+
+    var field = document.querySelector(button.getAttribute('data-reveal'));
+    if (!field) return;
+
+    var show = field.type === 'password';
+    field.type = show ? 'text' : 'password';
+    button.textContent = show ? 'Gizle' : 'Göster';
+    button.setAttribute('aria-label', show ? 'Şifreyi gizle' : 'Şifreyi göster');
+    button.setAttribute('aria-pressed', show ? 'true' : 'false');
+  });
+
   // Yazdırma düğmesi. CSP inline script'e izin vermediği için buradan bağlanır.
   document.addEventListener('click', function (event) {
     var trigger = event.target.closest('[data-print]');

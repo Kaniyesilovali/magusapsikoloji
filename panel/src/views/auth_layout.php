@@ -41,5 +41,7 @@
   </p>
 </div>
 
+<?php // Giriş ekranlarında betiğin tek işi şifre alanının "Göster" düğmesi. ?>
+<script src="<?= e(asset('/assets/panel.js')) ?>" defer></script>
 </body>
 </html>

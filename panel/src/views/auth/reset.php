@@ -27,15 +27,23 @@ use Panel\Csrf;
 
     <div>
       <label for="password" class="field-label">Yeni şifre</label>
-      <input type="password" id="password" name="password" required autocomplete="new-password" autofocus
-             minlength="<?= (int) Config::get('security.password_min', 10) ?>" class="field">
+      <div class="field-reveal">
+        <input type="password" id="password" name="password" required autocomplete="new-password" autofocus
+               minlength="<?= (int) Config::get('security.password_min', 10) ?>" class="field">
+        <button type="button" class="btn-text btn-text-quiet field-reveal-btn" data-reveal="#password"
+                aria-label="Şifreyi göster" aria-pressed="false" hidden>Göster</button>
+      </div>
       <p class="field-hint">En az <?= (int) Config::get('security.password_min', 10) ?> karakter.</p>
     </div>
 
     <div>
       <label for="password_confirm" class="field-label">Yeni şifre (tekrar)</label>
-      <input type="password" id="password_confirm" name="password_confirm" required
-             autocomplete="new-password" class="field">
+      <div class="field-reveal">
+        <input type="password" id="password_confirm" name="password_confirm" required
+               autocomplete="new-password" class="field">
+        <button type="button" class="btn-text btn-text-quiet field-reveal-btn" data-reveal="#password_confirm"
+                aria-label="Şifreyi göster" aria-pressed="false" hidden>Göster</button>
+      </div>
     </div>
 
     <button type="submit" class="btn btn-primary w-full justify-center">Şifreyi kaydet</button>

@@ -30,15 +30,23 @@ $min = (int) Config::get('security.password_min', 10);
 
     <div>
       <label for="password" class="field-label">Yeni şifre</label>
-      <input type="password" id="password" name="password" required autocomplete="new-password"
-             minlength="<?= $min ?>" class="field">
+      <div class="field-reveal">
+        <input type="password" id="password" name="password" required autocomplete="new-password"
+               minlength="<?= $min ?>" class="field">
+        <button type="button" class="btn-text btn-text-quiet field-reveal-btn" data-reveal="#password"
+                aria-label="Şifreyi göster" aria-pressed="false" hidden>Göster</button>
+      </div>
       <p class="field-hint">En az <?= $min ?> karakter, yalnızca rakam olamaz.</p>
     </div>
 
     <div>
       <label for="password_confirm" class="field-label">Yeni şifre (tekrar)</label>
-      <input type="password" id="password_confirm" name="password_confirm" required
-             autocomplete="new-password" class="field">
+      <div class="field-reveal">
+        <input type="password" id="password_confirm" name="password_confirm" required
+               autocomplete="new-password" class="field">
+        <button type="button" class="btn-text btn-text-quiet field-reveal-btn" data-reveal="#password_confirm"
+                aria-label="Şifreyi göster" aria-pressed="false" hidden>Göster</button>
+      </div>
     </div>
   </div>
 
