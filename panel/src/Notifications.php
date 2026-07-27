@@ -7,7 +7,7 @@ namespace Panel;
  * Randevu e-postaları.
  *
  * İçerik bilinçli olarak yalın: tarih, saat, terapist, görüşme yeri. Randevunun
- * idari notu ve danışanın diğer bilgileri e-postaya konmaz — e-posta şifresiz bir
+ * idari notu ve görüşmecinin diğer bilgileri e-postaya konmaz — e-posta şifresiz bir
  * kanaldır ve sağlık verisi çağrıştıran içerik taşımamalıdır.
  *
  * Gönderim başarısız olursa kayıt işlemi geri alınmaz; çağıran taraf kullanıcıyı
@@ -22,7 +22,7 @@ final class Notifications
     ];
 
     /**
-     * Yaklaşan randevu hatırlatması. Yalnız danışana gider — terapist zaten
+     * Yaklaşan randevu hatırlatması. Yalnız görüşmeciye gider — terapist zaten
      * kendi takvimine bakıyor ve her seans için ikinci bir e-posta gürültüdür.
      *
      * @param array<string,mixed> $row appointment + client_name + client_email + therapist_name
@@ -46,7 +46,7 @@ final class Notifications
                 . 'Görüşme: ' . Scheduling::locationLabel($row['location']),
                 null,
                 null,
-                'Gelemeyecekseniz lütfen merkezimizi arayın; saatinizi başka bir danışana açabiliriz.'
+                'Gelemeyecekseniz lütfen merkezimizi arayın; saatinizi başka bir görüşmeciye açabiliriz.'
             )
         );
     }
@@ -79,7 +79,7 @@ final class Notifications
         $location = Scheduling::locationLabel($row['location']);
         $failed   = [];
 
-        // ── Danışan ──────────────────────────────────────────────
+        // ── Görüşmeci ──────────────────────────────────────────────
         if ($row['client_email'] !== null && (int) $row['client_user_id'] !== (int) $actorId) {
             $body = match ($event) {
                 'cancelled' => "Merhaba {$row['client_name']},\n\n{$when} tarihli randevunuz iptal edilmiştir. Yeni bir randevu için merkezimizle iletişime geçebilirsiniz.",
@@ -118,7 +118,7 @@ final class Notifications
                 $heading . ' — Mağusa Psikoloji',
                 Mailer::template(
                     $heading,
-                    "Merhaba {$row['therapist_name']},\n\nZaman: {$when}\nDanışan: {$row['client_name']}\nGörüşme: {$location}",
+                    "Merhaba {$row['therapist_name']},\n\nZaman: {$when}\nGörüşmeci: {$row['client_name']}\nGörüşme: {$location}",
                     'Takvimi aç',
                     rtrim((string) Config::get('app.url'), '/') . '/randevular?hafta=' . substr((string) $row['starts_at'], 0, 10)
                 )

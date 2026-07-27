@@ -322,7 +322,7 @@ final class AppointmentController
         if ($actor['role'] === Rbac::THERAPIST) {
             return ['a.therapist_id = ?', [$actor['id']]];
         }
-        // Danışan: yalnız kendi kaydına bağlı randevular (users.id ↔ clients.user_id).
+        // Görüşmeci: yalnız kendi kaydına bağlı randevular (users.id ↔ clients.user_id).
         return ['c.user_id = ?', [$actor['id']]];
     }
 
@@ -405,12 +405,12 @@ final class AppointmentController
     {
         $errors = [];
 
-        // Danışan, aktörün görebildiği kayıtlardan biri olmalı.
+        // Görüşmeci, aktörün görebildiği kayıtlardan biri olmalı.
         [$scope, $params] = ClientScope::filter($actor);
         array_unshift($params, (int) $input['client_id']);
         $client = Db::one("SELECT c.id FROM clients c WHERE c.id = ? AND ({$scope}) LIMIT 1", $params);
         if ($client === null) {
-            $errors['client_id'] = 'Danışan seçin.';
+            $errors['client_id'] = 'Görüşmeci seçin.';
         }
 
         // Askıya alınmış terapiste yeni randevu yazılamaz; mevcut randevusu düzenlenebilir.
@@ -513,9 +513,9 @@ final class AppointmentController
     }
 
     /**
-     * Aktörün randevu yazabileceği danışanlar.
-     * Düzenlemede kaydın kendi danışanı listeye zorla eklenir; arşivlenmiş bir
-     * danışanın randevusu aksi hâlde kaydedilemez hâle gelirdi.
+     * Aktörün randevu yazabileceği görüşmeciler.
+     * Düzenlemede kaydın kendi görüşmecisi listeye zorla eklenir; arşivlenmiş bir
+     * görüşmecinin randevusu aksi hâlde kaydedilemez hâle gelirdi.
      */
     private function clientOptions(array $actor, ?int $includeId = null): array
     {

@@ -10,8 +10,8 @@ use Panel\Csrf;
   <p class="eyebrow">Site</p>
   <h1 class="page-title mt-2">KVKK metni</h1>
   <p class="page-sub">
-    Danışanlara sunulan aydınlatma metni ve açık rıza beyanı. Şu an
-    <span class="num"><?= $signed ?></span> danışan kaydında rıza işaretli.
+    Görüşmecilere sunulan aydınlatma metni ve açık rıza beyanı. Şu an
+    <span class="num"><?= $signed ?></span> görüşmeci kaydında rıza işaretli.
   </p>
 </header>
 
@@ -40,13 +40,13 @@ use Panel\Csrf;
         <input type="text" id="consent_version" name="consent_version" required maxlength="20"
                class="field num" value="<?= e($version) ?>">
         <p class="field-hint">
-          Metni değiştirdiyseniz sürümü de yükseltin. Her danışan kaydı, rıza verdiği
+          Metni değiştirdiyseniz sürümü de yükseltin. Her görüşmeci kaydı, rıza verdiği
           sürümü ayrıca saklar.
         </p>
       </div>
       <div class="bg-warm rounded-md p-4 text-xs text-ink-muted leading-relaxed">
         Sürüm değişikliği geçmişe dönük çalışmaz: eski rızalar eski sürüme bağlı kalır.
-        Metinde esaslı bir değişiklik yaptıysanız mevcut danışanlardan yeniden rıza
+        Metinde esaslı bir değişiklik yaptıysanız mevcut görüşmecilerden yeniden rıza
         alınması gerekip gerekmediğini değerlendirin.
       </div>
     </div>
@@ -58,7 +58,7 @@ use Panel\Csrf;
 </form>
 
 <p class="text-xs text-ink-light mt-6">
-  Danışana imzalatılacak çıktıyı, danışanın kayıt sayfasındaki
+  Görüşmeciye imzalatılacak çıktıyı, görüşmecinin kayıt sayfasındaki
   <strong>"Rıza formunu yazdır"</strong> bağlantısından alabilirsiniz.
 </p>
 

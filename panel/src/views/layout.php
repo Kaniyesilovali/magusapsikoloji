@@ -13,7 +13,7 @@ $groups = [
     ['label' => 'Merkez', 'items' => [
         ['path' => '/',            'label' => 'Bugün',        'permissions' => ['dashboard.view']],
         ['path' => '/randevular',  'label' => 'Randevular',   'permissions' => ['appointment.view.all', 'appointment.view.own']],
-        ['path' => '/danisanlar',  'label' => 'Danışanlar',   'permissions' => ['client.view.all', 'client.view.own']],
+        ['path' => '/danisanlar',  'label' => 'Görüşmeciler',   'permissions' => ['client.view.all', 'client.view.own']],
         ['path' => '/musaitlik',   'label' => 'Müsaitlik',    'permissions' => ['availability.manage.all', 'availability.manage.own']],
         ['path' => '/odemeler',    'label' => 'Ödemeler',     'permissions' => ['payment.view.all', 'payment.view.own']],
     ]],

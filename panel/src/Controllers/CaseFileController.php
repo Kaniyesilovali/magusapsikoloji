@@ -14,7 +14,7 @@ use Panel\View;
 use RuntimeException;
 
 /**
- * Danışan dosyası — başvuru nedeni, öykü, formülasyon, plan.
+ * Görüşmeci dosyası — başvuru nedeni, öykü, formülasyon, plan.
  *
  * Seans notundan ayrı tutulur çünkü ayrı sorulara cevap veriyorlar: seans notu
  * "o gün ne oldu", dosya "bu kişiyle ne üzerinde çalışıyoruz". Terapist ikincisini
@@ -22,7 +22,7 @@ use RuntimeException;
  * kalmamalıdır.
  *
  * Saklama kuralı seans notuyla aynı: yalnız şifreli, yalnız yazarına açık.
- * Kayıt (danışan, terapist) çifti başına tektir — devir hâlinde devralan terapist
+ * Kayıt (görüşmeci, terapist) çifti başına tektir — devir hâlinde devralan terapist
  * öncekinin dosyasını okuyamaz, kendi formülasyonunu yazar.
  */
 final class CaseFileController
@@ -44,7 +44,7 @@ final class CaseFileController
         }
 
         View::render('cases/form', [
-            'title'     => 'Danışan dosyası',
+            'title'     => 'Görüşmeci dosyası',
             'client'    => $client,
             'file'      => $file,
             'body'      => $body,
@@ -99,7 +99,7 @@ final class CaseFileController
         if (!Schema::caseFilesReady()) {
             View::error(
                 503,
-                'Danışan dosyası henüz kurulmadı',
+                'Görüşmeci dosyası henüz kurulmadı',
                 Rbac::can($actor, 'settings.manage')
                     ? 'Sistem ekranından bekleyen veritabanı güncellemesini uygulayın.'
                     : 'Veritabanı güncellemesi bekleniyor. Süper admin ile görüşün.'
@@ -112,7 +112,7 @@ final class CaseFileController
 
         $client = Db::one("SELECT c.* FROM clients c WHERE c.id = ? AND ({$scope}) LIMIT 1", $params);
         if ($client === null) {
-            View::error(404, 'Danışan bulunamadı', 'Dosya yalnız kendi danışanlarınız için açılabilir.');
+            View::error(404, 'Görüşmeci bulunamadı', 'Dosya yalnız kendi görüşmecileriniz için açılabilir.');
             exit;
         }
         return $client;

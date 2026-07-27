@@ -16,7 +16,7 @@ namespace Panel;
  * MySQL'in sunucu tarafı hazırlanmış ifade protokolünde yer tutucu kabul etmiyor;
  * Db bağlantısı ATTR_EMULATE_PREPARES=false ile açıldığı için `SHOW COLUMNS … LIKE ?`
  * her çağrıda hata atıyordu ve hata yutulduğu için sonuç daima "sütun yok" oluyordu.
- * Ödemeler ve danışan dosyası ekranları, migration uygulanmış olmasına rağmen
+ * Ödemeler ve görüşmeci dosyası ekranları, migration uygulanmış olmasına rağmen
  * bu yüzden 503 veriyordu. information_schema düz bir SELECT'tir; olmayan tablo
  * ya da sütun hata değil, sıfır satır döndürür — bu yüzden try/catch de gerekmez.
  *
@@ -56,7 +56,7 @@ final class Schema
         return self::hasColumn('appointments', 'reminder_sent_at');
     }
 
-    /** Danışan dosyası (004_case_files) uygulanmış mı? */
+    /** Görüşmeci dosyası (004_case_files) uygulanmış mı? */
     public static function caseFilesReady(): bool
     {
         return self::hasTable('case_files');

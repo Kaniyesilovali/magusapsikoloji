@@ -48,7 +48,7 @@
 
     <div class="grid grid-cols-2 gap-8">
       <div>
-        <p class="eyebrow mb-10">Danışan imzası</p>
+        <p class="eyebrow mb-10">Görüşmeci imzası</p>
         <div class="border-t border-ink/40"></div>
       </div>
       <div>

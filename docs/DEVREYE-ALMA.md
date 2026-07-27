@@ -6,7 +6,7 @@ Panelin canlıda kullanıma hazır hâle gelmesi için yapılacaklar. **Sırayla
 Panelin nasıl çalıştığı ve neden böyle kurulduğu [PANEL.md](PANEL.md) dosyasında.
 Bu belge yalnız "ne yapmalıyım" sorusunun cevabı.
 
-Menü adları paneldeki hâliyle yazılmıştır: **Merkez** (Bugün, Randevular, Danışanlar,
+Menü adları paneldeki hâliyle yazılmıştır: **Merkez** (Bugün, Randevular, Görüşmeciler,
 Müsaitlik, Ödemeler), **Site** (Site içeriği, KVKK metni), **Yönetim** (Kullanıcılar,
 Sistem kayıtları, Sistem).
 
@@ -33,7 +33,7 @@ Sistem kayıtları, Sistem).
   Listede **üç** dosya görünmeli:
   - `002_payments.sql` — seans ücreti ve tahsilat
   - `003_reminders.sql` — randevu hatırlatmaları
-  - `004_case_files.sql` — danışan dosyası
+  - `004_case_files.sql` — görüşmeci dosyası
 
   *Tamam sayılır:* “3 güncelleme uygulandı” mesajı çıktı ve sayfada artık
   “Veritabanı güncel — bekleyen güncelleme yok” yazıyor.
@@ -62,7 +62,7 @@ Sistem kayıtları, Sistem).
 
   *Tamam sayılır:* Sistem ekranını yenileyince “Seans notu şifrelemesi → çalışıyor”.
 
-  *Açılmazsa:* Panel çalışmaya devam eder, yalnız seans notu ve danışan dosyası
+  *Açılmazsa:* Panel çalışmaya devam eder, yalnız seans notu ve görüşmeci dosyası
   yazılamaz. Ekran bunu açıkça söyler, sessizce şifresiz kaydetmez.
 
 - [ ] **5 · `note_key` yedeğini al** — *Parola yöneticisi*
@@ -71,7 +71,7 @@ Sistem kayıtları, Sistem).
   `security.note_key` değerini kopyalayın. Parola yöneticinize,
   **veritabanı yedeğinden ayrı bir yere** kaydedin.
 
-  *Neden:* Bu anahtar kaybolursa yazılmış tüm seans notları ve danışan dosyaları
+  *Neden:* Bu anahtar kaybolursa yazılmış tüm seans notları ve görüşmeci dosyaları
   **kalıcı olarak** kurtarılamaz. Veritabanı yedeği tek başına yetmez.
 
 - [ ] **6 · GitHub token oluştur ve gir** — *GitHub + cPanel*
@@ -112,7 +112,7 @@ Sistem kayıtları, Sistem).
 - [ ] **8 · E-posta gönderimini test et** — *Panel*
 
   **Kullanıcılar** → *Yeni kullanıcı* → kendi ikinci e-posta adresinize bir hesap açın
-  (rol: Danışan; sonra silersiniz).
+  (rol: Görüşmeci; sonra silersiniz).
 
   *Tamam sayılır:* Davet e-postası geldi ve içindeki bağlantı şifre belirleme ekranını
   açıyor.
@@ -144,21 +144,21 @@ Sistem kayıtları, Sistem).
 
 ---
 
-## 4 · Test · Danışan ve randevu
+## 4 · Test · Görüşmeci ve randevu
 
-- [ ] **11 · Deneme danışanı ekle** — *Panel*
+- [ ] **11 · Deneme görüşmecisi ekle** — *Panel*
 
-  **Danışanlar** → *Yeni danışan*. Ad, telefon, birincil terapist. **Açık rıza kutusunu
+  **Görüşmeciler** → *Yeni görüşmeci*. Ad, telefon, birincil terapist. **Açık rıza kutusunu
   işaretleyin.** E-posta adresi de girin — 28. adımdaki hatırlatma testi buna bağlı.
 
-  *Tamam sayılır:* Danışan sayfasında “Açık rıza alındı” ve tarih görünüyor.
+  *Tamam sayılır:* Görüşmeci sayfasında “Açık rıza alındı” ve tarih görünüyor.
 
 - [ ] **12 · Rıza formunu yazdır** — *Panel*
 
-  Danışan sayfası → KVKK kutusundaki **“Rıza formunu yazdır”**. Yeni sekmede açılır,
+  Görüşmeci sayfası → KVKK kutusundaki **“Rıza formunu yazdır”**. Yeni sekmede açılır,
   üstte *Yazdır* düğmesi var.
 
-  *Tamam sayılır:* Çıktı önizlemesinde danışanın adı, metin ve imza alanları var;
+  *Tamam sayılır:* Çıktı önizlemesinde görüşmecinin adı, metin ve imza alanları var;
   panel menüsü çıktıda görünmüyor.
 
 - [ ] **13 · Randevu oluştur** — *Panel*
@@ -195,7 +195,7 @@ Sistem kayıtları, Sistem).
 
 ---
 
-## 5 · Test · Seans notu ve danışan dosyası
+## 5 · Test · Seans notu ve görüşmeci dosyası
 
 - [ ] **17 · Terapist olarak giriş yap** — *Panel*
 
@@ -222,9 +222,9 @@ Sistem kayıtları, Sistem).
 
   *Boş gelirse ya da hata verirse:* Hemen haber verin, başka not yazmayın.
 
-- [ ] **20 · Danışan dosyası yaz ve tekrar aç** — *Panel*
+- [ ] **20 · Görüşmeci dosyası yaz ve tekrar aç** — *Panel*
 
-  **Danışanlar** → deneme danışanını açın → **Dosya** düğmesi → birkaç satır yazıp
+  **Görüşmeciler** → deneme görüşmecisini açın → **Dosya** düğmesi → birkaç satır yazıp
   kaydedin. Sonra tekrar açın.
 
   *Beklenen:* Metin aynen geliyor ve düğme artık **“Dosya ✓”** diyor.
@@ -234,14 +234,14 @@ Sistem kayıtları, Sistem).
 
 - [ ] **21 · Yöneticinin göremediğini doğrula** — *Panel*
 
-  Süper admin hesabına dönün. Aynı randevuya ve aynı danışana bakın.
+  Süper admin hesabına dönün. Aynı randevuya ve aynı görüşmeciye bakın.
 
   *Beklenen:* Ne **“Seans notu”** bağlantısı ne de **“Dosya”** düğmesi görünüyor.
   Süper admin dahil hiçbir yönetici bu ikisini okuyamaz — bilinçli bir tasarım kararı.
 
 - [ ] **22 · Sistem kayıtlarını denetle** — *Panel*
 
-  **Sistem kayıtları** → filtreden *Seans notu yazıldı* ve *Danışan dosyası yazıldı*
+  **Sistem kayıtları** → filtreden *Seans notu yazıldı* ve *Görüşmeci dosyası yazıldı*
   kayıtlarına bakın.
 
   *Beklenen:* Kim, ne zaman yazdı görünüyor ama **içerik hiçbir yerde yok**.
@@ -292,7 +292,7 @@ Sistem kayıtları, Sistem).
 
 - [ ] **28 · Yarına randevu ver** — *Panel*
 
-  11. adımdaki danışana (e-posta adresi kayıtlı olan) **yarın** için bir randevu verin.
+  11. adımdaki görüşmeciye (e-posta adresi kayıtlı olan) **yarın** için bir randevu verin.
 
   *Tamam sayılır:* **Sistem** ekranında “Sıradaki gönderim → 1 randevu bekliyor”.
 
@@ -300,7 +300,7 @@ Sistem kayıtları, Sistem).
 
   Cron'un çalışmasını bekleyin (en fazla bir saat).
 
-  *Beklenen:* Danışanın adresine “Randevu hatırlatması” konulu e-posta geldi ve Sistem
+  *Beklenen:* Görüşmecinin adresine “Randevu hatırlatması” konulu e-posta geldi ve Sistem
   ekranında “1 gönderildi” yazıyor.
 
   *Gelmezse:* 7. adımdaki cron kurulmamış olabilir — Sistem ekranında “hiç çalışmadı”
@@ -342,7 +342,7 @@ Sistem kayıtları, Sistem).
 
 - [ ] **33 · Hukukçuya onaylat** — *Kurum dışı*
 
-  Metni bir hukukçuya inceletmeden gerçek danışanlardan rıza almayın.
+  Metni bir hukukçuya inceletmeden gerçek görüşmecilerden rıza almayın.
 
   *Neden:* Paneldeki metin bir **taslaktır**, hukuki tavsiye değildir. Panel bunu her
   ekranda taslak olarak işaretler.
@@ -352,7 +352,7 @@ Sistem kayıtları, Sistem).
   Son metni yapıştırın ve **sürüm numarasını yükseltin** (`1.0` → `1.1`).
 
   *Not:* Metni değiştirip sürümü aynı bırakırsanız panel kaydetmeyi reddeder. Her
-  danışan kaydı hangi sürüme rıza verdiğini ayrıca saklar; iki farklı metnin aynı
+  görüşmeci kaydı hangi sürüme rıza verdiğini ayrıca saklar; iki farklı metnin aynı
   sürümü taşıması kaydın ispat değerini bozardı.
 
 ---
@@ -361,12 +361,12 @@ Sistem kayıtları, Sistem).
 
 - [ ] **35 · Deneme kayıtlarını sil** — *Panel*
 
-  Deneme danışanını, randevularını ve 8. adımdaki deneme kullanıcısını silin.
+  Deneme görüşmecisini, randevularını ve 8. adımdaki deneme kullanıcısını silin.
 
-  Danışan sayfasının altındaki *Kalıcı olarak sil*, randevuları ve seans notlarını da
+  Görüşmeci sayfasının altındaki *Kalıcı olarak sil*, randevuları ve seans notlarını da
   siler — deneme verisi için doğru seçenek budur.
 
-  *Tamam sayılır:* Danışanlar ve Kullanıcılar listelerinde yalnız gerçek kayıtlar var.
+  *Tamam sayılır:* Görüşmeciler ve Kullanıcılar listelerinde yalnız gerçek kayıtlar var.
 
 ---
 
@@ -394,6 +394,6 @@ Panel şu an Faz 1a–1c, 2a, 3a–3b kapsıyor. Sıradaki adaylar, getiri sıra
 4. **Otomatik şifreli yedek** — `note_key` kaybolursa notlar kalıcı gider; yedek şu an
    tamamen elle.
 
-Klinik tarafta değerli olabilecekler (bir psikoloğa doğrulatılmalı): danışan kaydında
+Klinik tarafta değerli olabilecekler (bir psikoloğa doğrulatılmalı): görüşmeci kaydında
 **risk işareti**, ölçek/test skorlarının zaman içinde takibi, seans notu şablonu
 (SOAP/DAP), dosya eki (KVKK açısından en ağır madde).

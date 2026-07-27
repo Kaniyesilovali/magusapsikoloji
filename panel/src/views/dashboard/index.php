@@ -129,7 +129,7 @@ $chip = [
 <?php endif; ?>
 
 <?php // ── Sonraki günler ─────────────────────────────────────────────────
-      // Danışan için tek liste bu; personel için cetvelin devamı. ?>
+      // Görüşmeci için tek liste bu; personel için cetvelin devamı. ?>
 <div class="<?= $isStaff ? 'mt-8 lg:mt-0 lg:sticky lg:top-8' : '' ?>">
 <section class="sheet">
   <div class="sheet-head">

@@ -6,14 +6,14 @@ use Panel\Rbac;
 <header class="flex flex-wrap items-end justify-between gap-4 mb-6">
   <div>
     <p class="eyebrow">Merkez</p>
-    <h1 class="page-title mt-2">Danışanlar</h1>
+    <h1 class="page-title mt-2">Görüşmeciler</h1>
     <p class="page-sub">
       <span class="num"><?= count($clients) ?></span> kayıt
-      <?php if (!Rbac::can($actor, 'client.view.all')): ?> — yalnız kendi danışanlarınız<?php endif; ?>
+      <?php if (!Rbac::can($actor, 'client.view.all')): ?> — yalnız kendi görüşmecileriniz<?php endif; ?>
     </p>
   </div>
   <?php if (Rbac::can($actor, 'client.create')): ?>
-    <a href="<?= e(url('/danisanlar/yeni')) ?>" class="btn btn-primary">Yeni danışan</a>
+    <a href="<?= e(url('/danisanlar/yeni')) ?>" class="btn btn-primary">Yeni görüşmeci</a>
   <?php endif; ?>
 </header>
 

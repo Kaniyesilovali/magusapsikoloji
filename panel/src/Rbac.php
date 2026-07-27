@@ -21,7 +21,7 @@ final class Rbac
         self::SUPER_ADMIN => 'Süper Admin',
         self::ADMIN       => 'Admin',
         self::THERAPIST   => 'Terapist',
-        self::CLIENT      => 'Danışan',
+        self::CLIENT      => 'Görüşmeci',
     ];
 
     private const MATRIX = [
@@ -60,7 +60,7 @@ final class Rbac
         self::CLIENT => [
             'dashboard.view',
             'appointment.view.own',
-            // Danışan kendi seanslarının ücretini ve kendisi adına girilmiş
+            // Görüşmeci kendi seanslarının ücretini ve kendisi adına girilmiş
             // tahsilatları görür — kendi borcunu sormak için merkezi aramak
             // zorunda kalmasın diye. Yazma yetkisi yok: ücreti de tahsilatı da
             // merkez girer.
@@ -103,7 +103,7 @@ final class Rbac
      * Kurallar:
      *  - Kimse kendi hesabını silemez / rolünü değiştiremez.
      *  - Yalnızca süper admin, süper adminleri yönetebilir ve süper admin atayabilir.
-     *  - Admin; terapist ve danışan hesaplarını yönetir, admin hesaplarına dokunamaz.
+     *  - Admin; terapist ve görüşmeci hesaplarını yönetir, admin hesaplarına dokunamaz.
      */
     public static function canManageUser(array $actor, array $target): bool
     {

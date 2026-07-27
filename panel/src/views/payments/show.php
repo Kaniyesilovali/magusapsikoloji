@@ -8,7 +8,7 @@ use Panel\Scheduling;
 
 $day = substr((string) $appointment['starts_at'], 0, 10);
 
-// Danışan kendi seansına bakıyor: başlıkta kendi adı yerine seansın kendisi
+// Görüşmeci kendi seansına bakıyor: başlıkta kendi adı yerine seansın kendisi
 // durur, tahsilatı kimin kaydettiği de gösterilmez — o merkezin iç bilgisi.
 $isClient = ($actor['role'] ?? '') === Rbac::CLIENT;
 

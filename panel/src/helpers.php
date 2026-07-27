@@ -250,7 +250,7 @@ function tr_range_label(?string $from, ?string $to): string
     return tr_date_label($from, false) . ' – ' . tr_date_label($to, false);
 }
 
-/** Danışan yaşı — doğum tarihi girilmişse. */
+/** Görüşmeci yaşı — doğum tarihi girilmişse. */
 function age_from(?string $birthDate): ?int
 {
     if (!$birthDate) {

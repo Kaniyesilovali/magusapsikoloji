@@ -17,8 +17,8 @@ final class DashboardController
         $user = Auth::requirePermission('dashboard.view');
 
         // Kapsam tek yerde kurulur, iki sorgu da aynı koşulu kullanır.
-        // Danışan bağlantısı users.id ↔ clients.user_id üzerinden gider;
-        // başka bir danışanın kaydına erişim yolu yoktur.
+        // Görüşmeci bağlantısı users.id ↔ clients.user_id üzerinden gider;
+        // başka bir görüşmecinin kaydına erişim yolu yoktur.
         if (Rbac::can($user, 'appointment.view.all')) {
             $scope  = '1';
             $params = [];
@@ -52,11 +52,11 @@ final class DashboardController
         );
 
         // Sayımlar ekranın başında değil sonunda: gün içinde bir kararı
-        // değiştiren şey toplam danışan sayısı değil, günün şekli.
+        // değiştiren şey toplam görüşmeci sayısı değil, günün şekli.
         $stats = [];
         if (Rbac::can($user, 'appointment.view.all')) {
             $stats = [
-                ['label' => 'Aktif danışan',  'value' => (int) Db::value('SELECT COUNT(*) FROM clients WHERE status = \'active\'')],
+                ['label' => 'Aktif görüşmeci',  'value' => (int) Db::value('SELECT COUNT(*) FROM clients WHERE status = \'active\'')],
                 ['label' => 'Terapist',       'value' => (int) Db::value('SELECT COUNT(*) FROM users WHERE role = ? AND status = \'active\'', [Rbac::THERAPIST])],
                 ['label' => 'Panel hesabı',   'value' => (int) Db::value('SELECT COUNT(*) FROM users WHERE status = \'active\'')],
                 ['label' => 'Bekleyen davet', 'value' => (int) Db::value('SELECT COUNT(*) FROM users WHERE status = \'invited\'')],

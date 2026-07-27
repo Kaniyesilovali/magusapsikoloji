@@ -65,7 +65,7 @@ use Panel\Csrf;
     <div>
       <h2 class="sheet-title">Randevu hatırlatmaları</h2>
       <p class="text-xs text-ink-light mt-1">
-        Danışanlara, randevudan <span class="num"><?= (int) $reminder['hours'] ?></span> saat önce e-posta gider.
+        Görüşmecilere, randevudan <span class="num"><?= (int) $reminder['hours'] ?></span> saat önce e-posta gider.
         Gönderimi cPanel'deki cron çalıştırır; panel kendi kendine tetiklemez.
       </p>
     </div>

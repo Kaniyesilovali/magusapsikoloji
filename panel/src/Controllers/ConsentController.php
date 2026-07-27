@@ -14,7 +14,7 @@ use Panel\View;
 /**
  * KVKK aydınlatma ve açık rıza metni.
  *
- * Metin veritabanında sürümlü tutulur; danışan kaydındaki `consent_version`
+ * Metin veritabanında sürümlü tutulur; görüşmeci kaydındaki `consent_version`
  * hangi metne rıza verildiğini gösterir. Bu yüzden metin değişince sürüm de
  * değişmek ZORUNDA — aksi hâlde iki farklı metne aynı sürüm numarasıyla rıza
  * verilmiş görünür ve kayıt ispat değerini kaybeder.
@@ -72,18 +72,18 @@ final class ConsentController
 
         flash('success', "KVKK metni {$version} sürümü olarak kaydedildi.");
         if ($version !== $currentVersion) {
-            flash('warning', 'Yeni sürüm yalnız bundan sonra alınacak rızalar için geçerlidir. Mevcut danışanlardan yeniden rıza alınması gerekip gerekmediğini değerlendirin.');
+            flash('warning', 'Yeni sürüm yalnız bundan sonra alınacak rızalar için geçerlidir. Mevcut görüşmecilerden yeniden rıza alınması gerekip gerekmediğini değerlendirin.');
         }
         redirect('/kvkk');
     }
 
-    /** Danışana imzalatılacak yazdırılabilir form. */
+    /** Görüşmeciye imzalatılacak yazdırılabilir form. */
     public function printForm(int $clientId): void
     {
         $actor = Auth::requireLogin();
         if (!Rbac::canAny($actor, ['client.view.all', 'client.view.own'])) {
             Audit::log('access.denied', 'permission', null, ['permission' => 'client.view']);
-            View::error(403, 'Yetkiniz yok', 'Danışan kayıtlarını görüntüleme yetkiniz bulunmuyor.');
+            View::error(403, 'Yetkiniz yok', 'Görüşmeci kayıtlarını görüntüleme yetkiniz bulunmuyor.');
             exit;
         }
 
@@ -92,7 +92,7 @@ final class ConsentController
 
         $client = Db::one("SELECT c.* FROM clients c WHERE c.id = ? AND ({$scope}) LIMIT 1", $params);
         if ($client === null) {
-            View::error(404, 'Danışan bulunamadı');
+            View::error(404, 'Görüşmeci bulunamadı');
             exit;
         }
 
