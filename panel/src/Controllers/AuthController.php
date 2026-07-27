@@ -139,6 +139,17 @@ final class AuthController
             exit;
         }
 
+        // Bağlantı çoğu zaman merkezin bilgisayarında, yönetici oturumu açıkken
+        // açılıyor (ekrandaki bağlantı kopyalanıp aynı tarayıcıya yapıştırılıyor).
+        // O oturum kapatılmazsa /giris "zaten girişlisin" deyip panele
+        // yönlendirir: şifresini yeni belirleyen görüşmeci, kendi sayfası yerine
+        // yöneticinin oturumunun içine düşer. Şifre belirlemek, tarayıcıda açık
+        // duran oturumu her hâlükârda sonlandırır.
+        if (Auth::check()) {
+            Audit::log('auth.session_ended', 'user', Auth::id(), ['reason' => 'şifre belirleme']);
+            Auth::logout();
+        }
+
         Auth::setPassword((int) $invite['user_id'], $password);
         Auth::consumeToken((int) $invite['id']);
         Audit::log('auth.password_set', 'user', (int) $invite['user_id'], ['purpose' => $invite['purpose']]);
