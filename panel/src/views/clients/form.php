@@ -1,6 +1,8 @@
 <?php
 use Panel\Csrf;
-/** @var array|null $client @var array $therapists @var bool $isManager @var array $actor */
+use Panel\Rbac;
+/** @var array|null $client @var array $therapists @var array $actor */
+/** @var bool $canAssign @var ?int $defaultTherapistId */
 
 $isNew  = $client === null;
 $action = $isNew ? url('/danisanlar/yeni') : url("/danisanlar/{$client['id']}/duzenle");
@@ -72,12 +74,32 @@ $consentChecked = errors() !== [] ? old('consent') !== '' : ($client['consent_at
       <?php endif; ?>
     </div>
 
-    <?php if ($isManager): ?>
+    <?php if ($canAssign): ?>
       <div>
         <label for="primary_therapist_id" class="field-label">Birincil terapist</label>
-        <?php $selected = $field('primary_therapist_id', (string) ($client['primary_therapist_id'] ?? '')); ?>
-        <select id="primary_therapist_id" name="primary_therapist_id" class="field">
-          <option value="">— seçilmedi —</option>
+        <?php
+        // Yeni kayıtta terapist kendi adını seçili bulur (defaultTherapistId);
+        // düzenlemede kaydın mevcut ataması gelir.
+        $selected = $field(
+            'primary_therapist_id',
+            (string) ($client['primary_therapist_id'] ?? $defaultTherapistId ?? '')
+        );
+
+        // Atamasız kayıt yalnız tüm kayıtları görene bırakılabilir; kendi
+        // görüşmecilerini gören biri o kaydı bir daha açamaz (ClientScope).
+        //
+        // "Seçilmedi" seçeneği yine de duruyor, ama devre dışı: kaldırılsaydı
+        // tarayıcı listenin ilk terapistini seçer ve atamasız bir kaydı
+        // düzenleyip kaydeden biri, farkında olmadan o kişiyi atardı. Devre dışı
+        // seçenek mevcut durumu dürüstçe gösterir, required ise açık bir seçim
+        // yapılmasını zorunlu kılar.
+        $mustAssign = !Rbac::can($actor, 'client.view.all');
+        ?>
+        <select id="primary_therapist_id" name="primary_therapist_id" class="field"
+                <?= $mustAssign ? 'required' : '' ?>>
+          <option value="" <?= $mustAssign ? 'disabled' : '' ?> <?= $selected === '' ? 'selected' : '' ?>>
+            — seçilmedi —
+          </option>
           <?php foreach ($therapists as $therapist): ?>
             <option value="<?= (int) $therapist['id'] ?>" <?= $selected === (string) $therapist['id'] ? 'selected' : '' ?>>
               <?= e($therapist['full_name']) ?>

@@ -198,11 +198,14 @@ final class ClientController
         $actor = Auth::requirePermission('client.create');
 
         View::render('clients/form', [
-            'title'      => 'Yeni Görüşmeci',
-            'client'     => null,
-            'therapists' => $this->therapistOptions(),
-            'isManager'  => true,
-            'actor'      => $actor,
+            'title'       => 'Yeni Görüşmeci',
+            'client'      => null,
+            'therapists'  => $this->therapistOptions(),
+            'canAssign'   => Rbac::can($actor, 'client.assign_therapist'),
+            // Kaydı bir terapist açıyorsa seçim kendisine gelir: kendi
+            // görüşmecisini kaydedip listesinde göremediği bir durum olmasın.
+            'defaultTherapistId' => $actor['role'] === Rbac::THERAPIST ? (int) $actor['id'] : null,
+            'actor'       => $actor,
         ]);
     }
 
@@ -210,8 +213,8 @@ final class ClientController
     {
         $actor = Auth::requirePermission('client.create');
 
-        $input  = $this->input(true);
-        $errors = $this->validate($input, null);
+        $input  = $this->input(Rbac::can($actor, 'client.assign_therapist'));
+        $errors = $this->validate($input, null, $actor);
 
         if ($errors !== []) {
             remember_input($input, $errors);
@@ -253,6 +256,14 @@ final class ClientController
             }
         }
 
+        // Kaydı başka bir terapiste atamak, onu kendi görüş alanından çıkarır
+        // (bkz. ClientScope). Kayıt sayfasına yönlendirmek "oluşturuldu" dedikten
+        // hemen sonra "bulunamadı" göstermek olurdu.
+        if (!$this->isVisible($clientId, $actor)) {
+            flash('info', 'Kayıt, birincil terapisti olan meslektaşınızın listesinde görünüyor; sizin listenizde yer almıyor.');
+            redirect('/danisanlar');
+        }
+
         redirect("/danisanlar/{$clientId}");
     }
 
@@ -267,7 +278,8 @@ final class ClientController
             'therapists' => $this->therapistOptions(
                 $client['primary_therapist_id'] !== null ? (int) $client['primary_therapist_id'] : null
             ),
-            'isManager'  => Rbac::can($actor, 'client.view.all'),
+            'canAssign'  => Rbac::can($actor, 'client.assign_therapist'),
+            'defaultTherapistId' => null,
             'actor'      => $actor,
         ]);
     }
@@ -277,12 +289,16 @@ final class ClientController
         $actor  = $this->requireUpdate();
         $client = $this->find($id, $actor);
 
-        // Terapist yalnız iletişim bilgilerini düzeltebilir. Terapist ataması ve
-        // panel hesabı bağlama yöneticide kalır — aksi hâlde bir terapist kendini
-        // istediği görüşmecinin birincil terapisti yapabilirdi.
-        $isManager = Rbac::can($actor, 'client.view.all');
-        $input     = $this->input($isManager, $client);
-        $errors    = $this->validate($input, $client);
+        // Birincil terapist ataması artık terapiste de açık (bkz. Rbac →
+        // client.assign_therapist): merkez tek kişilik çalışıyor, kaydı açanla
+        // seansı yapan aynı insan. Sınır görünürlükte duruyor — terapist ancak
+        // ClientScope'un gösterdiği bir kaydı devralabilir.
+        //
+        // Panel hesabı açma/kapatma yine yönetimde (requireAccountManage): kimin
+        // panele girebileceğine karar vermek giriş yetkisi dağıtmaktır.
+        $canAssign = Rbac::can($actor, 'client.assign_therapist');
+        $input     = $this->input($canAssign, $client);
+        $errors    = $this->validate($input, $client, $actor);
 
         if ($errors !== []) {
             remember_input($input, $errors);
@@ -326,6 +342,14 @@ final class ClientController
 
         Audit::log('client.updated', 'client', $id, ['consent' => $consentAt !== null]);
         flash('success', 'Görüşmeci kaydı güncellendi.');
+
+        // Atamayı başka bir terapiste devretmiş olabilir — devrettiği kaydın
+        // sayfasına gitmek 404 gösterirdi (bkz. store).
+        if (!$this->isVisible($id, $actor)) {
+            flash('info', 'Kayıt devredildi; artık sizin listenizde görünmüyor.');
+            redirect('/danisanlar');
+        }
+
         redirect("/danisanlar/{$id}");
     }
 
@@ -487,6 +511,21 @@ final class ClientController
         return ClientScope::filter($actor);
     }
 
+    /**
+     * Kayıt bu kullanıcının görüş alanında mı?
+     *
+     * Kaydettikten sonra nereye yönlendirileceğine karar vermek için: atama
+     * değiştiğinde kayıt kullanıcının alanından çıkabiliyor ve find() oraya
+     * 404 basardı. Yetki kararı değil, yönlendirme kararı.
+     */
+    private function isVisible(int $id, array $actor): bool
+    {
+        [$scope, $params] = $this->visibilityFilter($actor);
+        array_unshift($params, $id);
+
+        return Db::value("SELECT c.id FROM clients c WHERE c.id = ? AND {$scope} LIMIT 1", $params) !== null;
+    }
+
     /** Görünürlük dışındaki kayıt için 403 değil 404 döner — varlığı bile sızmasın. */
     private function find(int $id, array $actor): array
     {
@@ -511,10 +550,12 @@ final class ClientController
         return $client;
     }
 
-    /** @param bool $isManager Terapist ataması yalnız yöneticide. */
-    private function input(bool $isManager, ?array $current = null): array
+    /** @param bool $canAssign Birincil terapist alanı forma çıktı mı (client.assign_therapist). */
+    private function input(bool $canAssign, ?array $current = null): array
     {
-        $therapistId = $isManager ? post('primary_therapist_id') : (string) ($current['primary_therapist_id'] ?? '');
+        // Yetkisi olmayan rol için alan formda hiç yoktu; POST'tan okumak
+        // mevcut atamayı sessizce silmek olurdu.
+        $therapistId = $canAssign ? post('primary_therapist_id') : (string) ($current['primary_therapist_id'] ?? '');
 
         return [
             'full_name'            => post('full_name'),
@@ -526,12 +567,20 @@ final class ClientController
         ];
     }
 
-    private function validate(array $input, ?array $current): array
+    private function validate(array $input, ?array $current, array $actor): array
     {
         $errors = [];
 
         if (mb_strlen($input['full_name']) < 3) {
             $errors['full_name'] = 'Ad soyad en az 3 karakter olmalı.';
+        }
+
+        // Yalnız kendi görüşmecilerini gören biri, atama yapmadan kayıt bırakırsa
+        // o kaydı bir daha açamaz: ClientScope onu göstermez, randevusu da yoktur.
+        // Yöneticide böyle bir tuzak yok, o zaten tüm kayıtları görüyor.
+        if ($input['primary_therapist_id'] === null && !Rbac::can($actor, 'client.view.all')) {
+            $errors['primary_therapist_id'] = 'Birincil terapist seçilmeli — '
+                . 'atama yapılmayan kayıt sizin listenizde görünmez.';
         }
         if ($input['phone'] !== null && !preg_match('/^[0-9 +()-]{7,20}$/', $input['phone'])) {
             $errors['phone'] = 'Telefon numarası geçersiz.';

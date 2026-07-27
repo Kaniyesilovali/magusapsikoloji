@@ -29,6 +29,7 @@ final class Rbac
             'dashboard.view',
             'user.view', 'user.create', 'user.update', 'user.delete', 'user.manage_admins',
             'client.view.all', 'client.create', 'client.update', 'client.delete',
+            'client.assign_therapist',
             'appointment.view.all', 'appointment.create', 'appointment.update', 'appointment.cancel',
             'availability.manage.all',
             'payment.view.all', 'payment.manage',
@@ -38,7 +39,7 @@ final class Rbac
         self::ADMIN => [
             'dashboard.view',
             'user.view', 'user.create', 'user.update', 'user.delete',
-            'client.view.all', 'client.create', 'client.update',
+            'client.view.all', 'client.create', 'client.update', 'client.assign_therapist',
             'appointment.view.all', 'appointment.create', 'appointment.update', 'appointment.cancel',
             'availability.manage.all',
             'payment.view.all', 'payment.manage',
@@ -48,7 +49,17 @@ final class Rbac
         ],
         self::THERAPIST => [
             'dashboard.view',
-            'client.view.own', 'client.update',
+            // Terapist kendi görüşmecisini açar ve birincil terapist olarak
+            // kendini atar. Bu bilinçli bir karar: merkez tek kişilik çalışıyor
+            // ve kaydı açanla seansı yapan aynı insan. Kayıt açmayı yönetime
+            // bırakmak, her yeni görüşmeci için hesap değiştirmek demekti.
+            //
+            // Bedeli: ikinci bir terapist geldiğinde, gördüğü bir kaydın
+            // birincil terapistini kendi üzerine alabilir. Görünürlük yine
+            // ClientScope ile sınırlı — kimse görmediği bir kaydı devralamaz —
+            // ama devir artık yönetimin onayından geçmiyor. İkinci terapist
+            // çalışmaya başlarsa bu satır yeniden düşünülmeli.
+            'client.view.own', 'client.create', 'client.update', 'client.assign_therapist',
             'appointment.view.own', 'appointment.create', 'appointment.update', 'appointment.cancel',
             'availability.manage.own',
             // Terapist kendi seanslarının ücret/ödeme durumunu görür ve ücreti

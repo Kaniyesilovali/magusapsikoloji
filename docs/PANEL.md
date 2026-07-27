@@ -29,7 +29,7 @@ aksi hâlde `npm run build` onları `_site/panel/` içine kopyalar ve yayına ç
 | Görüşmecinin panel hesabını aç/kapat | ✔ | ✔ | — | — |
 | Süper admin / admin hesaplarını yönet | ✔ | — | — | — |
 | Tüm görüşmeci kayıtları | ✔ | ✔ | kendi görüşmecileri | — |
-| Görüşmeci kaydı oluştur / terapist ata | ✔ | ✔ | — | — |
+| Görüşmeci kaydı oluştur / terapist ata | ✔ | ✔ | ✔ | — |
 | Görüşmeci iletişim bilgisini düzelt | ✔ | ✔ | kendi görüşmecileri | — |
 | Görüşmeci kaydını kalıcı sil | ✔ | — | — | — |
 | Tüm randevular | ✔ | ✔ | kendi randevuları | kendi randevuları (salt okunur) |
@@ -44,8 +44,20 @@ aksi hâlde `npm run build` onları `_site/panel/` içine kopyalar ve yayına ç
 
 Terapistin "kendi görüşmecisi" iki yoldan tanımlıdır: birincil terapisti olduğu kişiler
 ve fiilen randevusunu gördüğü kişiler. Kural tek yerde:
-[`panel/src/ClientScope.php`](../panel/src/ClientScope.php). Terapist bir görüşmeciyi
-kendine atayamaz — birincil terapist ataması ve panel hesabı bağlama yöneticide kalır.
+[`panel/src/ClientScope.php`](../panel/src/ClientScope.php).
+
+Terapist kendi görüşmeci kaydını açar ve birincil terapist olarak kendini atar
+(`client.create` + `client.assign_therapist`). Merkez tek kişilik çalıştığı için bilinçli
+bir karar: kaydı açanla seansı yapan aynı insan, kayıt açmayı yönetime bırakmak her yeni
+görüşmeci için hesap değiştirmek demekti. Sınır **görünürlükte** duruyor — terapist ancak
+`ClientScope`'un gösterdiği bir kaydın atamasını değiştirebilir; görmediği bir kaydı
+devralamaz. **İkinci bir terapist çalışmaya başlarsa bu karar yeniden düşünülmeli:** o
+noktada devir, yönetimin onayından geçmeden yapılabiliyor olacak.
+
+Panel hesabı açma/kapatma yine yönetimde: kimin panele girebileceğine karar vermek giriş
+yetkisi dağıtmaktır. Terapistin açtığı kayıtta e-posta varsa hesap kayıtla birlikte
+kendiliğinden açılır (aşağıya bakın), ama sonradan erişimi kapatmak/daveti yenilemek
+yöneticinin işidir.
 
 Kurallar tek yerde: [`panel/src/Rbac.php`](../panel/src/Rbac.php).
 
