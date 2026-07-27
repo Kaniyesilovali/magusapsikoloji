@@ -24,16 +24,30 @@ final class View
         ]);
     }
 
-    private static function capture(string $template, array $data): string
+    /**
+     * Yerel değişkenler `__` ile başlar çünkü extract() onların alanına giriyor:
+     * EXTR_SKIP var olanın üzerine YAZMAZ, yani buradaki her sade ad şablona
+     * giden aynı adlı veriyi sessizce yutar. `$file` böyle kaybolmuştu —
+     * cases/form.php'de dosya kaydı yerine şablonun yolu geliyor, `$file['...']`
+     * de yarı çizilmiş sayfanın ortasında TypeError'a düşüyordu.
+     */
+    private static function capture(string $__template, array $__data): string
     {
-        $file = self::DIR . str_replace(['..', '\\'], '', $template) . '.php';
-        if (!is_file($file)) {
-            throw new \RuntimeException("Şablon bulunamadı: {$template}");
+        $__file = self::DIR . str_replace(['..', '\\'], '', $__template) . '.php';
+        if (!is_file($__file)) {
+            throw new \RuntimeException("Şablon bulunamadı: {$__template}");
         }
-        extract($data, EXTR_SKIP);
+        extract($__data, EXTR_SKIP);
         ob_start();
-        require $file;
-        return (string) ob_get_clean();
+        try {
+            require $__file;
+            return (string) ob_get_clean();
+        } catch (\Throwable $e) {
+            // Yarım çıktı tamponda kalırsa istek sonunda basılır ve hata
+            // sayfasının önüne yapışır; iki sayfa iç içe görünür.
+            ob_end_clean();
+            throw $e;
+        }
     }
 
     /** Hata sayfası — düzenden bağımsız çalışır (bootstrap sırasında da kullanılabilir). */
@@ -42,6 +56,11 @@ final class View
         if (!headers_sent()) {
             http_response_code($code);
             header('Content-Type: text/html; charset=utf-8');
+        }
+        // Hata sayfası tek başına bir belgedir: yarım kalmış her çıktı atılır,
+        // yoksa iki <html> aynı sayfada üst üste binerdi.
+        while (ob_get_level() > 0) {
+            ob_end_clean();
         }
         // Hata sayfası veritabanı erişilemezken de çizilebilmeli; oturum
         // sorgusu patlarsa "giriş yapılmamış" varsayılır.
