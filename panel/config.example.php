@@ -45,15 +45,25 @@ return [
         'password_min'      => 10,
     ],
 
+    // Bu sunucuda 'mail' sürücüsü KULLANILMAZ: PHP mail() başarı döndürüyor ama
+    // ileti Exim'e hiç ulaşmıyor (cPanel → Gönderimi İzle raporunda tek kayıt
+    // çıkmıyor). Sessizce kaybolan gönderim, gönderilmeyen gönderimden beterdir.
+    //
+    // Doğru yol SMTP — ama host, Cloudflare tarafından proxy'lenen bir ad
+    // OLMAMALI: mail.magusapsikoloji.com Cloudflare IP'lerine çözülür, Cloudflare
+    // yalnız HTTP/HTTPS taşır ve bağlantı 15 saniyede zaman aşımına uğrar.
+    // Sunucunun proxy'siz gerçek adı kullanılır; sertifikası (*.trwww.com) geçerli.
     'mail' => [
         'driver'    => 'smtp',          // 'smtp' | 'mail' | 'log'
-        'from'      => 'panel@magusapsikoloji.com',
+        'from'      => 'info@magusapsikoloji.com',
         'from_name' => 'Mağusa Psikoloji',
         'smtp' => [
-            'host'       => 'mail.magusapsikoloji.com',
+            'host'       => 'srvc13.trwww.com',
             'port'       => 465,
             'encryption' => 'ssl',      // 'ssl' | 'tls' | ''
-            'user'       => 'panel@magusapsikoloji.com',
+            // SPF sert ret (-all) uyguluyor: kimlik doğrulanan kutu ile 'from'
+            // aynı adres olmalı, yoksa ileti alıcı tarafından reddedilir.
+            'user'       => 'info@magusapsikoloji.com',
             'pass'       => 'BURAYA_EPOSTA_SIFRESI',
         ],
         // driver 'log' iken e-postalar bu dosyaya yazılır (yerel geliştirme)

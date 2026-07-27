@@ -7,9 +7,12 @@ use RuntimeException;
 
 /**
  * Üç sürücülü basit e-posta gönderici:
- *   mail — PHP mail() → sunucunun kendi posta servisi. cPanel'de en güvenilir yol:
- *          ağa çıkmaz, alan adı Cloudflare arkasındayken de çalışır, SPF doğal geçer.
- *   smtp — uzak SMTP sunucusu (AUTH LOGIN + SSL/STARTTLS)
+ *   smtp — SMTP sunucusu (AUTH LOGIN + SSL/STARTTLS). Bu kurulumda kullanılan yol.
+ *   mail — PHP mail() → sunucunun kendi posta servisi. Kâğıt üzerinde en basiti,
+ *          ama bu barındırmada mail() true döndürüp iletiyi sessizce düşürüyor:
+ *          Exim'e hiç ulaşmıyor, teslimat raporunda kayıt çıkmıyor. Sessiz kayıp
+ *          en kötü hata türü — sürücüyü değiştirmeden önce Sistem ekranından test
+ *          gönderin VE cPanel → Gönderimi İzle raporunda kaydı görün.
  *   log  — dosyaya yazar (yerel geliştirme)
  *
  * Harici bağımlılık yok: cPanel'de composer garantisi olmadığı için SMTP istemcisi
