@@ -8,6 +8,7 @@ use Panel\Auth;
 use Panel\Crypto;
 use Panel\Db;
 use Panel\Github;
+use Panel\Mailer;
 use Panel\Migrator;
 use Panel\Schema;
 use Panel\Settings;
@@ -36,8 +37,66 @@ final class SystemController
             'applied'  => Db::all('SELECT * FROM schema_migrations ORDER BY filename'),
             'checks'   => $this->checks(),
             'reminder' => $this->reminderStatus(),
+            'mail'     => Mailer::summary(),
             'actor'    => $actor,
         ]);
+    }
+
+    /**
+     * Test e-postası — yöneticinin kendi adresine.
+     *
+     * Davet ve hatırlatma e-postaları gönderilmediğinde tek görünen belirti,
+     * ilgili ekrandaki tek satırlık uyarıydı; sorunun yapılandırmada mı yoksa
+     * alıcı tarafında mı olduğunu anlamanın yolu yoktu. Burada hem hata metni
+     * hem de geçen süre gösteriliyor: 15 saniyeye dayanan bir gönderim, SMTP
+     * portunun (çoğunlukla Cloudflare tarafından) kapatıldığını söyler.
+     */
+    public function testMail(): void
+    {
+        $actor = Auth::requirePermission('settings.manage');
+
+        $to = trim((string) ($actor['email'] ?? ''));
+        if ($to === '') {
+            flash('error', 'Hesabınızda kayıtlı e-posta adresi yok; test gönderilemedi.');
+            redirect('/sistem');
+        }
+
+        $started = microtime(true);
+        $sent = Mailer::send(
+            $to,
+            'Mağusa Psikoloji panel — test e-postası',
+            Mailer::template(
+                'Test e-postası',
+                'Bu ileti panelin Sistem ekranından gönderildi. Elinize ulaştıysa davet ve '
+                . 'randevu hatırlatma e-postaları da sunucudan çıkıyor demektir.',
+                null,
+                null,
+                'Gelen kutusunda değil de spam klasöründe bulduysanız alan adının SPF/DKIM kayıtları eksik olabilir.'
+            )
+        );
+        $seconds = round(microtime(true) - $started, 1);
+        $error   = Mailer::lastError();
+
+        Audit::log('system.mail_tested', 'mail', null, [
+            'alici'  => $to,
+            'surucu' => (string) Mailer::summary()['driver'],
+            'sonuc'  => $sent ? 'gonderildi' : ($error ?? 'bilinmiyor'),
+        ]);
+
+        if (!$sent) {
+            flash('error', "Test e-postası gönderilemedi ({$seconds} sn): " . ($error ?? 'sebep bildirilmedi'));
+            redirect('/sistem');
+        }
+
+        if (!Mailer::isLive()) {
+            flash('warning', 'Sürücü “log” — ileti gönderilmedi, yalnız dosyaya yazıldı. '
+                . 'Gerçek gönderim için yapılandırmadaki mail.driver değerini “mail” ya da “smtp” yapın.');
+            redirect('/sistem');
+        }
+
+        flash('success', "Test e-postası {$to} adresine gönderildi ({$seconds} sn). "
+            . 'Birkaç dakika içinde gelmezse spam klasörüne de bakın.');
+        redirect('/sistem');
     }
 
     public function migrate(): void

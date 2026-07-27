@@ -146,6 +146,7 @@ $router->post('/odemeler/tahsilat/{id}/sil', [PaymentController::class, 'destroy
 
 $router->get('/sistem',          [SystemController::class, 'index']);
 $router->post('/sistem/guncelle', [SystemController::class, 'migrate']);
+$router->post('/sistem/test-eposta', [SystemController::class, 'testMail']);
 
 $router->get('/icerik',               [ContentController::class, 'index']);
 $router->get('/icerik/iletisim',      [ContentController::class, 'contact']);

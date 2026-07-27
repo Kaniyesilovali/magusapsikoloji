@@ -52,6 +52,47 @@ final class Mailer
         }
     }
 
+    /**
+     * Sunucudan gerçekten posta çıkıyor mu? 'log' sürücüsünde ileti yalnız bir
+     * dosyaya yazılır; gönderim başarılı sayılır ama kimseye ulaşmaz. Bu ayrımı
+     * yapmayan bir arayüz "gönderildi" der ve yöneticiyi günlerce oyalar.
+     */
+    public static function isLive(): bool
+    {
+        return in_array((string) Config::get('mail.driver', 'log'), ['mail', 'smtp'], true);
+    }
+
+    /**
+     * Yapılandırmanın okunur özeti — Sistem ekranında gösterilir. Şifre hiçbir
+     * koşulda dönmez.
+     *
+     * @return array{driver:string,live:bool,from:string,detail:string}
+     */
+    public static function summary(): array
+    {
+        $driver = (string) Config::get('mail.driver', 'log');
+
+        $detail = match ($driver) {
+            'smtp' => sprintf(
+                '%s:%d — %s, kullanıcı: %s',
+                (string) Config::get('mail.smtp.host', '—'),
+                (int) Config::get('mail.smtp.port', 465),
+                ((string) Config::get('mail.smtp.encryption', 'ssl')) ?: 'şifresiz',
+                ((string) Config::get('mail.smtp.user', '')) ?: '— (kimlik doğrulamasız)'
+            ),
+            'mail' => 'sunucunun kendi posta servisi (PHP mail)',
+            default => 'ileti gönderilmiyor, yalnız dosyaya yazılıyor: '
+                . (string) Config::get('mail.log_path', sys_get_temp_dir() . '/panel-mail.log'),
+        };
+
+        return [
+            'driver' => $driver,
+            'live'   => self::isLive(),
+            'from'   => (string) Config::get('mail.from', ''),
+            'detail' => $detail,
+        ];
+    }
+
     private static function headers(): array
     {
         $from     = (string) Config::get('mail.from');

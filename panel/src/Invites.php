@@ -87,6 +87,16 @@ final class Invites
             'context' => $context,
         ];
 
+        // 'log' sürücüsünde gönderim "başarılı" döner ama ileti bir dosyaya yazılır.
+        // Buna "gönderildi" demek, davetin neden ulaşmadığını arayan yöneticiyi
+        // yanlış yere bakmaya gönderir; sürücü canlı değilse bunu açıkça söyle.
+        if ($invite['sent'] && !Mailer::isLive()) {
+            flash('warning', 'E-posta gönderimi kapalı (log sürücüsü) — ileti '
+                . "{$email} adresine ÇIKMADI. Aşağıdaki bağlantıyı elle iletin. "
+                . 'Ayarlar için Sistem ekranına bakın.');
+            return;
+        }
+
         if ($invite['sent']) {
             flash('success', "Davet e-postası {$email} adresine gönderildi.");
             return;
