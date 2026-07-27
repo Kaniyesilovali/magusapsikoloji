@@ -38,6 +38,7 @@ aksi hâlde `npm run build` onları `_site/panel/` içine kopyalar ve yayına ç
 | Çalışma saati ve izin tanımla | ✔ | ✔ | kendi müsaitliği | — |
 | KVKK metnini düzenle | ✔ | ✔ | — | — |
 | **Seans notu okuma/yazma** | **—** | **—** | **yalnız kendi yazdığı** | — |
+| **Check-in eğrisi / bağlantı gönderme** | **—** | **—** | **kendi görüşmecileri** | — |
 | Sistem kayıtları (audit log) | ✔ | — | — | — |
 | Kendi profili | ✔ | ✔ | ✔ | ✔ |
 
@@ -48,9 +49,9 @@ kendine atayamaz — birincil terapist ataması ve panel hesabı bağlama yönet
 
 Kurallar tek yerde: [`panel/src/Rbac.php`](../panel/src/Rbac.php).
 
-> Süper admin bilinçli olarak seans notlarının dışında bırakıldı. Notlar özel nitelikli
-> sağlık verisidir; "her şeyi görebilen hesap" olmaması hem KVKK hem meslek etiği açısından
-> doğru varsayılandır.
+> Süper admin bilinçli olarak seans notlarının ve check-in eğrisinin dışında bırakıldı.
+> İkisi de özel nitelikli sağlık verisidir; "her şeyi görebilen hesap" olmaması hem KVKK
+> hem meslek etiği açısından doğru varsayılandır.
 
 Kimse kendi rolünü veya durumunu değiştiremez, kendi hesabını silemez; sistemdeki
 son aktif süper admin silinemez ve rolü düşürülemez.
@@ -349,6 +350,87 @@ yerine "önce güncellemeyi uygulayın" der.
 
 `sodium` eklentisi kapalıysa ya da `note_key` geçersizse ekran not kabul etmez ve
 sebebini gösterir — yarı şifreli, sessizce düz metne düşen bir davranış yoktur.
+
+---
+
+## Seanslar arası check-in
+
+`/check-in/{jeton}` — [`CheckinController`](../panel/src/Controllers/CheckinController.php),
+kuralların tamamı [`Checkins`](../panel/src/Checkins.php) içinde.
+
+Görüşmeci haftada bir üç soru dolduruyor (ruh hali, uyku, kaygı — 1–10) ve isteğe bağlı
+tek bir cümle yazabiliyor. Terapist görüşmeci sayfasında zaman içindeki eğriyi görüyor.
+Amaç iki seans arasındaki boşluğu ölçülebilir kılmak: o bilgi bugüne kadar yalnız
+görüşmecinin hatırladığı kadarıyla, seansın ilk on dakikasında alınabiliyordu.
+
+### Giriş gerektirmez — bilinçli
+
+Form panelin **giriş istemeyen tek ekranıdır**. Yetki bağlantının kendisinde: tek
+kullanımlık, 10 gün geçerli, tek bir görüşmeciye ait 256 bitlik bir jeton. Düz jeton
+veritabanında tutulmaz, yalnız `sha256` özeti (davet jetonlarındaki kural).
+
+Gerekçe: bu döngünün ölçtüğü tek şey **doldurma oranı**. Giriş duvarı o oranı yarıya
+böler — şifre hatırlamak zorunda kalan biri formu telefonda yarım dakikada doldurmaz.
+Görüşmecinin giriş yapabildiği portal ayrıca duruyor; bu döngü onun dışında çalışır.
+
+Geçersiz, kullanılmış, süresi dolmuş ve arşivlenmiş kayda ait bağlantıların hepsi kibar
+ve kısa bir sayfa gösterir. Sayfa kimin bağlantısı olduğunu ele vermez; görüşmecinin adı
+yalnız jeton geçerliyken görünür.
+
+### Saklama
+
+Sayılar açık, **cümle yalnız şifreli** (seans notuyla aynı kural: `ciphertext` + `nonce`,
+içerik audit kaydına asla yazılmaz). Şifreleme kullanılamıyorsa cümle alanı formda hiç
+gösterilmez — saklanamayacak bir şeyi yazdırmak yazanın güvenine ihanet ederdi. Sayılar
+şifrelenmez çünkü eğriyi çizmek için sıralanmaları gerekiyor ve tek başına "7" bir şey
+söylemez.
+
+### Eğri
+
+Görüşmeci sayfasında, idari alanların **önünde**: terapist o sayfayı "iki seans arasında
+ne oldu?" sorusuyla açıyor. Yetki `checkin.view.own` ile yalnız terapistte — `note.*` ile
+aynı gerekçe; yöneticide bilinçli olarak yok. Hangi görüşmecinin görülebildiği zaten
+`ClientScope` ile sınırlı.
+
+Üç ölçü **üç ayrı satıra** çiziliyor, tek eksene çakıştırılmıyor: kaygıda yukarı kötüdür,
+diğer ikisinde iyidir; üst üste çizilen üç eğride yükselen çizginin ne anlama geldiği
+okunmaz olurdu. Satırlar aynı zaman eksenini ve aynı 1–10 ölçeğini paylaşıyor, bu yüzden
+"uyku düştü, kaygı çıktı" hâlâ tek bakışta görülüyor. Çizim harici kütüphane olmadan
+inline SVG; sabit ölçekli, dar ekranda kutu kendi içinde kayıyor (takvimdeki çözüm).
+Altındaki tabloda bütün sayılar ve cümleler duruyor — eğrinin okunamadığı her durum için.
+
+### Hatırlatmalar (cron)
+
+```
+cPanel → Cron Jobs → Pazartesi 09:00 (0 9 * * 1)
+/usr/local/bin/php /home/<kullanıcı>/public_html/panel/cron/checkins.php
+```
+
+Kime gider: **döngüsü başlatılmış** görüşmecilere. Kayıt olması yetmez, terapistin
+görüşmeci sayfasından bir kez "Check-in bağlantısı gönder" demesi gerekir. "Aktif tüm
+görüşmeciler" denseydi cron kurulduğu an merkezin bütün listesine e-posta çıkardı;
+pilot üç-dört kişiyle yürüyor ve kime gittiğine terapist karar veriyor. Ayrı bir
+"check-in açık" alanına da gerek kalmıyor — ilk bağlantı kaydın ta kendisi.
+
+Günde bir çalıştırılsa da güvenli: aynı hafta doldurmuş ya da son altı gün içinde
+bağlantı almış kimseye ikinci ileti gitmez. **Israr etmez:** son dolan check-in'den beri
+üç bağlantı cevapsız kaldıysa o kişiye cron gönderimi durur — dördüncü hatırlatma oranı
+yükseltmiyor, kanalı değiştirmek gerekiyor. Terapistin elle gönderdiği bağlantı her zaman
+çalışır.
+
+Bağlantı, e-posta gönderilmiş olsa bile ekranda gösterilir ve kopyalanabilir (davet
+bağlantılarındaki aynı gerekçe): oran düşükse ilk şüpheli kanaldır ve ikinci kanalı
+(WhatsApp, mesaj) denemenin en ucuz yolu budur.
+
+Doldurulmamış bir bağlantı yenilenirken **silinmez, süresi doldurulur**. Satırın kalması
+şart: doldurma oranının paydası "gönderilen bağlantı" sayısıdır, cevapsız kalanları silen
+bir sürüm cevapsız kaldığını da silerdi. Oran, gönderilen/doldurulan olarak **Sistem**
+ekranında görünür.
+
+Ayar `settings` tablosunda: `checkins_enabled` (varsayılan 1).
+
+> Standart ölçekler (PHQ-9, GAD-7) bilinçli olarak yok. Pilot tutarsa aynı altyapı
+> genişletilerek gelir — bkz. [`panel/check-in-plani.md`](../panel/check-in-plani.md).
 
 ---
 

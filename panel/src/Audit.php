@@ -48,6 +48,9 @@ final class Audit
         'system.mail_tested'  => 'Test e-postası gönderildi',
         'note.read'           => 'Seans notu okundu',
         'note.written'        => 'Seans notu yazıldı',
+        'checkin.requested'   => 'Check-in bağlantısı üretildi',
+        'checkin.submitted'   => 'Check-in dolduruldu',
+        'checkin.read'        => 'Check-in geçmişi okundu',
         'case.read'           => 'Görüşmeci dosyası okundu',
         'case.written'        => 'Görüşmeci dosyası yazıldı',
     ];

@@ -5,6 +5,8 @@ use Panel\Rbac;
 use Panel\Scheduling;
 /** @var array $client @var array $appointments @var array $actor */
 /** @var bool $canOpenCaseFile @var bool $hasCaseFile */
+/** @var bool $canSeeCheckins @var list<array> $checkins @var int $checkinTotal */
+/** @var ?array $checkinPending @var ?array $checkinLink */
 
 $age      = age_from($client['birth_date']);
 $isActive = $client['status'] === 'active';
@@ -106,6 +108,15 @@ $chip = [
     </div>
   </section>
 </div>
+
+<?php
+// Check-in eğrisi sayfanın üstünde, idari alanların önünde: terapist bu sayfayı
+// "iki seans arasında ne oldu?" sorusuyla açıyor, hesap durumunu öğrenmek için
+// değil. Bölüm yalnız terapiste çiziliyor (bkz. Rbac → checkin.view.own).
+if ($canSeeCheckins) {
+    require __DIR__ . '/_checkins.php';
+}
+?>
 
 <?php
 // Panel erişimi kendi bölümünde durur: "hesap açıldı mı, davet gitti mi, kişi

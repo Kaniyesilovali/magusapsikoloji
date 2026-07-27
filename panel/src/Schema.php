@@ -62,6 +62,12 @@ final class Schema
         return self::hasTable('case_files');
     }
 
+    /** Seanslar arası check-in (005_checkins) uygulanmış mı? */
+    public static function checkinsReady(): bool
+    {
+        return self::hasTable('checkins') && self::hasTable('checkin_requests');
+    }
+
     public static function hasTable(string $table): bool
     {
         $key = 'table:' . $table;

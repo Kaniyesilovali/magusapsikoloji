@@ -340,6 +340,132 @@ details > summary::-webkit-details-marker {
   }
 }
 
+/* ══ Seanslar arası check-in ════════════════════════════════════════════
+   İki ekran, iki farklı okuyucu: formu telefonunda bir görüşmeci dolduruyor,
+   eğriyi masasında terapist okuyor.                                        */
+
+/* ── Form: soru bloğu ──────────────────────────────────────────────────
+   Sorular yaprağın içinde çizgiyle ayrılıyor, kutu kutu değil: üç soru tek
+   bir akış, üç ayrı iş değil.                                             */
+.ci-q {
+  padding: 1.25rem;
+  border-top: 1px solid var(--color-warm-secondary);
+}
+.ci-q-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.ci-q-label {
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  color: var(--color-ink);
+}
+/* Verilen puan — sayfadaki tek büyük sayı, çünkü sayfadaki tek karar o. */
+.ci-out {
+  flex-shrink: 0;
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-primary);
+  font-variant-numeric: tabular-nums;
+}
+.ci-scale {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--color-ink-light);
+}
+
+/* Kaydırıcı. Tarayıcı varsayılanı parmakla kullanılamayacak kadar ince;
+   tutamaç 28px ve dokunma alanı 44px yüksekliğinde. */
+.ci-range {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 2.75rem;
+  margin-top: 0.5rem;
+  background: transparent;
+  cursor: pointer;
+}
+.ci-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-warm-secondary);
+}
+.ci-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px;
+  height: 28px;
+  margin-top: -11px;
+  border: 3px solid #fff;
+  border-radius: 999px;
+  background: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-warm-tertiary);
+}
+.ci-range::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-warm-secondary);
+}
+.ci-range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border: 3px solid #fff;
+  border-radius: 999px;
+  background: var(--color-primary);
+}
+
+/* ── Eğri ──────────────────────────────────────────────────────────────
+   Üç ölçü üç ayrı satırda, aynı zaman ekseni ve aynı 1–10 ölçeğiyle. Tek
+   kutuda üst üste çizilseydi yükselen çizginin iyi mi kötü mü olduğu
+   okunmazdı: kaygıda yukarı kötü, diğer ikisinde iyi.
+
+   Renk tek: panelin yeşili. İkinci bir seri rengi eklemek üç eğriyi
+   birbirinden ayırmaya yaramaz (her satırda tek eğri var) ama clay'in tek
+   anlamını — "insan kararı gerekiyor" — sulandırırdı. Yön, satırın kendi
+   ölçek etiketinde yazılı.
+
+   Ölçüler sabit piksel; daralan ekranda kutu kendi içinde kayar (takvimdeki
+   çözüm). Esnetilen bir SVG'de 2px çizgi ve 8px nokta ölçekle bozulurdu.  */
+.ci-scroll { overflow-x: auto; }
+.ci-chart  { display: block; }
+
+.ci-grid {
+  stroke: var(--color-warm-tertiary);
+  stroke-width: 1;
+}
+.ci-line {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+/* Nokta beyaz bir halka taşıyor: çizgiyi kestiği ya da komşusuna değdiği
+   yerde ayrı bir nokta olarak okunsun. */
+.ci-dot {
+  fill: var(--color-primary);
+  stroke: #fff;
+  stroke-width: 2;
+}
+.ci-tick {
+  fill: var(--color-ink-light);
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+}
+/* Yalnız son değer yazılıyor. Her noktaya sayı basmak eğriyi okunmaz yapar;
+   geri kalanı tabloda ve noktanın kendi ipucunda duruyor. */
+.ci-value {
+  fill: var(--color-ink);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
 /* ══ Gün cetveli ═══════════════════════════════════════════════════════
    Panelin imzası: zaman ölçekli çizilir. Bir seans süresi kadar yer kaplar,
    boş saat gerçekten boş görünür. Terapist için günün şekli kararın kendisi:

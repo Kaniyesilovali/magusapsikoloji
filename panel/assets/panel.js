@@ -74,6 +74,18 @@
     el.hidden = true;
   });
 
+  // Kaydırıcının yanındaki sayı. type=range'in değeri yalnızca tutamacın
+  // yerinden okunabiliyor; check-in formunda kişi hangi puanı verdiğini
+  // görmeden gönderiyordu. CSP inline betiğe izin vermediği için buradan bağlanır.
+  document.querySelectorAll('[data-range-output]').forEach(function (input) {
+    var output = document.querySelector(input.getAttribute('data-range-output'));
+    if (!output) return;
+
+    var sync = function () { output.textContent = input.value; };
+    input.addEventListener('input', sync);
+    sync();
+  });
+
   // data-confirm taşıyan formlar gönderilmeden önce onay ister.
   document.addEventListener('submit', function (event) {
     var form = event.target;

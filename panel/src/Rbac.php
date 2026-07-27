@@ -55,6 +55,11 @@ final class Rbac
             // girebilir; tahsilat kaydı (payment.manage) merkez yönetimindedir.
             'payment.view.own',
             'note.write', 'note.read.own',
+            // Seanslar arası check-in tedavinin takibi: eğriyi okuyan ve
+            // bağlantıyı gönderen, süreci yürüten terapisttir. Yöneticide
+            // bilinçli olarak yok — note.* ile aynı gerekçe, ölçümler de
+            // sağlık verisi ve idari işin parçası değil.
+            'checkin.view.own',
             'profile.self',
         ],
         self::CLIENT => [

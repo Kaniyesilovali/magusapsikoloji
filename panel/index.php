@@ -37,6 +37,7 @@ use Panel\Controllers\AuditController;
 use Panel\Controllers\AuthController;
 use Panel\Controllers\AvailabilityController;
 use Panel\Controllers\CaseFileController;
+use Panel\Controllers\CheckinController;
 use Panel\Controllers\ClientController;
 use Panel\Controllers\ConsentController;
 use Panel\Controllers\ContentController;
@@ -65,10 +66,15 @@ if ($method === 'POST') {
 
 // Şifre değiştirmeye zorlanan kullanıcı (davetle açılan hesap, yönetici sıfırlaması)
 // başka hiçbir sayfada dolaşamaz.
+// Check-in bu kuralın dışında: o akış oturumu hiç kullanmıyor, yetkisini
+// bağlantıdaki jetondan alıyor. Tarayıcıda açık bir oturum bulunduğu için
+// birini şifre ekranına göndermek, giriş gerektirmeyen bir formun önüne giriş
+// duvarı koymak olurdu.
 $MUST_CHANGE_ALLOWED = ['/profil/sifre', '/cikis'];
 $currentUser = Auth::user();
 if ($currentUser !== null && (int) $currentUser['must_change_password'] === 1
-    && !in_array($path, $MUST_CHANGE_ALLOWED, true)) {
+    && !in_array($path, $MUST_CHANGE_ALLOWED, true)
+    && !str_starts_with($path, '/check-in/')) {
     flash('warning', 'Devam etmeden önce yeni bir şifre belirlemelisiniz.');
     redirect('/profil/sifre');
 }
@@ -88,6 +94,13 @@ $router->get('/sifremi-unuttum',  [AuthController::class, 'showForgot']);
 $router->post('/sifremi-unuttum', [AuthController::class, 'forgot']);
 $router->get('/sifre-belirle',    [AuthController::class, 'showReset']);
 $router->post('/sifre-belirle',   [AuthController::class, 'reset']);
+
+// ── Seanslar arası check-in (giriş gerektirmez) ─────────────────
+// Teşekkür sayfası jeton desenine de uyduğu için ÖNCE tanımlanmalı; rotalar
+// tanımlanma sırasıyla eşleşiyor.
+$router->get('/check-in/tesekkurler', [CheckinController::class, 'thanks']);
+$router->get('/check-in/{token}',     [CheckinController::class, 'form']);
+$router->post('/check-in/{token}',    [CheckinController::class, 'submit']);
 
 // ── Panel ───────────────────────────────────────────────────────
 $router->get('/', [DashboardController::class, 'index']);
@@ -113,6 +126,8 @@ $router->post('/danisanlar/{id}/sil',     [ClientController::class, 'destroy']);
 $router->post('/danisanlar/{id}/panel-erisimi', [ClientController::class, 'grantAccess']);
 $router->post('/danisanlar/{id}/davet-gonder',  [ClientController::class, 'resendInvite']);
 $router->post('/danisanlar/{id}/erisim',        [ClientController::class, 'toggleAccess']);
+// Check-in döngüsünü başlatan/sürdüren el hareketi; haftalık gönderim cron'da.
+$router->post('/danisanlar/{id}/check-in', [ClientController::class, 'sendCheckin']);
 $router->get('/danisanlar/{id}/riza',     [ConsentController::class, 'printForm']);
 $router->get('/danisanlar/{id}/dosya',    [CaseFileController::class, 'form']);
 $router->post('/danisanlar/{id}/dosya',   [CaseFileController::class, 'save']);

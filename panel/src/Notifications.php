@@ -52,6 +52,41 @@ final class Notifications
     }
 
     /**
+     * Haftalık check-in daveti.
+     *
+     * İçerik e-postanın şifresiz bir kanal olduğunu varsayıyor: soruların ne
+     * olduğu yazılmaz, "check-in" denip bağlantı verilir. Terapist adı da yok —
+     * iletiyi başkası görürse kişinin terapide olduğunu ele vermesin.
+     *
+     * Metnin tek işi bir tıklama almak: süre ("yarım dakika") ve sayı ("üç
+     * soru") bu yüzden başta duruyor.
+     *
+     * @param array<string,mixed> $row full_name + email taşıyan satır
+     */
+    public static function checkinRequest(array $row, string $link): bool
+    {
+        if (($row['email'] ?? null) === null) {
+            return false;
+        }
+
+        $firstName = (string) (preg_split('/\s+/', trim((string) $row['full_name']))[0] ?? '');
+
+        return Mailer::send(
+            (string) $row['email'],
+            'Haftalık check-in — Mağusa Psikoloji',
+            Mailer::template(
+                'Bu hafta nasıl geçti?',
+                "Merhaba {$firstName},\n\nÜç soruluk kısa bir check-in: yaklaşık yarım dakika sürüyor "
+                . "ve seanslar arasında nasıl gittiğini takip etmeye yarıyor.",
+                'Check-in\'i doldur',
+                $link,
+                'Bağlantı ' . Checkins::TTL_DAYS . ' gün geçerli ve yalnız bir kez kullanılabilir. '
+                . 'Kimseyle paylaşmayın. Bu adrese gelen yanıtlar takip edilmemektedir.'
+            )
+        );
+    }
+
+    /**
      * @param  string $event created | updated | cancelled
      * @param  int|null $actorId İşlemi yapan kişiye kendi eylemi bildirilmez.
      * @return list<string> Gönderilemeyen adresler.

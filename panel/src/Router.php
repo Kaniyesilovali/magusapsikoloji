@@ -4,8 +4,13 @@ declare(strict_types=1);
 namespace Panel;
 
 /**
- * Küçük bir yönlendirici. Desendeki {id} yalnızca rakamlarla eşleşir;
- * eşleşen değerler denetleyici metoduna sırayla int olarak geçirilir.
+ * Küçük bir yönlendirici. Desendeki {id} yalnızca rakamlarla eşleşir ve
+ * denetleyiciye int olarak geçer; {token} onaltılık bir dizeyle eşleşir ve
+ * string olarak geçer (check-in bağlantıları giriş yerine jeton taşıyor).
+ *
+ * Jeton deseni bilinçli olarak gevşek: uzunluğu ya da içeriği bozuk bir
+ * bağlantıya 404 vermek yerine denetleyiciye ulaşması gerekiyor, ki kişi
+ * "sayfa bulunamadı" değil "bu bağlantı artık geçerli değil" görsün.
  */
 final class Router
 {
@@ -27,10 +32,15 @@ final class Router
         $path   = '/' . trim($path, '/');
 
         foreach ($this->routes[$method] ?? [] as $pattern => $handler) {
-            if (preg_match(self::toRegex($pattern), $path, $matches)) {
+            [$regex, $names] = self::compile($pattern);
+            if (preg_match($regex, $path, $matches)) {
                 array_shift($matches);
                 [$class, $action] = $handler;
-                (new $class())->{$action}(...array_map('intval', $matches));
+                $args = [];
+                foreach ($matches as $index => $value) {
+                    $args[] = ($names[$index] ?? 'id') === 'token' ? $value : (int) $value;
+                }
+                (new $class())->{$action}(...$args);
                 return;
             }
         }
@@ -39,12 +49,20 @@ final class Router
         View::error(404, 'Sayfa bulunamadı', 'Aradığınız sayfa taşınmış veya hiç var olmamış olabilir.');
     }
 
-    private static function toRegex(string $pattern): string
+    /** @return array{0:string, 1:list<string>} Desenin regex'i ve sıradaki parametre adları. */
+    private static function compile(string $pattern): array
     {
         $regex = '';
+        $names = [];
         foreach (preg_split('#(\{[a-z_]+\})#', $pattern, -1, PREG_SPLIT_DELIM_CAPTURE) as $part) {
-            $regex .= str_starts_with($part, '{') ? '(\d+)' : preg_quote($part, '#');
+            if (!str_starts_with($part, '{')) {
+                $regex .= preg_quote($part, '#');
+                continue;
+            }
+            $name    = trim($part, '{}');
+            $names[] = $name;
+            $regex  .= $name === 'token' ? '([0-9A-Za-z]{8,128})' : '(\d+)';
         }
-        return '#^' . $regex . '$#';
+        return ['#^' . $regex . '$#', $names];
     }
 }

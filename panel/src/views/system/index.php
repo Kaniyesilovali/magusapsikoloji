@@ -1,6 +1,7 @@
 <?php
 use Panel\Csrf;
 /** @var array $pending @var array $applied @var array $checks @var array $reminder @var array $mail @var array $actor */
+/** @var array $checkin */
 ?>
 
 <header class="mb-6">
@@ -162,6 +163,75 @@ use Panel\Csrf;
         cPanel → <strong>Cron Jobs</strong> → “Saatte bir” (<code>0 * * * *</code>) seçip komutu yapıştırın:
       </p>
       <pre class="text-xs bg-white border border-warm-tertiary rounded-md p-3 overflow-x-auto"><code>/usr/local/bin/php <?= e(dirname(PANEL_ROOT)) ?>/panel/cron/reminders.php</code></pre>
+    </div>
+  <?php endif; ?>
+</section>
+
+<?php // Check-in cron'u randevu hatırlatmasından ayrı bir işi var: buradaki
+      // asıl bilgi "çalıştı mı" değil, doldurma oranı. Pilotun kararı o sayıya
+      // bakılarak veriliyor. ?>
+<section class="sheet mb-6">
+  <div class="sheet-head">
+    <div>
+      <h2 class="sheet-title">Seanslar arası check-in</h2>
+      <p class="text-xs text-ink-light mt-1">
+        Haftalık hatırlatma yalnız terapistin döngüyü başlattığı görüşmecilere gider.
+        Gönderimi cPanel'deki cron çalıştırır; panel kendi kendine tetiklemez.
+      </p>
+    </div>
+  </div>
+
+  <?php if (!$checkin['ready']): ?>
+    <p class="px-5 py-6 text-sm text-ink-muted">
+      Veritabanı güncellemesi bekleniyor — yukarıdaki düğmeyle uygulayın.
+    </p>
+  <?php else: ?>
+    <ul class="divide-y divide-warm-secondary">
+      <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+        <span class="text-sm text-ink w-56 shrink-0">Durum</span>
+        <span class="chip <?= $checkin['enabled'] ? 'chip-go' : 'chip-neutral' ?>">
+          <?= $checkin['enabled'] ? 'açık' : 'kapalı' ?>
+        </span>
+        <span class="text-xs text-ink-light flex-1 min-w-48">
+          <code>settings.checkins_enabled</code> değeri ile kapatılabilir.
+        </span>
+      </li>
+      <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+        <span class="text-sm text-ink w-56 shrink-0">Son çalışma</span>
+        <span class="chip <?= $checkin['lastRun'] === null ? 'chip-stop' : 'chip-go' ?>">
+          <?= $checkin['lastRun'] === null ? 'hiç çalışmadı' : 'çalıştı' ?>
+        </span>
+        <span class="text-xs text-ink-light flex-1 min-w-48 num">
+          <?php if ($checkin['lastRun'] === null): ?>
+            Cron kurulmamış olabilir — aşağıdaki komutu cPanel → Cron Jobs ekranına ekleyin.
+          <?php else: ?>
+            <?= e(dt($checkin['lastRun'])) ?> — <?= e((string) $checkin['lastResult']) ?>
+          <?php endif; ?>
+        </span>
+      </li>
+      <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+        <span class="text-sm text-ink w-56 shrink-0">Doldurma oranı</span>
+        <span class="text-xs text-ink-light flex-1 min-w-48">
+          <span class="num"><?= (int) $checkin['sent'] ?></span> bağlantı gönderildi,
+          <span class="num"><?= (int) $checkin['completed'] ?></span> dolduruldu
+          <?php if ($checkin['sent'] > 0): ?>
+            (<span class="num"><?= (int) round($checkin['completed'] / $checkin['sent'] * 100) ?>%</span>)
+          <?php endif; ?>
+          — <span class="num"><?= (int) $checkin['enrolled'] ?></span> görüşmecide açık,
+          <span class="num"><?= (int) $checkin['pending'] ?></span> bağlantı bekliyor.
+        </span>
+      </li>
+    </ul>
+
+    <div class="sheet-foot">
+      <p class="text-xs text-ink-muted mb-2">
+        cPanel → <strong>Cron Jobs</strong> → pazartesi 09:00 (<code>0 9 * * 1</code>) seçip komutu yapıştırın:
+      </p>
+      <pre class="text-xs bg-white border border-warm-tertiary rounded-md p-3 overflow-x-auto"><code>/usr/local/bin/php <?= e(dirname(PANEL_ROOT)) ?>/panel/cron/checkins.php</code></pre>
+      <p class="field-hint">
+        Oran düşükse ilk şüpheli e-posta kanalıdır, kod değil: bağlantı görüşmeci
+        sayfasından kopyalanıp başka bir kanaldan (ör. WhatsApp) denenebilir.
+      </p>
     </div>
   <?php endif; ?>
 </section>

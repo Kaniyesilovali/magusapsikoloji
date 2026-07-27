@@ -7,9 +7,12 @@ use DateTimeImmutable;
 use Exception;
 use Panel\Audit;
 use Panel\Auth;
+use Panel\Checkins;
 use Panel\ClientAccount;
 use Panel\ClientScope;
 use Panel\Db;
+use Panel\Mailer;
+use Panel\Notifications;
 use Panel\Rbac;
 use Panel\Schema;
 use Panel\Settings;
@@ -109,8 +112,19 @@ final class ClientController
             [$id, $actor['id']]
         ) !== null;
 
+        // Check-in eğrisi yalnız terapiste açık (bkz. Rbac → checkin.view.own).
+        // Kaydın görünürlüğü zaten find() içinde ClientScope ile sınırlandı;
+        // buraya gelen kayıt terapistin kendi görüşmecisi.
+        $canSeeCheckins = Schema::checkinsReady() && Rbac::can($actor, 'checkin.view.own');
+        $checkins       = $canSeeCheckins ? Checkins::history($id) : [];
+        $checkinTotal   = $canSeeCheckins ? Checkins::count($id) : 0;
+
         // KVKK: hassas kayıt görüntülemeleri de izlenebilir olmalı.
         Audit::log('client.viewed', 'client', $id);
+        if ($checkins !== []) {
+            // Cümleler bu ekranda çözülüyor; okunduğu ayrıca kaydedilir.
+            Audit::log('checkin.read', 'client', $id, ['kayit' => count($checkins)]);
+        }
 
         View::render('clients/show', [
             'title'           => $client['full_name'],
@@ -118,8 +132,65 @@ final class ClientController
             'appointments'    => $appointments,
             'canOpenCaseFile' => $canOpenCaseFile,
             'hasCaseFile'     => $hasCaseFile,
+            'canSeeCheckins'  => $canSeeCheckins,
+            'checkins'        => $checkins,
+            'checkinTotal'    => $checkinTotal,
+            'checkinPending'  => $canSeeCheckins ? Checkins::pendingRequest($id) : null,
+            'checkinLink'     => Checkins::pendingLink(),
             'actor'           => $actor,
         ]);
+    }
+
+    /**
+     * Check-in bağlantısı üretir ve görüşmeciye yollar.
+     *
+     * Bağlantı e-posta gitmiş olsa bile ekranda gösterilir: pilotun ölçtüğü şey
+     * doldurma oranı ve oranı düşüren ilk şüpheli kanalın kendisi. Terapist aynı
+     * bağlantıyı WhatsApp'tan yollayıp iki kanalı karşılaştırabilmeli.
+     *
+     * Haftalık gönderimi cron yapıyor (cron/checkins.php); bu düğme döngüyü
+     * BAŞLATAN el hareketi — cron yalnız bir kez bağlantı almış görüşmecilere
+     * devam eder.
+     */
+    public function sendCheckin(int $id): void
+    {
+        $actor  = Auth::requirePermission('checkin.view.own');
+        $client = $this->find($id, $actor);
+
+        if (!Schema::checkinsReady()) {
+            flash('error', 'Check-in tabloları henüz kurulmamış. Sistem ekranından bekleyen veritabanı güncellemesini uygulayın.');
+            redirect("/danisanlar/{$id}");
+        }
+        if ($client['status'] !== 'active') {
+            flash('error', 'Arşivlenmiş görüşmeciye check-in gönderilmez. Önce kaydı arşivden çıkarın.');
+            redirect("/danisanlar/{$id}");
+        }
+
+        $token = Checkins::createRequest($id);
+        $sent  = $client['email'] !== null
+            && Notifications::checkinRequest($client, Checkins::link($token));
+
+        Checkins::share((string) $client['full_name'], $token, $sent);
+        if ($sent) {
+            Checkins::markSent($token);
+        }
+
+        Audit::log('checkin.requested', 'client', $id, ['eposta' => $sent]);
+
+        if ($client['email'] === null) {
+            flash('info', 'Kayıtta e-posta adresi yok; bağlantıyı aşağıdan kopyalayıp kendiniz iletin.');
+        } elseif (!$sent) {
+            flash('warning', 'E-posta gönderilemedi'
+                . (Mailer::lastError() !== null ? ' (' . Mailer::lastError() . ')' : '')
+                . '. Bağlantıyı aşağıdan kopyalayıp iletebilirsiniz.');
+        } elseif (!Mailer::isLive()) {
+            flash('warning', 'E-posta gönderimi kapalı (log sürücüsü) — ileti ÇIKMADI. '
+                . 'Aşağıdaki bağlantıyı elle iletin.');
+        } else {
+            flash('success', 'Check-in bağlantısı ' . $client['email'] . ' adresine gönderildi.');
+        }
+
+        redirect("/danisanlar/{$id}");
     }
 
     public function createForm(): void

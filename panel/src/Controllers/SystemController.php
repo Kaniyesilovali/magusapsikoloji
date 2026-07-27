@@ -37,6 +37,7 @@ final class SystemController
             'applied'  => Db::all('SELECT * FROM schema_migrations ORDER BY filename'),
             'checks'   => $this->checks(),
             'reminder' => $this->reminderStatus(),
+            'checkin'  => $this->checkinStatus(),
             'mail'     => Mailer::summary(),
             'actor'    => $actor,
         ]);
@@ -160,6 +161,42 @@ final class SystemController
             'lastRun'    => Settings::get('reminder_last_run') ?: null,
             'lastResult' => Settings::get('reminder_last_result') ?: null,
             'queued'     => $queued,
+        ];
+    }
+
+    /**
+     * Check-in döngüsünün durumu.
+     *
+     * Buradaki tek önemli sayı doldurma oranı: pilotun kararı ona bakılarak
+     * veriliyor (bkz. panel/check-in-plani.md, Faz 5). Oran düşükse sorun kodda
+     * değil hatırlatma kanalındadır — o yüzden gönderilen/doldurulan ayrı ayrı
+     * gösteriliyor, tek bir yüzdeye indirilmiyor.
+     *
+     * @return array{ready:bool,enabled:bool,lastRun:?string,lastResult:?string,enrolled:int,sent:int,completed:int,pending:int}
+     */
+    private function checkinStatus(): array
+    {
+        $ready = Schema::checkinsReady();
+
+        $counts = $ready
+            ? Db::one(
+                'SELECT COUNT(DISTINCT client_id) AS enrolled,
+                        COUNT(*)                  AS sent,
+                        SUM(completed_at IS NOT NULL) AS completed,
+                        SUM(completed_at IS NULL AND expires_at > NOW()) AS pending
+                   FROM checkin_requests'
+            )
+            : null;
+
+        return [
+            'ready'      => $ready,
+            'enabled'    => Settings::get('checkins_enabled', '1') === '1',
+            'lastRun'    => Settings::get('checkin_last_run') ?: null,
+            'lastResult' => Settings::get('checkin_last_result') ?: null,
+            'enrolled'   => (int) ($counts['enrolled'] ?? 0),
+            'sent'       => (int) ($counts['sent'] ?? 0),
+            'completed'  => (int) ($counts['completed'] ?? 0),
+            'pending'    => (int) ($counts['pending'] ?? 0),
         ];
     }
 
