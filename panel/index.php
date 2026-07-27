@@ -108,6 +108,11 @@ $router->get('/danisanlar/{id}/duzenle',  [ClientController::class, 'editForm'])
 $router->post('/danisanlar/{id}/duzenle', [ClientController::class, 'update']);
 $router->post('/danisanlar/{id}/arsivle', [ClientController::class, 'archive']);
 $router->post('/danisanlar/{id}/sil',     [ClientController::class, 'destroy']);
+// Panel erişimi: hesap yeni kayıtta kendiliğinden açılır; bunlar sonradan
+// açma, daveti yenileme ve erişimi kapatma/açma içindir.
+$router->post('/danisanlar/{id}/panel-erisimi', [ClientController::class, 'grantAccess']);
+$router->post('/danisanlar/{id}/davet-gonder',  [ClientController::class, 'resendInvite']);
+$router->post('/danisanlar/{id}/erisim',        [ClientController::class, 'toggleAccess']);
 $router->get('/danisanlar/{id}/riza',     [ConsentController::class, 'printForm']);
 $router->get('/danisanlar/{id}/dosya',    [CaseFileController::class, 'form']);
 $router->post('/danisanlar/{id}/dosya',   [CaseFileController::class, 'save']);

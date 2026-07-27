@@ -1,6 +1,6 @@
 <?php
 use Panel\Csrf;
-/** @var array|null $client @var array $therapists @var array $accounts @var bool $isManager @var array $actor */
+/** @var array|null $client @var array $therapists @var bool $isManager @var array $actor */
 
 $isNew  = $client === null;
 $action = $isNew ? url('/danisanlar/yeni') : url("/danisanlar/{$client['id']}/duzenle");
@@ -16,9 +16,9 @@ $consentChecked = errors() !== [] ? old('consent') !== '' : ($client['consent_at
 <header class="mb-6">
   <?php // Geri bağlantısı burada eyebrow'un yerini tutuyor: nereden gelindiğini o söylüyor. ?>
   <a href="<?= e(url($isNew ? '/danisanlar' : "/danisanlar/{$client['id']}")) ?>" class="btn-text btn-text-quiet">
-    ← <?= $isNew ? 'Danışanlar' : e($client['full_name']) ?>
+    ← <?= $isNew ? 'Görüşmeciler' : e($client['full_name']) ?>
   </a>
-  <h1 class="page-title mt-2"><?= $isNew ? 'Yeni danışan' : 'Danışanı düzenle' ?></h1>
+  <h1 class="page-title mt-2"><?= $isNew ? 'Yeni görüşmeci' : 'Görüşmeciyi düzenle' ?></h1>
 </header>
 
 <form method="post" action="<?= e($action) ?>" class="sheet">
@@ -63,6 +63,12 @@ $consentChecked = errors() !== [] ? old('consent') !== '' : ($client['consent_at
              value="<?= e($field('email', (string) ($client['email'] ?? ''))) ?>">
       <?php if ($message = error_for('email')): ?>
         <p class="field-error"><?= e($message) ?></p>
+      <?php elseif ($isNew): ?>
+        <p class="field-hint">
+          Randevu hatırlatmaları buraya gider. Ayrıca görüşmeci için bir panel hesabı açılır ve
+          şifresini belirleyeceği davet bağlantısı bu adrese gönderilir — böylece kendi
+          randevularını ve ödeme durumunu görebilir.
+        </p>
       <?php endif; ?>
     </div>
 
@@ -81,32 +87,10 @@ $consentChecked = errors() !== [] ? old('consent') !== '' : ($client['consent_at
         <?php if ($message = error_for('primary_therapist_id')): ?>
           <p class="field-error"><?= e($message) ?></p>
         <?php else: ?>
-          <p class="field-hint">Danışanın kaydı bu terapiste görünür olur.</p>
+          <p class="field-hint">Görüşmecinin kaydı bu terapiste görünür olur.</p>
         <?php endif; ?>
       </div>
 
-      <div>
-        <label for="user_id" class="field-label">
-          Panel hesabı <span class="font-normal text-ink-light">(isteğe bağlı)</span>
-        </label>
-        <?php $selectedAccount = $field('user_id', (string) ($client['user_id'] ?? '')); ?>
-        <select id="user_id" name="user_id" class="field">
-          <option value="">— bağlı değil —</option>
-          <?php foreach ($accounts as $account): ?>
-            <option value="<?= (int) $account['id'] ?>" <?= $selectedAccount === (string) $account['id'] ? 'selected' : '' ?>>
-              <?= e($account['full_name']) ?> — <?= e($account['email']) ?>
-            </option>
-          <?php endforeach; ?>
-        </select>
-        <?php if ($message = error_for('user_id')): ?>
-          <p class="field-error"><?= e($message) ?></p>
-        <?php else: ?>
-          <p class="field-hint">
-            Bağlanırsa danışan kendi randevularını panelden görebilir. Önce "Danışan" rolünde bir
-            kullanıcı oluşturulmalıdır.
-          </p>
-        <?php endif; ?>
-      </div>
     <?php endif; ?>
 
     <div class="bg-warm rounded-md p-4">
@@ -114,7 +98,7 @@ $consentChecked = errors() !== [] ? old('consent') !== '' : ($client['consent_at
         <input type="checkbox" name="consent" value="1" class="mt-0.5 w-4 h-4 accent-primary"
                <?= $consentChecked ? 'checked' : '' ?>>
         <span class="text-sm text-ink">
-          Aydınlatma metni okundu, danışandan <strong>açık rıza</strong> alındı.
+          Aydınlatma metni okundu, görüşmeciden <strong>açık rıza</strong> alındı.
           <span class="block text-xs text-ink-muted mt-1">
             Seans kayıtları özel nitelikli sağlık verisidir; rıza olmadan işlenemez.
             <?php if (!$isNew && $client['consent_at'] !== null): ?>

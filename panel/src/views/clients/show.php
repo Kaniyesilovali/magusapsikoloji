@@ -1,5 +1,6 @@
 <?php
 use Panel\Csrf;
+use Panel\Invites;
 use Panel\Rbac;
 use Panel\Scheduling;
 /** @var array $client @var array $appointments @var array $actor */
@@ -18,7 +19,7 @@ $chip = [
 ?>
 
 <header class="mb-6">
-  <a href="<?= e(url('/danisanlar')) ?>" class="btn-text btn-text-quiet">← Danışanlar</a>
+  <a href="<?= e(url('/danisanlar')) ?>" class="btn-text btn-text-quiet">← Görüşmeciler</a>
   <div class="flex flex-wrap items-start justify-between gap-3 mt-2">
     <div>
       <h1 class="page-title">
@@ -81,10 +82,6 @@ $chip = [
           <?php if ($age !== null): ?><span class="text-ink-light">(<?= $age ?>)</span><?php endif; ?>
         </dd>
       </div>
-      <div>
-        <dt class="eyebrow">Panel hesabı</dt>
-        <dd class="text-ink break-all mt-0.5"><?= e($client['account_email'] ?? 'bağlı değil') ?></dd>
-      </div>
     </dl>
   </section>
 
@@ -109,6 +106,99 @@ $chip = [
     </div>
   </section>
 </div>
+
+<?php
+// Panel erişimi kendi bölümünde durur: "hesap açıldı mı, davet gitti mi, kişi
+// girebiliyor mu" tek satırlık bir alan değil, üzerinde işlem yapılan bir durum.
+$hasAccount   = $client['user_id'] !== null;
+$accountState = $hasAccount ? (string) $client['account_status'] : 'none';
+$canManage    = Rbac::can($actor, 'user.create');
+
+[$accountChip, $accountChipClass, $accountLine] = match ($accountState) {
+    'invited'   => ['Davet gönderildi', 'chip-stop', 'Davet e-postası gönderildi; görüşmeci şifresini henüz belirlemedi.'],
+    'active'    => ['Açık',             'chip-go',   'Görüşmeci panele girip kendi randevularını ve ödeme durumunu görebiliyor.'],
+    'suspended' => ['Kapalı',           'chip-done', 'Erişim kapatıldı. Hesap duruyor, istendiğinde yeniden açılabilir.'],
+    default     => ['Hesap yok',        'chip-neutral', 'Bu görüşmecinin panel hesabı yok.'],
+};
+
+$manualInvite = Invites::pending('client');
+?>
+
+<section class="sheet mb-6">
+  <div class="sheet-head">
+    <h2 class="sheet-title">Panel erişimi</h2>
+    <span class="chip <?= $accountChipClass ?>"><?= e($accountChip) ?></span>
+  </div>
+  <div class="sheet-body">
+    <p class="text-sm text-ink"><?= e($accountLine) ?></p>
+    <?php if ($hasAccount): ?>
+      <p class="text-xs text-ink-light mt-1 break-all">
+        <?= e((string) $client['account_email']) ?>
+        <?php if ($client['account_last_login'] !== null): ?>
+          — son giriş <span class="num"><?= e(dt($client['account_last_login'])) ?></span>
+        <?php endif; ?>
+      </p>
+    <?php elseif ($client['email'] === null): ?>
+      <p class="text-xs text-ink-light mt-1">
+        Hesap açmak için önce kayda bir e-posta adresi eklenmeli.
+      </p>
+    <?php endif; ?>
+
+    <?php if ($manualInvite !== null): ?>
+      <?php // E-posta ulaşmazsa bağlantı elden iletilir: tek kullanımlık, 48 saat geçerli. ?>
+      <div class="bg-warm rounded-md p-4 mt-4">
+        <p class="text-sm text-ink"><?= e($manualInvite['name']) ?> için şifre belirleme bağlantısı</p>
+        <p class="text-xs text-ink-light mt-1 mb-3">
+          <?= !empty($manualInvite['sent'])
+              ? 'E-posta gönderildi. Ulaşmazsa (spam filtresi, yanlış adres) bu bağlantıyı doğrudan iletebilirsiniz.'
+              : 'E-posta gönderilemedi; bu bağlantıyı görüşmeciye kendiniz iletin.' ?>
+          48 saat geçerli ve tek kullanımlık. Yalnızca kişinin kendisine verin.
+        </p>
+        <div class="flex gap-2">
+          <label for="inviteLink" class="sr-only">Şifre belirleme bağlantısı</label>
+          <input id="inviteLink" type="text" readonly value="<?= e($manualInvite['url']) ?>"
+                 class="field flex-1 min-w-0 text-xs font-mono text-ink-muted">
+          <button type="button" data-copy="#inviteLink" class="btn btn-primary shrink-0">Kopyala</button>
+        </div>
+      </div>
+    <?php endif; ?>
+
+    <?php if ($canManage): ?>
+      <div class="flex flex-wrap gap-3 mt-4">
+        <?php if (!$hasAccount): ?>
+          <?php if ($client['email'] !== null): ?>
+            <form method="post" action="<?= e(url("/danisanlar/{$client['id']}/panel-erisimi")) ?>">
+              <?= Csrf::field() ?>
+              <button class="btn btn-primary btn-sm">Panel hesabı aç ve davet gönder</button>
+            </form>
+          <?php else: ?>
+            <a href="<?= e(url("/danisanlar/{$client['id']}/duzenle")) ?>" class="btn btn-quiet btn-sm">
+              E-posta ekle
+            </a>
+          <?php endif; ?>
+        <?php else: ?>
+          <?php if ($accountState !== 'suspended'): ?>
+            <form method="post" action="<?= e(url("/danisanlar/{$client['id']}/davet-gonder")) ?>">
+              <?= Csrf::field() ?>
+              <button class="btn btn-quiet btn-sm">
+                <?= $accountState === 'invited' ? 'Daveti yenile' : 'Şifre bağlantısı gönder' ?>
+              </button>
+            </form>
+          <?php endif; ?>
+          <form method="post" action="<?= e(url("/danisanlar/{$client['id']}/erisim")) ?>"
+                <?= $accountState !== 'suspended'
+                    ? 'data-confirm="' . e($client['full_name']) . ' panele giremeyecek. Hesap silinmez, istediğinizde yeniden açabilirsiniz. Devam edilsin mi?"'
+                    : '' ?>>
+            <?= Csrf::field() ?>
+            <button class="btn btn-quiet btn-sm">
+              <?= $accountState === 'suspended' ? 'Erişimi aç' : 'Erişimi kapat' ?>
+            </button>
+          </form>
+        <?php endif; ?>
+      </div>
+    <?php endif; ?>
+  </div>
+</section>
 
 <section class="sheet">
   <div class="sheet-head">

@@ -1,5 +1,6 @@
 <?php
 use Panel\Csrf;
+use Panel\Invites;
 use Panel\Rbac;
 /** @var array $users @var string $search @var array $actor */
 
@@ -26,8 +27,7 @@ $statusBadge = [
 <?php
 // E-posta gönderilemediğinde davet bağlantısı burada gösterilir; yönetici
 // WhatsApp gibi başka bir kanaldan iletir. Tek kullanımlık, 48 saat geçerli.
-$manualInvite = $_SESSION['_invite_link'] ?? null;
-unset($_SESSION['_invite_link']);
+$manualInvite = Invites::pending();
 ?>
 <?php if ($manualInvite !== null): ?>
   <div class="sheet mb-4">

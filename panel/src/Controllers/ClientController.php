@@ -7,6 +7,7 @@ use DateTimeImmutable;
 use Exception;
 use Panel\Audit;
 use Panel\Auth;
+use Panel\ClientAccount;
 use Panel\ClientScope;
 use Panel\Db;
 use Panel\Rbac;
@@ -16,12 +17,17 @@ use Panel\View;
 use PDOException;
 
 /**
- * Danışan kayıtları.
+ * Görüşmeci kayıtları.
  *
  * Görünürlük iki katmanlı: yöneticiler tüm kayıtları, terapistler yalnız
- * kendi danışanlarını görür. Filtre tek yerde (visibilityFilter) kurulur ve
+ * kendi görüşmecilerini görür. Filtre tek yerde (visibilityFilter) kurulur ve
  * hem listeye hem tekil kayda uygulanır — "listede gizle ama URL'den aç"
  * boşluğu bu sayede oluşmaz.
+ *
+ * Panel hesabı kayıtla birlikte açılır (bkz. ClientAccount): formda "hesap
+ * bağla" diye bir alan yoktur, e-posta girilmişse hesap kendiliğinden oluşur
+ * ve davet gider. Hesabı sonradan açmak/kapatmak görüşmeci sayfasındaki
+ * düğmelerin işidir.
  */
 final class ClientController
 {
@@ -63,7 +69,7 @@ final class ClientController
         );
 
         View::render('clients/index', [
-            'title'   => 'Danışanlar',
+            'title'   => 'Görüşmeciler',
             'clients' => $clients,
             'search'  => $search,
             'status'  => $status,
@@ -76,7 +82,7 @@ final class ClientController
         $actor  = $this->requireView();
         $client = $this->find($id, $actor);
 
-        // Terapist, danışanın başka terapistlerle olan randevularını görmez.
+        // Terapist, görüşmecinin başka terapistlerle olan randevularını görmez.
         $onlyOwn = !Rbac::can($actor, 'appointment.view.all');
         $params  = [$id];
         $filter  = '';
@@ -121,10 +127,9 @@ final class ClientController
         $actor = Auth::requirePermission('client.create');
 
         View::render('clients/form', [
-            'title'      => 'Yeni Danışan',
+            'title'      => 'Yeni Görüşmeci',
             'client'     => null,
             'therapists' => $this->therapistOptions(),
-            'accounts'   => $this->accountOptions(null),
             'isManager'  => true,
             'actor'      => $actor,
         ]);
@@ -144,11 +149,10 @@ final class ClientController
         }
 
         $clientId = Db::insert(
-            'INSERT INTO clients (user_id, full_name, phone, email, birth_date, primary_therapist_id,
+            'INSERT INTO clients (full_name, phone, email, birth_date, primary_therapist_id,
                                   status, consent_at, consent_version, created_by, created_at)
-             VALUES (?, ?, ?, ?, ?, ?, \'active\', ?, ?, ?, NOW())',
+             VALUES (?, ?, ?, ?, ?, \'active\', ?, ?, ?, NOW())',
             [
-                $input['user_id'],
                 $input['full_name'],
                 $input['phone'],
                 $input['email'],
@@ -161,7 +165,23 @@ final class ClientController
         );
 
         Audit::log('client.created', 'client', $clientId, ['consent' => $input['consent']]);
-        flash('success', 'Danışan kaydı oluşturuldu.');
+
+        // Hesap kaydın parçasıdır, ayrı bir karar değil: e-posta varsa açılır ve
+        // davet gider. Açılamadıysa kayıt yine de duruyor; nedeni söylenir.
+        $account = ClientAccount::provision(
+            ['id' => $clientId, 'user_id' => null] + $input,
+            $actor
+        );
+
+        if ($account['status'] === ClientAccount::CREATED) {
+            flash('success', 'Görüşmeci kaydı oluşturuldu ve panel hesabı açıldı.');
+        } else {
+            flash('success', 'Görüşmeci kaydı oluşturuldu.');
+            if ($reason = ClientAccount::explain($account['status'])) {
+                flash('info', $reason);
+            }
+        }
+
         redirect("/danisanlar/{$clientId}");
     }
 
@@ -171,12 +191,11 @@ final class ClientController
         $client = $this->find($id, $actor);
 
         View::render('clients/form', [
-            'title'      => 'Danışanı Düzenle',
+            'title'      => 'Görüşmeciyi Düzenle',
             'client'     => $client,
             'therapists' => $this->therapistOptions(
                 $client['primary_therapist_id'] !== null ? (int) $client['primary_therapist_id'] : null
             ),
-            'accounts'   => $this->accountOptions($client['user_id'] !== null ? (int) $client['user_id'] : null),
             'isManager'  => Rbac::can($actor, 'client.view.all'),
             'actor'      => $actor,
         ]);
@@ -189,7 +208,7 @@ final class ClientController
 
         // Terapist yalnız iletişim bilgilerini düzeltebilir. Terapist ataması ve
         // panel hesabı bağlama yöneticide kalır — aksi hâlde bir terapist kendini
-        // istediği danışanın birincil terapisti yapabilirdi.
+        // istediği görüşmecinin birincil terapisti yapabilirdi.
         $isManager = Rbac::can($actor, 'client.view.all');
         $input     = $this->input($isManager, $client);
         $errors    = $this->validate($input, $client);
@@ -213,11 +232,10 @@ final class ClientController
 
         Db::run(
             'UPDATE clients
-                SET user_id = ?, full_name = ?, phone = ?, email = ?, birth_date = ?,
+                SET full_name = ?, phone = ?, email = ?, birth_date = ?,
                     primary_therapist_id = ?, consent_at = ?, consent_version = ?, updated_at = NOW()
               WHERE id = ?',
             [
-                $input['user_id'],
                 $input['full_name'],
                 $input['phone'],
                 $input['email'],
@@ -229,8 +247,14 @@ final class ClientController
             ]
         );
 
+        // Bağlı hesap kaydı takip eder; yoksa düzeltilen e-posta ile hesabın
+        // e-postası ayrışır ve davet eski adrese gitmeye devam ederdi.
+        if ($client['user_id'] !== null) {
+            ClientAccount::sync((int) $client['user_id'], $input['full_name'], $input['email']);
+        }
+
         Audit::log('client.updated', 'client', $id, ['consent' => $consentAt !== null]);
-        flash('success', 'Danışan kaydı güncellendi.');
+        flash('success', 'Görüşmeci kaydı güncellendi.');
         redirect("/danisanlar/{$id}");
     }
 
@@ -243,10 +267,16 @@ final class ClientController
         $newStatus = $client['status'] === 'archived' ? 'active' : 'archived';
         Db::run('UPDATE clients SET status = ?, updated_at = NOW() WHERE id = ?', [$newStatus, $id]);
 
+        // Arşivlenen görüşmeci panele giremez: kayıt "artık takip etmiyoruz"
+        // demekken girişin açık kalması sessiz bir açık kapı olurdu.
+        if ($client['user_id'] !== null) {
+            ClientAccount::setSuspended($client, $newStatus === 'archived');
+        }
+
         Audit::log('client.archived', 'client', $id, ['status' => $newStatus]);
         flash('success', $newStatus === 'archived'
-            ? 'Danışan arşivlendi. Kayıt ve randevu geçmişi duruyor.'
-            : 'Danışan yeniden etkinleştirildi.');
+            ? 'Görüşmeci arşivlendi. Kayıt ve randevu geçmişi duruyor; panel erişimi kapatıldı.'
+            : 'Görüşmeci yeniden etkinleştirildi.');
         redirect("/danisanlar/{$id}");
     }
 
@@ -267,19 +297,103 @@ final class ClientController
             redirect("/danisanlar/{$id}");
         }
 
+        // Kayıt gidince giriş hesabı da gider: "silindi ama hâlâ giriş yapabiliyor"
+        // bir KVKK silme talebini karşılamış olmaz.
+        ClientAccount::purge($client['user_id'] !== null ? (int) $client['user_id'] : null);
+
         Audit::log('client.deleted', 'client', $id, ['full_name' => $client['full_name']]);
-        flash('success', 'Danışan kaydı ve bağlı tüm randevu/seans notu kayıtları silindi.');
+        flash('success', 'Görüşmeci kaydı, panel hesabı ve bağlı tüm randevu/seans notu kayıtları silindi.');
         redirect('/danisanlar');
     }
 
+    // ── Panel erişimi ───────────────────────────────────────────
+
+    /**
+     * Hesabı sonradan açar — kayıt e-postasız girilmişse ya da bu değişiklikten
+     * önce açılmış eski kayıtlar için. Yeni kayıtlarda kendiliğinden olduğu için
+     * bu düğme yalnız hesabı olmayan kayıtlarda görünür.
+     */
+    public function grantAccess(int $id): void
+    {
+        $actor  = $this->requireAccountManage();
+        $client = $this->find($id, $actor);
+
+        // Arşivlenmiş kayda erişim açmak, arşivlemenin erişimi kapatmasıyla
+        // çelişirdi; önce kayıt geri alınmalı.
+        if ($client['status'] === 'archived') {
+            flash('error', 'Arşivlenmiş görüşmeciye panel erişimi açılmaz. Önce kaydı arşivden çıkarın.');
+            redirect("/danisanlar/{$id}");
+        }
+
+        $result = ClientAccount::provision($client, $actor);
+
+        if ($result['status'] === ClientAccount::EXISTS) {
+            flash('info', 'Bu görüşmecinin panel hesabı zaten var.');
+        } elseif ($result['status'] !== ClientAccount::CREATED) {
+            flash('error', (string) ClientAccount::explain($result['status']));
+        }
+
+        redirect("/danisanlar/{$id}");
+    }
+
+    /** Davet bağlantısının süresi dolduysa yenisini gönderir. */
+    public function resendInvite(int $id): void
+    {
+        $actor  = $this->requireAccountManage();
+        $client = $this->find($id, $actor);
+
+        if ($client['user_id'] === null) {
+            flash('error', 'Bu görüşmecinin panel hesabı yok.');
+            redirect("/danisanlar/{$id}");
+        }
+
+        ClientAccount::reinvite($client);
+        redirect("/danisanlar/{$id}");
+    }
+
+    /** Erişimi kapatır ya da yeniden açar. Hesap silinmez. */
+    public function toggleAccess(int $id): void
+    {
+        $actor  = $this->requireAccountManage();
+        $client = $this->find($id, $actor);
+
+        if ($client['user_id'] === null) {
+            flash('error', 'Bu görüşmecinin panel hesabı yok.');
+            redirect("/danisanlar/{$id}");
+        }
+
+        $suspend = $client['account_status'] !== 'suspended';
+        ClientAccount::setSuspended($client, $suspend);
+
+        flash('success', $suspend
+            ? 'Panel erişimi kapatıldı. Hesap duruyor, istediğinizde yeniden açabilirsiniz.'
+            : 'Panel erişimi yeniden açıldı.');
+        redirect("/danisanlar/{$id}");
+    }
+
     // ── Yardımcılar ─────────────────────────────────────────────
+
+    /**
+     * Hesap işlemleri yönetimde kalır. Terapist görüşmeci kaydını düzeltebilir ama
+     * kimin panele girebileceğine karar veremez — o karar giriş yetkisi dağıtmaktır.
+     */
+    private function requireAccountManage(): array
+    {
+        $user = $this->requireUpdate();
+        if (!Rbac::can($user, 'user.create')) {
+            Audit::log('access.denied', 'permission', null, ['permission' => 'user.create']);
+            View::error(403, 'Yetkiniz yok', 'Panel hesabı açma/kapatma yetkiniz bulunmuyor.');
+            exit;
+        }
+        return $user;
+    }
 
     private function requireView(): array
     {
         $user = Auth::requireLogin();
         if (!Rbac::canAny($user, ['client.view.all', 'client.view.own'])) {
             Audit::log('access.denied', 'permission', null, ['permission' => 'client.view']);
-            View::error(403, 'Yetkiniz yok', 'Danışan kayıtlarını görüntüleme yetkiniz bulunmuyor.');
+            View::error(403, 'Yetkiniz yok', 'Görüşmeci kayıtlarını görüntüleme yetkiniz bulunmuyor.');
             exit;
         }
         return $user;
@@ -290,7 +404,7 @@ final class ClientController
         $user = $this->requireView();
         if (!Rbac::can($user, 'client.update')) {
             Audit::log('access.denied', 'permission', null, ['permission' => 'client.update']);
-            View::error(403, 'Yetkiniz yok', 'Danışan kaydını değiştirme yetkiniz bulunmuyor.');
+            View::error(403, 'Yetkiniz yok', 'Görüşmeci kaydını değiştirme yetkiniz bulunmuyor.');
             exit;
         }
         return $user;
@@ -309,7 +423,8 @@ final class ClientController
         array_unshift($params, $id);
 
         $client = Db::one(
-            "SELECT c.*, t.full_name AS therapist_name, u.email AS account_email
+            "SELECT c.*, t.full_name AS therapist_name,
+                    u.email AS account_email, u.status AS account_status, u.last_login_at AS account_last_login
                FROM clients c
           LEFT JOIN users t ON t.id = c.primary_therapist_id
           LEFT JOIN users u ON u.id = c.user_id
@@ -319,17 +434,16 @@ final class ClientController
         );
 
         if ($client === null) {
-            View::error(404, 'Danışan bulunamadı', 'Kayıt silinmiş olabilir ya da görüntüleme yetkiniz yok.');
+            View::error(404, 'Görüşmeci bulunamadı', 'Kayıt silinmiş olabilir ya da görüntüleme yetkiniz yok.');
             exit;
         }
         return $client;
     }
 
-    /** @param bool $isManager Terapist ataması ve hesap bağlama yalnız yöneticide. */
+    /** @param bool $isManager Terapist ataması yalnız yöneticide. */
     private function input(bool $isManager, ?array $current = null): array
     {
         $therapistId = $isManager ? post('primary_therapist_id') : (string) ($current['primary_therapist_id'] ?? '');
-        $userId      = $isManager ? post('user_id')              : (string) ($current['user_id'] ?? '');
 
         return [
             'full_name'            => post('full_name'),
@@ -337,7 +451,6 @@ final class ClientController
             'email'                => post('email') !== '' ? mb_strtolower(post('email')) : null,
             'birth_date'           => post('birth_date') !== '' ? post('birth_date') : null,
             'primary_therapist_id' => $therapistId !== '' ? (int) $therapistId : null,
-            'user_id'              => $userId !== '' ? (int) $userId : null,
             'consent'              => isset($_POST['consent']),
         ];
     }
@@ -382,22 +495,6 @@ final class ClientController
             }
         }
 
-        if ($input['user_id'] !== null) {
-            $account = Db::one('SELECT id, role FROM users WHERE id = ? LIMIT 1', [$input['user_id']]);
-            if ($account === null || $account['role'] !== Rbac::CLIENT) {
-                $errors['user_id'] = 'Panel hesabı yalnız "Danışan" rolündeki bir kullanıcı olabilir.';
-            } else {
-                // clients.user_id benzersiz; başka kayda bağlıysa veritabanı hatası yerine
-                // anlaşılır bir mesaj gösterilir.
-                $taken = $current === null
-                    ? Db::value('SELECT id FROM clients WHERE user_id = ?', [$input['user_id']])
-                    : Db::value('SELECT id FROM clients WHERE user_id = ? AND id <> ?', [$input['user_id'], $current['id']]);
-                if ($taken) {
-                    $errors['user_id'] = 'Bu panel hesabı başka bir danışan kaydına bağlı.';
-                }
-            }
-        }
-
         return $errors;
     }
 
@@ -414,19 +511,6 @@ final class ClientController
               WHERE role = ? AND (status = \'active\' OR id = ?)
            ORDER BY full_name',
             [Rbac::THERAPIST, $includeId ?? 0]
-        );
-    }
-
-    /** Danışan rolündeki, henüz başka kayda bağlanmamış panel hesapları. */
-    private function accountOptions(?int $currentUserId): array
-    {
-        return Db::all(
-            'SELECT u.id, u.full_name, u.email
-               FROM users u
-          LEFT JOIN clients c ON c.user_id = u.id
-              WHERE u.role = ? AND (c.id IS NULL OR u.id = ?)
-           ORDER BY u.full_name',
-            [Rbac::CLIENT, $currentUserId ?? 0]
         );
     }
 

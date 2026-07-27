@@ -5,9 +5,8 @@ namespace Panel\Controllers;
 
 use Panel\Audit;
 use Panel\Auth;
-use Panel\Config;
 use Panel\Db;
-use Panel\Mailer;
+use Panel\Invites;
 use Panel\Rbac;
 use Panel\View;
 use PDOException;
@@ -56,7 +55,7 @@ final class UserController
         View::render('users/form', [
             'title'      => 'Yeni Kullanıcı',
             'user'       => null,
-            'roles'      => Rbac::assignableRoles($actor),
+            'roles'      => $this->creatableRoles($actor),
             'actor'      => $actor,
         ]);
     }
@@ -67,6 +66,13 @@ final class UserController
 
         $input  = ['full_name' => post('full_name'), 'email' => mb_strtolower(post('email')), 'phone' => post('phone'), 'role' => post('role')];
         $errors = $this->validate($input, $actor, null);
+
+        // Görüşmeci hesabı buradan açılmaz: hesap görüşmeci kaydının parçasıdır ve
+        // onunla birlikte açılır. Buradan açılan bir görüşmeci hesabı hiçbir kayda
+        // bağlı olmadığı için giriş yapar ama hiçbir şey göremezdi.
+        if ($input['role'] === Rbac::CLIENT) {
+            $errors['role'] = 'Görüşmeci hesabı Görüşmeciler ekranından, kayıtla birlikte açılır.';
+        }
 
         if ($errors !== []) {
             remember_input($input, $errors);
@@ -263,6 +269,22 @@ final class UserController
         return $errors;
     }
 
+    /**
+     * Yeni hesap açarken seçilebilecek roller. Görüşmeci listede yoktur; o hesap
+     * görüşmeci kaydıyla birlikte açılır (bkz. ClientAccount). Mevcut görüşmeci
+     * hesapları bu ekrandan düzenlenmeye devam eder — assignableRoles hâlâ
+     * görüşmeciyi içerir, yalnızca "yeni kayıt" yolu kapalıdır.
+     *
+     * @return array<int,string>
+     */
+    private function creatableRoles(array $actor): array
+    {
+        return array_values(array_filter(
+            Rbac::assignableRoles($actor),
+            static fn (string $role): bool => $role !== Rbac::CLIENT
+        ));
+    }
+
     private function activeSuperAdminCount(): int
     {
         return (int) Db::value(
@@ -271,55 +293,14 @@ final class UserController
         );
     }
 
-    /**
-     * Daveti gönderir. E-posta çalışmasa bile bağlantı üretilmiştir; çağıran taraf
-     * onu ekranda gösterir ki yönetici WhatsApp gibi başka bir kanaldan iletebilsin.
-     *
-     * @return array{sent:bool,link:string,error:?string}
-     */
+    /** @return array{sent:bool,link:string,error:?string} */
     private function sendInvite(int $userId, string $name, string $email, string $inviterName): array
     {
-        $token = Auth::createToken($userId, 'invite', 48);
-        $link  = rtrim((string) Config::get('app.url'), '/') . '/sifre-belirle?token=' . $token;
-
-        $sent = Mailer::send(
-            $email,
-            'Mağusa Psikoloji paneline davet edildiniz',
-            Mailer::template(
-                'Hesabınız hazır',
-                "Merhaba {$name},\n\n{$inviterName} sizin için Mağusa Psikoloji yönetim panelinde bir hesap oluşturdu. Aşağıdaki düğmeyle şifrenizi belirleyip giriş yapabilirsiniz. Bağlantı 48 saat geçerlidir.",
-                'Şifremi belirle',
-                $link,
-                'Bu bağlantıyı kimseyle paylaşmayın. Süresi dolarsa yöneticinizden yeni bir davet isteyin.'
-            )
-        );
-
-        return ['sent' => $sent, 'link' => $link, 'error' => Mailer::lastError()];
+        return Invites::send($userId, $name, $email, $inviterName);
     }
 
-    /**
-     * Davet bağlantısını kullanıcı listesinde gösterir — gönderim başarılı olsa bile.
-     *
-     * mail() başarı döndürmesi yalnızca iletinin sunucunun posta servisine teslim
-     * edildiği anlamına gelir; teslim edilip edilmediğini garanti etmez (spam filtresi,
-     * SPF/DKIM, alıcı reddi devrede). Bağlantıyı her hâlükârda göstermek, yöneticiyi
-     * e-postanın gerçekten ulaşmasına bağımlı olmaktan çıkarır.
-     */
     private function shareInvite(string $name, string $email, array $invite): void
     {
-        $_SESSION['_invite_link'] = [
-            'name' => $name,
-            'url'  => $invite['link'],
-            'sent' => $invite['sent'],
-        ];
-
-        if ($invite['sent']) {
-            flash('success', "Davet e-postası {$email} adresine gönderildi.");
-            return;
-        }
-
-        flash('warning', 'Davet e-postası gönderilemedi'
-            . ($invite['error'] !== null ? ' (' . $invite['error'] . ')' : '')
-            . '.');
+        Invites::share($name, $email, $invite);
     }
 }

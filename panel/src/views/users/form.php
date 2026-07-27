@@ -64,7 +64,9 @@ $readonlyCls = 'field bg-warm-secondary text-ink-muted';
       <?php else: ?>
         <label for="role" class="field-label">Rol</label>
         <select id="role" name="role" required class="field">
-          <?php $selectedRole = $field('role', (string) ($user['role'] ?? Rbac::CLIENT)); ?>
+          <?php // Yeni kayıtta listenin ilk rolü seçili gelir; eski varsayılan
+                // (Görüşmeci) artık bu listede yok, hesabı görüşmeci kaydı açıyor. ?>
+          <?php $selectedRole = $field('role', (string) ($user['role'] ?? ($roles[0] ?? ''))); ?>
           <?php foreach ($roles as $role): ?>
             <option value="<?= e($role) ?>" <?= $selectedRole === $role ? 'selected' : '' ?>>
               <?= e(Rbac::label($role)) ?>
@@ -73,6 +75,10 @@ $readonlyCls = 'field bg-warm-secondary text-ink-muted';
         </select>
         <?php if ($message = error_for('role')): ?>
           <p class="field-error"><?= e($message) ?></p>
+        <?php elseif ($isNew): ?>
+          <p class="field-hint">
+            Görüşmeci hesabı buradan açılmaz; görüşmeci kaydı oluşturulurken kendiliğinden açılır.
+          </p>
         <?php endif; ?>
       <?php endif; ?>
     </div>
