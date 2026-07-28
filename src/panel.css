@@ -322,12 +322,28 @@ details > summary::-webkit-details-marker {
   .note-stop { border-color: var(--color-accent);  background: var(--color-accent-soft);  color: var(--color-accent-dark); }
   .note-info { border-color: var(--color-warm-tertiary); background: var(--color-warm); color: var(--color-ink-muted); }
 
-  /* ── Kenar çubuğu ──────────────────────────────────────────────────── */
+  /* ── Kenar çubuğu ──────────────────────────────────────────────────────
+     Menü daraltılabilir. Daralma burada gizleme değil **kısaltma**: her ad en
+     kısa okunur hâline iner — pano "MP", "Randevular" → "Ra", terapist kendi
+     baş harflerine, "Çıkış yap" → "Çık". Panele simge sokmamak bilinçli bir
+     karar: bu arayüzün tamamı kelimelerden kurulu, daraldığında da öyle
+     kalıyor. İki harf ne olduğunu tek başına söylemez, bu yüzden daralmışken
+     tam ad ipucuna taşınıyor (panel.js, data-side-label).
+
+     Kısaltılan metin display:none ile silinmiyor, görsel olarak kırpılıyor:
+     ekran okuyucu her hâlde "Randevular" duyuyor, gözle görülen "Ra" ise
+     aria-hidden. Aksi hâlde daralmış menü sesli okumada iki harften ibaret
+     kalırdı.
+
+     Daraltmanın gerçek işi yer açmak; bu yüzden gövdenin genişlik sınırı da
+     birlikte büyüyor (bkz. .page-wrap). Yoksa geniş ekranda menüyü kapatmak
+     yalnız içeriği ortalar, haftalık takvime tek piksel kazandırmazdı.      */
   .nav-link {
     display: block;
     padding: 0.45rem 0.75rem;
     border-radius: 6px;
     font-size: 0.8125rem;
+    text-align: left;
     color: rgb(255 255 255 / 0.62);
     transition: background-color 0.15s, color 0.15s;
   }
@@ -338,6 +354,182 @@ details > summary::-webkit-details-marker {
     font-weight: 500;
     box-shadow: inset 2px 0 0 var(--color-sage);
   }
+  /* Kısa hâller yalnız daralmışken görünür (bkz. medya sorgusu). */
+  .nav-short,
+  .side-mark,
+  .side-person-mark { display: none; }
+
+  .side-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 1.5rem 1.25rem 1.25rem;
+  }
+  .side-brand { min-width: 0; }
+  .side-name {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.15;
+    color: #fff;
+  }
+  .side-mark {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: #fff;
+  }
+  .side-role { color: rgb(255 255 255 / 0.4); margin-top: 0.25rem; }
+
+  /* Daraltma düğmesi. İşareti panelin kendisi: çerçeve gövde, soldaki dolu
+     sütun açık menü. Menü daralınca sütunun dolgusu söner — düğme durumu
+     anlatmak için metne muhtaç değil. */
+  .side-toggle {
+    position: relative;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    margin-top: 0.1rem;
+    border-radius: 6px;
+    color: rgb(255 255 255 / 0.5);
+    transition: background-color 0.15s, color 0.15s;
+    cursor: pointer;
+  }
+  .side-toggle:hover { background: rgb(255 255 255 / 0.08); color: #fff; }
+  .side-toggle svg { width: 15px; height: 15px; }
+  .side-toggle-fill { fill: currentColor; transition: opacity 0.18s ease; }
+  /* Düğmenin adı ekran okuyucuya yazıyla verilir; gözle görülen işaret. */
+  .side-toggle-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .side-nav {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 0 0.75rem 0.75rem;
+  }
+  .nav-group-label {
+    padding: 0 0.75rem;
+    margin-bottom: 0.375rem;
+    color: rgb(255 255 255 / 0.3);
+  }
+
+  .side-foot {
+    padding: 0.75rem;
+    border-top: 1px solid rgb(255 255 255 / 0.1);
+  }
+  .side-person {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+  }
+  a.side-person:hover { background: rgb(255 255 255 / 0.07); }
+  .side-person-name {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: 0.875rem;
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .side-person-mark {
+    display: none;
+    font-family: var(--font-serif);
+    font-size: 0.875rem;
+    color: #fff;
+  }
+  .side-person-role { display: block; color: rgb(255 255 255 / 0.35); margin-top: 0.125rem; }
+
+  /* Panelin yeşili koyu kroma üzerinde odak halkası olarak okunmuyor; menüde
+     odak adaçayı yeşiliyle çiziliyor. */
+  .side :focus-visible { outline-color: var(--color-sage); }
+
+  /* Gövdenin genişlik sınırı. Menü daralınca birlikte büyür. */
+  .page-wrap {
+    max-width: 72rem;
+    margin-inline: auto;
+  }
+}
+
+/* ── Daraltılmış menü ────────────────────────────────────────────────────
+   Yalnız geniş ekranda: dar ekranda menü zaten <details> açılırıdır, orada
+   daraltılacak bir sütun yok.                                             */
+@media (min-width: 64rem) {
+  .side {
+    width: 15rem;
+    transition: width 0.2s ease;
+  }
+  .nav-tight .side { width: 3.5rem; }
+  .nav-tight .page-wrap { max-width: 88rem; }
+
+  /* Uzun ad ekran okuyucuda kalır, gözden çıkar. */
+  .nav-tight .side-name,
+  .nav-tight .side-role,
+  .nav-tight .nav-full,
+  .nav-tight .side-person-name,
+  .nav-tight .side-person-role {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .nav-tight .side-mark,
+  .nav-tight .nav-short,
+  .nav-tight .side-person-mark { display: block; }
+
+  .nav-tight .side-head {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem 0.5rem 1rem;
+  }
+  /* Daralmışken bu düğme sütundaki tek denetim ve geri dönüşün tek yolu; boş
+     bir kolonda söner kalırsa aranır. Zemin veriliyor, rengi açılıyor. */
+  .nav-tight .side-toggle {
+    margin-top: 0;
+    background: rgb(255 255 255 / 0.07);
+    color: rgb(255 255 255 / 0.7);
+  }
+  .nav-tight .side-toggle:hover { background: rgb(255 255 255 / 0.12); }
+  .nav-tight .side-toggle-fill { opacity: 0; }
+
+  .nav-tight .side-nav { gap: 0.5rem; padding: 0 0.5rem 0.75rem; }
+  /* Öbek başlıkları sığmaz; öbeklerin arasını saç teli bir çizgi tutar. */
+  .nav-tight .nav-group-label { display: none; }
+  .nav-tight .nav-group + .nav-group {
+    border-top: 1px solid rgb(255 255 255 / 0.09);
+    padding-top: 0.5rem;
+  }
+
+  /* İki harf Lora ile yazılıyor: panelin "burada bir insan var" sesi, burada
+     bir işarete iniyor. */
+  .nav-tight .nav-link,
+  .nav-tight .side-person {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 2rem;
+    padding: 0 0.25rem;
+    font-family: var(--font-serif);
+    font-size: 0.875rem;
+  }
+  .nav-tight .side-foot { padding: 0.75rem 0.5rem; }
 }
 
 /* ══ Seanslar arası check-in ════════════════════════════════════════════

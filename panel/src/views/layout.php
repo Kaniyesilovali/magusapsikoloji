@@ -9,22 +9,26 @@ use Panel\Rbac;
 // Menü üç öbeğe ayrıldı çünkü bunlar gerçekten üç ayrı iş: merkezin günlük
 // işleyişi, public sitenin içeriği ve sistemin kendisi. Tek listede yan yana
 // dururken "Müsaitlik" ile "Sistem Kayıtları" eşit ağırlıkta görünüyordu.
+// 'mark' menü daraltıldığında görünen iki harftir. Panelde simge yok — arayüzün
+// tamamı kelimelerden kurulu — daraldığında da öyle kalıyor: her ad en kısa
+// okunur hâline iniyor. Harfler el ile seçildi, ilk iki harf değil: "Site
+// içeriği" ile "Sistem" ikisi de "Si" olurdu.
 $groups = [
     ['label' => 'Merkez', 'items' => [
-        ['path' => '/',            'label' => 'Bugün',        'permissions' => ['dashboard.view']],
-        ['path' => '/randevular',  'label' => 'Randevular',   'permissions' => ['appointment.view.all', 'appointment.view.own']],
-        ['path' => '/danisanlar',  'label' => 'Görüşmeciler',   'permissions' => ['client.view.all', 'client.view.own']],
-        ['path' => '/musaitlik',   'label' => 'Müsaitlik',    'permissions' => ['availability.manage.all', 'availability.manage.own']],
-        ['path' => '/odemeler',    'label' => 'Ödemeler',     'permissions' => ['payment.view.all', 'payment.view.own']],
+        ['path' => '/',            'label' => 'Bugün',        'mark' => 'Bu', 'permissions' => ['dashboard.view']],
+        ['path' => '/randevular',  'label' => 'Randevular',   'mark' => 'Ra', 'permissions' => ['appointment.view.all', 'appointment.view.own']],
+        ['path' => '/danisanlar',  'label' => 'Görüşmeciler', 'mark' => 'Gö', 'permissions' => ['client.view.all', 'client.view.own']],
+        ['path' => '/musaitlik',   'label' => 'Müsaitlik',    'mark' => 'Mü', 'permissions' => ['availability.manage.all', 'availability.manage.own']],
+        ['path' => '/odemeler',    'label' => 'Ödemeler',     'mark' => 'Öd', 'permissions' => ['payment.view.all', 'payment.view.own']],
     ]],
     ['label' => 'Site', 'items' => [
-        ['path' => '/icerik',      'label' => 'Site içeriği', 'permissions' => ['content.manage']],
-        ['path' => '/kvkk',        'label' => 'KVKK metni',   'permissions' => ['consent.manage']],
+        ['path' => '/icerik',      'label' => 'Site içeriği', 'mark' => 'İç', 'permissions' => ['content.manage']],
+        ['path' => '/kvkk',        'label' => 'KVKK metni',   'mark' => 'KV', 'permissions' => ['consent.manage']],
     ]],
     ['label' => 'Yönetim', 'items' => [
-        ['path' => '/kullanicilar', 'label' => 'Kullanıcılar',     'permissions' => ['user.view']],
-        ['path' => '/kayitlar',     'label' => 'Sistem kayıtları', 'permissions' => ['audit.view']],
-        ['path' => '/sistem',       'label' => 'Sistem',           'permissions' => ['settings.manage']],
+        ['path' => '/kullanicilar', 'label' => 'Kullanıcılar',     'mark' => 'Ku', 'permissions' => ['user.view']],
+        ['path' => '/kayitlar',     'label' => 'Sistem kayıtları', 'mark' => 'Ka', 'permissions' => ['audit.view']],
+        ['path' => '/sistem',       'label' => 'Sistem',           'mark' => 'Si', 'permissions' => ['settings.manage']],
     ]],
 ];
 
@@ -40,6 +44,23 @@ $here = current_path();
 
 $isActive = static fn (string $path): bool
     => $here === $path || ($path !== '/' && str_starts_with($here, $path));
+
+// Daraltma durumu çerezde tutuluyor, localStorage'da değil: panel çok sayfalı,
+// her tıklama tam bir sayfa yüklüyor. İstemciden okunsaydı her sayfa önce geniş
+// menüyle boyanır, betik çalışınca daralırdı. Sunucu çerezi okuyup <body>'yi
+// doğru sınıfla basınca o sıçrama hiç olmuyor. Çerezi panel.js yazar.
+$navTight = ($_COOKIE['panel_nav'] ?? '') === 'tight';
+
+// Menü daraldığında kişinin adı da kısalır. mb_strtoupper 'i' harfini 'I'
+// yapardı; Türkçede karşılığı 'İ'.
+$sideInitials = static function (?string $name): string {
+    $parts = preg_split('/\s+/u', trim((string) $name), -1, PREG_SPLIT_NO_EMPTY) ?: [];
+    $letters = '';
+    foreach (array_slice($parts, 0, 2) as $part) {
+        $letters .= mb_substr($part, 0, 1, 'UTF-8');
+    }
+    return mb_strtoupper(strtr($letters, ['i' => 'İ']), 'UTF-8');
+};
 ?>
 <!doctype html>
 <html lang="tr">
@@ -51,47 +72,78 @@ $isActive = static fn (string $path): bool
 <link rel="icon" href="/assets/images/favicon.png">
 <link rel="stylesheet" href="<?= e(asset('/assets/panel.css')) ?>">
 </head>
-<body class="min-h-screen font-sans">
+<body class="min-h-screen font-sans<?= $navTight ? ' nav-tight' : '' ?>">
 
 <div class="lg:flex">
 
   <!-- Kenar çubuğu -->
-  <aside class="hidden lg:flex lg:flex-col lg:w-60 lg:h-screen lg:sticky lg:top-0 bg-chrome shrink-0">
-    <div class="px-5 pt-6 pb-5">
-      <p class="font-serif text-white text-[1.0625rem] leading-tight">Mağusa Psikoloji</p>
-      <p class="eyebrow text-white/40 mt-1">Yönetim paneli</p>
+  <aside id="yan-menu" class="side hidden lg:flex lg:flex-col lg:h-screen lg:sticky lg:top-0 bg-chrome shrink-0">
+    <div class="side-head">
+      <div class="side-brand">
+        <p class="side-name">Mağusa Psikoloji</p>
+        <p class="side-mark" aria-hidden="true">MP</p>
+        <p class="eyebrow side-role">Yönetim paneli</p>
+      </div>
+
+      <!-- JS kapalıyken tıklandığında hiçbir şey olmayacağı için gizli geliyor,
+           panel.js açıyor (bkz. [data-reveal] için aynı yöntem). -->
+      <button type="button" class="side-toggle" hidden
+              data-side-toggle data-side-path="<?= e(url('/')) ?>"
+              aria-controls="yan-menu" aria-expanded="<?= $navTight ? 'false' : 'true' ?>">
+        <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <rect x="1.65" y="2.65" width="12.7" height="10.7" rx="2.4"
+                fill="none" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M6.4 2.65v10.7" stroke="currentColor" stroke-width="1.3"/>
+          <rect class="side-toggle-fill" x="2.75" y="3.75" width="2.5" height="8.5" rx="1.05"/>
+        </svg>
+        <span class="side-toggle-text">Menüyü daralt</span>
+      </button>
     </div>
 
-    <nav class="flex-1 overflow-y-auto px-3 pb-3 space-y-5">
+    <nav class="side-nav" aria-label="Panel menüsü">
       <?php foreach ($groups as $group): ?>
-        <div>
-          <p class="eyebrow text-white/30 px-3 mb-1.5"><?= e($group['label']) ?></p>
+        <div class="nav-group">
+          <p class="eyebrow nav-group-label"><?= e($group['label']) ?></p>
           <?php foreach ($group['items'] as $item): ?>
             <a href="<?= e(url($item['path'])) ?>" class="nav-link"
+               data-side-label="<?= e($item['label']) ?>"
                <?= $isActive($item['path']) ? 'aria-current="page"' : '' ?>>
-              <?= e($item['label']) ?>
+              <span class="nav-full"><?= e($item['label']) ?></span>
+              <span class="nav-short" aria-hidden="true"><?= e($item['mark']) ?></span>
             </a>
           <?php endforeach; ?>
         </div>
       <?php endforeach; ?>
     </nav>
 
-    <div class="p-3 border-t border-white/10">
+    <div class="side-foot">
+      <?php
+      // Adlar menüye özel: extract() sayfa verisini bu alana döküyor, sade bir
+      // $person sayfanın kendi $person'ını yutardı (bkz. View::capture).
+      $sideName = (string) ($authUser['full_name'] ?? '');
+      $sideRole = Rbac::label($authUser['role'] ?? null);
+      ?>
       <?php if (Rbac::can($authUser, 'profile.self')): ?>
-        <a href="<?= e(url('/profil')) ?>" class="block px-3 py-2 rounded-md hover:bg-white/[0.07]"
+        <a href="<?= e(url('/profil')) ?>" class="side-person"
+           data-side-label="<?= e($sideName) ?>"
            <?= $isActive('/profil') ? 'aria-current="page"' : '' ?>>
-          <span class="block font-serif text-sm text-white truncate"><?= e($authUser['full_name'] ?? '') ?></span>
-          <span class="block eyebrow text-white/35 mt-0.5"><?= e(Rbac::label($authUser['role'] ?? null)) ?></span>
+          <span class="side-person-name"><?= e($sideName) ?></span>
+          <span class="side-person-mark" aria-hidden="true"><?= e($sideInitials($sideName)) ?></span>
+          <span class="eyebrow side-person-role"><?= e($sideRole) ?></span>
         </a>
       <?php else: ?>
-        <div class="px-3 py-2">
-          <span class="block font-serif text-sm text-white truncate"><?= e($authUser['full_name'] ?? '') ?></span>
-          <span class="block eyebrow text-white/35 mt-0.5"><?= e(Rbac::label($authUser['role'] ?? null)) ?></span>
+        <div class="side-person">
+          <span class="side-person-name"><?= e($sideName) ?></span>
+          <span class="side-person-mark" aria-hidden="true"><?= e($sideInitials($sideName)) ?></span>
+          <span class="eyebrow side-person-role"><?= e($sideRole) ?></span>
         </div>
       <?php endif; ?>
       <form method="post" action="<?= e(url('/cikis')) ?>" class="mt-1">
         <?= Csrf::field() ?>
-        <button class="nav-link w-full text-left">Çıkış yap</button>
+        <button class="nav-link w-full" data-side-label="Çıkış yap">
+          <span class="nav-full">Çıkış yap</span>
+          <span class="nav-short" aria-hidden="true">Çık</span>
+        </button>
       </form>
     </div>
   </aside>
@@ -128,7 +180,7 @@ $isActive = static fn (string $path): bool
 
   <!-- İçerik -->
   <main class="flex-1 min-w-0">
-    <div class="max-w-6xl mx-auto px-4 sm:px-8 py-8">
+    <div class="page-wrap px-4 sm:px-8 py-8">
 
       <?php foreach ($flashes as $flash): ?>
         <?php

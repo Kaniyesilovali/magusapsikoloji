@@ -86,6 +86,45 @@
     sync();
   });
 
+  // Kenar çubuğunu daraltır. Durum çerezde tutuluyor çünkü panel çok sayfalı:
+  // istemciden okunsaydı her sayfa geniş menüyle boyanıp betik çalışınca
+  // daralırdı. Sunucu çerezi okuyup <body class="nav-tight"> basıyor, burası
+  // yalnız çevirip yazıyor (bkz. views/layout.php).
+  var sideToggle = document.querySelector('[data-side-toggle]');
+  if (sideToggle) {
+    sideToggle.hidden = false;
+
+    var sideLabels = document.querySelectorAll('#yan-menu [data-side-label]');
+
+    var paintSide = function (tight) {
+      document.body.classList.toggle('nav-tight', tight);
+      sideToggle.setAttribute('aria-expanded', tight ? 'false' : 'true');
+
+      var name = tight ? 'Menüyü genişlet' : 'Menüyü daralt';
+      sideToggle.querySelector('.side-toggle-text').textContent = name;
+      sideToggle.title = name;
+
+      // Daralmışken görünen iki harf ne olduğunu söylemez; tam ad ipucuna
+      // taşınır. Genişken ipucu görünen etiketi tekrarlardı, kaldırılıyor.
+      sideLabels.forEach(function (el) {
+        if (tight) el.setAttribute('title', el.getAttribute('data-side-label'));
+        else el.removeAttribute('title');
+      });
+    };
+
+    paintSide(document.body.classList.contains('nav-tight'));
+
+    sideToggle.addEventListener('click', function () {
+      var tight = !document.body.classList.contains('nav-tight');
+      paintSide(tight);
+
+      document.cookie = 'panel_nav=' + (tight ? 'tight' : 'open')
+        + '; path=' + sideToggle.getAttribute('data-side-path')
+        + '; max-age=31536000; samesite=lax'
+        + (window.location.protocol === 'https:' ? '; secure' : '');
+    });
+  }
+
   // data-confirm taşıyan formlar gönderilmeden önce onay ister.
   document.addEventListener('submit', function (event) {
     var form = event.target;
