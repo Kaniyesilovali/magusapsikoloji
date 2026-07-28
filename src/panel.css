@@ -339,7 +339,9 @@ details > summary::-webkit-details-marker {
      birlikte büyüyor (bkz. .page-wrap). Yoksa geniş ekranda menüyü kapatmak
      yalnız içeriği ortalar, haftalık takvime tek piksel kazandırmazdı.      */
   .nav-link {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
     padding: 0.45rem 0.75rem;
     border-radius: 6px;
     font-size: 0.8125rem;
@@ -354,14 +356,16 @@ details > summary::-webkit-details-marker {
     font-weight: 500;
     box-shadow: inset 2px 0 0 var(--color-sage);
   }
-  /* Kısa hâller yalnız daralmışken görünür (bkz. medya sorgusu). */
-  .nav-icon,
+  /* Kısaltılmış pano ve baş harfler yalnız daralmışken görünür (bkz. medya
+     sorgusu). İşaret ise her iki durumda da duruyor: menü açıkken adın
+     yanında görünen işaret, daraldığında adın yerine geçeni öğretiyor. */
   .side-mark,
   .side-person-mark { display: none; }
 
   /* İşaretler panelin çizgi diliyle çizildi; ölçü ve kalınlık burada, yol
      _icons.php'de. Dolgu yalnız durum bildiren parçalarda (.ic-fill). */
   .nav-icon {
+    flex-shrink: 0;
     width: 18px;
     height: 18px;
     fill: none;
@@ -502,7 +506,6 @@ details > summary::-webkit-details-marker {
     white-space: nowrap;
   }
   .nav-tight .side-mark,
-  .nav-tight .nav-icon,
   .nav-tight .side-person-mark { display: block; }
 
   .nav-tight .side-head {

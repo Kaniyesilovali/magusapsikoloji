@@ -107,8 +107,8 @@ $sideInitials = static function (?string $name): string {
             <a href="<?= e(url($item['path'])) ?>" class="nav-link"
                data-side-label="<?= e($item['label']) ?>"
                <?= $isActive($item['path']) ? 'aria-current="page"' : '' ?>>
-              <span class="nav-full"><?= e($item['label']) ?></span>
               <svg class="nav-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><?= $sideIcons[$item['icon']] ?></svg>
+              <span class="nav-full"><?= e($item['label']) ?></span>
             </a>
           <?php endforeach; ?>
         </div>
@@ -140,8 +140,8 @@ $sideInitials = static function (?string $name): string {
       <form method="post" action="<?= e(url('/cikis')) ?>" class="mt-1">
         <?= Csrf::field() ?>
         <button class="nav-link w-full" data-side-label="Çıkış yap">
-          <span class="nav-full">Çıkış yap</span>
           <svg class="nav-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><?= $sideIcons['cikis'] ?></svg>
+          <span class="nav-full">Çıkış yap</span>
         </button>
       </form>
     </div>
@@ -160,18 +160,25 @@ $sideInitials = static function (?string $name): string {
           <?php foreach ($group['items'] as $item): ?>
             <a href="<?= e(url($item['path'])) ?>" class="nav-link"
                <?= $isActive($item['path']) ? 'aria-current="page"' : '' ?>>
-              <?= e($item['label']) ?>
+              <svg class="nav-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><?= $sideIcons[$item['icon']] ?></svg>
+              <span class="nav-full"><?= e($item['label']) ?></span>
             </a>
           <?php endforeach; ?>
         </div>
       <?php endforeach; ?>
       <div class="border-t border-white/10 pt-2">
         <?php if (Rbac::can($authUser, 'profile.self')): ?>
-          <a href="<?= e(url('/profil')) ?>" class="nav-link"><?= e($authUser['full_name'] ?? 'Profilim') ?></a>
+          <a href="<?= e(url('/profil')) ?>" class="nav-link">
+            <svg class="nav-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><?= $sideIcons['profil'] ?></svg>
+            <span class="nav-full"><?= e($authUser['full_name'] ?? 'Profilim') ?></span>
+          </a>
         <?php endif; ?>
         <form method="post" action="<?= e(url('/cikis')) ?>">
           <?= Csrf::field() ?>
-          <button class="nav-link w-full text-left">Çıkış yap</button>
+          <button class="nav-link w-full">
+            <svg class="nav-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><?= $sideIcons['cikis'] ?></svg>
+            <span class="nav-full">Çıkış yap</span>
+          </button>
         </form>
       </div>
     </nav>

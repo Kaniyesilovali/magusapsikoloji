@@ -19,13 +19,14 @@
  * @return array<string,string>
  */
 return [
-    // Günün kendisi: tek bir sütun ve üzerinden geçen "şimdi" çizgisi —
-    // ekrandaki .rail-now'ın ta kendisi. Takvim çizilseydi "Müsaitlik" ile
-    // 18 pikselde birbirine karışırdı; ikisi de takvim olamaz.
+    // Takvim yalnız burada: "bugün" işaretlenmiş tek gün. Müsaitlik de takvim
+    // olsaydı ikisi 18 pikselde birbirine karışırdı, o yüzden orası bantlara
+    // bırakıldı.
     'bugun' => '
-        <rect x="3.7" y="2" width="8.6" height="12" rx="2.2"/>
-        <path d="M3.7 9.1h8.6"/>
-        <circle class="ic-fill" cx="6.1" cy="9.1" r="1.2"/>',
+        <rect x="2" y="3.2" width="12" height="10.8" rx="2.2"/>
+        <path d="M2 6.6h12"/>
+        <path d="M5.4 1.9v2.2M10.6 1.9v2.2"/>
+        <circle class="ic-fill" cx="8" cy="10.4" r="1.35"/>',
 
     'randevular' => '
         <circle cx="8" cy="8" r="5.9"/>
@@ -35,20 +36,23 @@ return [
         <circle cx="8" cy="5.8" r="2.6"/>
         <path d="M3.3 13.7a4.7 4.7 0 0 1 9.4 0"/>',
 
+    // Çalışma bantları: ekranda müsaitlik zaten böyle çiziliyor (.rail-band).
+    // Bantların boyu farklı, çünkü söyledikleri şey "her gün aynı değil".
     'musaitlik' => '
-        <rect x="2" y="3.2" width="12" height="10.8" rx="2.2"/>
-        <path d="M2 6.6h12"/>
-        <path d="M5.4 1.9v2.2M10.6 1.9v2.2"/>
-        <rect class="ic-fill" x="4.4" y="9" width="7.2" height="2.5" rx="1.25"/>',
+        <rect x="2" y="2.6" width="12" height="10.8" rx="2.2"/>
+        <rect class="ic-fill" x="4.3" y="5.3" width="7.4" height="2.1" rx="1.05"/>
+        <rect class="ic-fill" x="4.3" y="9.1" width="4.5" height="2.1" rx="1.05"/>',
 
     'odemeler' => '
         <rect x="1.6" y="4.2" width="12.8" height="7.6" rx="1.9"/>
         <circle cx="8" cy="8" r="1.9"/>',
 
+    // Sitenin sayfası. Çerçeve çizilseydi "Müsaitlik" kutusuyla aynı gövdeyi
+    // paylaşırdı; kıvrık köşe onu tek başına ayırıyor.
     'icerik' => '
-        <rect x="2" y="3" width="12" height="10" rx="2.2"/>
-        <path d="M2 6.2h12"/>
-        <path d="M4.7 9.4h6.6"/>',
+        <path d="M9.1 1.9H4.6a1.8 1.8 0 0 0-1.8 1.8v8.6a1.8 1.8 0 0 0 1.8 1.8h6.8a1.8 1.8 0 0 0 1.8-1.8V5.7z"/>
+        <path d="M9.1 1.9v3.8h4.1"/>
+        <path d="M5.8 9.1h4.4M5.8 11.3h2.8"/>',
 
     'kvkk' => '
         <path d="M8 1.9l4.9 1.9v4.1c0 3-2.1 4.9-4.9 5.8-2.8-.9-4.9-2.8-4.9-5.8V3.8z"/>',
@@ -70,6 +74,13 @@ return [
         <circle cx="6.25" cy="5.3" r="1.7"/>
         <path d="M2.4 10.7h5.3M11.2 10.7h2.4"/>
         <circle cx="9.45" cy="10.7" r="1.7"/>',
+
+    // Hesabın kendisi. "Görüşmeciler"in kişisi çerçevesiz duruyor; bu daire
+    // içinde — biri listedeki bir insan, öbürü giriş yapmış olan sen.
+    'profil' => '
+        <circle cx="8" cy="8" r="6.1"/>
+        <circle cx="8" cy="6.3" r="1.9"/>
+        <path d="M4.5 12.8a3.7 3.7 0 0 1 7 0"/>',
 
     'cikis' => '
         <path d="M9.4 2.7H4.3a1.7 1.7 0 0 0-1.7 1.7v7.2a1.7 1.7 0 0 0 1.7 1.7h5.1"/>
