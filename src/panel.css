@@ -355,9 +355,22 @@ details > summary::-webkit-details-marker {
     box-shadow: inset 2px 0 0 var(--color-sage);
   }
   /* Kısa hâller yalnız daralmışken görünür (bkz. medya sorgusu). */
-  .nav-short,
+  .nav-icon,
   .side-mark,
   .side-person-mark { display: none; }
+
+  /* İşaretler panelin çizgi diliyle çizildi; ölçü ve kalınlık burada, yol
+     _icons.php'de. Dolgu yalnız durum bildiren parçalarda (.ic-fill). */
+  .nav-icon {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .nav-icon .ic-fill { fill: currentColor; stroke: none; }
 
   .side-head {
     display: flex;
@@ -489,7 +502,7 @@ details > summary::-webkit-details-marker {
     white-space: nowrap;
   }
   .nav-tight .side-mark,
-  .nav-tight .nav-short,
+  .nav-tight .nav-icon,
   .nav-tight .side-person-mark { display: block; }
 
   .nav-tight .side-head {
@@ -516,20 +529,70 @@ details > summary::-webkit-details-marker {
     padding-top: 0.5rem;
   }
 
-  /* İki harf Lora ile yazılıyor: panelin "burada bir insan var" sesi, burada
-     bir işarete iniyor. */
   .nav-tight .nav-link,
   .nav-tight .side-person {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
     height: 2rem;
     padding: 0 0.25rem;
-    font-family: var(--font-serif);
-    font-size: 0.875rem;
   }
+  /* Kişinin baş harfleri ikona çevrilmedi: "sen"in karşılığı bir insan
+     çizimi değil, kendi adı. Lora burada da o sesi taşıyor. */
+  .nav-tight .side-person { font-family: var(--font-serif); font-size: 0.875rem; }
   .nav-tight .side-foot { padding: 0.75rem 0.5rem; }
+
+  /* İpucu menünün dışına taşar, bu yüzden daralmışken kaydırma kapanıyor:
+     on satır 3.5rem'lik sütuna zaten sığıyor. Çok alçak pencerede kaydırma
+     geri geliyor — orada ipucu kırpılır ama menüye ulaşmak korunur. */
+  .nav-tight .side-nav { overflow: visible; }
+}
+@media (min-width: 64rem) and (max-height: 620px) {
+  .nav-tight .side-nav { overflow-y: auto; }
+}
+
+/* ── İpucu ───────────────────────────────────────────────────────────────
+   title özniteliği kullanılmıyor: tarayıcının kendi ipucu ~1–2 saniye
+   bekletiyor ve bu süre CSS'ten de JS'ten de değiştirilemiyor. İşaretten
+   ibaret bir menüde o bekleme, adı öğrenmenin önündeki tek engel oluyordu.
+   Kendi kutumuz 60 ms'de açılıyor.
+
+   Daraltma düğmesinin ipucu her iki durumda da var — o düğme genişken de
+   yalnız bir işaret.                                                      */
+.side-toggle::after,
+.nav-tight .nav-link::after,
+.nav-tight .side-person::after {
+  content: attr(data-side-label);
+  position: absolute;
+  left: calc(100% + 0.55rem);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 60;
+  padding: 0.25rem 0.5rem;
+  border-radius: 5px;
+  background: var(--color-ink);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.45;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.1s ease, visibility 0s linear 0.16s;
+}
+.side-toggle:hover::after,
+.side-toggle:focus-visible::after,
+.nav-tight .nav-link:hover::after,
+.nav-tight .nav-link:focus-visible::after,
+.nav-tight .side-person:hover::after,
+.nav-tight .side-person:focus-visible::after {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.1s ease 0.06s, visibility 0s linear 0.06s;
 }
 
 /* ══ Seanslar arası check-in ════════════════════════════════════════════

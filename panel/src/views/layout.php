@@ -9,28 +9,27 @@ use Panel\Rbac;
 // Menü üç öbeğe ayrıldı çünkü bunlar gerçekten üç ayrı iş: merkezin günlük
 // işleyişi, public sitenin içeriği ve sistemin kendisi. Tek listede yan yana
 // dururken "Müsaitlik" ile "Sistem Kayıtları" eşit ağırlıkta görünüyordu.
-// 'mark' menü daraltıldığında görünen iki harftir. Panelde simge yok — arayüzün
-// tamamı kelimelerden kurulu — daraldığında da öyle kalıyor: her ad en kısa
-// okunur hâline iniyor. Harfler el ile seçildi, ilk iki harf değil: "Site
-// içeriği" ile "Sistem" ikisi de "Si" olurdu.
+// 'icon' menü daraltıldığında görünen işarettir; çizimler _icons.php'de.
 $groups = [
     ['label' => 'Merkez', 'items' => [
-        ['path' => '/',            'label' => 'Bugün',        'mark' => 'Bu', 'permissions' => ['dashboard.view']],
-        ['path' => '/randevular',  'label' => 'Randevular',   'mark' => 'Ra', 'permissions' => ['appointment.view.all', 'appointment.view.own']],
-        ['path' => '/danisanlar',  'label' => 'Görüşmeciler', 'mark' => 'Gö', 'permissions' => ['client.view.all', 'client.view.own']],
-        ['path' => '/musaitlik',   'label' => 'Müsaitlik',    'mark' => 'Mü', 'permissions' => ['availability.manage.all', 'availability.manage.own']],
-        ['path' => '/odemeler',    'label' => 'Ödemeler',     'mark' => 'Öd', 'permissions' => ['payment.view.all', 'payment.view.own']],
+        ['path' => '/',            'label' => 'Bugün',        'icon' => 'bugun',        'permissions' => ['dashboard.view']],
+        ['path' => '/randevular',  'label' => 'Randevular',   'icon' => 'randevular',   'permissions' => ['appointment.view.all', 'appointment.view.own']],
+        ['path' => '/danisanlar',  'label' => 'Görüşmeciler', 'icon' => 'gorusmeciler', 'permissions' => ['client.view.all', 'client.view.own']],
+        ['path' => '/musaitlik',   'label' => 'Müsaitlik',    'icon' => 'musaitlik',    'permissions' => ['availability.manage.all', 'availability.manage.own']],
+        ['path' => '/odemeler',    'label' => 'Ödemeler',     'icon' => 'odemeler',     'permissions' => ['payment.view.all', 'payment.view.own']],
     ]],
     ['label' => 'Site', 'items' => [
-        ['path' => '/icerik',      'label' => 'Site içeriği', 'mark' => 'İç', 'permissions' => ['content.manage']],
-        ['path' => '/kvkk',        'label' => 'KVKK metni',   'mark' => 'KV', 'permissions' => ['consent.manage']],
+        ['path' => '/icerik',      'label' => 'Site içeriği', 'icon' => 'icerik',       'permissions' => ['content.manage']],
+        ['path' => '/kvkk',        'label' => 'KVKK metni',   'icon' => 'kvkk',         'permissions' => ['consent.manage']],
     ]],
     ['label' => 'Yönetim', 'items' => [
-        ['path' => '/kullanicilar', 'label' => 'Kullanıcılar',     'mark' => 'Ku', 'permissions' => ['user.view']],
-        ['path' => '/kayitlar',     'label' => 'Sistem kayıtları', 'mark' => 'Ka', 'permissions' => ['audit.view']],
-        ['path' => '/sistem',       'label' => 'Sistem',           'mark' => 'Si', 'permissions' => ['settings.manage']],
+        ['path' => '/kullanicilar', 'label' => 'Kullanıcılar',     'icon' => 'kullanicilar', 'permissions' => ['user.view']],
+        ['path' => '/kayitlar',     'label' => 'Sistem kayıtları', 'icon' => 'kayitlar',     'permissions' => ['audit.view']],
+        ['path' => '/sistem',       'label' => 'Sistem',           'icon' => 'sistem',       'permissions' => ['settings.manage']],
     ]],
 ];
+
+$sideIcons = require __DIR__ . '/_icons.php';
 
 $groups = array_values(array_filter(array_map(static function (array $group) use ($authUser): array {
     $group['items'] = array_values(array_filter(
@@ -109,7 +108,7 @@ $sideInitials = static function (?string $name): string {
                data-side-label="<?= e($item['label']) ?>"
                <?= $isActive($item['path']) ? 'aria-current="page"' : '' ?>>
               <span class="nav-full"><?= e($item['label']) ?></span>
-              <span class="nav-short" aria-hidden="true"><?= e($item['mark']) ?></span>
+              <svg class="nav-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><?= $sideIcons[$item['icon']] ?></svg>
             </a>
           <?php endforeach; ?>
         </div>
@@ -142,7 +141,7 @@ $sideInitials = static function (?string $name): string {
         <?= Csrf::field() ?>
         <button class="nav-link w-full" data-side-label="Çıkış yap">
           <span class="nav-full">Çıkış yap</span>
-          <span class="nav-short" aria-hidden="true">Çık</span>
+          <svg class="nav-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><?= $sideIcons['cikis'] ?></svg>
         </button>
       </form>
     </div>

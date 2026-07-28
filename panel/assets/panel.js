@@ -94,22 +94,17 @@
   if (sideToggle) {
     sideToggle.hidden = false;
 
-    var sideLabels = document.querySelectorAll('#yan-menu [data-side-label]');
-
     var paintSide = function (tight) {
       document.body.classList.toggle('nav-tight', tight);
       sideToggle.setAttribute('aria-expanded', tight ? 'false' : 'true');
 
+      // Ad iki yere birden gidiyor: ekran okuyucunun duyduğu gizli metne ve
+      // ipucunun okuduğu data-side-label'a. title kullanılmıyor — tarayıcının
+      // kendi ipucu saniyelerce bekletiyor ve bu süre ayarlanamıyor; kutu
+      // CSS'ten çiziliyor (bkz. .side-toggle::after).
       var name = tight ? 'Menüyü genişlet' : 'Menüyü daralt';
       sideToggle.querySelector('.side-toggle-text').textContent = name;
-      sideToggle.title = name;
-
-      // Daralmışken görünen iki harf ne olduğunu söylemez; tam ad ipucuna
-      // taşınır. Genişken ipucu görünen etiketi tekrarlardı, kaldırılıyor.
-      sideLabels.forEach(function (el) {
-        if (tight) el.setAttribute('title', el.getAttribute('data-side-label'));
-        else el.removeAttribute('title');
-      });
+      sideToggle.setAttribute('data-side-label', name);
     };
 
     paintSide(document.body.classList.contains('nav-tight'));
