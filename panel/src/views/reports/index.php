@@ -125,9 +125,16 @@ $saat = static fn (int $dakika): string => number_format($dakika / 60, 1, ',', '
               Müsaitlik ekranından çalışma saatleri girilmeden doluluk hesaplanamaz.
             </span>
           <?php else: ?>
-            <span class="chip <?= $row['rate'] >= 80 ? 'chip-stop' : 'chip-go' ?>">
-              <span class="num">%<?= e(number_format($row['rate'], 1, ',', '.')) ?></span>
+            <?php
+            // Çubuk %100'de durur, sayı durmaz: şablon dışına açılan seanslar
+            // oranı üstüne taşıyabiliyor. Adım %2 (bkz. .util-N).
+            $dolu = (int) round(min($row['rate'], 100) / 2) * 2;
+            $sikisik = $row['rate'] >= 80;
+            ?>
+            <span class="util" aria-hidden="true">
+              <span class="util-fill util-<?= $dolu ?><?= $sikisik ? ' is-full' : '' ?>"></span>
             </span>
+            <span class="num util-rate<?= $sikisik ? ' is-full' : '' ?>">%<?= e(number_format($row['rate'], 1, ',', '.')) ?></span>
             <span class="text-xs text-ink-light flex-1 min-w-48 num">
               <?= e($saat($row['booked'])) ?> / <?= e($saat((int) $row['capacity'])) ?> saat
               — <?= (int) $row['sessions'] ?> seans
@@ -138,8 +145,10 @@ $saat = static fn (int $dakika): string => number_format($dakika / 60, 1, ',', '
     </ul>
     <div class="sheet-foot">
       <p class="text-xs text-ink-muted">
-        %80 üstü doluluk uyarı rengiyle gösteriliyor; bu bir hedef değil, ara verecek
-        yer kalmadığının işareti.
+        Çubuk ayın ne kadarının dolduğunu gösterir. %80'den sonra uyarı rengine döner;
+        bu bir hedef değil, ara verecek yer kalmadığının işareti. Düşük doluluk ayrıca
+        işaretlenmiyor — boş çubuk zaten görünüyor. Şablon saatleri dışına açılan
+        seanslar oranı %100'ün üstüne taşıyabilir, çubuk orada dolu kalır.
       </p>
     </div>
   <?php endif; ?>

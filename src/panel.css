@@ -1339,6 +1339,57 @@ details > summary::-webkit-details-marker {
 .cal-item-time { flex-shrink: 0; color: var(--color-ink-muted); }
 .cal-item-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+/* ── Doluluk çubuğu ────────────────────────────────────────────────────
+   Oran rozetle değil şekille anlatılıyor. Rozet tek eşiklidir — "%80 üstü
+   mü, değil mi" — ve o yüzden %12'lik bir takvim de rozetin "iyi" rengini
+   alıyordu. Oysa boş takvim de bakılması gereken bir şey; yalnız dolu takvim
+   değil. Çubuk bunu renge sordurmuyor, gösteriyor: boş yer boş görünüyor.
+   Gün cetvelindeki fikrin aynısı, ay ölçeğinde.
+
+   Bu yüzden düşük dolulukta ikinci bir renk yok. clay yalnız %80'den sonra
+   giriyor ve panelin her yerinde söylediğini söylüyor: insan kararı
+   gerekiyor — burada "ara verecek yer kalmamış".
+
+   Genişlik sabit. Sütunun işi terapistleri karşılaştırmak; çubuklar aynı
+   ölçüde durmazsa yan yana iki oran birbirine göre okunamaz.
+
+   Dolgu sınıfla veriliyor: panelin CSP'si inline style'a izin vermiyor
+   (style-src 'self'; bkz. .at-N tablosu).                                 */
+.util {
+  position: relative;
+  flex-shrink: 0;
+  width: 7rem;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-warm-secondary);
+  overflow: hidden;
+}
+.util-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--color-primary);
+}
+/* Kapasitenin üstüne çıkan oran çubuğu taşırmaz, doldurur; gerçek sayı
+   çubuğun yanında yazılı olduğu için bilgi kaybolmuyor. */
+.util-fill.is-full { background: var(--color-accent); }
+
+.util-rate {
+  flex-shrink: 0;
+  width: 3.75rem;
+  font-size: 0.8125rem;
+  color: var(--color-ink-muted);
+}
+/* Yalnız renk, kalınlık değil: rengin işi sayıyı kendi çubuğuna bağlamak.
+   Kalınlık da eklenince aynı şey üç kez söylenmiş oluyordu. */
+.util-rate.is-full { color: var(--color-accent-dark); }
+
+/* %2 adım: 7rem'lik çubukta bir adım ~2px, gözün ayırdığından ince. */
+.util-0{width:0%}.util-2{width:2%}.util-4{width:4%}.util-6{width:6%}.util-8{width:8%}.util-10{width:10%}.util-12{width:12%}.util-14{width:14%}.util-16{width:16%}.util-18{width:18%}.util-20{width:20%}.util-22{width:22%}.util-24{width:24%}
+.util-26{width:26%}.util-28{width:28%}.util-30{width:30%}.util-32{width:32%}.util-34{width:34%}.util-36{width:36%}.util-38{width:38%}.util-40{width:40%}.util-42{width:42%}.util-44{width:44%}.util-46{width:46%}.util-48{width:48%}.util-50{width:50%}
+.util-52{width:52%}.util-54{width:54%}.util-56{width:56%}.util-58{width:58%}.util-60{width:60%}.util-62{width:62%}.util-64{width:64%}.util-66{width:66%}.util-68{width:68%}.util-70{width:70%}.util-72{width:72%}.util-74{width:74%}.util-76{width:76%}
+.util-78{width:78%}.util-80{width:80%}.util-82{width:82%}.util-84{width:84%}.util-86{width:86%}.util-88{width:88%}.util-90{width:90%}.util-92{width:92%}.util-94{width:94%}.util-96{width:96%}.util-98{width:98%}.util-100{width:100%}
+
 /* ── Görünüm anahtarı ──────────────────────────────────────────────────
    Üç seçenek, biri hep açık: ayrı düğmeler yerine tek bir gövde. */
 .seg {
