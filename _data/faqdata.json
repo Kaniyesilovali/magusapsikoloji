@@ -1114,6 +1114,28 @@
           "q": "Okul fobisinde hangi terapi yöntemi kullanılır?",
           "a": "Bilişsel Davranışçı Terapi (BDT) okul reddinde en güçlü kanıta sahip yaklaşımdır. Çocukla kaygı veren düşünceler ve kademeli maruz bırakma çalışılırken, ebeveynlerle sabah rutini ve tutum tutarlılığı üzerine görüşmeler yürütülür."
         }
+      ],
+      "en": [
+        {
+          "q": "What is school refusal?",
+          "a": "School refusal, sometimes called school phobia, is intense anxiety at the thought of going to school along with difficulty staying there. It is not a diagnosis in itself; it is often the visible face of separation anxiety, social anxiety or depression."
+        },
+        {
+          "q": "My child won't go to school — should I force them?",
+          "a": "Being firm is not the same as forcing. Long arguments and negotiations feed anxiety, while a warm but clear expectation of attendance stops avoidance from growing. If your child has been absent for some time, plan a graded return rather than a full day straight away."
+        },
+        {
+          "q": "Can a morning stomach ache be a sign of school refusal?",
+          "a": "It can. Anxiety-related stomach aches and headaches are real, not invented. The telling sign is the calendar pattern: symptoms appear on school mornings and disappear at weekends and during holidays. A single medical check is still worth having to rule out physical causes."
+        },
+        {
+          "q": "How long does school refusal take to resolve?",
+          "a": "When it is addressed early, a return to school is usually achieved within a few weeks. The timeline depends on how many days have been missed, the type of anxiety underneath it, and how closely the school works with the plan. The longer the absence runs, the harder the return becomes."
+        },
+        {
+          "q": "Which therapy is used for school refusal?",
+          "a": "Cognitive Behavioural Therapy (CBT) has the strongest evidence base for school refusal. The child works on anxious thoughts and a graded return to school, while parents work on the morning routine and on keeping their approach consistent."
+        }
       ]
     }
   },
