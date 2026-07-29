@@ -1,7 +1,7 @@
 <?php
 use Panel\Csrf;
 /** @var array $pending @var array $applied @var array $checks @var array $reminder @var array $mail @var array $actor */
-/** @var array $checkin @var string $phpBinary */
+/** @var array $checkin @var array $backup @var string $phpBinary */
 ?>
 
 <header class="mb-6">
@@ -231,6 +231,81 @@ use Panel\Csrf;
       <p class="field-hint">
         Oran düşükse ilk şüpheli e-posta kanalıdır, kod değil: bağlantı görüşmeci
         sayfasından kopyalanıp başka bir kanaldan (ör. WhatsApp) denenebilir.
+      </p>
+    </div>
+  <?php endif; ?>
+</section>
+
+<?php // Yedeğin "alındı" demesi yetmez, ne zaman ve ne büyüklükte alındığı
+      // görünmeli: sıfır baytlık bir yedek de her gece başarıyla alınır. ?>
+<section class="sheet mb-6">
+  <div class="sheet-head">
+    <div>
+      <h2 class="sheet-title">Otomatik yedek</h2>
+      <p class="text-xs text-ink-light mt-1">
+        Veritabanının şifreli kopyası. Gönderimi cPanel'deki cron çalıştırır;
+        panel kendi kendine tetiklemez.
+      </p>
+    </div>
+    <span class="chip <?= $backup['ready'] ? 'chip-go' : 'chip-stop' ?>">
+      <?= $backup['ready'] ? 'açık' : 'kapalı' ?>
+    </span>
+  </div>
+
+  <?php if (!$backup['ready']): ?>
+    <div class="sheet-body">
+      <p class="note note-stop mb-3">
+        <code>security.backup_key</code> tanımlı değil — yedek alınmıyor.
+      </p>
+      <p class="text-xs text-ink-muted mb-2">Anahtarı üretmek için (SSH varsa):</p>
+      <pre class="text-xs bg-white border border-warm-tertiary rounded-md p-3 overflow-x-auto"><code><?= e($phpBinary) ?> <?= e(dirname(PANEL_ROOT)) ?>/panel/cron/backup.php --anahtar-uret</code></pre>
+      <p class="field-hint">
+        Çıkan satırı <code>config.php</code> içindeki <code>security</code> bölümüne ekleyin ve
+        aynı değeri parola yöneticinize kaydedin — <strong><code>note_key</code>'den ayrı bir kayıt olarak.</strong>
+        Bu anahtar kaybolursa yedekler açılamaz.
+      </p>
+    </div>
+  <?php else: ?>
+    <ul class="divide-y divide-warm-secondary">
+      <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+        <span class="text-sm text-ink w-56 shrink-0">Son çalışma</span>
+        <span class="chip <?= $backup['lastRun'] === null ? 'chip-stop' : 'chip-go' ?>">
+          <?= $backup['lastRun'] === null ? 'hiç çalışmadı' : 'çalıştı' ?>
+        </span>
+        <span class="text-xs text-ink-light flex-1 min-w-48 num">
+          <?php if ($backup['lastRun'] === null): ?>
+            Cron kurulmamış olabilir — aşağıdaki komutu cPanel → Cron Jobs ekranına ekleyin.
+          <?php else: ?>
+            <?= e(dt($backup['lastRun'])) ?> — <?= e((string) $backup['lastResult']) ?>
+          <?php endif; ?>
+        </span>
+      </li>
+      <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+        <span class="text-sm text-ink w-56 shrink-0">Elde tutulan</span>
+        <span class="text-xs text-ink-light flex-1 min-w-48">
+          <span class="num"><?= (int) $backup['count'] ?></span> yedek
+          (en fazla <span class="num"><?= Panel\Backup::KEEP ?></span> saklanır)
+          <?php if ($backup['newest'] !== null): ?>
+            — en yenisi <span class="num"><?= e(date('d.m.Y H:i', $backup['newest']['time'])) ?></span>,
+            <span class="num"><?= e(number_format($backup['newest']['bytes'] / 1024, 0, ',', '.')) ?></span> KB
+          <?php endif; ?>
+        </span>
+      </li>
+      <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+        <span class="text-sm text-ink w-56 shrink-0">Konum</span>
+        <span class="text-xs text-ink-light flex-1 min-w-48 font-mono"><?= e($backup['dir']) ?></span>
+      </li>
+    </ul>
+
+    <div class="sheet-foot">
+      <p class="text-xs text-ink-muted mb-2">
+        cPanel → <strong>Cron Jobs</strong> → her gece 03:00 (<code>0 3 * * *</code>) seçip komutu yapıştırın:
+      </p>
+      <pre class="text-xs bg-white border border-warm-tertiary rounded-md p-3 overflow-x-auto"><code><?= e($phpBinary) ?> <?= e(dirname(PANEL_ROOT)) ?>/panel/cron/backup.php</code></pre>
+      <p class="note note-info mt-3">
+        Bu yedek <strong>aynı sunucuda</strong> duruyor; sunucu giderse o da gider.
+        Ayda bir dosyayı indirmek hâlâ gerekli. Kurtarma:
+        <code>backup.php --coz &lt;dosya&gt; &lt;hedef.sql&gt;</code> → phpMyAdmin → İçe Aktar.
       </p>
     </div>
   <?php endif; ?>

@@ -39,6 +39,11 @@ return [
     // 32 baytlık rastgele anahtarların base64 hâli
     'security' => [
         'note_key'          => 'BURAYA_BASE64_ANAHTAR',  // seans notu şifreleme
+        // Otomatik yedeğin anahtarı. note_key ile AYNI OLMAMALI: tek anahtarın
+        // kaybı hem notları hem yedeği götürürdü, oysa yedeğin varlık sebebi
+        // bu riskin ikiye bölünmesi. Üretmek için:
+        //   php panel/cron/backup.php --anahtar-uret
+        'backup_key'        => '',
         'session_lifetime'  => 1800,   // saniye — 30 dk hareketsizlik
         'max_login_attempts' => 5,
         'lockout_minutes'   => 15,
@@ -77,5 +82,11 @@ return [
         'token'  => '',                                   // github_pat_...
         'repo'   => 'Kaniyesilovali/magusapsikoloji',
         'branch' => 'main',
+    ],
+
+    // Otomatik yedek. Yol boş bırakılırsa panelin iki üst dizininde
+    // `magusa-panel-backups` kullanılır — public_html'in DIŞI.
+    'backup' => [
+        'path' => '',
     ],
 ];

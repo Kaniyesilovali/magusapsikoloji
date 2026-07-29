@@ -5,6 +5,7 @@ namespace Panel\Controllers;
 
 use Panel\Audit;
 use Panel\Auth;
+use Panel\Backup;
 use Panel\Crypto;
 use Panel\Db;
 use Panel\Github;
@@ -39,6 +40,7 @@ final class SystemController
             'reminder'  => $this->reminderStatus(),
             'checkin'   => $this->checkinStatus(),
             'mail'      => Mailer::summary(),
+            'backup'    => Backup::status(),
             'phpBinary' => $this->phpBinary(),
             'actor'     => $actor,
         ]);
