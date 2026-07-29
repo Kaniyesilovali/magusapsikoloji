@@ -677,6 +677,284 @@ details > summary::-webkit-details-marker {
   background: var(--color-primary);
 }
 
+/* ── Form: haftanın hâli (ikinci sayfa) ────────────────────────────────
+   Alanlar liste hâlinde, halka değil. Plandaki halka posterde güzel duruyor
+   ama telefonda sekiz alan × üç hâl = yirmi dört dokunma hedefi demek; halka
+   düzeninde bunların yarısı başparmağın ulaşamadığı yere düşüyor. Aynı
+   itiraz planın iç içe çemberlere yönelttiği itirazın kendisi.
+
+   Metafor listede de duruyor: işaretlenen satır sağa (sırt rüzgârı) ya da
+   sola (karşı rüzgâr) kayıyor. Yakınlık/mesafe sezgisi korunuyor, dokunma
+   hedefi kaybolmuyor.                                                      */
+.ci-wind-head {
+  border-top-width: 2px;
+}
+
+.ci-dom {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--color-warm-secondary);
+  transition: transform 200ms ease;
+}
+.ci-dom-text {
+  flex: 1;
+  min-width: 0;
+}
+.ci-dom-label {
+  display: block;
+  font-size: 0.9375rem;
+  color: var(--color-ink);
+}
+.ci-dom-hint {
+  display: block;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--color-ink-light);
+}
+
+/* Üç seçenek yan yana. Her hedef 44px: parmak ölçüsü, tasarım tercihi değil. */
+.ci-wind {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.25rem;
+}
+.ci-wind-opt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--color-warm-tertiary);
+  border-radius: 0.5rem;
+  background: #fff;
+  color: var(--color-ink-light);
+  font-size: 1.125rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+.ci-wind-in:checked + .ci-wind-opt.is-up {
+  border-color: var(--color-primary-light);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+.ci-wind-in:checked + .ci-wind-opt.is-calm {
+  border-color: var(--color-warm-secondary);
+  background: var(--color-warm);
+  color: var(--color-ink-muted);
+}
+/* Kehribar, kırmızı değil: zorlayan bir hafta bir hata değil, bir hava durumu. */
+.ci-wind-in:checked + .ci-wind-opt.is-down {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  color: var(--color-accent-dark);
+}
+.ci-wind-in:focus-visible + .ci-wind-opt {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Mikro-etkileşim: :has desteklenmiyorsa yalnız bu kayma düşer, form aynen çalışır. */
+.ci-dom:has(.ci-wind-in:checked + .is-up)   { transform: translateX(4px); }
+.ci-dom:has(.ci-wind-in:checked + .is-down) { transform: translateX(-4px); }
+
+/* ── Rüzgâr halkası (JS varsa listenin yerine geçer) ───────────────────
+   Çipler çocuğun adının etrafında bir çember üzerine oturuyor. Yerleşim
+   trigonometriyle değil, iki dönüşle: çipi merkezden döndür, yarıçap kadar
+   ittir, sonra kendi ekseninde geri döndür ki yazı düz kalsın.
+
+   Yarıçap ve çip boyu birlikte seçildi: sekiz çipin çevre üzerinde payına
+   düşen yay ~86px, çip 72px. Dokuz-on alanda çipler sıkışır ama üst üste
+   binmez; on birde (MAX_OPEN) halka kalabalıklaşır, liste düzeni daha iyi
+   okunur. Terapist alan açarken bunu bilerek açmalı.                       */
+.ci-ring-slot { padding: 0.5rem 0 1rem; }
+
+.ci-ring {
+  position: relative;
+  width: 17.5rem;
+  height: 17.5rem;
+  margin: 0 auto;
+  --radius: 6.5rem;
+}
+.ci-ring-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 6rem;
+  text-align: center;
+  font-family: var(--font-serif, serif);
+  font-size: 1rem;
+  line-height: 1.2;
+  color: var(--color-ink);
+}
+
+.ci-chip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4.5rem;
+  height: 4.5rem;
+  margin: -2.25rem 0 0 -2.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  padding: 0.25rem;
+  border: 1px solid var(--color-warm-tertiary);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-ink-muted);
+  font-size: 0.6875rem;
+  line-height: 1.1;
+  text-align: center;
+  cursor: pointer;
+  /* Dokunuşta merkeze yaklaşma/uzaklaşma bu değişkenle oluyor; geçiş 200 ms. */
+  --pull: 0rem;
+  transform:
+    rotate(calc(var(--i) * (360deg / var(--n))))
+    translate(calc(var(--radius) + var(--pull)))
+    rotate(calc(var(--i) * (-360deg / var(--n))));
+  transition: transform 200ms ease, background-color 150ms ease,
+              border-color 150ms ease, color 150ms ease;
+}
+.ci-chip-name { display: block; }
+.ci-chip-mark {
+  display: block;
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+/* Sırt rüzgârı merkeze yaklaşır, karşı rüzgâr uzaklaşır. Ekolojik etki
+   mesafeyle ilgilidir; hareket bu sezgiyi bedensel olarak kuruyor.        */
+/* Zemin dolu değil yumuşak: sekiz çipin altısı koyu olduğunda halka bir hava
+   durumu değil bir karne gibi okunuyordu. Plan §1 bu konuda net — "kırmızı
+   panik ve suçluluk rengidir". İki hâl de eşit ağırlıkta, ikisi de sakin. */
+.ci-chip.is-up {
+  --pull: -0.5rem;
+  border-color: var(--color-primary-light);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+.ci-chip.is-down {
+  --pull: 0.5rem;
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  color: var(--color-accent-dark);
+}
+.ci-chip:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Halka kurulduğunda liste görünmez olur ama DOM'da kalır: gönderilen
+   değerler hâlâ oradaki radyolar. `display:none` demiyoruz — bazı tarayıcılar
+   gizlenmiş alanları göndermeme davranışına yaklaşıyor; ekrandan çıkarmak
+   yeterli ve geri dönüşü olan tek yol bu.                                  */
+.ci-dom-list-off {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ci-chip, .ci-dom { transition: none; }
+}
+
+/* ✦ çipi: tek dokunuş, sayaç yok, seri yok. */
+.ci-event {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+.ci-event-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--color-warm-tertiary);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-ink-light);
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+.ci-event-in:checked ~ .ci-event-chip {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #fff;
+}
+.ci-event-in:focus-visible ~ .ci-event-chip {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ── Ekolojik şerit (terapist) ─────────────────────────────────────────
+   Satırlar alan, sütunlar hafta. Eğrinin hemen altında ve aynı haftaların
+   üstünde duruyor; iki görselin arasındaki hizayı bozan her şey şeridin tek
+   işini — "okulda koyu hafta, bir sonraki hafta ruh hali düşük" cümlesini
+   gözle okutmayı — bozar.
+
+   Hücre işareti renkle DEĞİL, önce glifle anlatılıyor: renk körlüğünde de,
+   yazdırmada da, ekran okuyucuda da aynı bilgi kalsın.                     */
+/* Hücreler ayrı ayrı yuvarlatılmış kareler, bitişik bir ızgara değil: aradaki
+   boşluk "hafta" birimini görünür kılıyor. Genişlik sabit, çünkü sütunu içeriğe
+   bırakınca en uzun başlık bütün şeridi geriyordu.                          */
+.eco-strip {
+  border-collapse: separate;
+  border-spacing: 3px;
+  font-size: 0.8125rem;
+  table-layout: fixed;
+  width: auto;
+}
+.eco-strip-head {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  padding: 0.25rem 0.75rem 0.25rem 0;
+  background: #fff;
+  color: var(--color-ink-muted);
+  font-weight: 400;
+  text-align: left;
+  white-space: nowrap;
+}
+.eco-strip-week {
+  width: 2.5rem;
+  padding: 0 0 0.375rem;
+  color: var(--color-ink-light);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+}
+.eco-cell {
+  width: 2.5rem;
+  height: 1.75rem;
+  border-radius: 0.375rem;
+  background: var(--color-warm);
+  color: var(--color-warm-tertiary);
+  text-align: center;
+  vertical-align: middle;
+}
+.eco-cell.is-up {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+.eco-cell.is-down {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-dark);
+}
+.eco-cell.is-event {
+  color: var(--color-primary);
+}
+
 /* ── Eğri ──────────────────────────────────────────────────────────────
    Üç ölçü üç ayrı satırda, aynı zaman ekseni ve aynı 1–10 ölçeğiyle. Tek
    kutuda üst üste çizilseydi yükselen çizginin iyi mi kötü mü olduğu

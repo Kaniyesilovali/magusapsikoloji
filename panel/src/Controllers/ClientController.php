@@ -11,6 +11,7 @@ use Panel\Checkins;
 use Panel\ClientAccount;
 use Panel\ClientScope;
 use Panel\Db;
+use Panel\Ecosystem;
 use Panel\Mailer;
 use Panel\Notifications;
 use Panel\Rbac;
@@ -137,6 +138,10 @@ final class ClientController
             'checkinTotal'    => $checkinTotal,
             'checkinPending'  => $canSeeCheckins ? Checkins::pendingRequest($id) : null,
             'checkinLink'     => Checkins::pendingLink(),
+            // Şerit eğrinin altında, aynı haftaların üstünde duruyor.
+            'ecosystem'       => $canSeeCheckins
+                ? Ecosystem::strip($checkins, Ecosystem::ageFrom($client['birth_date'] === null ? null : (string) $client['birth_date']))
+                : ['rows' => [], 'events' => []],
             'actor'           => $actor,
         ]);
     }

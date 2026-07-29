@@ -123,7 +123,7 @@ final class Checkins
         }
 
         return Db::one(
-            'SELECT r.*, c.full_name, c.status AS client_status
+            'SELECT r.*, c.full_name, c.status AS client_status, c.birth_date
                FROM checkin_requests r
                JOIN clients c ON c.id = r.client_id
               WHERE r.token_hash = ?
@@ -163,9 +163,13 @@ final class Checkins
     /**
      * Check-in'i yazar ve bağlantıyı tüketir.
      *
-     * @return bool Cümle yazıldıysa şifrelenerek saklanabildi mi? (yazılmadıysa true)
+     * Kaydın id'si de dönüyor: ekolojik işaretler (bkz. Ecosystem) bu kayda
+     * bağlanıyor ve ikinci sayfa aynı gönderimin parçası.
+     *
+     * @return array{id:int, noteSaved:bool} noteSaved, cümle yazıldıysa
+     *         şifrelenerek saklanabildi mi (yazılmadıysa true).
      */
-    public static function save(array $request, int $mood, int $sleep, int $anxiety, string $note): bool
+    public static function save(array $request, int $mood, int $sleep, int $anxiety, string $note): array
     {
         $cipher    = null;
         $nonce     = null;
@@ -182,7 +186,7 @@ final class Checkins
             }
         }
 
-        Db::run(
+        $id = Db::insert(
             'INSERT INTO checkins (client_id, request_id, mood, sleep_quality, anxiety,
                                    note_ciphertext, note_nonce, created_at)
              VALUES (?, ?, ?, ?, ?, ?, ?, NOW())',
@@ -190,7 +194,7 @@ final class Checkins
         );
         Db::run('UPDATE checkin_requests SET completed_at = NOW() WHERE id = ?', [$request['id']]);
 
-        return $noteSaved;
+        return ['id' => $id, 'noteSaved' => $noteSaved];
     }
 
     // ── Terapistin gördüğü geçmiş ───────────────────────────────
@@ -338,12 +342,73 @@ final class Checkins
         'anxiety'       => ['label' => 'Kaygı',    'low' => 'hiç yok',   'high' => 'çok yoğun'],
     ];
 
-    /** Formdaki soruların tam metni — form ve e-posta aynı dili konuşsun. */
+    /** Soruların varsayılan metni. Düzenlenmiş hâli için [questions]. */
     public const QUESTIONS = [
         'mood'          => 'Bu hafta genel olarak ruh hâlin nasıldı?',
         'sleep_quality' => 'Uykun nasıldı?',
         'anxiety'       => 'Kaygı düzeyin ne kadardı?',
     ];
+
+    /** Düzenlenmiş soru metinlerinin ayar anahtarı öneki. */
+    private const QUESTION_SETTING = 'checkin_question_';
+
+    /**
+     * Formda gösterilecek soru metinleri.
+     *
+     * Cümlenin nasıl kurulduğu klinik bir tercih — soruyu soran terapist, panel
+     * değil. Bu yüzden metin ayarlardan düzenlenebilir; koddaki QUESTIONS
+     * varsayılan olarak durur ve boşaltılan alan ona geri döner.
+     *
+     * Değişen yalnız metin: alan adları ve dolayısıyla ölçeğin yönü sabit.
+     * `anxiety` ters ölçeklidir (yüksek değer kötü) ve eğri bunu böyle çizer;
+     * cümleyi ters çeviren bir düzenleme veriyi sessizce bozardı. Düzenleme
+     * ekranı bu yüzden her sorunun altında yönünü ayrıca yazıyor.
+     *
+     * @return array<string,string>
+     */
+    public static function questions(): array
+    {
+        $questions = [];
+        foreach (self::QUESTIONS as $field => $default) {
+            $custom = trim((string) Settings::get(self::QUESTION_SETTING . $field, ''));
+            $questions[$field] = $custom !== '' ? $custom : $default;
+        }
+        return $questions;
+    }
+
+    /**
+     * Soru metinlerini kaydeder. Varsayılana eşit ya da boş bırakılan alan
+     * ayarlardan silinir — böylece varsayılan ileride değişirse o soru
+     * kendiliğinden yeni metne döner, eski kopyasında donup kalmaz.
+     *
+     * @param array<string,string> $input
+     */
+    public static function saveQuestions(array $input): void
+    {
+        foreach (self::QUESTIONS as $field => $default) {
+            $text = trim(mb_substr((string) ($input[$field] ?? ''), 0, 200));
+            Settings::set(self::QUESTION_SETTING . $field, $text === $default ? '' : $text);
+        }
+    }
+
+    /**
+     * Şeridin sütun başlığı: yalnız haftanın ilk günü, `27.07` biçiminde.
+     *
+     * Tam aralık ("27 Temmuz – 2 Ağustos 2026") burada sütunu on katına
+     * çıkarıyor ve hücreler kareden bandımsı bir şeye dönüşüyordu. Şeritte
+     * okunması gereken şey hafta adı değil, işaretlerin dizilişi; tam etiket
+     * başlığın `title`'ında ve alttaki tabloda zaten duruyor.
+     */
+    public static function weekShort(string $sqlDateTime): string
+    {
+        try {
+            $date = new DateTimeImmutable($sqlDateTime);
+        } catch (\Exception) {
+            return '—';
+        }
+
+        return $date->modify('monday this week')->format('d.m');
+    }
 
     /**
      * Haftanın etiketi — tabloda tarihin yanında durur. Terapist "hangi hafta"

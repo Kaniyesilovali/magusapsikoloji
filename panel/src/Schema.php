@@ -68,6 +68,20 @@ final class Schema
         return self::hasTable('checkins') && self::hasTable('checkin_requests');
     }
 
+    /**
+     * "Haftanın hâli" ekolojik işaretler (006_ecosystem) uygulanmış mı?
+     *
+     * Check-in'in kendisi bu göç olmadan da tam çalışır: formun ikinci sayfası
+     * hiç çizilmez, ilk sayfa eskisi gibi kaydeder. Göç ile deploy arasındaki
+     * boşlukta form çökmesin diye ayrı sorulur.
+     */
+    public static function ecosystemReady(): bool
+    {
+        return self::hasTable('ecosystem_domains')
+            && self::hasTable('ecosystem_marks')
+            && self::hasTable('ecosystem_events');
+    }
+
     public static function hasTable(string $table): bool
     {
         $key = 'table:' . $table;

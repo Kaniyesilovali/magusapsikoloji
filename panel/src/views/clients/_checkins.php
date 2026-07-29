@@ -2,7 +2,7 @@
 use Panel\Checkins;
 use Panel\Csrf;
 /** @var array $client @var list<array> $checkins @var int $checkinTotal */
-/** @var ?array $checkinPending @var ?array $checkinLink */
+/** @var ?array $checkinPending @var ?array $checkinLink @var array $ecosystem */
 
 // Seanslar arası check-in — terapistin gördüğü yüz.
 //
@@ -22,6 +22,8 @@ $latest   = $checkins === [] ? null : $checkins[count($checkins) - 1];
       <h2 class="sheet-title">Seanslar arası check-in</h2>
       <p class="text-xs text-ink-light mt-1">
         Haftada bir, üç soru, giriş gerektirmeyen bir bağlantıyla.
+        <a href="<?= e(url('/check-in-sorulari')) ?>" class="btn-text btn-text-quiet">Soruları düzenle</a>
+        <a href="<?= e(url('/danisanlar/' . (int) $client['id'] . '/alanlar')) ?>" class="btn-text btn-text-quiet">Sorulan alanlar</a>
       </p>
     </div>
     <?php if ($checkinTotal > 0): ?>
@@ -87,6 +89,14 @@ $latest   = $checkins === [] ? null : $checkins[count($checkins) - 1];
         </div>
       </div>
     <?php endforeach; ?>
+
+    <?php // Ekolojik şerit eğrinin hemen altında: aynı haftalar, aynı sıra.
+          // "Bu hafta ne oldu" sorusunun cevabı eğride değil burada. ?>
+    <?php if (($ecosystem['rows'] ?? []) !== []): ?>
+      <div class="border-t border-warm-secondary">
+        <?php require __DIR__ . '/_ecosystem.php'; ?>
+      </div>
+    <?php endif; ?>
 
     <?php // Tablo görünümü: eğrinin okunamadığı her durumda (yazdırma, ekran
           // okuyucu, iki noktanın üst üste düşmesi) sayılar burada duruyor.

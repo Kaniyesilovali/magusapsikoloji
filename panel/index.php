@@ -128,6 +128,13 @@ $router->post('/danisanlar/{id}/davet-gonder',  [ClientController::class, 'resen
 $router->post('/danisanlar/{id}/erisim',        [ClientController::class, 'toggleAccess']);
 // Check-in döngüsünü başlatan/sürdüren el hareketi; haftalık gönderim cron'da.
 $router->post('/danisanlar/{id}/check-in', [ClientController::class, 'sendCheckin']);
+// Soru metinleri panelden düzenlenir. Yol bilerek `/check-in/` altında DEĞİL:
+// o önek giriş gerektirmeyen jeton rotasına ve şifre-değiştirme muafiyetine ait.
+$router->get('/check-in-sorulari',  [CheckinController::class, 'questions']);
+$router->post('/check-in-sorulari', [CheckinController::class, 'saveQuestions']);
+// Hangi alanların sorulacağı görüşmeci başına değişir.
+$router->get('/danisanlar/{id}/alanlar',  [CheckinController::class, 'domains']);
+$router->post('/danisanlar/{id}/alanlar', [CheckinController::class, 'saveDomains']);
 $router->get('/danisanlar/{id}/riza',     [ConsentController::class, 'printForm']);
 $router->get('/danisanlar/{id}/dosya',    [CaseFileController::class, 'form']);
 $router->post('/danisanlar/{id}/dosya',   [CaseFileController::class, 'save']);
