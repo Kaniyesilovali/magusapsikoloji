@@ -1091,6 +1091,30 @@
           "a": "Recovery doesn't come from \"trying harder.\" It usually follows these steps: naming what's happening, genuinely reducing the load and setting boundaries, repairing the body through sleep and rest, reconnecting with people you trust and rebuilding meaning, and seeking professional support. If symptoms have lasted for months, it's worth speaking with a psychologist."
         }
       ]
+    },
+    "okul-fobisi": {
+      "tr": [
+        {
+          "q": "Okul fobisi nedir?",
+          "a": "Okul fobisi (okul reddi), çocuğun okula gitme fikri karşısında yoğun kaygı yaşaması ve okulda kalmakta zorlanmasıdır. Tek başına bir tanı değildir; ayrılık kaygısı, sosyal kaygı ya da depresyon gibi durumların görünen yüzü olabilir."
+        },
+        {
+          "q": "Çocuğum okula gitmek istemiyor, zorlamalı mıyım?",
+          "a": "Zorlamak ile kararlı olmak aynı şey değildir. Uzun tartışma ve pazarlık kaygıyı besler; sıcak ama net bir tutumla okula devam etmek ise kaçınmanın büyümesini engeller. Uzun süredir gidilmiyorsa tam gün yerine kademeli dönüş planlanır."
+        },
+        {
+          "q": "Sabahları karın ağrısı okul fobisi belirtisi olabilir mi?",
+          "a": "Olabilir. Kaygıya bağlı karın ve baş ağrıları gerçektir, uydurma değildir. Ayırt edici işaret takvim düzenidir: şikayetler okul sabahları ortaya çıkar, hafta sonu ve tatillerde kaybolur. Yine de tıbbi nedenleri elemek için bir kez doktor kontrolü önerilir."
+        },
+        {
+          "q": "Okul reddi ne kadar sürede geçer?",
+          "a": "Erken ele alınan olgularda okula dönüş çoğunlukla birkaç hafta içinde sağlanır. Süre; kaçırılan gün sayısına, altta yatan kaygı türüne ve okulun plana katılımına göre değişir. Devamsızlık uzadıkça dönüş de zorlaşır."
+        },
+        {
+          "q": "Okul fobisinde hangi terapi yöntemi kullanılır?",
+          "a": "Bilişsel Davranışçı Terapi (BDT) okul reddinde en güçlü kanıta sahip yaklaşımdır. Çocukla kaygı veren düşünceler ve kademeli maruz bırakma çalışılırken, ebeveynlerle sabah rutini ve tutum tutarlılığı üzerine görüşmeler yürütülür."
+        }
+      ]
     }
   },
   "pageCategories": {
