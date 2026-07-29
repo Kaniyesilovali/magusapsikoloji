@@ -120,6 +120,91 @@
     });
   }
 
+  // ── Haftanın hâli: rüzgâr halkası ─────────────────────────────────────
+  //
+  // Halka bir ilerletme (progressive enhancement): sayfadaki gerçek form üç
+  // radyo düğmesinden oluşan listedir ve JS kapalıyken aynen o çalışır. Burada
+  // yaptığımız tek şey, o listenin üstüne dokunmalı bir yüz koymak ve dokunuşu
+  // gizlenmiş radyoya iletmek. İkinci bir veri yolu yok — halka bozulursa
+  // form yine gönderilir.
+  //
+  // Çip dokunuşta döner: sakin → sırt rüzgârı → karşı rüzgâr → sakin. Listedeki
+  // üç ayrı düğme yerine burada döngü var, çünkü halkada üç düğmeyi yan yana
+  // koyacak yer yok; sekiz alan × üç hedef bir telefon ekranına sığmıyor.
+  (function () {
+    var slot = document.querySelector('[data-ring]');
+    var source = document.querySelector('[data-ring-source]');
+    if (!slot || !source) return;
+
+    var fields = Array.prototype.slice.call(source.querySelectorAll('.ci-dom'));
+    if (!fields.length) return;
+
+    var ORDER = [0, 1, -1];               // sakin → iyi geldi → zorladı
+    var TONE  = { '1': 'is-up', '0': 'is-calm', '-1': 'is-down' };
+    var WORD  = { '1': 'iyi geldi', '0': 'öne çıkmadı', '-1': 'zorladı' };
+
+    var ring = document.createElement('div');
+    ring.className = 'ci-ring';
+    ring.style.setProperty('--n', String(fields.length));
+
+    var center = document.createElement('span');
+    center.className = 'ci-ring-center';
+    center.textContent = slot.getAttribute('data-center') || '';
+    ring.appendChild(center);
+
+    fields.forEach(function (field, index) {
+      var radios = Array.prototype.slice.call(field.querySelectorAll('.ci-wind-in'));
+      if (!radios.length) return;
+
+      var chip = document.createElement('button');
+      chip.type = 'button';                // formu göndermesin
+      chip.className = 'ci-chip';
+      chip.style.setProperty('--i', String(index));
+
+      var name = document.createElement('span');
+      name.className = 'ci-chip-name';
+      name.textContent = field.getAttribute('data-short') || '';
+      chip.appendChild(name);
+
+      var mark = document.createElement('span');
+      mark.className = 'ci-chip-mark';
+      mark.setAttribute('aria-hidden', 'true');
+      chip.appendChild(mark);
+
+      var current = function () {
+        for (var i = 0; i < radios.length; i++) {
+          if (radios[i].checked) return parseInt(radios[i].value, 10);
+        }
+        return 0;
+      };
+
+      var paint = function () {
+        var value = String(current());
+        chip.className = 'ci-chip ' + TONE[value];
+        chip.style.setProperty('--i', String(index));
+        mark.textContent = value === '1' ? '↑' : (value === '-1' ? '↓' : '·');
+        // Ekran okuyucu için tam cümle; görsel ad kısa kalabilir.
+        chip.setAttribute('aria-label', field.querySelector('legend').textContent + ' — ' + WORD[value]);
+      };
+
+      chip.addEventListener('click', function () {
+        var next = ORDER[(ORDER.indexOf(current()) + 1) % ORDER.length];
+        radios.forEach(function (radio) {
+          radio.checked = parseInt(radio.value, 10) === next;
+        });
+        paint();
+      });
+
+      paint();
+      ring.appendChild(chip);
+    });
+
+    slot.appendChild(ring);
+    // Liste artık halkanın veri deposu: erişilebilirlik ağacında kalır ama
+    // görünmez. `hidden` demiyoruz, çünkü o radyoların hâlâ gönderilmesi gerek.
+    source.classList.add('ci-dom-list-off');
+  })();
+
   // data-confirm taşıyan formlar gönderilmeden önce onay ister.
   document.addEventListener('submit', function (event) {
     var form = event.target;

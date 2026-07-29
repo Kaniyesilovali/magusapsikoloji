@@ -17,6 +17,7 @@ $groups = [
         ['path' => '/danisanlar',  'label' => 'Görüşmeciler', 'icon' => 'gorusmeciler', 'permissions' => ['client.view.all', 'client.view.own']],
         ['path' => '/musaitlik',   'label' => 'Müsaitlik',    'icon' => 'musaitlik',    'permissions' => ['availability.manage.all', 'availability.manage.own']],
         ['path' => '/odemeler',    'label' => 'Ödemeler',     'icon' => 'odemeler',     'permissions' => ['payment.view.all', 'payment.view.own']],
+        ['path' => '/raporlar',    'label' => 'Raporlar',     'icon' => 'raporlar',     'permissions' => ['payment.view.all']],
     ]],
     ['label' => 'Site', 'items' => [
         ['path' => '/icerik',      'label' => 'Site içeriği', 'icon' => 'icerik',       'permissions' => ['content.manage']],

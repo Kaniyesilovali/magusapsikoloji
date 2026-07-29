@@ -47,6 +47,13 @@ return [
         <rect x="1.6" y="4.2" width="12.8" height="7.6" rx="1.9"/>
         <circle cx="8" cy="8" r="1.9"/>',
 
+    // Rapor: üç yükselen çubuk. Pasta dilimi denendi ama 16 pikselde üç dilim
+    // birbirine giriyor; çubuklar hem daha okunur hem "aylık" fikrini taşıyor.
+    'raporlar' => '
+        <line x1="3.6" y1="12.4" x2="3.6" y2="9.2"/>
+        <line x1="8" y1="12.4" x2="8" y2="5.6"/>
+        <line x1="12.4" y1="12.4" x2="12.4" y2="7.6"/>',
+
     // Sitenin sayfası. Çerçeve çizilseydi "Müsaitlik" kutusuyla aynı gövdeyi
     // paylaşırdı; kıvrık köşe onu tek başına ayırıyor.
     'icerik' => '

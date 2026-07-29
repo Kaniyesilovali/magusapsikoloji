@@ -94,20 +94,41 @@ Sistem kayıtları, Sistem).
   *Tamam sayılır:* Sistem ekranında “İçerik yönetimi (GitHub) → yapılandırılmış” ve
   **Site içeriği** menüsü kurulum yönergesi yerine gerçek formları açıyor.
 
-- [ ] **7 · Hatırlatma cron'unu kur** — *cPanel*
+- [ ] **7 · Cron'ları kur** — *cPanel*
 
-  cPanel → **Cron Jobs** → “Saatte bir” (`0 * * * *`) seçin ve komutu yapıştırın.
-  Komutun tam hâli **Sistem** ekranında, hatırlatmalar bölümünde yazıyor:
+  **İki** cron gerekiyor. cPanel → **Cron Jobs** → her biri için ayrı kayıt:
+
+  | Ne | Zamanlama | Betik |
+  |---|---|---|
+  | Randevu hatırlatması | “Saatte bir” (`0 * * * *`) | `panel/cron/reminders.php` |
+  | Seanslar arası check-in | Pazartesi 09:00 (`0 9 * * 1`) | `panel/cron/checkins.php` |
+
+  Komutların tam hâli **Sistem** ekranında yazıyor — hatırlatmalar ve check-in
+  bölümlerinin altındaki gri kutular. **Oradan kopyalayın**, elle yazmayın:
 
   ```
-  /usr/local/bin/php /home/<kullanıcı>/public_html/panel/cron/reminders.php
+  /opt/cpanel/ea-php83/root/usr/bin/php /home/<kullanıcı>/public_html/panel/cron/reminders.php
   ```
+
+  *Neden bu uzun yol:* `/usr/local/bin/php` sunucunun varsayılan PHP'sidir ve alan
+  adı için seçtiğiniz sürümle aynı olmayabilir. Farklıysa cron çalışır, veritabanına
+  yazar, ama `openssl` bulunmadığı için SMTP bağlantısı kurulamaz ve e-posta hiç
+  gönderilmeden “başarısız” sayılır. Web tarafı doğru sürümle çalıştığı için
+  **test e-postası geçer, cron geçmez** — teşhisi en zor arıza biçimi. Sistem
+  ekranındaki komut panelin kendi sürümünden üretilir, bu yüzden doğrudur.
 
   *Tamam sayılır:* Bir saat içinde Sistem ekranında “Son çalışma → çalıştı” ve bir
   sonuç satırı (“0 gönderildi, 0 başarısız…”) görünüyor.
 
   *Not:* Saatte bir çalışması güvenlidir — her randevu bir kez uyarılır, ikinci
-  e-posta gitmez.
+  e-posta gitmez. Check-in cron'u ilk pazartesiye kadar sessiz kalır; yalnız
+  terapistin döngüyü başlattığı görüşmecilere gider, kurulur kurulmaz kimseye
+  toplu ileti çıkmaz.
+
+  *Gönderim başarısız çıkarsa:* cPanel → **Gönderimi İzle** ekranında o saate ait
+  satır yoksa ileti sunucudan hiç çıkmamıştır — sorun SMTP bağlantısında, alıcıda
+  değil. Cron çıktısı, Cron Jobs ekranının üstündeki “Cron E-posta” adresine gider
+  ve hata metnini içerir.
 
 - [ ] **8 · E-posta gönderimini test et** — *Panel*
 
@@ -187,8 +208,8 @@ Sistem kayıtları, Sistem).
 
 - [ ] **16 · Durum değiştir ve iptal et** — *Panel*
 
-  Takvimdeki randevunun altındaki *Onayla* / *Tamamlandı* / *Gelmedi* düğmelerinden
-  birini deneyin. Sonra *İptal et* → gerekçe yazın → *Randevuyu iptal et*.
+  **Liste** görünümünde randevunun altındaki *Onayla* / *Tamamlandı* / *Gelmedi*
+  düğmelerinden birini deneyin. Sonra *İptal et* → gerekçe yazın → *Randevuyu iptal et*.
 
   *Tamam sayılır:* Randevu üstü çizili görünüyor, altında iptal gerekçesi yazıyor.
   İptal edilen saate artık yeni randevu **verilebiliyor**.
@@ -205,10 +226,17 @@ Sistem kayıtları, Sistem).
 
 - [ ] **18 · Seans notu yaz** — *Panel*
 
-  **Randevular** → kendi randevunuzun altındaki **“Seans notu”** → birkaç cümle yazıp
-  kaydedin.
+  **Randevular** → üstteki `Hafta | Ay | Liste` anahtarını **Liste**'ye alın → kendi
+  randevunuzun altındaki **“Seans notu”** → birkaç cümle yazıp kaydedin.
 
-  *Tamam sayılır:* “Seans notu şifrelenerek kaydedildi” mesajı çıktı ve takvimde
+  *Liste görünümü şart:* Düzenle, Seans notu, durum ve iptal düğmelerinin hepsi
+  yalnız orada. Hafta ve Ay görünümleri okumak içindir, kutulara tıklayınca not
+  bağlantısı çıkmaz.
+
+  Bağlantının görünmesi iki şeye bağlı: randevu **iptal edilmemiş** olmalı ve
+  terapisti **siz** olmalısınız. Yöneticide hiç çıkmaz (bkz. 21. adım).
+
+  *Tamam sayılır:* “Seans notu şifrelenerek kaydedildi” mesajı çıktı ve listede
   bağlantı artık **“Seans notu ✓”** diyor.
 
   *“Şifreleme kullanılamıyor” çıkarsa:* 4. adıma dönün, `sodium` kapalı.
@@ -361,10 +389,20 @@ Sistem kayıtları, Sistem).
 
 - [ ] **35 · Deneme kayıtlarını sil** — *Panel*
 
-  Deneme görüşmecisini, randevularını ve 8. adımdaki deneme kullanıcısını silin.
+  Silinecekler:
 
-  Görüşmeci sayfasının altındaki *Kalıcı olarak sil*, randevuları ve seans notlarını da
-  siler — deneme verisi için doğru seçenek budur.
+  | Kayıt | Nerede | Not |
+  |---|---|---|
+  | **Deneme Görüşmeci** | Görüşmeciler | 11. adımda açıldı; randevuları ve seans notu da gider |
+  | **Foxy Sarıkız** | Görüşmeciler | deneme kaydı, randevusu Yaprak'a bağlı |
+  | **Yaprak P Yeşilovalı** | Kullanıcılar | deneme terapisti; daveti geçersiz adrese gitti, hiç aktifleşmedi |
+  | 8. adımdaki deneme kullanıcısı | Kullanıcılar | e-posta testi için açıldıysa |
+
+  **Sıra önemli: önce görüşmeciler, sonra terapist.** Görüşmeci sayfasının altındaki
+  *Kalıcı olarak sil* randevuları ve seans notlarını da siler — deneme verisi için
+  doğru seçenek budur. Terapist hesabı ise üzerine kayıtlı randevu kaldığı sürece
+  silinemez; panel bu durumda hesabı silmek yerine **askıya alır** ve bunu söyler.
+  Görüşmeciler gidince randevular da gittiği için terapist normal silinir.
 
   *Tamam sayılır:* Görüşmeciler ve Kullanıcılar listelerinde yalnız gerçek kayıtlar var.
 

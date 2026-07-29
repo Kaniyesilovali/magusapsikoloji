@@ -4,8 +4,12 @@ declare(strict_types=1);
 namespace Panel\Controllers;
 
 use Panel\Audit;
+use Panel\Auth;
 use Panel\Checkins;
+use Panel\ClientScope;
 use Panel\Crypto;
+use Panel\Db;
+use Panel\Ecosystem;
 use Panel\Schema;
 use Panel\View;
 
@@ -39,6 +43,10 @@ final class CheckinController
             return;
         }
 
+        // İkinci sayfa yalnız göç uygulanmışsa çizilir. Deploy ile migration
+        // arasındaki boşlukta form çökmez, eski hâliyle çalışır.
+        $age = Ecosystem::ageFrom($request['birth_date'] === null ? null : (string) $request['birth_date']);
+
         View::render('checkins/form', [
             'title'     => 'Haftalık check-in',
             'token'     => $token,
@@ -46,6 +54,9 @@ final class CheckinController
             // Şifreleme kapalıysa cümle alanı hiç gösterilmez: saklanamayacak
             // bir şeyi yazdırmak, yazanın güvenine ihanet eder.
             'noteOpen'  => Crypto::available(),
+            'domains'   => Schema::ecosystemReady()
+                ? Ecosystem::openFor((int) $request['client_id'], $age)
+                : [],
         ], 'checkin_layout');
     }
 
@@ -64,7 +75,7 @@ final class CheckinController
             return;
         }
 
-        $noteSaved = Checkins::save(
+        $saved = Checkins::save(
             $request,
             Checkins::score(post('mood')),
             Checkins::score(post('sleep_quality')),
@@ -72,12 +83,21 @@ final class CheckinController
             Crypto::available() ? post('note') : ''
         );
 
+        // İkinci sayfa: hiçbir alana dokunulmamış olması da geçerli bir cevap.
+        // Bu yüzden burada doğrulama yok, yalnız yazma var.
+        Ecosystem::saveMarks($saved['id'], (array) ($_POST['alan'] ?? []));
+        $eventSaved = Ecosystem::saveEvent(
+            $saved['id'],
+            post('olay_var') !== '',
+            Crypto::available() ? post('olay') : ''
+        );
+
         // Kayıt tutulur ama İÇERİĞİ asla loglanmaz — seans notundaki kural.
         // Aktör boş: bu isteği yapan kişi panele giriş yapmış değil.
         Audit::log('checkin.submitted', 'client', (int) $request['client_id']);
 
-        if (!$noteSaved) {
-            flash('warning', 'Puanların kaydedildi, ama yazdığın cümle güvenli biçimde '
+        if (!$saved['noteSaved'] || !$eventSaved) {
+            flash('warning', 'Puanların kaydedildi, ama yazdığın metin güvenli biçimde '
                 . 'saklanamadı ve kaydedilmedi. Söylemek istediğin bir şey varsa seansta paylaşabilirsin.');
         }
 
@@ -88,6 +108,92 @@ final class CheckinController
     public function thanks(): void
     {
         View::render('checkins/done', ['title' => 'Teşekkürler'], 'checkin_layout');
+    }
+
+    // ── Soru metinleri (panel içi, giriş gerektirir) ─────────────
+    //
+    // Yetki `checkin.view.own`: soruyu soran da, cevabın eğrisini okuyan da
+    // terapist. Yöneticide bilinçli olarak yok — check-in'in tamamı gibi bu da
+    // klinik yüzeyin parçası, idari ayar değil.
+
+    public function questions(): void
+    {
+        Auth::requirePermission('checkin.view.own');
+
+        View::render('checkins/questions', [
+            'title'     => 'Check-in soruları',
+            'questions' => Checkins::questions(),
+            'defaults'  => Checkins::QUESTIONS,
+            'measures'  => Checkins::MEASURES,
+        ]);
+    }
+
+    /**
+     * Bir görüşmecide hangi alanların sorulacağı.
+     *
+     * Görüşmeci sayfasından açılır; kaydın görünürlüğü ClientScope ile zaten
+     * sınırlı olduğu için burada tek ek kural yetkinin terapistte olması.
+     */
+    public function domains(int $clientId): void
+    {
+        $actor  = Auth::requirePermission('checkin.view.own');
+        $client = $this->scopedClient($clientId, $actor);
+
+        if ($client === null) {
+            View::error(404, 'Görüşmeci bulunamadı');
+            return;
+        }
+        if (!Schema::ecosystemReady()) {
+            flash('error', 'Bu ekran için bekleyen veritabanı güncellemesi var.');
+            redirect('/danisanlar/' . $clientId);
+        }
+
+        $age = Ecosystem::ageFrom($client['birth_date'] === null ? null : (string) $client['birth_date']);
+
+        View::render('checkins/domains', [
+            'title'    => 'Sorulan alanlar',
+            'client'   => $client,
+            'age'      => $age,
+            'open'     => array_column(Ecosystem::openFor($clientId, $age), 'key'),
+            'defaults' => Ecosystem::defaultsFor($age),
+        ]);
+    }
+
+    public function saveDomains(int $clientId): void
+    {
+        $actor  = Auth::requirePermission('checkin.view.own');
+        $client = $this->scopedClient($clientId, $actor);
+
+        if ($client === null) {
+            View::error(404, 'Görüşmeci bulunamadı');
+            return;
+        }
+
+        $age = Ecosystem::ageFrom($client['birth_date'] === null ? null : (string) $client['birth_date']);
+        Ecosystem::saveOpen($clientId, (array) ($_POST['alan'] ?? []), $age);
+
+        Audit::log('checkin.domains_updated', 'client', $clientId);
+        flash('success', 'Sorulan alanlar güncellendi. Bundan sonra üretilen bağlantılarda geçerli olur.');
+        redirect('/danisanlar/' . $clientId);
+    }
+
+    public function saveQuestions(): void
+    {
+        $actor = Auth::requirePermission('checkin.view.own');
+
+        $input = [];
+        foreach (array_keys(Checkins::QUESTIONS) as $field) {
+            $input[$field] = post($field);
+        }
+        Checkins::saveQuestions($input);
+
+        // İçerik loglanmaz; kimin ne zaman değiştirdiği yeter. Soru metni
+        // klinik veri değil ama değişimi cevapların anlamını kaydırır, bu
+        // yüzden iz kalması gerekiyor.
+        Audit::log('checkin.questions_updated', 'settings', null, ['aktor' => (int) $actor['id']]);
+
+        flash('success', 'Check-in soruları kaydedildi. Bundan sonra üretilen bağlantılar yeni metni gösterir.');
+        redirect('/check-in-sorulari');
     }
 
     // ── Yardımcılar ─────────────────────────────────────────────
@@ -128,6 +234,18 @@ final class CheckinController
             'heading' => $title,
             'message' => $message,
         ], 'checkin_layout');
+    }
+
+    /**
+     * Kayıt bu terapistin görüş alanında mı? Yetki kararı ClientScope'ta,
+     * burada yalnız uygulanıyor — ikinci bir görünürlük kuralı yazmamak için.
+     */
+    private function scopedClient(int $id, array $actor): ?array
+    {
+        [$scope, $params] = ClientScope::filter($actor);
+        array_unshift($params, $id);
+
+        return Db::one("SELECT c.* FROM clients c WHERE c.id = ? AND {$scope} LIMIT 1", $params);
     }
 
     private function firstName(string $fullName): string
