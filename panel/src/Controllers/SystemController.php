@@ -35,11 +35,12 @@ final class SystemController
             'title'    => 'Sistem',
             'pending'  => Migrator::pending(),
             'applied'  => Db::all('SELECT * FROM schema_migrations ORDER BY filename'),
-            'checks'   => $this->checks(),
-            'reminder' => $this->reminderStatus(),
-            'checkin'  => $this->checkinStatus(),
-            'mail'     => Mailer::summary(),
-            'actor'    => $actor,
+            'checks'    => $this->checks(),
+            'reminder'  => $this->reminderStatus(),
+            'checkin'   => $this->checkinStatus(),
+            'mail'      => Mailer::summary(),
+            'phpBinary' => $this->phpBinary(),
+            'actor'     => $actor,
         ]);
     }
 
@@ -126,6 +127,39 @@ final class SystemController
     }
 
     // ── Yardımcılar ─────────────────────────────────────────────
+
+    /**
+     * Cron komutunda gösterilecek PHP yorumlayıcısı.
+     *
+     * `/usr/local/bin/php` sunucunun **varsayılan** sürümüdür ve alan adı için
+     * seçilen sürümle aynı olmak zorunda değil. Aradaki fark sessiz bir arızaya
+     * yol açıyordu: cron koşuyor, veritabanına yazıyor, ama `openssl` bulunmadığı
+     * için SMTP soketi açılamıyor ve hatırlatma e-postası hiç gönderilmeden
+     * "başarısız" sayılıyordu. Web tarafı doğru sürümle çalıştığı için test
+     * e-postası geçiyor, cron geçmiyordu — teşhisi en zor hâli.
+     *
+     * Bu yüzden komut, panelin o an çalıştığı sürümün cPanel/EasyApache yolundan
+     * üretilir; PHP sürümü yükseltildiğinde ekrandaki komut kendiliğinden düzelir.
+     * open_basedir yüzünden yol doğrulanamazsa da aynı yol yazılır: yanlış olma
+     * ihtimali, varsayılan sürüme geri düşmenin sessiz arızayı geri getirme
+     * ihtimalinden düşük.
+     */
+    private function phpBinary(): string
+    {
+        $eaPath = sprintf(
+            '/opt/cpanel/ea-php%d%d/root/usr/bin/php',
+            PHP_MAJOR_VERSION,
+            PHP_MINOR_VERSION
+        );
+
+        foreach ([$eaPath, '/usr/local/bin/php'] as $candidate) {
+            if (@is_executable($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return $eaPath;
+    }
 
     /**
      * Hatırlatma cron'unun durumu. Cron kurulmadıysa hiç çalışmamış olur ve

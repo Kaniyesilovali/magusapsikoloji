@@ -1,7 +1,7 @@
 <?php
 use Panel\Csrf;
 /** @var array $pending @var array $applied @var array $checks @var array $reminder @var array $mail @var array $actor */
-/** @var array $checkin */
+/** @var array $checkin @var string $phpBinary */
 ?>
 
 <header class="mb-6">
@@ -162,7 +162,7 @@ use Panel\Csrf;
       <p class="text-xs text-ink-muted mb-2">
         cPanel → <strong>Cron Jobs</strong> → “Saatte bir” (<code>0 * * * *</code>) seçip komutu yapıştırın:
       </p>
-      <pre class="text-xs bg-white border border-warm-tertiary rounded-md p-3 overflow-x-auto"><code>/usr/local/bin/php <?= e(dirname(PANEL_ROOT)) ?>/panel/cron/reminders.php</code></pre>
+      <pre class="text-xs bg-white border border-warm-tertiary rounded-md p-3 overflow-x-auto"><code><?= e($phpBinary) ?> <?= e(dirname(PANEL_ROOT)) ?>/panel/cron/reminders.php</code></pre>
     </div>
   <?php endif; ?>
 </section>
@@ -227,7 +227,7 @@ use Panel\Csrf;
       <p class="text-xs text-ink-muted mb-2">
         cPanel → <strong>Cron Jobs</strong> → pazartesi 09:00 (<code>0 9 * * 1</code>) seçip komutu yapıştırın:
       </p>
-      <pre class="text-xs bg-white border border-warm-tertiary rounded-md p-3 overflow-x-auto"><code>/usr/local/bin/php <?= e(dirname(PANEL_ROOT)) ?>/panel/cron/checkins.php</code></pre>
+      <pre class="text-xs bg-white border border-warm-tertiary rounded-md p-3 overflow-x-auto"><code><?= e($phpBinary) ?> <?= e(dirname(PANEL_ROOT)) ?>/panel/cron/checkins.php</code></pre>
       <p class="field-hint">
         Oran düşükse ilk şüpheli e-posta kanalıdır, kod değil: bağlantı görüşmeci
         sayfasından kopyalanıp başka bir kanaldan (ör. WhatsApp) denenebilir.
