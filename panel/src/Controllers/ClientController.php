@@ -14,6 +14,7 @@ use Panel\Db;
 use Panel\Ecosystem;
 use Panel\Mailer;
 use Panel\Notifications;
+use Panel\Patterns;
 use Panel\Rbac;
 use Panel\Schema;
 use Panel\Settings;
@@ -120,6 +121,10 @@ final class ClientController
         $checkins       = $canSeeCheckins ? Checkins::history($id) : [];
         $checkinTotal   = $canSeeCheckins ? Checkins::count($id) : 0;
 
+        $ecosystem = $canSeeCheckins
+            ? Ecosystem::strip($checkins, Ecosystem::ageFrom($client['birth_date'] === null ? null : (string) $client['birth_date']))
+            : ['rows' => [], 'events' => []];
+
         // KVKK: hassas kayıt görüntülemeleri de izlenebilir olmalı.
         Audit::log('client.viewed', 'client', $id);
         if ($checkins !== []) {
@@ -139,9 +144,13 @@ final class ClientController
             'checkinPending'  => $canSeeCheckins ? Checkins::pendingRequest($id) : null,
             'checkinLink'     => Checkins::pendingLink(),
             // Şerit eğrinin altında, aynı haftaların üstünde duruyor.
-            'ecosystem'       => $canSeeCheckins
-                ? Ecosystem::strip($checkins, Ecosystem::ageFrom($client['birth_date'] === null ? null : (string) $client['birth_date']))
-                : ['rows' => [], 'events' => []],
+            'ecosystem'       => $ecosystem,
+            // Örüntüler şeritten türer, ayrı bir sorgudan değil: iki ekran
+            // aynı haftaları farklı kaynaklardan okusaydı biri diğerini
+            // yalanlayabilirdi.
+            'patterns'        => $canSeeCheckins
+                ? Patterns::find($checkins, $ecosystem)
+                : ['rows' => [], 'anchors' => []],
             'actor'           => $actor,
         ]);
     }

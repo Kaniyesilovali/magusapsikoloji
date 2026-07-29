@@ -63,6 +63,13 @@ $chip = [
   </div>
 <?php endif; ?>
 
+<?php // Örüntüler idari alanların ÜSTÜNDE: seansa girmeden önceki 40 saniyede
+      // bakılan yer burası. Aşağı inerse hiç bakılmaz. Eşiği geçen bir şey
+      // yoksa kendisi hiç çizilmiyor. ?>
+<?php if ($canSeeCheckins): ?>
+  <?php require __DIR__ . '/_patterns.php'; ?>
+<?php endif; ?>
+
 <div class="grid lg:grid-cols-3 gap-4 mb-6">
   <section class="sheet lg:col-span-2">
     <div class="sheet-head">
