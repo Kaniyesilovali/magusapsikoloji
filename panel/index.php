@@ -46,6 +46,7 @@ use Panel\Controllers\FaqController;
 use Panel\Controllers\NoteController;
 use Panel\Controllers\PaymentController;
 use Panel\Controllers\ProfileController;
+use Panel\Controllers\ReportController;
 use Panel\Controllers\SetupController;
 use Panel\Controllers\SystemController;
 use Panel\Controllers\UserController;
@@ -159,6 +160,8 @@ $router->get('/profil',         [ProfileController::class, 'edit']);
 $router->post('/profil',        [ProfileController::class, 'update']);
 $router->get('/profil/sifre',   [ProfileController::class, 'passwordForm']);
 $router->post('/profil/sifre',  [ProfileController::class, 'updatePassword']);
+
+$router->get('/raporlar',                 [ReportController::class, 'index']);
 
 $router->get('/odemeler',                    [PaymentController::class, 'index']);
 $router->get('/odemeler/{id}',               [PaymentController::class, 'show']);
