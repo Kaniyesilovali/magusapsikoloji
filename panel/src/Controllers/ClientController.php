@@ -143,6 +143,10 @@ final class ClientController
             'checkinTotal'    => $checkinTotal,
             'checkinPending'  => $canSeeCheckins ? Checkins::pendingRequest($id) : null,
             'checkinLink'     => Checkins::pendingLink(),
+            // Haftalık gönderim anahtarı: durumu kaydın kendisinde, çevrilebilir
+            // olması göçe bağlı (bkz. Schema::checkinDeliveryReady).
+            'checkinAuto'       => Checkins::autoEnabled($client),
+            'checkinSwitchable' => Schema::checkinDeliveryReady(),
             // Şerit eğrinin altında, aynı haftaların üstünde duruyor.
             'ecosystem'       => $ecosystem,
             // Örüntüler şeritten türer, ayrı bir sorgudan değil: iki ekran
@@ -203,6 +207,39 @@ final class ClientController
         } else {
             flash('success', 'Check-in bağlantısı ' . $client['email'] . ' adresine gönderildi.');
         }
+
+        redirect("/danisanlar/{$id}");
+    }
+
+    /**
+     * Bu görüşmeciye haftalık check-in e-postası gitsin mi.
+     *
+     * Aynı anahtar toplu listede de var (panel → Check-in); buradaki kopya
+     * kararın verildiği yerde duruyor: terapist eğriye bakarken "bu dönem
+     * durduralım" diyor, ayrı bir ekrana gitmek için değil.
+     *
+     * Durdurduğu tek şey cron. Yukarıdaki "Check-in bağlantısı gönder" düğmesi
+     * kapalıyken de çalışır — elden gönderilen bağlantı her zaman geçerli.
+     */
+    public function toggleCheckinAuto(int $id): void
+    {
+        $actor = Auth::requirePermission('checkin.manage');
+        // Görünürlük kararı tek yerde: göremediği kaydın anahtarına dokunamaz.
+        $this->find($id, $actor);
+
+        if (!Schema::checkinDeliveryReady()) {
+            flash('error', 'Gönderim anahtarı için bekleyen bir veritabanı güncellemesi var. '
+                . 'Sistem ekranından uygulayın.');
+            redirect("/danisanlar/{$id}");
+        }
+
+        $on = post('acik') === '1';
+        Checkins::setAuto($id, $on);
+        Audit::log($on ? 'checkin.auto_on' : 'checkin.auto_off', 'client', $id);
+
+        flash('success', $on
+            ? 'Haftalık check-in e-postası açıldı.'
+            : 'Haftalık check-in e-postası kapatıldı. Bağlantıyı elle göndermeye devam edebilirsiniz.');
 
         redirect("/danisanlar/{$id}");
     }

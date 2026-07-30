@@ -6,12 +6,19 @@ declare(strict_types=1);
  *
  *   0 9 * * 1  /usr/local/bin/php /home/<kullanıcı>/public_html/panel/cron/checkins.php
  *
- * Kime gider: döngüsü BAŞLATILMIŞ görüşmecilere. Kayıt olması yetmez; terapistin
- * görüşmeci sayfasından bir kez "Check-in bağlantısı gönder" demesi gerekir.
- * Neden böyle: "aktif tüm görüşmeciler" desek, cron kurulduğu an merkezin bütün
- * listesine e-posta çıkardı. Pilot üç-dört kişiyle yürüyor ve kime gittiğine
- * terapist karar veriyor; ayrıca bir "check-in açık" alanı eklemeye gerek yok,
- * ilk bağlantının kendisi kaydın ta kendisi.
+ * Kime gider: döngüsü BAŞLATILMIŞ ve haftalık gönderimi AÇIK görüşmecilere.
+ * Kayıt olması yetmez; terapistin görüşmeci sayfasından bir kez "Check-in
+ * bağlantısı gönder" demesi gerekir. Neden böyle: "aktif tüm görüşmeciler"
+ * desek, cron kurulduğu an merkezin bütün listesine e-posta çıkardı.
+ *
+ * İlk bağlantı döngüyü başlatır, clients.checkin_auto ise onu durdurup yeniden
+ * açar (panel → Check-in → gönderim listesi, ya da görüşmeci sayfasındaki
+ * anahtar). İkisi ayrı sorular: "bu kişiyle check-in yapıyor muyuz" ve "bu
+ * dönem haftalık e-posta çıksın mı".
+ *
+ * Kimin sırada olduğunu bu dosya KENDİ hesaplamıyor: kural Checkins::due()
+ * içinde ve panelin gönderim listesi de aynı yerden okuyor. İki kopya
+ * olsaydı ekran "sırada" derken cron susabilir ve kimse fark etmezdi.
  *
  * Günde bir çalıştırılsa da güvenlidir: aynı hafta doldurmuş ya da son altı gün
  * içinde bağlantı almış kimseye ikinci ileti gitmez.
@@ -38,12 +45,6 @@ use Panel\Notifications;
 use Panel\Schema;
 use Panel\Settings;
 
-/** Aynı kişiye bu kadar gün geçmeden ikinci bağlantı gitmez. */
-const MIN_DAYS_BETWEEN = 6;
-
-/** Son dolan check-in'den beri bu kadar cevapsız bağlantıdan sonra susulur. */
-const MAX_UNANSWERED = 3;
-
 $startedAt = date('Y-m-d H:i:s');
 
 if (!Schema::checkinsReady()) {
@@ -57,31 +58,14 @@ if (Settings::get('checkins_enabled', '1') !== '1') {
     exit(0);
 }
 
-$due = Db::all(
-    'SELECT c.id, c.full_name, c.email
-       FROM clients c
-      WHERE c.status = \'active\'
-        AND c.email IS NOT NULL AND c.email <> \'\'
-        -- Döngü başlatılmış: terapist en az bir kez bağlantı göndermiş.
-        AND EXISTS (SELECT 1 FROM checkin_requests r WHERE r.client_id = c.id)
-        -- Bu hafta zaten doldurmuş.
-        AND NOT EXISTS (SELECT 1 FROM checkins k
-                         WHERE k.client_id = c.id
-                           AND YEARWEEK(k.created_at, 1) = YEARWEEK(NOW(), 1))
-        -- Son günlerde bağlantı almış (cron günde bir koşsa da tekrar gitmesin).
-        AND NOT EXISTS (SELECT 1 FROM checkin_requests r2
-                         WHERE r2.client_id = c.id
-                           AND r2.created_at > DATE_SUB(NOW(), INTERVAL ? DAY))
-        -- Üst üste cevapsız kalan bağlantı sayısı sınırın altında.
-        AND (SELECT COUNT(*) FROM checkin_requests r3
-              WHERE r3.client_id = c.id
-                AND r3.completed_at IS NULL
-                AND r3.created_at > COALESCE(
-                      (SELECT MAX(k2.created_at) FROM checkins k2 WHERE k2.client_id = c.id),
-                      \'1000-01-01 00:00:00\')) < ?
-   ORDER BY c.full_name',
-    [MIN_DAYS_BETWEEN, MAX_UNANSWERED]
-);
+$due = Checkins::due();
+
+// Kapalı olanlar sayılıyor ama listelenmiyor: özet cron e-postasında okunuyor ve
+// "3 gönderildi" satırının yanında "2 kapalı" görmek, gönderimin azalmasının
+// arıza mı yoksa verilmiş bir karar mı olduğunu tek bakışta söylüyor.
+$off = Schema::checkinDeliveryReady()
+    ? (int) Db::value('SELECT COUNT(*) FROM clients WHERE status = \'active\' AND checkin_auto = 0')
+    : 0;
 
 $sent   = 0;
 $failed = 0;
@@ -101,7 +85,8 @@ foreach ($due as $row) {
     }
 }
 
-$summary = sprintf('%d gönderildi, %d başarısız, %d aday', $sent, $failed, count($due));
+$summary = sprintf('%d gönderildi, %d başarısız, %d aday', $sent, $failed, count($due))
+    . ($off > 0 ? sprintf(', %d kapalı', $off) : '');
 
 Settings::set('checkin_last_run', $startedAt);
 Settings::set('checkin_last_result', $summary);

@@ -39,6 +39,7 @@ aksi hâlde `npm run build` onları `_site/panel/` içine kopyalar ve yayına ç
 | KVKK metnini düzenle | ✔ | ✔ | — | — |
 | **Seans notu okuma/yazma** | **—** | **—** | **yalnız kendi yazdığı** | — |
 | **Check-in eğrisi / bağlantı gönderme** | **—** | **—** | **kendi görüşmecileri** | — |
+| Check-in soruları + haftalık gönderim listesi | ✔ | ✔ | kendi görüşmecileri | — |
 | Sistem kayıtları (audit log) | ✔ | — | — | — |
 | Kendi profili | ✔ | ✔ | ✔ | ✔ |
 
@@ -402,7 +403,8 @@ söylemez.
 Görüşmeci sayfasında, idari alanların **önünde**: terapist o sayfayı "iki seans arasında
 ne oldu?" sorusuyla açıyor. Yetki `checkin.view.own` ile yalnız terapistte — `note.*` ile
 aynı gerekçe; yöneticide bilinçli olarak yok. Hangi görüşmecinin görülebildiği zaten
-`ClientScope` ile sınırlı.
+`ClientScope` ile sınırlı. (Sorunun metni ve haftalık gönderim listesi ayrı bir yetkidir
+ve yöneticide de vardır — aşağıya bakın.)
 
 Üç ölçü **üç ayrı satıra** çiziliyor, tek eksene çakıştırılmıyor: kaygıda yukarı kötüdür,
 diğer ikisinde iyidir; üst üste çizilen üç eğride yükselen çizginin ne anlama geldiği
@@ -411,6 +413,38 @@ okunmaz olurdu. Satırlar aynı zaman eksenini ve aynı 1–10 ölçeğini payla
 inline SVG; sabit ölçekli, dar ekranda kutu kendi içinde kayıyor (takvimdeki çözüm).
 Altındaki tabloda bütün sayılar ve cümleler duruyor — eğrinin okunamadığı her durum için.
 
+### Sorular ve gönderim listesi (panel → Check-in)
+
+`/check-in-sorulari` — tek ekranda iki soru: bağlantıda **ne** soruluyor ve haftalık
+e-posta **kime** gidiyor.
+
+Yetki `checkin.manage` ve bu, eğriyi okuma yetkisinden (`checkin.view.own`) ayrıdır:
+**cevap sağlık verisidir, soru değil.** Sorunun metni ile e-postanın kime çıktığı merkezin
+işleyişine dair kararlar, bu yüzden yöneticide de var. Ekranda hiçbir puan, hiçbir cümle
+görünmez — yalnız ad, adres ve gönderim durumu. Liste yine `ClientScope` ile sınırlı:
+terapist kendi görüşmecilerini, yönetici hepsini görür.
+
+**Sorular.** Üç sorunun metni `settings` tablosunda (`checkin_question_*`); koddaki
+varsayılan (`Checkins::QUESTIONS`) yerinde durur ve boşaltılan alan ona geri döner —
+varsayılan ileride değişirse o soru eski kopyasında donup kalmaz. Değişen yalnız cümle:
+alan adları ve dolayısıyla **ölçeğin yönü sabit**. `anxiety` ters ölçeklidir (yüksek değer
+kötü); cümleyi ters çeviren bir düzenleme veriyi sessizce bozardı, bu yüzden düzenleme
+ekranı her sorunun altında yönünü ayrıca yazar. Değişiklik yalnız bundan sonra üretilen
+bağlantılarda görünür, geçmiş cevaplar aynı ölçekte kalır.
+
+**Gönderim listesi.** Her aktif görüşmeci için tek bir işaret (`clients.checkin_auto`,
+varsayılan açık) ve durumunun açıklaması: *sırada, bu hafta doldu, bağlantı bekliyor,
+susuldu, başlamadı, e-posta yok, kapalı*. "Sırada" kararını ekran ikinci kez
+hesaplamıyor — cron ne gönderecekse onu gösteriyor (`Checkins::due()`), geri kalan
+durumlar bunun açıklaması.
+
+İşaretin kapattığı tek şey **cron**: takibi kapatmaz, kaydı arşivlemez, geçmişi gizlemez
+ve terapistin elle gönderdiği bağlantı kapalıyken de çalışır. Öncesinde gönderimi
+durdurmanın tek yolu kaydı arşivlemekti; "bu dönem doldurmayalım" diyen bir aile için
+fazla ağır bir işlemdi. Aynı anahtar görüşmeci sayfasındaki check-in bölümünde de var —
+karar çoğunlukla eğriye bakarken veriliyor. Açma/kapama denetim kaydına yazılır
+(`checkin.auto_on` / `checkin.auto_off`).
+
 ### Hatırlatmalar (cron)
 
 ```
@@ -418,11 +452,18 @@ cPanel → Cron Jobs → Pazartesi 09:00 (0 9 * * 1)
 /usr/local/bin/php /home/<kullanıcı>/public_html/panel/cron/checkins.php
 ```
 
-Kime gider: **döngüsü başlatılmış** görüşmecilere. Kayıt olması yetmez, terapistin
-görüşmeci sayfasından bir kez "Check-in bağlantısı gönder" demesi gerekir. "Aktif tüm
-görüşmeciler" denseydi cron kurulduğu an merkezin bütün listesine e-posta çıkardı;
-pilot üç-dört kişiyle yürüyor ve kime gittiğine terapist karar veriyor. Ayrı bir
-"check-in açık" alanına da gerek kalmıyor — ilk bağlantı kaydın ta kendisi.
+Kime gider: **döngüsü başlatılmış ve gönderimi açık** görüşmecilere. Kayıt olması yetmez,
+terapistin görüşmeci sayfasından bir kez "Check-in bağlantısı gönder" demesi gerekir.
+"Aktif tüm görüşmeciler" denseydi cron kurulduğu an merkezin bütün listesine e-posta
+çıkardı; pilot üç-dört kişiyle yürüyor ve kime gittiğine terapist karar veriyor. İlk
+bağlantı döngüyü **başlatır**, `clients.checkin_auto` ise onu durdurup yeniden açar —
+ikisi ayrı sorular: "bu kişiyle check-in yapıyor muyuz" ve "bu dönem haftalık e-posta
+çıksın mı".
+
+Kimin sırada olduğunu cron kendi hesaplamıyor: kural `Checkins::due()` içinde ve panelin
+gönderim listesi de aynı yerden okuyor. İki kopya olsaydı ekran "sırada" derken cron
+susabilir ve kimse fark etmezdi. Koşu özetinde kapalı görüşmeci sayısı da yazıyor —
+gönderimin azalması arıza mı, verilmiş bir karar mı, tek bakışta ayrılsın diye.
 
 Günde bir çalıştırılsa da güvenli: aynı hafta doldurmuş ya da son altı gün içinde
 bağlantı almış kimseye ikinci ileti gitmez. **Israr etmez:** son dolan check-in'den beri

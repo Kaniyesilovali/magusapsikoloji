@@ -15,6 +15,11 @@ $groups = [
         ['path' => '/',            'label' => 'Bugün',        'icon' => 'bugun',        'permissions' => ['dashboard.view']],
         ['path' => '/randevular',  'label' => 'Randevular',   'icon' => 'randevular',   'permissions' => ['appointment.view.all', 'appointment.view.own']],
         ['path' => '/danisanlar',  'label' => 'Görüşmeciler', 'icon' => 'gorusmeciler', 'permissions' => ['client.view.all', 'client.view.own']],
+        // Check-in menüde kendi satırı: soru metnini ve haftalık e-postanın
+        // kime çıktığını yönetici de düzenliyor (bkz. Rbac → checkin.manage) ve
+        // yönetici bir görüşmeci sayfasındaki check-in bölümünü hiç görmüyor —
+        // oradan girilen bir bağlantı olarak kalsaydı, ekran ona kapalıydı.
+        ['path' => '/check-in-sorulari', 'label' => 'Check-in', 'icon' => 'checkin', 'permissions' => ['checkin.manage']],
         ['path' => '/musaitlik',   'label' => 'Müsaitlik',    'icon' => 'musaitlik',    'permissions' => ['availability.manage.all', 'availability.manage.own']],
         ['path' => '/odemeler',    'label' => 'Ödemeler',     'icon' => 'odemeler',     'permissions' => ['payment.view.all', 'payment.view.own']],
         ['path' => '/raporlar',    'label' => 'Raporlar',     'icon' => 'raporlar',     'permissions' => ['payment.view.all']],

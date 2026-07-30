@@ -256,6 +256,181 @@ final class Checkins
         );
     }
 
+    // ── Haftalık gönderim: kime gidiyor ─────────────────────────
+    //
+    // "Bu hafta kime e-posta çıkacak?" sorusunun tek cevabı bu bölüm. Cron da
+    // (cron/checkins.php) panelin gönderim listesi de buradan okuyor: kural iki
+    // yerde yazılsaydı ekran "sırada" derken cron susabilir ve fark edilmezdi.
+    //
+    // Anahtarın kendisi görüşmecinin satırında (clients.checkin_auto), ayrı bir
+    // tabloda değil: tek bir evet/hayır ve kaydın ömrü boyunca en çok birkaç kez
+    // değişiyor; geçmişini tutmak için tablo açmak, sorulmayan bir soruya cevap
+    // saklamak olurdu. Kim ne zaman değiştirdi denetim kaydında duruyor.
+
+    /** Aynı kişiye bu kadar gün geçmeden ikinci bağlantı gitmez. */
+    public const MIN_DAYS_BETWEEN = 6;
+
+    /** Son dolan check-in'den beri bu kadar cevapsız bağlantıdan sonra susulur. */
+    public const MAX_UNANSWERED = 3;
+
+    /**
+     * Bu görüşmeciye haftalık e-posta çıkıyor mu?
+     *
+     * Sütun yoksa (göç uygulanmadıysa) "açık": panelin bugünkü davranışı bu ve
+     * deploy ile göç arasındaki boşlukta gönderim kendiliğinden durmamalı.
+     */
+    public static function autoEnabled(array $client): bool
+    {
+        return !array_key_exists('checkin_auto', $client) || (int) $client['checkin_auto'] === 1;
+    }
+
+    /** @return bool Yazılabildi mi (göç uygulanmamışsa false). */
+    public static function setAuto(int $clientId, bool $on): bool
+    {
+        if (!Schema::checkinDeliveryReady()) {
+            return false;
+        }
+
+        Db::run('UPDATE clients SET checkin_auto = ?, updated_at = NOW() WHERE id = ?', [$on ? 1 : 0, $clientId]);
+
+        return true;
+    }
+
+    /**
+     * Cron şu an koşsa bağlantı gönderilecek görüşmeciler.
+     *
+     * Sıralama ve alanlar cron'un ihtiyacına göre: ad, e-posta, id.
+     *
+     * @return list<array<string,mixed>>
+     */
+    public static function due(): array
+    {
+        // Anahtar yokken koşul da yok: göç uygulanmamış panelde herkes açık.
+        $auto = Schema::checkinDeliveryReady() ? ' AND c.checkin_auto = 1' : '';
+
+        return Db::all(
+            'SELECT c.id, c.full_name, c.email
+               FROM clients c
+              WHERE c.status = \'active\'
+                AND c.email IS NOT NULL AND c.email <> \'\'' . $auto . '
+                -- Döngü başlatılmış: terapist en az bir kez bağlantı göndermiş.
+                AND EXISTS (SELECT 1 FROM checkin_requests r WHERE r.client_id = c.id)
+                -- Bu hafta zaten doldurmuş.
+                AND NOT EXISTS (SELECT 1 FROM checkins k
+                                 WHERE k.client_id = c.id
+                                   AND YEARWEEK(k.created_at, 1) = YEARWEEK(NOW(), 1))
+                -- Son günlerde bağlantı almış (cron günde bir koşsa da tekrar gitmesin).
+                AND NOT EXISTS (SELECT 1 FROM checkin_requests r2
+                                 WHERE r2.client_id = c.id
+                                   AND r2.created_at > DATE_SUB(NOW(), INTERVAL ? DAY))
+                -- Üst üste cevapsız kalan bağlantı sayısı sınırın altında.
+                AND (SELECT COUNT(*) FROM checkin_requests r3
+                      WHERE r3.client_id = c.id
+                        AND r3.completed_at IS NULL
+                        AND r3.created_at > COALESCE(
+                              (SELECT MAX(k2.created_at) FROM checkins k2 WHERE k2.client_id = c.id),
+                              \'1000-01-01 00:00:00\')) < ?
+           ORDER BY c.full_name',
+            [self::MIN_DAYS_BETWEEN, self::MAX_UNANSWERED]
+        );
+    }
+
+    /**
+     * Panelin gönderim listesi: aktif görüşmeciler, anahtarları ve neden
+     * gidip gitmediği.
+     *
+     * Görünürlük ClientScope ile sınırlı — terapist kendi görüşmecilerini,
+     * yönetici hepsini görür. Listede PUAN YOK: bu ekran yöneticiye de açık ve
+     * cevaplar klinik veri (bkz. Rbac → checkin.manage).
+     *
+     * @return list<array<string,mixed>>
+     */
+    public static function roster(array $actor): array
+    {
+        [$scope, $params] = ClientScope::filter($actor);
+
+        $auto = Schema::checkinDeliveryReady() ? 'c.checkin_auto' : '1';
+
+        $rows = Db::all(
+            "SELECT c.id, c.full_name, c.email, {$auto} AS checkin_auto,
+                    (SELECT COUNT(*) FROM checkin_requests r WHERE r.client_id = c.id) AS request_count,
+                    (SELECT MAX(r2.created_at) FROM checkin_requests r2 WHERE r2.client_id = c.id) AS last_request_at,
+                    (SELECT MAX(k.created_at) FROM checkins k WHERE k.client_id = c.id) AS last_checkin_at,
+                    (SELECT COUNT(*) FROM checkins k2
+                      WHERE k2.client_id = c.id
+                        AND YEARWEEK(k2.created_at, 1) = YEARWEEK(NOW(), 1)) AS filled_this_week,
+                    (SELECT COUNT(*) FROM checkin_requests r3
+                      WHERE r3.client_id = c.id
+                        AND r3.completed_at IS NULL
+                        AND r3.created_at > COALESCE(
+                              (SELECT MAX(k3.created_at) FROM checkins k3 WHERE k3.client_id = c.id),
+                              '1000-01-01 00:00:00')) AS unanswered
+               FROM clients c
+              WHERE c.status = 'active' AND {$scope}
+           ORDER BY c.full_name",
+            $params
+        );
+
+        // "Sırada" kararını listeye ikinci kez hesaplatmıyoruz: cron ne
+        // gönderecekse o. Geri kalan durumlar yalnız bunun AÇIKLAMASI.
+        $dueIds = array_map(static fn (array $row): int => (int) $row['id'], self::due());
+
+        foreach ($rows as $index => $row) {
+            $rows[$index]['auto']  = self::autoEnabled($row);
+            $rows[$index]['state'] = self::deliveryState($row, in_array((int) $row['id'], $dueIds, true));
+        }
+
+        return $rows;
+    }
+
+    /**
+     * Bir satırın gönderim durumu — sırası önemli: önce insanın verdiği karar
+     * (anahtar), sonra kaydın eksiği, sonra döngünün kendi ritmi.
+     *
+     * @param  array<string,mixed> $row  roster() satırı
+     * @param  bool $due                 cron şu an koşsa bu kişiye gider mi
+     * @return array{key:string, label:string, tone:string, detail:string}
+     */
+    public static function deliveryState(array $row, bool $due): array
+    {
+        $state = static fn (string $key, string $label, string $tone, string $detail): array
+            => ['key' => $key, 'label' => $label, 'tone' => $tone, 'detail' => $detail];
+
+        if (!self::autoEnabled($row)) {
+            return $state('kapali', 'Kapalı', 'stop',
+                'Haftalık e-posta gitmiyor. Terapist görüşmeci sayfasından elle bağlantı gönderebilir.');
+        }
+        if (trim((string) ($row['email'] ?? '')) === '') {
+            return $state('eposta_yok', 'E-posta yok', 'stop',
+                'Kayıtta adres yok — bağlantı üretilebilir ama elden iletilmesi gerekir.');
+        }
+        if ((int) $row['request_count'] === 0) {
+            return $state('baslamadi', 'Başlamadı', 'neutral',
+                'Döngü henüz başlamadı. İlk bağlantıyı terapist görüşmeci sayfasından gönderir; cron sonrasını sürdürür.');
+        }
+        if ((int) $row['unanswered'] >= self::MAX_UNANSWERED) {
+            return $state('susuldu', 'Susuldu', 'stop',
+                'Üst üste ' . (int) $row['unanswered'] . ' bağlantı cevapsız kaldı; ısrar edilmiyor. '
+                . 'Elle gönderilen bir bağlantı doldurulunca gönderim kendiliğinden sürer.');
+        }
+        if ($due) {
+            return $state('sirada', 'Sırada', 'go',
+                'Cron bu koşuda bu kişiye bağlantı gönderir.');
+        }
+        if ((int) $row['filled_this_week'] > 0) {
+            return $state('dolduruldu', 'Bu hafta doldu', 'done',
+                'Bu haftanın check-in\'i kaydedildi; ikinci ileti çıkmaz.');
+        }
+        if ($row['last_request_at'] !== null
+            && strtotime((string) $row['last_request_at']) > time() - self::MIN_DAYS_BETWEEN * 86400) {
+            return $state('bekliyor', 'Bağlantı bekliyor', 'done',
+                'Son ' . self::MIN_DAYS_BETWEEN . ' gün içinde bağlantı gönderildi, henüz doldurulmadı.');
+        }
+
+        return $state('acik', 'Açık', 'neutral',
+            'Gönderim açık; sıradaki cron koşusunda değerlendirilir.');
+    }
+
     // ── Eğrinin geometrisi ──────────────────────────────────────
     //
     // Üç ölçü tek eksene çakıştırılmıyor, üç ayrı satıra çiziliyor: ruh hali ve

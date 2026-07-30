@@ -70,6 +70,34 @@ PHQ-9 / GAD-7 gibi standart ölçekler ilk sürümde YOK — pilot tutarsa gelir
 - [x] Israr etmiyor: son dolan check-in'den beri 3 bağlantı cevapsızsa cron susuyor
 - [ ] Cron'u cPanel'e ekle (`0 9 * * 1`) ← **sunucuda yapılacak**
 
+### Faz 4b — Soruları ve gönderimi panelden yönetmek · ~0.5 gün
+
+Pilot açılınca iki soru sahadan geldi: cümleyi kim yazıyor, ve "bu dönem bize
+e-posta gelmesin" diyen aileye ne yapılıyor. İkincisinin o ana kadarki tek cevabı
+kaydı arşivlemekti — takibi bitiren, geçmişi kapatan fazla ağır bir işlem.
+
+- [x] `Rbac.php` matrisine `checkin.manage` — soru metni ve gönderim listesi;
+      eğriyi okuma yetkisinden (`checkin.view.own`) **ayrı** ve yöneticide de var.
+      Ayrımın yeri: cevap sağlık verisidir, soru değil. Ekranda hiçbir puan ya da
+      cümle görünmüyor, yalnız ad, adres ve gönderim durumu.
+- [x] Menüde kendi satırı (`/check-in-sorulari`) — yönetici bir görüşmeci
+      sayfasındaki check-in bölümünü hiç görmüyor; oradan girilen bir bağlantı
+      olarak kalsaydı ekran ona kapalıydı.
+- [x] `panel/migrations/007_checkin_dagitim.sql` — `clients.checkin_auto`
+      (varsayılan 1: göç uygulandığında bugün e-posta alan herkes almaya devam eder)
+- [x] Gönderim listesi: aktif görüşmeciler, tek işaret ve durumun açıklaması
+      (*sırada · bu hafta doldu · bağlantı bekliyor · susuldu · başlamadı ·
+      e-posta yok · kapalı*). Liste `ClientScope` ile sınırlı.
+- [x] Aynı anahtarın tekil hâli görüşmeci sayfasında — karar çoğunlukla eğriye
+      bakarken veriliyor.
+- [x] "Sırada" kararı tek yerde (`Checkins::due()`): cron da liste de aynı
+      sorguyu okuyor. İki kopya olsaydı ekran "sırada" derken cron susabilir
+      ve kimse fark etmezdi.
+- [x] Anahtarın kapattığı tek şey cron: elle gönderilen bağlantı kapalıyken de
+      çalışıyor, geçmiş olduğu gibi duruyor. Açma/kapama denetim kaydında
+      (`checkin.auto_on` / `checkin.auto_off`).
+- [ ] `/sistem`'den 007'yi uygula ← **sunucuda yapılacak**
+
 ### Faz 5 — Pilot · ~2–3 hafta (gerçek zaman, az kod)
 - [ ] 3–4 gerçek danışanda çalıştır (görüşmeci sayfasındaki düğme döngüyü başlatır)
 - [ ] Tek ölçülen sayı: doldurma oranı — **Sistem** ekranında gönderilen/doldurulan

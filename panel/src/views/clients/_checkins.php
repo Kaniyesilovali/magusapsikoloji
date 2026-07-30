@@ -3,6 +3,7 @@ use Panel\Checkins;
 use Panel\Csrf;
 /** @var array $client @var list<array> $checkins @var int $checkinTotal */
 /** @var ?array $checkinPending @var ?array $checkinLink @var array $ecosystem */
+/** @var bool $checkinAuto @var bool $checkinSwitchable */
 
 // Seanslar arası check-in — terapistin gördüğü yüz.
 //
@@ -22,7 +23,7 @@ $latest   = $checkins === [] ? null : $checkins[count($checkins) - 1];
       <h2 class="sheet-title">Seanslar arası check-in</h2>
       <p class="text-xs text-ink-light mt-1">
         Haftada bir, üç soru, giriş gerektirmeyen bir bağlantıyla.
-        <a href="<?= e(url('/check-in-sorulari')) ?>" class="btn-text btn-text-quiet">Soruları düzenle</a>
+        <a href="<?= e(url('/check-in-sorulari')) ?>" class="btn-text btn-text-quiet">Sorular ve gönderim</a>
         <a href="<?= e(url('/danisanlar/' . (int) $client['id'] . '/alanlar')) ?>" class="btn-text btn-text-quiet">Sorulan alanlar</a>
       </p>
     </div>
@@ -189,6 +190,48 @@ $latest   = $checkins === [] ? null : $checkins[count($checkins) - 1];
           Bağlantı <?= e((string) $client['email']) ?> adresine gider ve burada da gösterilir.
         <?php endif; ?>
       </p>
+
+      <?php // ── Haftalık gönderim anahtarı ────────────────────────────────
+            // Yukarıdaki düğme döngüyü BAŞLATIR, bu anahtar haftalık cron'u
+            // durdurup yeniden açar. Kapalıyken düğme çalışmaya devam eder:
+            // "bu dönem e-posta çıkmasın" demek, "artık check-in yapmıyoruz"
+            // demek değil — ikisini tek düğmeye bindirmek, e-postayı durdurmak
+            // isteyen terapiste kaydı arşivletirdi.
+            //
+            // Aynı anahtarın toplu hâli panel → Check-in ekranında. ?>
+      <div class="mt-4 pt-3 border-t border-warm-secondary">
+        <?php if ($checkinSwitchable): ?>
+          <form method="post" action="<?= e(url("/danisanlar/{$client['id']}/check-in-gonderim")) ?>"
+                class="flex items-baseline gap-2 flex-wrap">
+            <?= Csrf::field() ?>
+            <input type="hidden" name="acik" value="<?= $checkinAuto ? '0' : '1' ?>">
+            <span class="text-xs text-ink-muted">
+              Haftalık e-posta:
+              <strong class="text-ink"><?= $checkinAuto ? 'açık' : 'kapalı' ?></strong>
+            </span>
+            <button class="btn btn-quiet btn-sm">
+              <?= $checkinAuto ? 'Haftalık gönderimi durdur' : 'Haftalık gönderimi aç' ?>
+            </button>
+          </form>
+          <p class="field-hint">
+            <?php if ($client['email'] === null): ?>
+              Kayıtta e-posta adresi yok; anahtar açık olsa da haftalık ileti
+              çıkmaz. Bağlantıyı yukarıdan üretip elden iletebilirsiniz.
+            <?php elseif ($checkinAuto): ?>
+              Cron her hafta bağlantı yolluyor. Durdurulursa yalnız e-posta
+              kesilir; buradan elle bağlantı göndermeye devam edebilirsiniz.
+            <?php else: ?>
+              Cron bu görüşmeciye bağlantı yollamıyor. Yukarıdaki düğme yine
+              çalışır — elle gönderilen bağlantı geçerlidir.
+            <?php endif; ?>
+          </p>
+        <?php else: ?>
+          <p class="field-hint">
+            Haftalık gönderim anahtarı için bekleyen bir veritabanı güncellemesi
+            var; şu an gönderim açık sayılıyor.
+          </p>
+        <?php endif; ?>
+      </div>
     <?php else: ?>
       <p class="text-xs text-ink-light">Arşivlenmiş kayıt — yeni check-in gönderilmez.</p>
     <?php endif; ?>

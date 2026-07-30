@@ -110,22 +110,75 @@ final class CheckinController
         View::render('checkins/done', ['title' => 'Teşekkürler'], 'checkin_layout');
     }
 
-    // ── Soru metinleri (panel içi, giriş gerektirir) ─────────────
+    // ── Sorular ve gönderim (panel içi, giriş gerektirir) ────────
     //
-    // Yetki `checkin.view.own`: soruyu soran da, cevabın eğrisini okuyan da
-    // terapist. Yöneticide bilinçli olarak yok — check-in'in tamamı gibi bu da
-    // klinik yüzeyin parçası, idari ayar değil.
+    // Yetki `checkin.manage` ve bu, eğriyi okuma yetkisinden (checkin.view.own)
+    // ayrıdır: cevap sağlık verisidir, soru değil. Sorunun metni ile haftalık
+    // e-postanın kime çıktığı merkezin işleyişine dair kararlar, bu yüzden
+    // yöneticide de var. Bu ekranda hiçbir puan, hiçbir cümle görünmez —
+    // yalnız ad, adres ve gönderim durumu.
 
     public function questions(): void
     {
-        Auth::requirePermission('checkin.view.own');
+        $actor = Auth::requirePermission('checkin.manage');
+
+        // Göç uygulanmadan gönderim listesi çizilmez: liste checkin_requests
+        // tablosunu okuyor ve olmayan tabloya sorulan soru ekranı çökertirdi.
+        $ready = Schema::checkinsReady();
 
         View::render('checkins/questions', [
-            'title'     => 'Check-in soruları',
-            'questions' => Checkins::questions(),
-            'defaults'  => Checkins::QUESTIONS,
-            'measures'  => Checkins::MEASURES,
+            'title'      => 'Haftalık check-in',
+            'questions'  => Checkins::questions(),
+            'defaults'   => Checkins::QUESTIONS,
+            'measures'   => Checkins::MEASURES,
+            'ready'      => $ready,
+            // Anahtar yalnız sütun varsa çevrilebilir; yoksa liste bilgi
+            // amaçlı çizilir ve neyin eksik olduğunu söyler.
+            'switchable' => Schema::checkinDeliveryReady(),
+            'roster'     => $ready ? Checkins::roster($actor) : [],
         ]);
+    }
+
+    /**
+     * Haftalık e-posta kimlere gidecek.
+     *
+     * İşaretlenmemiş her satır kapatılır — ama YALNIZ bu kullanıcının gördüğü
+     * satırlar. Liste ClientScope ile sınırlı olduğu için terapistin kaydettiği
+     * form, görmediği bir görüşmecinin anahtarını sessizce kapatamaz.
+     */
+    public function saveRecipients(): void
+    {
+        $actor = Auth::requirePermission('checkin.manage');
+
+        if (!Schema::checkinDeliveryReady()) {
+            flash('error', 'Gönderim anahtarı için bekleyen bir veritabanı güncellemesi var. '
+                . 'Sistem ekranından uygulanınca bu liste kaydedilebilir.');
+            redirect('/check-in-sorulari');
+        }
+
+        $wanted  = array_map('intval', array_keys((array) ($_POST['alici'] ?? [])));
+        $changed = 0;
+
+        foreach (Checkins::roster($actor) as $row) {
+            $on = in_array((int) $row['id'], $wanted, true);
+            if ($on === (bool) $row['auto']) {
+                continue;
+            }
+
+            Checkins::setAuto((int) $row['id'], $on);
+            // Bir kişiye e-posta gitmesinin durdurulması sonradan "neden
+            // doldurmuyor?" diye sorulduğunda ilk bakılacak yer; izi kalmalı.
+            Audit::log($on ? 'checkin.auto_on' : 'checkin.auto_off', 'client', (int) $row['id']);
+            $changed++;
+        }
+
+        flash(
+            'success',
+            $changed === 0
+                ? 'Gönderim listesinde değişiklik yok.'
+                : $changed . ' görüşmecide haftalık gönderim güncellendi.'
+        );
+        redirect('/check-in-sorulari');
     }
 
     /**
@@ -179,7 +232,7 @@ final class CheckinController
 
     public function saveQuestions(): void
     {
-        $actor = Auth::requirePermission('checkin.view.own');
+        $actor = Auth::requirePermission('checkin.manage');
 
         $input = [];
         foreach (array_keys(Checkins::QUESTIONS) as $field) {

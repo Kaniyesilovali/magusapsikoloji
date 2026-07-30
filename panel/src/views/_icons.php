@@ -54,6 +54,14 @@ return [
         <line x1="8" y1="12.4" x2="8" y2="5.6"/>
         <line x1="12.4" y1="12.4" x2="12.4" y2="7.6"/>',
 
+    // Check-in: ekranın kendisinde çizilen şey — noktalı bir eğri (.ci-line +
+    // .ci-dot). "Raporlar"ın dik çubuklarıyla karışmıyor, çünkü biri toplamı
+    // biri gidişatı anlatıyor.
+    'checkin' => '
+        <path d="M2.7 11.4L6.2 7.9l3.3 2.1 3.8-5.3"/>
+        <circle class="ic-fill" cx="6.2" cy="7.9" r="1.1"/>
+        <circle class="ic-fill" cx="9.5" cy="10" r="1.1"/>',
+
     // Sitenin sayfası. Çerçeve çizilseydi "Müsaitlik" kutusuyla aynı gövdeyi
     // paylaşırdı; kıvrık köşe onu tek başına ayırıyor.
     'icerik' => '

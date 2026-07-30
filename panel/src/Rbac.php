@@ -34,6 +34,8 @@ final class Rbac
             'availability.manage.all',
             'payment.view.all', 'payment.manage',
             'audit.view', 'settings.manage', 'consent.manage', 'content.manage',
+            // Soru metni ve haftalık gönderim listesi (bkz. checkin.manage).
+            'checkin.manage',
             'profile.self',
         ],
         self::ADMIN => [
@@ -45,6 +47,10 @@ final class Rbac
             'payment.view.all', 'payment.manage',
             // KVKK metni işletme belgesidir, güvenlik ayarı değil: admin de düzenleyebilir.
             'consent.manage', 'content.manage',
+            // Aynı gerekçe check-in'in idari yüzü için de geçerli: sorunun
+            // metni ve haftalık e-postanın kime çıktığı işletme kararıdır,
+            // cevaplar değil (bkz. checkin.manage).
+            'checkin.manage',
             'profile.self',
         ],
         self::THERAPIST => [
@@ -71,6 +77,13 @@ final class Rbac
             // bilinçli olarak yok — note.* ile aynı gerekçe, ölçümler de
             // sağlık verisi ve idari işin parçası değil.
             'checkin.view.own',
+            // checkin.manage bundan AYRI bir yetkidir ve yöneticide de vardır.
+            // Ayrımın yeri şu: cevap sağlık verisidir, soru değil. Sorunun
+            // metni ile haftalık e-postanın kime çıktığı — ikisi de merkezin
+            // dışarıya nasıl göründüğüne dair idari kararlar; hiçbiri tek bir
+            // görüşmecinin ölçümünü açığa vermez. Bu ekranlarda görüşmecinin
+            // adı ve gönderim durumu görünür, puanı ya da cümlesi görünmez.
+            'checkin.manage',
             'profile.self',
         ],
         self::CLIENT => [

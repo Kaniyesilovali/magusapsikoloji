@@ -82,6 +82,18 @@ final class Schema
             && self::hasTable('ecosystem_events');
     }
 
+    /**
+     * Görüşmeci başına haftalık gönderim anahtarı (007_checkin_dagitim) var mı?
+     *
+     * Check-in'in kendisi bu göç olmadan da çalışır: anahtar yokken herkes
+     * "açık" sayılır, yani bugünkü davranış. Ayrı sorulmasının sebebi, göç
+     * uygulanmadan panelde kapatılamayacak bir anahtarı göstermemek.
+     */
+    public static function checkinDeliveryReady(): bool
+    {
+        return self::hasColumn('clients', 'checkin_auto');
+    }
+
     public static function hasTable(string $table): bool
     {
         $key = 'table:' . $table;
