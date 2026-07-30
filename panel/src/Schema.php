@@ -94,6 +94,18 @@ final class Schema
         return self::hasColumn('clients', 'checkin_auto');
     }
 
+    /**
+     * Halkanın metinleri görüşmeciye göre uyarlanabilir mi (008)?
+     *
+     * Uygulanmadan da her şey çalışır: halka koddaki adlarla çizilir, soru
+     * varsayılan cümledir, uyarlama ekranı yalnız neyin eksik olduğunu söyler.
+     */
+    public static function ecosystemTextsReady(): bool
+    {
+        return self::hasColumn('ecosystem_domains', 'label')
+            && self::hasColumn('clients', 'checkin_prompt');
+    }
+
     public static function hasTable(string $table): bool
     {
         $key = 'table:' . $table;

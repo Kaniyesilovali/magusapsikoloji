@@ -835,6 +835,37 @@ bu ikisinin gerçek ailelerde çalıştığı kanıtlandıktan sonra.
 - [ ] Terapistin alan setini açıp kapadığı küçük form
 - [ ] `Rbac` — mevcut `checkin.view.own` yeniden kullanılır, yeni izin yok
 
+### Faz 3b — Halkayı dosyaya uyarlamak · ~0.5 gün
+
+Sözlük ortak dili tutuyor ama tek bir evin dilini tutmuyordu. Üç gerçek durum:
+"Büyükler" bir evde nine ve dede, başka bir evde yalnız "Babaanne" — ebeveyn
+kendi hayatındaki adı görmezse alanı boş geçiyor. Sözlükte karşılığı olmayan
+şeyler ("Dans kursu", "Babanın nöbetleri") için kodda alan açmak her aileye bir
+sürüm demek. Ve ergen dosyasında sorunun kendisi yanlış kişiye sesleniyordu:
+"çocuğunun sırtını" cümlesi formu kendisi dolduran on yedi yaşındakine
+yazılmamıştı.
+
+- [x] `panel/migrations/008_ekosistem_metinleri.sql` — `ecosystem_domains.label`
+      + `.hint` (dosyaya uyarlanmış metin), `clients.checkin_prompt` (o dosyanın
+      sorusu). Hepsi NULL = varsayılan.
+- [x] Sözlük **kodda kalıyor**: tablo yalnız sapmayı tutuyor, böylece ileride
+      düzeltilen bir ipucu uyarlanmamış dosyalarda kendiliğinden görünüyor.
+      Varsayılanla birebir aynı yazılan metin kaydedilmiyor (`saveDomains`).
+- [x] Elle eklenen alanlar: dosya başına en fazla 4 (`Ecosystem::MAX_CUSTOM`,
+      `ozel1…ozel4`). `MAX_OPEN` ortak — dört özel alan açan dosyada sözlükten
+      yedi alan kalır. Adı silmek alanı kaldırır; geçmiş işaretleri şeritte
+      "Elle eklenen alan" başlığıyla durmaya devam eder, veri silinmez.
+- [x] Halkadaki çipin kısa adı uyarlanmış addan türetiliyor (`shorten`) —
+      elle yazılmış kısa ad yalnız sözlük adı aynen duruyorsa kullanılıyor.
+- [x] Şeridin satır başlıkları da dosyanın kendi adlarıyla (`strip` artık
+      görüşmeci kimliğini alıyor): terapist ebeveynin gördüğü kelimeyi görmeli,
+      yoksa iki ekran aynı haftayı iki dille anlatır.
+- [x] Uyarlama ekranı: görüşmeci sayfası → "Sorulan alanlar". Yetki değişmedi
+      (`checkin.view.own`) — bu klinik bir karar, idari ayar değil.
+- [x] Uyarlanmış metin denetim kaydına YAZILMAZ: bir ailenin hayatından bir
+      ayrıntı olabiliyor. Kimin ne zaman değiştirdiği yeter.
+- [ ] `/sistem`'den 008'i uygula ← **sunucuda yapılacak**
+
 ### Faz 4 — Pilot · 6–8 hafta, kod yok
 - [ ] Aynı 3–4 aile + 2 yeni
 - [ ] Ölçülen: ikinci sayfa gönderim oranı (birinci sayfaya göre düşüş) ve

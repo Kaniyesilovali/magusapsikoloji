@@ -32,8 +32,25 @@ final class Ecosystem
      */
     public const MAX_OPEN = 11;
 
-    /** Ebeveyne sorulan tek soru. Form başlığı da, e-posta dili de bundan türer. */
+    /**
+     * Ebeveyne sorulan tek soru — VARSAYILAN. Görüşmeciye göre uyarlanmış hâli
+     * için promptFor(); ergen dosyasında "çocuğunun" yanlış kişiye sesleniyor.
+     */
     public const PROMPT = 'Bu hafta çocuğunun sırtını hangileri itti, hangileri karşıdan esti?';
+
+    /**
+     * Bir dosyaya elle eklenebilecek alan sayısı.
+     *
+     * Dört: sözlükte karşılığı olmayan şeyler ("Dans kursu", "Babanın
+     * nöbetleri") tek tek değerli ama bunlar çoğaldıkça form ortak dilini
+     * kaybediyor ve iki çocuğun şeridi karşılaştırılamaz hâle geliyor. Zaten
+     * MAX_OPEN sınırı ortak: dört özel alan açan bir dosyada sözlükten yalnız
+     * yedi alan kalır.
+     */
+    public const MAX_CUSTOM = 4;
+
+    /** Elle eklenen alanların anahtarları. Sözlükte karşılıkları yok. */
+    public const CUSTOM_KEYS = ['ozel1', 'ozel2', 'ozel3', 'ozel4'];
 
     /** Üç hâlin ebeveyne görünen adları. Kırmızı yok: zorlayan alan kehribar. */
     public const VALENCE_LABELS = [
@@ -208,7 +225,46 @@ final class Ecosystem
     /** Geçerli bir alan anahtarı mı? Form gönderimi bunu tek tek doğrular. */
     public static function known(string $key): bool
     {
-        return isset(self::DOMAINS[$key]);
+        return isset(self::DOMAINS[$key]) || self::isCustom($key);
+    }
+
+    /** Sözlükte olmayan, dosyaya elle eklenmiş alan mı? */
+    public static function isCustom(string $key): bool
+    {
+        return in_array($key, self::CUSTOM_KEYS, true);
+    }
+
+    /**
+     * Halkadaki çipin adı.
+     *
+     * Sözlük alanlarının kısa adı elle yazıldı (72 piksellik çipe "Ekran ve
+     * dijital dünya" sığmıyor); uyarlanmış ve elle eklenmiş adlarda o eli
+     * kimse tutmuyor, bu yüzden ilk kelime alınıp kısaltılıyor. Kısa ad tek
+     * başına anlam taşımak zorunda değil: halkada her çipin altında zaten
+     * çocuğun adı ve bağlam duruyor.
+     */
+    public static function shorten(string $label): string
+    {
+        $label = trim($label);
+        $first = preg_split('/\s+/u', $label, -1, PREG_SPLIT_NO_EMPTY)[0] ?? $label;
+
+        return mb_strlen($first, 'UTF-8') > 9 ? mb_substr($first, 0, 8, 'UTF-8') . '…' : $first;
+    }
+
+    /**
+     * Bu görüşmeciye sorulan cümle.
+     *
+     * Kaydın kendi satırından okunur; boşsa koddaki varsayılan. Ebeveyn
+     * dosyasında "çocuğunun sırtını", ergen dosyasında "senin sırtını" —
+     * ikisini tek cümleye sıkıştıran bir metin ikisine de yabancı gelir.
+     *
+     * @param array<string,mixed>|null $client
+     */
+    public static function promptFor(?array $client): string
+    {
+        $custom = trim((string) ($client['checkin_prompt'] ?? ''));
+
+        return $custom !== '' ? $custom : self::PROMPT;
     }
 
     /** −1 / 0 / +1 dışındaki her değer "sakin" sayılır; form asla hata vermez. */
@@ -248,43 +304,161 @@ final class Ecosystem
      * MAX_OPEN burada uygulanır, kaydetme yolunda değil: veritabanında fazladan
      * satır bulunsa bile ebeveyn hiçbir zaman on birden fazla alan görmez.
      *
+     * Metinler de burada birleşiyor: satırda ad ya da ipucu yazılıysa o, yoksa
+     * sözlükteki karşılığı. Elle eklenmiş alanların (ozel1…) sözlükte karşılığı
+     * yok, bu yüzden adı boş kalmış bir özel satır hiç çizilmez — adsız bir çip
+     * ebeveyne "bunu neye göre işaretleyeyim?" diye sorardı.
+     *
      * @return list<array{key:string,label:string,short:string,hint:string}>
      */
     public static function openFor(int $clientId, ?int $age = null): array
     {
-        $open = array_fill_keys(self::defaultsFor($age), 0);
+        $open  = array_fill_keys(self::defaultsFor($age), 0);
+        $texts = [];
 
-        if (Schema::ecosystemReady()) {
-            $rows = Db::all(
-                'SELECT domain_key, enabled, sort FROM ecosystem_domains WHERE client_id = ? ORDER BY sort, id',
-                [$clientId]
-            );
-            foreach ($rows as $row) {
-                $key = (string) $row['domain_key'];
-                if (!self::known($key)) {
-                    continue;
-                }
-                if ((int) $row['enabled'] === 1) {
-                    $open[$key] = (int) $row['sort'];
-                } else {
-                    unset($open[$key]);
-                }
+        foreach (self::rowsFor($clientId) as $row) {
+            $key = (string) $row['domain_key'];
+            if (!self::known($key)) {
+                continue;
             }
+            if ((int) $row['enabled'] === 1) {
+                $open[$key] = (int) $row['sort'];
+            } else {
+                unset($open[$key]);
+            }
+            $texts[$key] = $row;
         }
 
         asort($open);
 
         $domains = [];
         foreach (array_slice(array_keys($open), 0, self::MAX_OPEN) as $key) {
+            $label = trim((string) ($texts[$key]['label'] ?? ''));
+            $hint  = trim((string) ($texts[$key]['hint'] ?? ''));
+
+            if ($label === '') {
+                if (self::isCustom($key)) {
+                    continue;   // adı silinmiş özel alan — çizilecek bir şey yok
+                }
+                $label = self::label($key, $age);
+            }
+            if ($hint === '') {
+                $hint = self::DOMAINS[$key]['hint'] ?? '';
+            }
+
             $domains[] = [
                 'key'   => $key,
-                'label' => self::label($key, $age),
-                'short' => self::DOMAINS[$key]['short'],
-                'hint'  => self::DOMAINS[$key]['hint'],
+                'label' => $label,
+                // Kısa ad yalnız sözlükteki ad AYNEN duruyorsa elle yazılmış
+                // hâlinden gelir; uyarlanmış adın kısası da uyarlanmış olmalı.
+                'short' => $label === (self::DOMAINS[$key]['label'] ?? null)
+                    ? self::DOMAINS[$key]['short']
+                    : self::shorten($label),
+                'hint'  => $hint,
             ];
         }
 
         return $domains;
+    }
+
+    /**
+     * Bir dosyanın `ecosystem_domains` satırları — metin sütunları varsa
+     * onlarla birlikte.
+     *
+     * Göç uygulanmadan da çalışması gerekiyor (deploy ile göç arasındaki
+     * boşluk): sütunlar yoksa sorgu NULL seçer ve her şey varsayılana düşer.
+     *
+     * @return list<array<string,mixed>>
+     */
+    private static function rowsFor(int $clientId): array
+    {
+        if (!Schema::ecosystemReady()) {
+            return [];
+        }
+
+        $texts = Schema::ecosystemTextsReady() ? 'label, hint' : 'NULL AS label, NULL AS hint';
+
+        return Db::all(
+            "SELECT domain_key, enabled, sort, {$texts}
+               FROM ecosystem_domains WHERE client_id = ? ORDER BY sort, id",
+            [$clientId]
+        );
+    }
+
+    /**
+     * Uyarlama ekranının satırları: sözlüğün tamamı + elle eklenen yuvalar.
+     *
+     * Kutulara O AN GEÇERLİ metin yazılıyor, boş bir kutu değil: terapist
+     * ebeveynin gördüğü kelimenin üstünde çalışmalı. Varsayılanla birebir aynı
+     * kalan metin kaydedilmiyor (bkz. saveDomains), yani "değiştirmeden kaydet"
+     * dosyayı sözlüğe bağlı bırakıyor.
+     *
+     * @return list<array{key:string,label:string,hint:string,default_label:string,default_hint:string,open:bool,core:bool,custom:bool}>
+     */
+    public static function form(int $clientId, ?int $age = null): array
+    {
+        $open  = array_fill_keys(self::defaultsFor($age), true);
+        $texts = [];
+
+        foreach (self::rowsFor($clientId) as $row) {
+            $key = (string) $row['domain_key'];
+            if (!self::known($key)) {
+                continue;
+            }
+            $open[$key]  = (int) $row['enabled'] === 1;
+            $texts[$key] = $row;
+        }
+
+        $fields = [];
+        foreach ([...array_keys(self::DOMAINS), ...self::CUSTOM_KEYS] as $key) {
+            $custom       = self::isCustom($key);
+            $defaultLabel = $custom ? '' : self::label($key, $age);
+            $defaultHint  = $custom ? '' : self::DOMAINS[$key]['hint'];
+
+            $label = trim((string) ($texts[$key]['label'] ?? ''));
+            $hint  = trim((string) ($texts[$key]['hint'] ?? ''));
+
+            $fields[] = [
+                'key'           => $key,
+                'label'         => $label !== '' ? $label : $defaultLabel,
+                'hint'          => $hint !== '' ? $hint : $defaultHint,
+                'default_label' => $defaultLabel,
+                'default_hint'  => $defaultHint,
+                // Adı olmayan özel yuva açık görünemez: ortada bir alan yok.
+                'open'          => ($open[$key] ?? false) && !($custom && $label === ''),
+                'core'          => !$custom && self::DOMAINS[$key]['core'],
+                'custom'        => $custom,
+            ];
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Şeridin satır başlıkları: anahtar → o dosyada geçerli ad.
+     *
+     * KAPALI ve elle eklenmiş alanlar da var. Sebebi geçmiş: sekiz hafta önce
+     * işaretlenmiş bir alan bugün kapatılmış olabilir, ama şeritte satırı
+     * duruyor ve başlıksız kalamaz.
+     *
+     * @return array<string,string>
+     */
+    public static function labelsFor(int $clientId, ?int $age = null): array
+    {
+        $labels = [];
+        foreach (array_keys(self::DOMAINS) as $key) {
+            $labels[$key] = self::label($key, $age);
+        }
+
+        foreach (self::rowsFor($clientId) as $row) {
+            $key   = (string) $row['domain_key'];
+            $label = trim((string) ($row['label'] ?? ''));
+            if (self::known($key) && $label !== '') {
+                $labels[$key] = $label;
+            }
+        }
+
+        return $labels;
     }
 
     // ── Terapistin gördüğü şerit ────────────────────────────────
@@ -301,10 +475,15 @@ final class Ecosystem
      * Yalnız **işaret almış** alanlar satır olur. Sekiz haftadır hiç
      * dokunulmamış bir alanın boş satırı, tabloyu okunmaz kılar.
      *
+     * Satır başlıkları o dosyanın kendi adlarıyla yazılır (uyarlanmış "Nine ve
+     * dede", elle eklenmiş "Dans kursu"): terapist şeride bakarken ebeveynin
+     * gördüğü kelimeyi görmeli, yoksa iki ekran aynı haftayı iki dille anlatır.
+     *
      * @param list<array<string,mixed>> $checkins eskiden yeniye sıralı
+     * @param int $clientId  0 ise başlıklar sözlükten okunur (uyarlama aranmaz)
      * @return array{rows:list<array{key:string,label:string,cells:list<int>}>,events:array<int,?string>}
      */
-    public static function strip(array $checkins, ?int $age = null): array
+    public static function strip(array $checkins, ?int $age = null, int $clientId = 0): array
     {
         if ($checkins === [] || !Schema::ecosystemReady()) {
             return ['rows' => [], 'events' => []];
@@ -318,8 +497,15 @@ final class Ecosystem
             $marks[(string) $row['domain_key']][(int) $row['checkin_id']] = (int) $row['valence'];
         }
 
+        $labels = $clientId > 0
+            ? self::labelsFor($clientId, $age)
+            : [];
+
+        // Sıra sözlükteki sıra, elle eklenenler en sonda: şeridin satırları
+        // haftadan haftaya yer değiştirmemeli, gözün aradığı satır aynı yerde
+        // kalmalı.
         $rows = [];
-        foreach (self::DOMAINS as $key => $domain) {
+        foreach ([...array_keys(self::DOMAINS), ...self::CUSTOM_KEYS] as $key) {
             if (!isset($marks[$key])) {
                 continue;
             }
@@ -327,7 +513,13 @@ final class Ecosystem
             foreach ($ids as $id) {
                 $cells[] = $marks[$key][$id] ?? self::CALM;
             }
-            $rows[] = ['key' => $key, 'label' => self::label($key, $age), 'cells' => $cells];
+            $rows[] = [
+                'key'   => $key,
+                // Adı silinmiş bir özel alanın geçmişi yine görünür: veri
+                // duruyor, yalnız başlığı kayıp.
+                'label' => $labels[$key] ?? (self::isCustom($key) ? 'Elle eklenen alan' : self::label($key, $age)),
+                'cells' => $cells,
+            ];
         }
 
         // Olay etiketi burada çözülür — şeritteki dikey çapanın altında,
@@ -349,47 +541,108 @@ final class Ecosystem
     }
 
     /**
-     * Terapistin seçtiği alan setini yazar.
+     * Terapistin seçtiği alan setini ve o dosyaya uyarlanmış metinleri yazar.
      *
-     * Varsayılandan farkı olmayan satır silinir: tablo yalnız sapmaları
-     * tutuyor. Böylece ileride çekirdeğe bir alan eklenirse, açık bırakılmış
-     * görüşmecilerde kendiliğinden görünür.
+     * Varsayılandan farkı olmayan satır YAZILMAZ: tablo yalnız sapmaları
+     * tutuyor. Böylece ileride çekirdeğe bir alan eklenirse ya da sözlükteki
+     * bir ipucu düzeltilirse, uyarlanmamış dosyalarda kendiliğinden görünür.
+     * "Sapma" artık üç şeyden biri olabilir: açık/kapalı durumu, ad, ipucu.
+     *
+     * Adı boş bırakılan özel alan hiç yazılmaz — silme işlemi bu. Geçmişteki
+     * işaretleri `ecosystem_marks` içinde kalır; şeritte başlıksız değil,
+     * "Elle eklenen alan" olarak görünür (bkz. strip).
      *
      * MAX_OPEN burada da uygulanıyor — arayüz engellese bile.
      *
-     * @param list<string> $keys
+     * @param array<string,array<string,string>> $input alan anahtarı → [acik, ad, ipucu]
      */
-    public static function saveOpen(int $clientId, array $keys, ?int $age = null): void
+    public static function saveDomains(int $clientId, array $input, ?int $age = null): void
     {
         if (!Schema::ecosystemReady()) {
             return;
         }
 
-        $wanted   = [];
-        foreach ($keys as $key) {
-            if (self::known((string) $key) && !in_array($key, $wanted, true)) {
-                $wanted[] = (string) $key;
-            }
-        }
-        $wanted   = array_slice($wanted, 0, self::MAX_OPEN);
+        $texts    = Schema::ecosystemTextsReady();
         $defaults = self::defaultsFor($age);
+        $rows     = [];
+        $openCount = 0;
+
+        foreach ([...array_keys(self::DOMAINS), ...self::CUSTOM_KEYS] as $key) {
+            $field  = (array) ($input[$key] ?? []);
+            $custom = self::isCustom($key);
+
+            // Metin sütunları yoksa elle eklenen alan da yok: adı saklanamayan
+            // bir çip ebeveyne "ozel1" diye görünürdü.
+            if ($custom && !$texts) {
+                continue;
+            }
+
+            $label = self::clean($field['ad'] ?? '', 60);
+            $hint  = self::clean($field['ipucu'] ?? '', 120);
+
+            // Sözlüktekiyle birebir aynı metin sapma değildir: kaydedilmezse
+            // koddaki metin ileride düzeltildiğinde bu dosya da düzelir.
+            if (!$custom) {
+                if ($label === self::label($key, $age)) {
+                    $label = '';
+                }
+                if ($hint === (self::DOMAINS[$key]['hint'] ?? '')) {
+                    $hint = '';
+                }
+            } elseif ($label === '') {
+                continue;   // adsız özel alan = yok
+            }
+
+            $isOpen = ($field['acik'] ?? '') !== '' && $openCount < self::MAX_OPEN;
+            if ($isOpen) {
+                $openCount++;
+            }
+
+            $isDefault = !$custom && in_array($key, $defaults, true);
+            if ($isOpen === $isDefault && $label === '' && $hint === '') {
+                continue;   // her yönüyle varsayılan — satır gerekmiyor
+            }
+
+            $rows[] = [$key, $isOpen, $texts ? $label : '', $texts ? $hint : ''];
+        }
 
         Db::run('DELETE FROM ecosystem_domains WHERE client_id = ?', [$clientId]);
 
         $sort = 0;
-        foreach (self::DOMAINS as $key => $domain) {
-            $isOpen     = in_array($key, $wanted, true);
-            $isDefault  = in_array($key, $defaults, true);
-            if ($isOpen === $isDefault) {
-                continue;   // varsayılanla aynı — satır yazmaya gerek yok
-            }
+        foreach ($rows as [$key, $isOpen, $label, $hint]) {
+            $columns = $texts
+                ? 'client_id, domain_key, label, hint, enabled, sort, created_at'
+                : 'client_id, domain_key, enabled, sort, created_at';
+            $values  = $texts
+                ? [$clientId, $key, $label === '' ? null : $label, $hint === '' ? null : $hint, $isOpen ? 1 : 0, $sort++]
+                : [$clientId, $key, $isOpen ? 1 : 0, $sort++];
+            $marks   = implode(', ', array_fill(0, count($values), '?'));
 
-            Db::run(
-                'INSERT INTO ecosystem_domains (client_id, domain_key, enabled, sort, created_at)
-                 VALUES (?, ?, ?, ?, NOW())',
-                [$clientId, $key, $isOpen ? 1 : 0, $sort++]
-            );
+            Db::run("INSERT INTO ecosystem_domains ({$columns}) VALUES ({$marks}, NOW())", $values);
         }
+    }
+
+    /**
+     * Halkanın üstündeki soruyu bu dosyaya uyarlar. Boş bırakılan alan
+     * varsayılana döner — koddaki cümle ileride değişirse dosya da değişsin.
+     */
+    public static function savePrompt(int $clientId, string $text): void
+    {
+        if (!Schema::ecosystemTextsReady()) {
+            return;
+        }
+
+        $text = self::clean($text, 200);
+        Db::run(
+            'UPDATE clients SET checkin_prompt = ?, updated_at = NOW() WHERE id = ?',
+            [$text === '' || $text === self::PROMPT ? null : $text, $clientId]
+        );
+    }
+
+    /** Tek satırlık serbest metin: kırpılır, satır sonları temizlenir. */
+    private static function clean(string $raw, int $max): string
+    {
+        return trim(mb_substr(preg_replace('/\s+/u', ' ', $raw) ?? '', 0, $max));
     }
 
     // ── Haftalık kayıt ──────────────────────────────────────────

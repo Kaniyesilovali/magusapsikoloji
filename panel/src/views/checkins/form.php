@@ -2,7 +2,7 @@
 use Panel\Checkins;
 use Panel\Csrf;
 use Panel\Ecosystem;
-/** @var string $token @var string $firstName @var bool $noteOpen */
+/** @var string $token @var string $firstName @var bool $noteOpen @var string $prompt */
 /** @var list<array{key:string,label:string,hint:string}> $domains */
 
 // Üç soru, üç kaydırıcı, bir isteğe bağlı cümle. Ölçek yönü her sorunun altında
@@ -80,7 +80,7 @@ use Panel\Ecosystem;
           // üçüncü hâl görünmez kalır; üç seçenek yan yana durunca hem tek
           // dokunuş, hem JS'siz çalışır, hem ekran okuyucuya anlamlı gelir. ?>
     <div class="ci-q ci-wind-head">
-      <p class="ci-q-label"><?= e(Ecosystem::PROMPT) ?></p>
+      <p class="ci-q-label"><?= e($prompt) ?></p>
       <p class="ci-scale mt-2">
         <span>↑ iyi geldi</span>
         <span>↓ zorladı</span>

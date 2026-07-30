@@ -57,6 +57,9 @@ final class CheckinController
             'domains'   => Schema::ecosystemReady()
                 ? Ecosystem::openFor((int) $request['client_id'], $age)
                 : [],
+            // Soru dosyaya göre uyarlanmış olabilir: ebeveyn dosyasında
+            // "çocuğunun sırtını", ergen dosyasında "senin sırtını".
+            'prompt'    => Ecosystem::promptFor($request),
         ], 'checkin_layout');
     }
 
@@ -207,8 +210,13 @@ final class CheckinController
             'title'    => 'Sorulan alanlar',
             'client'   => $client,
             'age'      => $age,
-            'open'     => array_column(Ecosystem::openFor($clientId, $age), 'key'),
-            'defaults' => Ecosystem::defaultsFor($age),
+            // Ekran hem açık/kapalı durumunu hem o dosyaya uyarlanmış metinleri
+            // gösteriyor; ikisi de aynı satırdan geliyor (bkz. Ecosystem::form).
+            'fields'   => Ecosystem::form($clientId, $age),
+            'prompt'   => Ecosystem::promptFor($client),
+            'promptDefault' => Ecosystem::PROMPT,
+            // Metin uyarlaması göçe bağlı; kutular yalnız yazılabilecekse çizilir.
+            'editable' => Schema::ecosystemTextsReady(),
         ]);
     }
 
@@ -223,10 +231,13 @@ final class CheckinController
         }
 
         $age = Ecosystem::ageFrom($client['birth_date'] === null ? null : (string) $client['birth_date']);
-        Ecosystem::saveOpen($clientId, (array) ($_POST['alan'] ?? []), $age);
+        Ecosystem::saveDomains($clientId, (array) ($_POST['alan'] ?? []), $age);
+        Ecosystem::savePrompt($clientId, post('soru'));
 
+        // İÇERİK loglanmaz: uyarlanmış ad bir ailenin hayatından bir ayrıntı
+        // olabilir ("Babanın nöbetleri"). Kimin ne zaman değiştirdiği yeter.
         Audit::log('checkin.domains_updated', 'client', $clientId);
-        flash('success', 'Sorulan alanlar güncellendi. Bundan sonra üretilen bağlantılarda geçerli olur.');
+        flash('success', 'Sorulan alanlar ve metinler güncellendi. Bundan sonra üretilen bağlantılarda geçerli olur.');
         redirect('/danisanlar/' . $clientId);
     }
 

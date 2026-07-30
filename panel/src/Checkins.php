@@ -122,8 +122,13 @@ final class Checkins
             return null;
         }
 
+        // Halkanın sorusu dosyaya göre uyarlanmış olabilir; aynı sorguda gelsin
+        // diye burada okunuyor. Göç uygulanmadan sütun yok, o zaman da koddaki
+        // varsayılan geçerli (bkz. Ecosystem::promptFor).
+        $prompt = Schema::ecosystemTextsReady() ? ', c.checkin_prompt' : '';
+
         return Db::one(
-            'SELECT r.*, c.full_name, c.status AS client_status, c.birth_date
+            'SELECT r.*, c.full_name, c.status AS client_status, c.birth_date' . $prompt . '
                FROM checkin_requests r
                JOIN clients c ON c.id = r.client_id
               WHERE r.token_hash = ?

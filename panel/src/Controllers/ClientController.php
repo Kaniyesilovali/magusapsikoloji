@@ -121,8 +121,16 @@ final class ClientController
         $checkins       = $canSeeCheckins ? Checkins::history($id) : [];
         $checkinTotal   = $canSeeCheckins ? Checkins::count($id) : 0;
 
+        // Şeridin başlıkları bu dosyanın kendi adlarıyla yazılıyor (uyarlanmış
+        // "Nine ve dede", elle eklenmiş "Dans kursu"): terapist ebeveynin
+        // gördüğü kelimeyi görmeli, yoksa iki ekran aynı haftayı iki dille
+        // anlatır. Bunun için görüşmeci kimliği de geçiyor.
         $ecosystem = $canSeeCheckins
-            ? Ecosystem::strip($checkins, Ecosystem::ageFrom($client['birth_date'] === null ? null : (string) $client['birth_date']))
+            ? Ecosystem::strip(
+                $checkins,
+                Ecosystem::ageFrom($client['birth_date'] === null ? null : (string) $client['birth_date']),
+                $id
+            )
             : ['rows' => [], 'events' => []];
 
         // KVKK: hassas kayıt görüntülemeleri de izlenebilir olmalı.
