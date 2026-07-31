@@ -1,11 +1,16 @@
-<?php // Gönderimden sonraki tek ekran. Kısa: iş bitti, sayfada yapılacak şey yok. ?>
+<?php
+use Panel\Checkins;
+// Gönderimden sonraki tek ekran. Kısa: iş bitti, sayfada yapılacak şey yok.
+// Metinleri panelden düzenlenebilir — formun geri kalanıyla aynı ekrandan
+// (bkz. Checkins::TEXTS), yoksa teşekkür cümlesi merkezin dilinin dışında kalır.
+?>
 
 <div class="sheet-body">
-  <h1 class="page-title">Teşekkürler</h1>
+  <h1 class="page-title"><?= e(Checkins::text('tesekkur_baslik')) ?></h1>
   <p class="page-sub">
-    Check-in'in kaydedildi. Terapistin bir sonraki seansta bu haftayı da görecek.
+    <?= e(Checkins::text('tesekkur')) ?>
   </p>
   <p class="text-sm text-ink-muted mt-4">
-    Bir sonraki hatırlatmada yeni bir bağlantı alacaksın. Bu sayfayı kapatabilirsin.
+    <?= e(Checkins::text('tesekkur_alt')) ?>
   </p>
 </div>

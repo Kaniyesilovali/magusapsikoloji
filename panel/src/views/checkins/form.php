@@ -8,14 +8,18 @@ use Panel\Ecosystem;
 // Üç soru, üç kaydırıcı, bir isteğe bağlı cümle. Ölçek yönü her sorunun altında
 // ayrıca yazıyor: kaygıda yüksek değer kötüdür, diğer ikisinde iyidir ve bunu
 // hatırlatmayan bir form yanlış veri toplar.
+//
+// Sayfadaki her cümle panelden düzenlenebilir (bkz. Checkins::TEXTS): merkezin
+// dili ile yazılımın dili aynı formda yan yana durmasın diye.
+$texts   = Checkins::texts();
+$scales  = Checkins::measures();
 ?>
 
 <div class="sheet-body">
   <h1 class="page-title">Haftalık check-in</h1>
   <p class="page-sub">
     <?php if ($firstName !== ''): ?>Merhaba <?= e($firstName) ?>, <?php endif; ?>
-    bu üç soru yaklaşık yarım dakika sürer. Doğru ya da yanlış cevap yok;
-    bu haftanın nasıl geçtiğini gösteren bir işaret bırakıyorsun.
+    <?= e($texts['giris']) ?>
   </p>
 </div>
 
@@ -24,7 +28,7 @@ use Panel\Ecosystem;
 
   <?php foreach (Checkins::questions() as $field => $question): ?>
     <?php
-    $scale = Checkins::MEASURES[$field];
+    $scale = $scales[$field];
     $outId = $field . 'Out';
     ?>
     <div class="ci-q">
@@ -59,12 +63,12 @@ use Panel\Ecosystem;
   <?php if ($noteOpen): ?>
     <div class="ci-q">
       <label class="ci-q-label" for="note">
-        Eklemek istediğin bir şey var mı? <span class="text-ink-light">(isteğe bağlı)</span>
+        <?= e($texts['cumle_baslik']) ?> <span class="text-ink-light">(isteğe bağlı)</span>
       </label>
       <textarea class="field mt-2" id="note" name="note" rows="3" maxlength="2000"
-                placeholder="Tek cümle yeter."></textarea>
+                placeholder="<?= e($texts['cumle_ornek']) ?>"></textarea>
       <p class="field-hint">
-        Yazdıkların şifrelenerek saklanır ve yalnız terapistin görebilir.
+        <?= e($texts['cumle_ipucu']) ?>
       </p>
     </div>
   <?php endif; ?>
@@ -85,7 +89,7 @@ use Panel\Ecosystem;
         <span>↑ iyi geldi</span>
         <span>↓ zorladı</span>
       </p>
-      <p class="field-hint">Dokunmadığın alan “bu hafta öne çıkmadı” sayılır — boş bırakmak da bir cevap.</p>
+      <p class="field-hint"><?= e($texts['halka_ipucu']) ?></p>
     </div>
 
     <?php // Halka JS ile kuruluyor: aşağıdaki liste hem JS kapalıyken çalışan
@@ -129,19 +133,19 @@ use Panel\Ecosystem;
       <label class="ci-event" for="olayVar">
         <input type="checkbox" id="olayVar" name="olay_var" value="1" class="ci-event-in sr-only">
         <span class="ci-event-chip" aria-hidden="true">✦</span>
-        <span class="ci-q-label">Bu hafta bir şey oldu</span>
+        <span class="ci-q-label"><?= e($texts['olay_baslik']) ?></span>
       </label>
-      <p class="field-hint">Taşınma, hastalık, ayrılık, sınav, kayıp… İşaretlemen yeter.</p>
+      <p class="field-hint"><?= e($texts['olay_ipucu']) ?></p>
 
       <?php if ($noteOpen): ?>
         <label for="olay" class="sr-only">Ne olduğunu birkaç kelimeyle yazabilirsin</label>
         <input type="text" id="olay" name="olay" maxlength="120" class="field mt-3"
-               placeholder="İstersen birkaç kelime (isteğe bağlı)">
+               placeholder="<?= e($texts['olay_ornek']) ?>">
       <?php endif; ?>
     </div>
   <?php endif; ?>
 
   <div class="sheet-foot">
-    <button class="btn btn-primary w-full justify-center">Gönder</button>
+    <button class="btn btn-primary w-full justify-center"><?= e($texts['gonder']) ?></button>
   </div>
 </form>

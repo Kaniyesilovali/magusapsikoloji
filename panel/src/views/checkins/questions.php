@@ -3,6 +3,8 @@ use Panel\Checkins;
 use Panel\Csrf;
 /** @var array<string,string> $questions @var array<string,string> $defaults */
 /** @var array<string,array{label:string,low:string,high:string}> $measures */
+/** @var array<string,array{label:string,low:string,high:string}> $measureDefaults */
+/** @var array<string,string> $texts @var array<string,array<string,mixed>> $textFields */
 /** @var list<array<string,mixed>> $roster @var bool $ready @var bool $switchable */
 
 // İki soru, tek ekran: haftalık bağlantıda NE soruluyor ve KİME gidiyor.
@@ -18,8 +20,8 @@ use Panel\Csrf;
   <p class="eyebrow">Seanslar arası check-in</p>
   <h1 class="page-title mt-2">Haftalık check-in</h1>
   <p class="page-sub">
-    Görüşmeciye haftalık bağlantıda sorulan üç sorunun metni ve e-postanın
-    kimlere gittiği. Ölçek her soruda 1–10 arası bir kaydırıcı; değişen yalnız cümle.
+    Görüşmecinin gördüğü bütün metinler ve e-postanın kimlere gittiği. Ölçek her
+    soruda 1–10 arası bir kaydırıcı; değişen cümleler ve uçların adları.
   </p>
 </header>
 
@@ -27,22 +29,88 @@ use Panel\Csrf;
   <?= Csrf::field() ?>
 
   <?php foreach ($questions as $field => $text): ?>
-    <?php $measure = $measures[$field]; ?>
+    <?php
+    $measure = $measures[$field];
+    $default = $measureDefaults[$field];
+    // Yön veri modelinin kendisinde: kaygıda yüksek değer kötü ve eğri bunu
+    // böyle okuyor. Uçların ADI değişebilir, YÖNÜ değişemez — bu yüzden her
+    // sorunun altında hangi ucun "iyi" olduğu ayrıca yazıyor.
+    $goodEnd = $field === 'anxiety' ? '1' : '10';
+    ?>
     <div class="px-5 py-4 <?= $field === array_key_first($questions) ? '' : 'border-t border-warm-secondary' ?>">
       <label for="<?= e($field) ?>" class="field-label">
-        <?= e($measure['label']) ?>
+        Soru — <?= e($measure['label']) ?>
       </label>
       <input type="text" id="<?= e($field) ?>" name="<?= e($field) ?>"
              value="<?= e($text) ?>" maxlength="200" class="field">
-
-      <p class="field-hint">
-        Ölçek: <strong>1 · <?= e($measure['low']) ?></strong> → <strong>10 · <?= e($measure['high']) ?></strong>.
-        Cümleyi bu yöne uygun kurun; ters çevrilmiş bir soru eğriyi baş aşağı okutur.
-      </p>
       <?php if ($text !== $defaults[$field]): ?>
         <p class="field-hint">
           Varsayılan: <span class="text-ink-muted">“<?= e($defaults[$field]) ?>”</span>
           — alanı boşaltıp kaydederseniz buna geri döner.
+        </p>
+      <?php endif; ?>
+
+      <div class="mt-3 grid gap-2 sm:grid-cols-3">
+        <span>
+          <label class="field-label" for="<?= e($field) ?>_ad">Panelde görünen ad</label>
+          <input class="field" type="text" id="<?= e($field) ?>_ad"
+                 name="olcek[<?= e($field) ?>][label]" maxlength="60"
+                 value="<?= e($measure['label']) ?>" placeholder="<?= e($default['label']) ?>">
+        </span>
+        <span>
+          <label class="field-label" for="<?= e($field) ?>_alt">1 ucu</label>
+          <input class="field" type="text" id="<?= e($field) ?>_alt"
+                 name="olcek[<?= e($field) ?>][low]" maxlength="60"
+                 value="<?= e($measure['low']) ?>" placeholder="<?= e($default['low']) ?>">
+        </span>
+        <span>
+          <label class="field-label" for="<?= e($field) ?>_ust">10 ucu</label>
+          <input class="field" type="text" id="<?= e($field) ?>_ust"
+                 name="olcek[<?= e($field) ?>][high]" maxlength="60"
+                 value="<?= e($measure['high']) ?>" placeholder="<?= e($default['high']) ?>">
+        </span>
+      </div>
+
+      <p class="field-hint">
+        Bu ölçekte <strong><?= $goodEnd ?></strong> iyi uçtur; eğri de böyle okunuyor.
+        Uçların <em>adını</em> değiştirebilirsiniz, <em>yönünü</em> değil — ters
+        yazılmış bir uç, geçmiş kayıtları da baş aşağı okutur.
+      </p>
+    </div>
+  <?php endforeach; ?>
+
+  <?php // ── Formun geri kalan metinleri ────────────────────────────────
+        // Soruların cümlesi düzenlenebilirken teşekkür sayfası kodda kilitli
+        // kalınca ekran yarım bir söz veriyordu: formu okuyan kişi metnin bir
+        // kısmının merkeze, bir kısmının yazılıma ait olduğunu bilmez —
+        // yalnız ikisi arasındaki dil farkını görür.
+        $group = null; ?>
+
+  <?php foreach ($textFields as $key => $meta): ?>
+    <?php if ($meta['group'] !== $group): ?>
+      <?php $group = $meta['group']; ?>
+      <div class="sheet-head border-t border-warm-secondary">
+        <h2 class="sheet-title"><?= e($group) ?></h2>
+      </div>
+    <?php endif; ?>
+
+    <div class="px-5 py-3 border-t border-warm-secondary">
+      <label class="field-label" for="metin_<?= e($key) ?>"><?= e($meta['label']) ?></label>
+      <?php if (!empty($meta['area'])): ?>
+        <textarea class="field" id="metin_<?= e($key) ?>" name="metin[<?= e($key) ?>]"
+                  rows="2" maxlength="<?= (int) $meta['max'] ?>"><?= e($texts[$key]) ?></textarea>
+      <?php else: ?>
+        <input class="field" type="text" id="metin_<?= e($key) ?>" name="metin[<?= e($key) ?>]"
+               maxlength="<?= (int) $meta['max'] ?>" value="<?= e($texts[$key]) ?>">
+      <?php endif; ?>
+
+      <?php if ($meta['hint'] !== '' || $texts[$key] !== $meta['default']): ?>
+        <p class="field-hint">
+          <?= e($meta['hint']) ?>
+          <?php if ($texts[$key] !== $meta['default']): ?>
+            Varsayılan: <span class="text-ink-muted">“<?= e($meta['default']) ?>”</span>
+            — boşaltıp kaydederseniz buna döner.
+          <?php endif; ?>
         </p>
       <?php endif; ?>
     </div>

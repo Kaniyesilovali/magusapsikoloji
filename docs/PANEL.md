@@ -429,13 +429,26 @@ işleyişine dair kararlar, bu yüzden yöneticide de var. Ekranda hiçbir puan,
 görünmez — yalnız ad, adres ve gönderim durumu. Liste yine `ClientScope` ile sınırlı:
 terapist kendi görüşmecilerini, yönetici hepsini görür.
 
-**Sorular.** Üç sorunun metni `settings` tablosunda (`checkin_question_*`); koddaki
-varsayılan (`Checkins::QUESTIONS`) yerinde durur ve boşaltılan alan ona geri döner —
-varsayılan ileride değişirse o soru eski kopyasında donup kalmaz. Değişen yalnız cümle:
-alan adları ve dolayısıyla **ölçeğin yönü sabit**. `anxiety` ters ölçeklidir (yüksek değer
-kötü); cümleyi ters çeviren bir düzenleme veriyi sessizce bozardı, bu yüzden düzenleme
-ekranı her sorunun altında yönünü ayrıca yazar. Değişiklik yalnız bundan sonra üretilen
+**Metinler.** Görüşmecinin gördüğü **her cümle** buradan düzenlenir: giriş paragrafı, üç
+sorunun metni, her ölçeğin panelde görünen adı ve iki ucunun adı ("1 · çok kötü →
+10 · çok iyi"), cümle alanının başlığı/örneği/açıklaması, halkanın sorusu ve altındaki
+açıklama, ✦ satırı, gönder düğmesi ve teşekkür sayfası. Kütük tek yerde
+(`Checkins::TEXTS` + `Checkins::MEASURES`), değerler `settings` tablosunda
+(`checkin_question_*`, `checkin_measure_*`, `checkin_text_*`).
+
+Koddaki varsayılan yerinde durur ve boşaltılan alan ona geri döner — varsayılan ileride
+değişirse o cümle eski kopyasında donup kalmaz. Metnin yarısı kodda bırakılmadı: yarısı
+düzenlenebilir bir form, okuyana hangi cümlenin merkeze hangisinin yazılıma ait olduğunu
+göstermez, yalnız ikisi arasındaki dil farkını gösterir.
+
+Değişen yalnız **adlar**: alan adları ve dolayısıyla **ölçeğin yönü sabit**. `anxiety`
+ters ölçeklidir (yüksek değer kötü) ve eğri bunu böyle okur; ucun adını ters yazan bir
+düzenleme geçmiş kayıtları da baş aşağı okuturdu, bu yüzden ekran her sorunun altında
+hangi ucun iyi olduğunu ayrıca yazar. Değişiklik yalnız bundan sonra üretilen
 bağlantılarda görünür, geçmiş cevaplar aynı ölçekte kalır.
+
+Halkanın sorusu buradaki değer **varsayılandır**; tek bir dosyada değiştirmek için
+görüşmeci sayfası → "Sorulan alanlar".
 
 **Gönderim listesi.** Her aktif görüşmeci için tek bir işaret (`clients.checkin_auto`,
 varsayılan açık) ve durumunun açıklaması: *sırada, bu hafta doldu, bağlantı bekliyor,

@@ -46,7 +46,9 @@ $latest   = $checkins === [] ? null : $checkins[count($checkins) - 1];
     </p>
   <?php else: ?>
 
-    <?php foreach (Checkins::MEASURES as $field => $measure): ?>
+    <?php // Ölçek adları panelden düzenlenebilir; eğrinin başlığı ile formdaki
+          // cümle aynı yerden okunmalı, yoksa iki ekran aynı sayıya iki ad verir. ?>
+    <?php foreach (Checkins::measures() as $field => $measure): ?>
       <?php
       $curve = Checkins::curve($checkins, $field);
       $note  = '1 · ' . $measure['low'] . '  ·  10 · ' . $measure['high'];

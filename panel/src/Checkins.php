@@ -522,6 +522,120 @@ final class Checkins
         'anxiety'       => ['label' => 'Kaygı',    'low' => 'hiç yok',   'high' => 'çok yoğun'],
     ];
 
+    /**
+     * Formun geri kalanındaki metinler — üç sorunun dışında kalan her cümle.
+     *
+     * Neden hepsi: soruların cümlesi düzenlenebilirken "Eklemek istediğin bir
+     * şey var mı?" ya da teşekkür sayfası kodda kilitli kalınca ekran yarım bir
+     * söz veriyordu. Formu okuyan kişi metnin bir kısmının merkeze, bir kısmının
+     * yazılıma ait olduğunu bilmez; ikisi arasındaki dil farkını görür.
+     *
+     * `alan` çok satırlı kutu ister (paragraf), `ornek` alanları girdi
+     * kutusunun içindeki soluk örnek metindir (placeholder).
+     *
+     * Ölçek uçları burada DEĞİL: onlar sorunun kendisine ait ve düzenleme
+     * ekranında sorunun altında duruyorlar (bkz. measures).
+     *
+     * @var array<string,array{group:string,label:string,hint:string,default:string,max:int,area?:bool}>
+     */
+    public const TEXTS = [
+        'giris' => [
+            'group'   => 'Form başı',
+            'label'   => 'Giriş cümlesi',
+            'hint'    => 'Adın ardından gelir: “Merhaba Ayşe, …”',
+            'default' => 'bu üç soru yaklaşık yarım dakika sürer. Doğru ya da yanlış cevap yok; '
+                . 'bu haftanın nasıl geçtiğini gösteren bir işaret bırakıyorsun.',
+            'max'     => 300,
+            'area'    => true,
+        ],
+        'cumle_baslik' => [
+            'group'   => 'Cümle alanı',
+            'label'   => 'Başlık',
+            'hint'    => 'Yanına “(isteğe bağlı)” otomatik eklenir.',
+            'default' => 'Eklemek istediğin bir şey var mı?',
+            'max'     => 120,
+        ],
+        'cumle_ornek' => [
+            'group'   => 'Cümle alanı',
+            'label'   => 'Kutunun içindeki örnek',
+            'hint'    => 'Yazmaya başlayınca kaybolur.',
+            'default' => 'Tek cümle yeter.',
+            'max'     => 60,
+        ],
+        'cumle_ipucu' => [
+            'group'   => 'Cümle alanı',
+            'label'   => 'Altındaki açıklama',
+            'hint'    => 'Cümle şifreli saklanıyor; bunu söylemek doldurma oranını yükseltiyor.',
+            'default' => 'Yazdıkların şifrelenerek saklanır ve yalnız terapistin görebilir.',
+            'max'     => 200,
+        ],
+        'halka_soru' => [
+            'group'   => 'Haftanın hâli',
+            'label'   => 'Halkanın sorusu',
+            'hint'    => 'Varsayılan bu; tek bir dosyada değiştirmek için görüşmeci sayfası → Sorulan alanlar.',
+            'default' => Ecosystem::PROMPT,
+            'max'     => 200,
+        ],
+        'halka_ipucu' => [
+            'group'   => 'Haftanın hâli',
+            'label'   => 'Halkanın altındaki açıklama',
+            'hint'    => 'Dokunulmayan alanın da bir cevap olduğunu söyler.',
+            'default' => 'Dokunmadığın alan “bu hafta öne çıkmadı” sayılır — boş bırakmak da bir cevap.',
+            'max'     => 200,
+        ],
+        'olay_baslik' => [
+            'group'   => 'Haftanın hâli',
+            'label'   => '✦ satırının başlığı',
+            'hint'    => 'Tek dokunuşluk işaret; şeritte dikey çapa olarak çiziliyor.',
+            'default' => 'Bu hafta bir şey oldu',
+            'max'     => 60,
+        ],
+        'olay_ipucu' => [
+            'group'   => 'Haftanın hâli',
+            'label'   => '✦ satırının açıklaması',
+            'hint'    => 'Örnekler kısa olmalı; uzun liste okunmuyor.',
+            'default' => 'Taşınma, hastalık, ayrılık, sınav, kayıp… İşaretlemen yeter.',
+            'max'     => 200,
+        ],
+        'olay_ornek' => [
+            'group'   => 'Haftanın hâli',
+            'label'   => '✦ kutusundaki örnek',
+            'hint'    => 'Yalnız şifreleme açıkken görünür.',
+            'default' => 'İstersen birkaç kelime (isteğe bağlı)',
+            'max'     => 60,
+        ],
+        'gonder' => [
+            'group'   => 'Gönderim ve teşekkür',
+            'label'   => 'Gönder düğmesi',
+            'hint'    => '',
+            'default' => 'Gönder',
+            'max'     => 40,
+        ],
+        'tesekkur_baslik' => [
+            'group'   => 'Gönderim ve teşekkür',
+            'label'   => 'Teşekkür sayfasının başlığı',
+            'hint'    => '',
+            'default' => 'Teşekkürler',
+            'max'     => 60,
+        ],
+        'tesekkur' => [
+            'group'   => 'Gönderim ve teşekkür',
+            'label'   => 'Teşekkür sayfası',
+            'hint'    => 'Gönderim sonrası görünen tek ekran.',
+            'default' => 'Check-in\'in kaydedildi. Terapistin bir sonraki seansta bu haftayı da görecek.',
+            'max'     => 300,
+            'area'    => true,
+        ],
+        'tesekkur_alt' => [
+            'group'   => 'Gönderim ve teşekkür',
+            'label'   => 'Teşekkür sayfası — alt satır',
+            'hint'    => '',
+            'default' => 'Bir sonraki hatırlatmada yeni bir bağlantı alacaksın. Bu sayfayı kapatabilirsin.',
+            'max'     => 300,
+            'area'    => true,
+        ],
+    ];
+
     /** Soruların varsayılan metni. Düzenlenmiş hâli için [questions]. */
     public const QUESTIONS = [
         'mood'          => 'Bu hafta genel olarak ruh hâlin nasıldı?',
@@ -568,6 +682,80 @@ final class Checkins
         foreach (self::QUESTIONS as $field => $default) {
             $text = trim(mb_substr((string) ($input[$field] ?? ''), 0, 200));
             Settings::set(self::QUESTION_SETTING . $field, $text === $default ? '' : $text);
+        }
+    }
+
+    // ── Ölçek adları ve uçları ──────────────────────────────────
+    //
+    // Ölçeğin YÖNÜ kodda sabit, ADLARI değil. "1 · çok kötü → 10 · çok iyi"
+    // cümlesi klinik bir tercih ve merkezin dilinden yazılmalı; ama kaygıda
+    // yüksek değerin kötü olduğu veri modelinin kendisinde duruyor (eğri buna
+    // göre okunuyor). Uçları ters yazan bir düzenleme veriyi bozardı, bu yüzden
+    // ekran her ölçeğin yönünü ayrıca söylüyor.
+
+    private const MEASURE_SETTING = 'checkin_measure_';
+
+    /** Ölçeklerin panelde ve formda görünen adları — düzenlenmiş hâliyle. */
+    public static function measures(): array
+    {
+        $measures = [];
+        foreach (self::MEASURES as $field => $measure) {
+            foreach (['label', 'low', 'high'] as $part) {
+                $custom = trim((string) Settings::get(self::MEASURE_SETTING . $field . '_' . $part, ''));
+                if ($custom !== '') {
+                    $measure[$part] = $custom;
+                }
+            }
+            $measures[$field] = $measure;
+        }
+
+        return $measures;
+    }
+
+    /** @param array<string,array<string,string>> $input alan → [label, low, high] */
+    public static function saveMeasures(array $input): void
+    {
+        foreach (self::MEASURES as $field => $measure) {
+            foreach (['label', 'low', 'high'] as $part) {
+                $text = trim(mb_substr((string) ($input[$field][$part] ?? ''), 0, 60));
+                Settings::set(
+                    self::MEASURE_SETTING . $field . '_' . $part,
+                    $text === $measure[$part] ? '' : $text
+                );
+            }
+        }
+    }
+
+    // ── Formun geri kalan metinleri ─────────────────────────────
+
+    private const TEXT_SETTING = 'checkin_text_';
+
+    /** Tek bir metin — düzenlenmişse o, değilse koddaki varsayılan. */
+    public static function text(string $key): string
+    {
+        $default = self::TEXTS[$key]['default'] ?? '';
+        $custom  = trim((string) Settings::get(self::TEXT_SETTING . $key, ''));
+
+        return $custom !== '' ? $custom : $default;
+    }
+
+    /** @return array<string,string> Bütün metinler, anahtarıyla. */
+    public static function texts(): array
+    {
+        $texts = [];
+        foreach (array_keys(self::TEXTS) as $key) {
+            $texts[$key] = self::text($key);
+        }
+
+        return $texts;
+    }
+
+    /** @param array<string,string> $input */
+    public static function saveTexts(array $input): void
+    {
+        foreach (self::TEXTS as $key => $text) {
+            $value = trim(mb_substr((string) ($input[$key] ?? ''), 0, $text['max']));
+            Settings::set(self::TEXT_SETTING . $key, $value === $text['default'] ? '' : $value);
         }
     }
 

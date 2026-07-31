@@ -110,7 +110,7 @@ final class CheckinController
     /** Gönderimden sonraki teşekkür sayfası — yenilenince form tekrar gönderilmesin. */
     public function thanks(): void
     {
-        View::render('checkins/done', ['title' => 'Teşekkürler'], 'checkin_layout');
+        View::render('checkins/done', ['title' => Checkins::text('tesekkur_baslik')], 'checkin_layout');
     }
 
     // ── Sorular ve gönderim (panel içi, giriş gerektirir) ────────
@@ -133,7 +133,11 @@ final class CheckinController
             'title'      => 'Haftalık check-in',
             'questions'  => Checkins::questions(),
             'defaults'   => Checkins::QUESTIONS,
-            'measures'   => Checkins::MEASURES,
+            'measures'   => Checkins::measures(),
+            'measureDefaults' => Checkins::MEASURES,
+            // Formun geri kalan metinleri: giriş, cümle alanı, halka, teşekkür.
+            'texts'      => Checkins::texts(),
+            'textFields' => Checkins::TEXTS,
             'ready'      => $ready,
             // Anahtar yalnız sütun varsa çevrilebilir; yoksa liste bilgi
             // amaçlı çizilir ve neyin eksik olduğunu söyler.
@@ -257,13 +261,17 @@ final class CheckinController
             $input[$field] = post($field);
         }
         Checkins::saveQuestions($input);
+        // Ölçek adları/uçları ve formun geri kalan metinleri aynı formda
+        // geliyor: tek "Kaydet", tek denetim kaydı — ekran tek bir metin.
+        Checkins::saveMeasures((array) ($_POST['olcek'] ?? []));
+        Checkins::saveTexts((array) ($_POST['metin'] ?? []));
 
         // İçerik loglanmaz; kimin ne zaman değiştirdiği yeter. Soru metni
         // klinik veri değil ama değişimi cevapların anlamını kaydırır, bu
         // yüzden iz kalması gerekiyor.
         Audit::log('checkin.questions_updated', 'settings', null, ['aktor' => (int) $actor['id']]);
 
-        flash('success', 'Check-in soruları kaydedildi. Bundan sonra üretilen bağlantılar yeni metni gösterir.');
+        flash('success', 'Check-in metinleri kaydedildi. Bundan sonra üretilen bağlantılar yeni metni gösterir.');
         redirect('/check-in-sorulari');
     }
 

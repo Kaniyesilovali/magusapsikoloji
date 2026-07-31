@@ -264,7 +264,11 @@ final class Ecosystem
     {
         $custom = trim((string) ($client['checkin_prompt'] ?? ''));
 
-        return $custom !== '' ? $custom : self::PROMPT;
+        // Dosyaya özel metin yoksa merkezin kendi varsayılanı geçerli; o da
+        // yoksa koddaki cümle. Varsayılan Checkins'in metin kütüğünde duruyor
+        // (bkz. Checkins::TEXTS) çünkü formun bütün metinleri tek ekrandan
+        // düzenleniyor — halkanınki ayrı bir yere düşseydi orada aranmazdı.
+        return $custom !== '' ? $custom : Checkins::text('halka_soru');
     }
 
     /** −1 / 0 / +1 dışındaki her değer "sakin" sayılır; form asla hata vermez. */
