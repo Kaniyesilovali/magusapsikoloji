@@ -120,8 +120,15 @@ $chip = [
 // Check-in eğrisi sayfanın üstünde, idari alanların önünde: terapist bu sayfayı
 // "iki seans arasında ne oldu?" sorusuyla açıyor, hesap durumunu öğrenmek için
 // değil. Bölüm yalnız terapiste çiziliyor (bkz. Rbac → checkin.view.own).
+//
+// Yöneticide o bölüm yok ama check-in'in idari yüzü var: bu kişiye haftalık
+// e-posta çıkıyor mu, hangi alanlar hangi kelimelerle soruluyor. Sayfada hiç
+// iz bırakmasaydı, o ayarları arayan yönetici burada boşluk görürdü — nitekim
+// gördü. Küçük kart yalnız kapıyı gösteriyor; ölçümler yine görünmüyor.
 if ($canSeeCheckins) {
     require __DIR__ . '/_checkins.php';
+} elseif ($canManageCheckins) {
+    require __DIR__ . '/_checkin_admin.php';
 }
 ?>
 

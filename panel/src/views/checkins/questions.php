@@ -142,7 +142,12 @@ $tones = [
               </span>
             </span>
           </label>
-          <a href="<?= e(url('/danisanlar/' . (int) $row['id'])) ?>" class="btn-text btn-text-quiet shrink-0">Kayıt</a>
+          <?php // Alan/metin uyarlaması tek tek dosyaya ait; listeden doğrudan
+                // açılıyor ki bunun için görüşmeci sayfasını dolaşmak gerekmesin. ?>
+          <span class="flex flex-col items-end gap-1 shrink-0">
+            <a href="<?= e(url('/danisanlar/' . (int) $row['id'] . '/alanlar')) ?>" class="btn-text btn-text-quiet">Alanlar</a>
+            <a href="<?= e(url('/danisanlar/' . (int) $row['id'])) ?>" class="btn-text btn-text-quiet">Kayıt</a>
+          </span>
         </div>
       <?php endforeach; ?>
 

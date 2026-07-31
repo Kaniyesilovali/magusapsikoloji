@@ -39,7 +39,7 @@ aksi hâlde `npm run build` onları `_site/panel/` içine kopyalar ve yayına ç
 | Onam formunu düzenle | ✔ | ✔ | — | — |
 | **Seans notu okuma/yazma** | **—** | **—** | **yalnız kendi yazdığı** | — |
 | **Check-in eğrisi / bağlantı gönderme** | **—** | **—** | **kendi görüşmecileri** | — |
-| Check-in soruları + haftalık gönderim listesi | ✔ | ✔ | kendi görüşmecileri | — |
+| Check-in soruları, gönderim listesi, sorulan alanlar | ✔ | ✔ | kendi görüşmecileri | — |
 | Sistem kayıtları (audit log) | ✔ | — | — | — |
 | Kendi profili | ✔ | ✔ | ✔ | ✔ |
 
@@ -403,8 +403,13 @@ söylemez.
 Görüşmeci sayfasında, idari alanların **önünde**: terapist o sayfayı "iki seans arasında
 ne oldu?" sorusuyla açıyor. Yetki `checkin.view.own` ile yalnız terapistte — `note.*` ile
 aynı gerekçe; yöneticide bilinçli olarak yok. Hangi görüşmecinin görülebildiği zaten
-`ClientScope` ile sınırlı. (Sorunun metni ve haftalık gönderim listesi ayrı bir yetkidir
-ve yöneticide de vardır — aşağıya bakın.)
+`ClientScope` ile sınırlı. (Sorunun metni, haftalık gönderim listesi ve sorulan alanlar
+ayrı bir yetkidir ve yöneticide de vardır — aşağıya bakın.)
+
+Eğriyi göremeyen ama `checkin.manage` taşıyan kullanıcı görüşmeci sayfasında bunun
+yerine tek kartlık idari bir özet görür: haftalık gönderim anahtarı ve "sorulan alanlar"
+bağlantısı. Puan, cümle, şerit ve örüntü o kartta yok — kart ölçümü değil kapıyı
+gösteriyor.
 
 Üç ölçü **üç ayrı satıra** çiziliyor, tek eksene çakıştırılmıyor: kaygıda yukarı kötüdür,
 diğer ikisinde iyidir; üst üste çizilen üç eğride yükselen çizginin ne anlama geldiği
@@ -444,6 +449,19 @@ durdurmanın tek yolu kaydı arşivlemekti; "bu dönem doldurmayalım" diyen bir
 fazla ağır bir işlemdi. Aynı anahtar görüşmeci sayfasındaki check-in bölümünde de var —
 karar çoğunlukla eğriye bakarken veriliyor. Açma/kapama denetim kaydına yazılır
 (`checkin.auto_on` / `checkin.auto_off`).
+
+**Sorulan alanlar ve metinler** (`/danisanlar/{id}/alanlar`, listedeki "Alanlar"
+bağlantısı). Formun ikinci sayfasındaki halka dosyaya göre uyarlanır: hangi alanlar açık,
+her alanın ebeveynin gördüğü adı ve altındaki açıklama, halkanın üstündeki tek soru, ve
+sözlükte karşılığı olmayan şeyler için dosya başına dört boş yuva. Sözlük kodda kalıyor
+(`Ecosystem::DOMAINS`), tablo yalnız sapmayı tutuyor: varsayılanla birebir aynı yazılan
+metin kaydedilmez, böylece ileride düzeltilen bir ifade uyarlanmamış dosyalara da iner.
+Ayrıntı ve gerekçeler: [`panel/ekosistem-plani.md`](../panel/ekosistem-plani.md) §Faz 3b.
+
+Bu ekran da `checkin.manage` ile yöneticiye açık ve bedeli açıkça şu: hangi alanların
+açık olduğu ("Bakım düzeni", "Kardeş") o aile hakkında bir şey söyler. Ölçümler
+söylemiyor — puan, cümle ve eğri `checkin.view.own` ile terapistte kalıyor. Uyarlanan
+metin denetim kaydına **yazılmaz**; kimin ne zaman değiştirdiği yeter.
 
 ### Hatırlatmalar (cron)
 

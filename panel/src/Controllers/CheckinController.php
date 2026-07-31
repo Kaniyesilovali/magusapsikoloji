@@ -185,14 +185,21 @@ final class CheckinController
     }
 
     /**
-     * Bir görüşmecide hangi alanların sorulacağı.
+     * Bir görüşmecide hangi alanların, hangi kelimelerle sorulacağı.
      *
-     * Görüşmeci sayfasından açılır; kaydın görünürlüğü ClientScope ile zaten
-     * sınırlı olduğu için burada tek ek kural yetkinin terapistte olması.
+     * Yetki `checkin.manage`: soruyu yazan da, alanın adını ailenin kullandığı
+     * ada çeviren de çoğu zaman merkezi yöneten kişi. Ekranı terapiste kapatmak
+     * yerine yöneticiye açmak, uyarlamanın hiç yapılmamasını engelliyor.
+     *
+     * Bedeli açık: hangi alanların açık olduğu ("Bakım düzeni", "Kardeş") o aile
+     * hakkında bir şey söyler ve bu ekran onu yöneticiye gösterir. Ölçümler
+     * göstermiyor — puan, cümle ve eğri `checkin.view.own` ile terapistte kalıyor.
+     *
+     * Kaydın görünürlüğü ayrıca ClientScope ile sınırlı.
      */
     public function domains(int $clientId): void
     {
-        $actor  = Auth::requirePermission('checkin.view.own');
+        $actor  = Auth::requirePermission('checkin.manage');
         $client = $this->scopedClient($clientId, $actor);
 
         if ($client === null) {
@@ -222,7 +229,7 @@ final class CheckinController
 
     public function saveDomains(int $clientId): void
     {
-        $actor  = Auth::requirePermission('checkin.view.own');
+        $actor  = Auth::requirePermission('checkin.manage');
         $client = $this->scopedClient($clientId, $actor);
 
         if ($client === null) {

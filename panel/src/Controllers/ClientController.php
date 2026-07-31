@@ -118,6 +118,10 @@ final class ClientController
         // Kaydın görünürlüğü zaten find() içinde ClientScope ile sınırlandı;
         // buraya gelen kayıt terapistin kendi görüşmecisi.
         $canSeeCheckins = Schema::checkinsReady() && Rbac::can($actor, 'checkin.view.own');
+        // Eğriyi göremeyen ama check-in'in idari yüzünü yöneten kullanıcı
+        // (yönetici) sayfada küçük bir kart görür — ölçüm değil, kapı.
+        $canManageCheckins = Schema::checkinsReady() && !$canSeeCheckins
+            && Rbac::can($actor, 'checkin.manage');
         $checkins       = $canSeeCheckins ? Checkins::history($id) : [];
         $checkinTotal   = $canSeeCheckins ? Checkins::count($id) : 0;
 
@@ -147,6 +151,7 @@ final class ClientController
             'canOpenCaseFile' => $canOpenCaseFile,
             'hasCaseFile'     => $hasCaseFile,
             'canSeeCheckins'  => $canSeeCheckins,
+            'canManageCheckins' => $canManageCheckins,
             'checkins'        => $checkins,
             'checkinTotal'    => $checkinTotal,
             'checkinPending'  => $canSeeCheckins ? Checkins::pendingRequest($id) : null,
@@ -365,7 +370,7 @@ final class ClientController
             redirect("/danisanlar/{$id}/duzenle");
         }
 
-        // Rıza bir kez alınır; sonradan geri çekilebilir ama tarihi yeniden yazılmaz.
+        // Onam bir kez alınır; sonradan geri çekilebilir ama tarihi yeniden yazılmaz.
         $consentAt      = $client['consent_at'];
         $consentVersion = $client['consent_version'];
         if ($input['consent'] && $consentAt === null) {
