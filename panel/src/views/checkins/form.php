@@ -4,7 +4,7 @@ use Panel\Csrf;
 use Panel\Ecosystem;
 use Panel\Scales;
 /** @var string $token @var string $firstName @var bool $noteOpen @var string $prompt */
-/** @var list<array{key:string,label:string,hint:string}> $domains */
+/** @var list<array{key:string,label:string,hint:string}> $domains @var bool $preview */
 
 // Üç soru, üç kaydırıcı, bir isteğe bağlı cümle. Ölçek yönü her sorunun altında
 // ayrıca yazıyor: kaygıda yüksek değer kötüdür, diğer ikisinde iyidir ve bunu
@@ -14,6 +14,10 @@ use Panel\Scales;
 // dili ile yazılımın dili aynı formda yan yana durmasın diye.
 $texts  = Checkins::texts();
 $scales = Scales::all(true);
+
+// Aynı şablon panelden önizleniyor da olabilir (bkz. CheckinController::preview).
+// Fark tek bir şeyde: önizlemede gönderilecek bir şey yok.
+$preview = $preview ?? false;
 ?>
 
 <div class="sheet-body">
@@ -24,8 +28,16 @@ $scales = Scales::all(true);
   </p>
 </div>
 
+<?php // Önizlemede sarmalayıcı <form> değil <div>: ortada bir jeton yokken
+      // gönderilebilir bir form çizmek, "Gönder"e basan birine sessizce
+      // başarısız olan bir sayfa verir. Kaydırıcılar, halka ve ✦ çipi
+      // etkileşimli kalır — önizlemenin gösterdiği şey zaten bu. ?>
+<?php if ($preview): ?>
+<div>
+<?php else: ?>
 <form method="post" action="<?= e(url('/check-in/' . $token)) ?>">
   <?= Csrf::field() ?>
+<?php endif; ?>
 
   <?php foreach ($scales as $scale): ?>
     <?php
@@ -147,6 +159,14 @@ $scales = Scales::all(true);
   <?php endif; ?>
 
   <div class="sheet-foot">
-    <button class="btn btn-primary w-full justify-center"><?= e($texts['gonder']) ?></button>
+    <?php // Düğme önizlemede de çiziliyor: üzerindeki yazı da panelden
+          // düzenlenen metinlerden biri. Yalnız basılamıyor. ?>
+    <button class="btn btn-primary w-full justify-center" <?= $preview ? 'disabled' : '' ?>>
+      <?= e($texts['gonder']) ?>
+    </button>
   </div>
+<?php if ($preview): ?>
+</div>
+<?php else: ?>
 </form>
+<?php endif; ?>

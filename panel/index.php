@@ -137,6 +137,8 @@ $router->post('/danisanlar/{id}/check-in-gonderim', [ClientController::class, 't
 $router->get('/check-in-sorulari',           [CheckinController::class, 'questions']);
 $router->post('/check-in-sorulari',          [CheckinController::class, 'saveQuestions']);
 $router->post('/check-in-sorulari/alicilar', [CheckinController::class, 'saveRecipients']);
+// Metni yazan kişinin sonucu görebildiği yer; jeton üretmez, kayıt yazmaz.
+$router->get('/check-in-sorulari/onizleme',  [CheckinController::class, 'preview']);
 // Hangi alanların sorulacağı görüşmeci başına değişir.
 $router->get('/danisanlar/{id}/alanlar',  [CheckinController::class, 'domains']);
 $router->post('/danisanlar/{id}/alanlar', [CheckinController::class, 'saveDomains']);

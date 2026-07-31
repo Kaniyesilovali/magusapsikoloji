@@ -21,6 +21,20 @@
 <div class="w-full max-w-md mx-auto">
   <p class="font-serif text-lg text-ink">Mağusa Psikoloji</p>
 
+  <?php // Önizlemede tek eklenti bu şerit. Sayfanın geri kalanı görüşmecinin
+        // gördüğünün AYNISI olmalı; yoksa önizlemenin bir değeri kalmaz. ?>
+  <?php if (!empty($preview)): ?>
+    <div class="note note-info mt-5">
+      <strong>Önizleme.</strong> Görüşmecinin gördüğü sayfa; buradan hiçbir şey
+      kaydedilmez ve kimseye ileti çıkmaz. Selamlamada kendi adınız yazıyor,
+      alanlar da uyarlanmamış varsayılan liste — bir dosyada hangi alanların
+      açık olduğu görüşmeci sayfasındaki <em>Alanlar</em> ekranında.
+      Sayfa <strong>kaydedilmiş</strong> metni gösterir; henüz kaydetmediğiniz
+      değişiklikler burada görünmez.
+      <a href="<?= e(url('/check-in-sorulari')) ?>" class="btn-text">Metinlere dön</a>
+    </div>
+  <?php endif; ?>
+
   <?php foreach ($flashes as $flash): ?>
     <?php
     $tone = match ($flash['type']) {

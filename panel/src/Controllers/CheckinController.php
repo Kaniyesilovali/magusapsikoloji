@@ -12,6 +12,7 @@ use Panel\Db;
 use Panel\Ecosystem;
 use Panel\Scales;
 use Panel\Schema;
+use Panel\Settings;
 use Panel\View;
 
 /**
@@ -157,7 +158,66 @@ final class CheckinController
             // amaçlı çizilir ve neyin eksik olduğunu söyler.
             'switchable' => Schema::checkinDeliveryReady(),
             'roster'     => $ready ? Checkins::roster($actor) : [],
+            // Listedeki "Sırada" rozetinin karşılığı cron'un koşması. Cron hiç
+            // kurulmamışsa ya da anahtar kapalıysa o rozet bir söz veriyor ve
+            // kimse tutmuyor: gönderimin durumu bu yüzden listenin başında.
+            'cron'       => $this->cronStatus(),
         ]);
+    }
+
+    /**
+     * Haftalık gönderimi yapan cron'un durumu — Sistem ekranındaki üç değerin
+     * bu ekrana ait olan kısmı (bkz. SystemController::checkinStatus).
+     *
+     * @return array{enabled:bool,lastRun:?string,lastResult:?string,stale:bool}
+     */
+    private function cronStatus(): array
+    {
+        $lastRun = Settings::get('checkin_last_run') ?: null;
+
+        return [
+            'enabled'    => Settings::get('checkins_enabled', '1') === '1',
+            'lastRun'    => $lastRun,
+            'lastResult' => Settings::get('checkin_last_result') ?: null,
+            // Haftalık bir işin sekiz gündür koşmaması "çalışıyor" değildir.
+            // Tarihi yazıp yeşil bir rozet göstermek, durmuş bir cron'u aylarca
+            // görünmez kılar: ekranda hiçbir şey yanlış görünmez, yalnız kimseye
+            // e-posta çıkmaz.
+            'stale'      => $lastRun !== null && strtotime($lastRun) < time() - 8 * 86400,
+        ];
+    }
+
+    /**
+     * Görüşmecinin göreceği form — panelden, gönderimsiz.
+     *
+     * Metni yazan kişi bugüne kadar sonucu ancak gerçek bir bağlantı üretip
+     * telefonda açarak görebiliyordu. Ters yazılmış bir uç ("kaygın ne kadar
+     * azdı?"), adı boş bırakılmış bir ölçek ya da fazla uzamış bir form ilk kez
+     * görüşmecide görünüyordu; düzeltmek de o hafta için geç oluyordu.
+     *
+     * Ekran formun KENDİ görünümünü çiziyor, kopyasını değil. İki şablon
+     * olsaydı önizleme birkaç sürüm sonra sessizce gerçeği göstermeyi bırakır
+     * ve yanlış bir güven verirdi.
+     */
+    public function preview(): void
+    {
+        $actor = Auth::requirePermission('checkin.manage');
+
+        View::render('checkins/form', [
+            'title'     => 'Önizleme — haftalık check-in',
+            // Şablonun tek farkı bu bayrak: gönderim yok, jeton yok.
+            'preview'   => true,
+            'token'     => '',
+            // Uydurma bir görüşmeci adı yerine önizleyenin kendi adı: sayfada
+            // gerçek bir dosyaya ait hiçbir şey yok ama selamlamanın nereye
+            // oturduğu görünüyor.
+            'firstName' => $this->firstName((string) $actor['full_name']),
+            'noteOpen'  => Crypto::available(),
+            // Dosyaya uyarlanmamış hâl: sözlüğün varsayılan açık alanları.
+            // Yaş verilmiyor, çünkü önizlemenin bir dosyası yok.
+            'domains'   => Schema::ecosystemReady() ? Ecosystem::openFor(0) : [],
+            'prompt'    => Ecosystem::PROMPT,
+        ], 'checkin_layout');
     }
 
     /**

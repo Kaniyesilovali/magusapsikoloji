@@ -6,6 +6,7 @@ use Panel\Csrf;
 /** @var array<string,array{label:string,low:string,high:string}> $measureDefaults */
 /** @var array<string,string> $texts @var array<string,array<string,mixed>> $textFields */
 /** @var list<array<string,mixed>> $roster @var bool $ready @var bool $switchable */
+/** @var array{enabled:bool,lastRun:?string,lastResult:?string,stale:bool} $cron */
 
 // İki soru, tek ekran: haftalık bağlantıda NE soruluyor ve KİME gidiyor.
 // Ayrı sayfalara bölünseydi ikisi de tek başına yarım kalırdı — metni
@@ -16,16 +17,27 @@ use Panel\Csrf;
 // "kaygın ne kadar azdı?" gibi ters bir soru yazar ve eğri sessizce yalan söyler.
 ?>
 
-<header class="mb-6">
-  <p class="eyebrow">Seanslar arası check-in</p>
-  <h1 class="page-title mt-2">Haftalık check-in</h1>
-  <p class="page-sub">
-    Görüşmecinin gördüğü bütün metinler ve e-postanın kimlere gittiği. Ölçek her
-    soruda 1–10 arası bir kaydırıcı; değişen cümleler ve uçların adları.
-  </p>
+<header class="flex flex-wrap items-end justify-between gap-4 mb-6">
+  <div>
+    <p class="eyebrow">Seanslar arası check-in</p>
+    <h1 class="page-title mt-2">Haftalık check-in</h1>
+    <p class="page-sub">
+      Görüşmecinin gördüğü bütün metinler ve e-postanın kimlere gittiği. Ölçek her
+      soruda 1–10 arası bir kaydırıcı; değişen cümleler ve uçların adları.
+    </p>
+  </div>
+  <?php // Önizleme yeni sekmede açılıyor: buradaki yarım düzenleme kaybolmasın.
+        // Gösterdiği şey KAYDEDİLMİŞ metin; bunu önizlemenin kendi şeridi
+        // söylüyor, çünkü uyarının okunması gereken yer orası. ?>
+  <a href="<?= e(url('/check-in-sorulari/onizleme')) ?>" target="_blank" rel="noopener"
+     class="btn btn-quiet">Formu önizle</a>
 </header>
 
-<form method="post" action="<?= e(url('/check-in-sorulari')) ?>" class="sheet">
+<?php // `data-dirty-guard`: bu formda değişiklik varken sayfadaki ÖTEKİ formun
+      // (gönderim listesi) kaydedilmesi buradaki metinleri sessizce çöpe atardı
+      // — iki ayrı form, tek sayfa, iki ayrı "Kaydet". Betik o durumda soruyor. ?>
+<form method="post" action="<?= e(url('/check-in-sorulari')) ?>" class="sheet"
+      data-dirty-guard="Soru ve metin alanlarında kaydedilmemiş değişiklik var; bu kaydetme yalnız gönderim listesini yazar ve o değişiklikler kaybolur. Devam edilsin mi?">
   <?= Csrf::field() ?>
 
   <?php if ($scalesReady): ?>
@@ -167,6 +179,30 @@ $tones = [
         İşaretli görüşmecilere cron haftada bir bağlantı yollar. İşareti
         kaldırmak takibi kapatmaz — terapist görüşmeci sayfasından elle bağlantı
         göndermeye devam edebilir.
+      </p>
+      <?php // Aşağıdaki "Sırada" rozeti bir söz: cron koşarsa bu kişiye gider.
+            // Cron kurulmamışsa ya da anahtar kapalıysa sözü tutan yok ve liste
+            // her hafta çalışıyormuş gibi görünür. Durum bu yüzden burada,
+            // rozetlerin hemen üstünde duruyor. ?>
+      <p class="text-xs text-ink-light mt-2">
+        <?php if (!$cron['enabled']): ?>
+          <span class="chip chip-stop">gönderim kapalı</span>
+          Haftalık gönderim <code>settings.checkins_enabled</code> ile kapatılmış:
+          aşağıda “Sırada” yazsa da hiçbir e-posta çıkmıyor.
+        <?php elseif ($cron['lastRun'] === null): ?>
+          <span class="chip chip-stop">cron hiç çalışmadı</span>
+          Gönderimi cPanel'deki cron yapar, panel kendi kendine tetiklemez —
+          kurulmamış olabilir. Komut <strong>Sistem</strong> ekranında.
+        <?php elseif ($cron['stale']): ?>
+          <span class="chip chip-stop">cron durmuş olabilir</span>
+          Haftalık bir iş ama son koşusu
+          <span class="num"><?= e(dt($cron['lastRun'])) ?></span> —
+          <?= e((string) $cron['lastResult']) ?>.
+        <?php else: ?>
+          <span class="chip chip-go">cron çalışıyor</span>
+          Son koşu <span class="num"><?= e(dt($cron['lastRun'])) ?></span> —
+          <?= e((string) $cron['lastResult']) ?>.
+        <?php endif; ?>
       </p>
     </div>
   </div>

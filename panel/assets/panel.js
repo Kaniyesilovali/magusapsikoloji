@@ -205,8 +205,55 @@
     source.classList.add('ci-dom-list-off');
   })();
 
+  // data-dirty-guard="mesaj" taşıyan formda kaydedilmemiş değişiklik varken
+  // sayfayı terk etmek ya da BAŞKA bir formu göndermek onay ister.
+  //
+  // İkincisi asıl mesele: check-in ekranında metin formu ile gönderim listesi
+  // aynı sayfada ama ayrı iki form, ayrı iki "Kaydet". Cümleleri düzenleyip
+  // alttaki düğmeye basan kişi listeyi kaydeder ve yazdıklarını uyarısız
+  // kaybederdi — tarayıcının beforeunload'u burada hiç devreye girmez, çünkü
+  // sayfa gerçekten gönderiliyor.
+  (function () {
+    var guarded = document.querySelector('form[data-dirty-guard]');
+    if (!guarded) return;
+
+    var dirty = false;
+    var soil = function () { dirty = true; };
+
+    guarded.addEventListener('input', soil);
+    guarded.addEventListener('change', soil);
+    // Kendi gönderimi değişiklikleri yazıyor: artık kirli değil.
+    guarded.addEventListener('submit', function () { dirty = false; });
+
+    document.addEventListener('submit', function (event) {
+      if (event.defaultPrevented || !dirty) return;
+
+      var form = event.target;
+      if (!(form instanceof HTMLFormElement) || form === guarded) return;
+
+      if (!window.confirm(guarded.getAttribute('data-dirty-guard'))) {
+        event.preventDefault();
+        return;
+      }
+
+      // Bilerek devam ediliyor; aynı soru bir de sayfadan ayrılırken sorulmasın.
+      dirty = false;
+    });
+
+    window.addEventListener('beforeunload', function (event) {
+      if (!dirty) return;
+      // Metni tarayıcı belirler; sadece "sorulsun" demek yeterli.
+      event.preventDefault();
+      event.returnValue = '';
+    });
+  })();
+
   // data-confirm taşıyan formlar gönderilmeden önce onay ister.
   document.addEventListener('submit', function (event) {
+    // Önceki bir dinleyici gönderimi durdurduysa burada yapılacak iş yok:
+    // aşağıdaki düğme kilidi çalışırsa vazgeçilen form bir daha gönderilemez.
+    if (event.defaultPrevented) return;
+
     var form = event.target;
     if (!(form instanceof HTMLFormElement)) return;
 
