@@ -41,11 +41,23 @@ $link = static function (array $over = []) use ($mode, $anchor, $therapistFilter
 // hafta görünümünde ay ay atlamak kullanıcıyı kaybettirirdi.
 $prev = $isMonth ? $monthStart->modify('-1 month') : $rangeStart->modify('-7 days');
 $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 days');
+
+// Başlık üstü satırı "Randevular" demiyor artık — menüde zaten işaretli ve
+// başlığın kendisi tarih aralığı. Yerine hangi kayıtlara bakıldığı yazıyor:
+// filtre açıkken bunu söyleyen tek yer aşağıdaki açılır kutuydu ve seçili
+// terapistle gelen bir bağlantı sessizce eksik bir takvim gösteriyordu.
+$filterLabel = 'Tüm terapistler';
+foreach ($therapists as $therapist) {
+    if ($therapistFilter === (int) $therapist['id']) {
+        $filterLabel = (string) $therapist['full_name'];
+        break;
+    }
+}
 ?>
 
 <header class="flex flex-wrap items-end justify-between gap-4 mb-6">
   <div>
-    <p class="eyebrow">Randevular</p>
+    <p class="eyebrow"><?= e($filterLabel) ?></p>
     <h1 class="page-title mt-2">
       <?php if ($isMonth): ?>
         <?= e(tr_month_name((int) $monthStart->format('n')) . ' ' . $monthStart->format('Y')) ?>
@@ -60,8 +72,7 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
   <?php endif; ?>
 </header>
 
-<div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-  <div class="flex flex-wrap items-center gap-3">
+<div class="ctl mb-4">
     <nav class="flex items-center gap-1.5" aria-label="<?= $isMonth ? 'Ay' : 'Hafta' ?>">
       <a href="<?= e($link(['tarih' => $prev->format('Y-m-d')])) ?>" class="btn btn-quiet btn-sm">←&nbsp;Önceki</a>
       <a href="<?= e($link(['tarih' => $today])) ?>" class="btn btn-quiet btn-sm"><?= $isMonth ? 'Bu ay' : 'Bu hafta' ?></a>
@@ -75,7 +86,6 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
            <?= $mode === $value ? 'aria-current="true"' : '' ?>><?= e($label) ?></a>
       <?php endforeach; ?>
     </nav>
-  </div>
 
   <?php // Ay ve terapist tek formda: ikisi de "neye bakıyorum" sorusunun parçası,
         // ayrı ayrı iki "Göster" düğmesi aynı satırda gereksiz bir seçim yaratırdı.

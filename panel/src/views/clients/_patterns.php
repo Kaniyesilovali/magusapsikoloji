@@ -15,7 +15,8 @@ $anchors = $patterns['anchors'] ?? [];
 ?>
 
 <?php if ($rows !== [] || $anchors !== []): ?>
-  <section class="sheet mb-6">
+  <?php // Aradaki boşluğu sütunun kendi gap'i veriyor (bkz. clients/show.php). ?>
+  <section class="sheet">
     <div class="sheet-head">
       <div>
         <h2 class="sheet-title">Bakılacak yerler</h2>

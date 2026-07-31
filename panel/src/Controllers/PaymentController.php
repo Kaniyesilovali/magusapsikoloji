@@ -86,7 +86,10 @@ final class PaymentController
             'totals'          => $this->totals($rows),
             'from'            => $from,
             'to'              => $to->modify('-1 day'),
-            'nav'             => $this->nav($from, $to),
+            // Dönem kipi açıkça taşınıyor. Aralığın şeklinden tahmin edilseydi
+            // tam bir aya denk gelen serbest aralık "ay" sayılır ve ekrandaki
+            // "Aralık" düğmesi hiçbir şey yapmamış gibi görünürdü.
+            'nav'             => $this->nav($from, $to, query('gorunum') === 'aralik' ? false : null),
             'status'          => $status,
             'statusLabels'    => self::STATUS_LABELS,
             'therapists'      => Rbac::can($actor, 'payment.view.all') ? $this->therapistOptions() : [],
@@ -388,12 +391,12 @@ final class PaymentController
      * @param  DateTimeImmutable $to  bitişin ertesi günü
      * @return array{isMonth:bool, prev:array<string,string>, next:array<string,string>}
      */
-    private function nav(DateTimeImmutable $from, DateTimeImmutable $to): array
+    private function nav(DateTimeImmutable $from, DateTimeImmutable $to, ?bool $forceMonth = null): array
     {
         $last = $to->modify('-1 day');
 
-        $isMonth = $from->format('j') === '1'
-            && $last->format('Y-m-d') === $from->modify('last day of this month')->format('Y-m-d');
+        $isMonth = $forceMonth ?? ($from->format('j') === '1'
+            && $last->format('Y-m-d') === $from->modify('last day of this month')->format('Y-m-d'));
 
         if ($isMonth) {
             return [

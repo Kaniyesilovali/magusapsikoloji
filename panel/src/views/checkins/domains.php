@@ -35,7 +35,7 @@ $row = static function (array $field) use ($editable): void {
     $custom = (bool) $field['custom'];
     ?>
     <div class="px-5 py-3 border-t border-warm-secondary">
-      <label class="flex items-start gap-3 cursor-pointer" for="<?= e($id) ?>">
+      <label class="pick flex items-start gap-3 cursor-pointer -m-1 p-1" for="<?= e($id) ?>">
         <input type="checkbox" id="<?= e($id) ?>" name="<?= e($name) ?>[acik]" value="1"
                <?= $field['open'] ? 'checked' : '' ?> class="mt-1 shrink-0">
         <span class="min-w-0">
@@ -106,7 +106,7 @@ $row = static function (array $field) use ($editable): void {
   <div class="sheet-head">
     <div>
       <h2 class="sheet-title">Sorunun kendisi</h2>
-      <p class="text-xs text-ink-light mt-1">
+      <p class="text-sm text-ink-muted mt-1">
         Halkanın üstünde duran tek cümle. Kimin doldurduğuna göre değişir:
         ebeveyn dosyasında “çocuğunun”, ergen dosyasında “senin”.
       </p>
@@ -145,7 +145,7 @@ $row = static function (array $field) use ($editable): void {
     <div class="sheet-head border-t border-warm-secondary">
       <div>
         <h2 class="sheet-title"><?= e($title) ?></h2>
-        <p class="text-xs text-ink-light mt-1"><?= e($note) ?></p>
+        <p class="text-sm text-ink-muted mt-1"><?= e($note) ?></p>
       </div>
     </div>
 

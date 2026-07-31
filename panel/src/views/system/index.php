@@ -1,13 +1,31 @@
 <?php
 use Panel\Csrf;
-/** @var array $pending @var array $applied @var array $checks @var array $reminder @var array $mail @var array $actor */
-/** @var array $checkin @var array $backup @var string $phpBinary */
+/** @var array $pending @var array $applied @var array $checks @var array $mail @var array $actor */
+/** @var list<array<string,mixed>> $jobs @var array $backup @var string $phpBinary */
+
+$cronDir = dirname(PANEL_ROOT) . '/panel/cron/';
+
+// Başlık üstü satırı menü öbeğini ("Yönetim") tekrarlıyordu. Yerine sayfanın
+// tek cümlelik özeti: bekleyen bir göç ya da durmuş bir iş varsa bu satır
+// söyler, sayfayı açan kişi aşağı inmeden bilir.
+$troubled = array_values(array_filter(
+    $jobs,
+    static fn (array $job): bool => $job['stateChip'] === 'chip-stop'
+));
 ?>
 
 <header class="mb-6">
-  <p class="eyebrow">Yönetim</p>
+  <p class="eyebrow">
+    <?php if ($pending !== []): ?>
+      <span class="num"><?= count($pending) ?></span> güncelleme bekliyor
+    <?php elseif ($troubled !== []): ?>
+      <span class="num"><?= count($troubled) ?></span> iş dikkat istiyor
+    <?php else: ?>
+      Her şey yerinde
+    <?php endif; ?>
+  </p>
   <h1 class="page-title mt-2">Sistem</h1>
-  <p class="page-sub">Sunucu durumu ve veritabanı güncellemeleri.</p>
+  <p class="page-sub">Sunucu durumu, zamanlanmış işler ve veritabanı güncellemeleri.</p>
 </header>
 
 <?php if ($pending !== []): ?>
@@ -55,7 +73,7 @@ use Panel\Csrf;
         <span class="chip <?= $check['ok'] ? 'chip-go' : 'chip-stop' ?>">
           <?= $check['ok'] ? 'tamam' : 'dikkat' ?>
         </span>
-        <span class="text-xs text-ink-light flex-1 min-w-48"><?= e($check['detail']) ?></span>
+        <span class="text-sm text-ink-muted flex-1 min-w-48"><?= e($check['detail']) ?></span>
       </li>
     <?php endforeach; ?>
   </ul>
@@ -67,7 +85,7 @@ use Panel\Csrf;
   <div class="sheet-head">
     <div>
       <h2 class="sheet-title">E-posta gönderimi</h2>
-      <p class="text-xs text-ink-light mt-1">
+      <p class="text-sm text-ink-muted mt-1">
         Davet, şifre sıfırlama ve randevu hatırlatma e-postalarının tümü bu ayarlardan çıkar.
       </p>
     </div>
@@ -79,13 +97,13 @@ use Panel\Csrf;
   <ul class="divide-y divide-warm-secondary">
     <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
       <span class="text-sm text-ink w-56 shrink-0">Sürücü</span>
-      <span class="text-xs text-ink-light flex-1 min-w-48">
+      <span class="text-sm text-ink-muted flex-1 min-w-48">
         <code><?= e($mail['driver']) ?></code> — <?= e($mail['detail']) ?>
       </span>
     </li>
     <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
       <span class="text-sm text-ink w-56 shrink-0">Gönderen adres</span>
-      <span class="text-xs text-ink-light flex-1 min-w-48">
+      <span class="text-sm text-ink-muted flex-1 min-w-48">
         <?= $mail['from'] !== '' ? e($mail['from']) : 'tanımlı değil — gönderim büyük olasılıkla reddedilir' ?>
       </span>
     </li>
@@ -110,205 +128,110 @@ use Panel\Csrf;
   </div>
 </section>
 
+<?php
+// ── Zamanlanmış işler ──────────────────────────────────────────────────
+//
+// Üç iş bugüne kadar üç ayrı yaprakta duruyordu ve üçü de birebir aynı kalıbı
+// tekrarlıyordu: durum satırı, son çalışma satırı, "cPanel → Cron Jobs"
+// açıklaması, komut bloğu. Arıza anında sorulan soru ise hepsi için aynı ve
+// tek: hangisi durmuş? Yan yana durunca bu tek bakışta görünüyor.
+//
+// Kurulum metni de bir kez yazılıyor. Komutların üçü aynı kalıp; değişen
+// yalnız sıklık ile dosya adı, ki tablo zaten satır satır onu söylüyor.
+?>
 <section class="sheet mb-6">
   <div class="sheet-head">
     <div>
-      <h2 class="sheet-title">Randevu hatırlatmaları</h2>
-      <p class="text-xs text-ink-light mt-1">
-        Görüşmecilere, randevudan <span class="num"><?= (int) $reminder['hours'] ?></span> saat önce e-posta gider.
-        Gönderimi cPanel'deki cron çalıştırır; panel kendi kendine tetiklemez.
+      <h2 class="sheet-title">Zamanlanmış işler</h2>
+      <p class="text-sm text-ink-muted mt-1">
+        Üçünü de cPanel'deki cron çalıştırır; panel kendi kendine tetiklemez.
       </p>
     </div>
   </div>
 
-  <?php if (!$reminder['ready']): ?>
-    <p class="px-5 py-6 text-sm text-ink-muted">
-      Veritabanı güncellemesi bekleniyor — yukarıdaki düğmeyle uygulayın.
+  <div class="overflow-x-auto">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>İş</th>
+          <th>Durum</th>
+          <th>Son çalışma</th>
+          <th>Sıradaki</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($jobs as $job): ?>
+          <tr>
+            <td>
+              <span class="text-ink"><?= e((string) $job['label']) ?></span>
+              <br><span class="text-xs text-ink-light"><?= e((string) $job['schedule']) ?></span>
+            </td>
+            <td>
+              <span class="chip <?= e((string) $job['stateChip']) ?>"><?= e((string) $job['stateLabel']) ?></span>
+              <?php // Rozetin sebebi rozetin altında: "kurulmadı" tek başına
+                    // neyin eksik olduğunu söylemez ve kullanıcıyı aramaya yollar. ?>
+              <?php if ($job['blocked'] !== null): ?>
+                <br><span class="text-xs text-accent-dark"><?= e((string) $job['blocked']) ?></span>
+              <?php elseif ($job['settingKey'] !== null): ?>
+                <br><span class="text-xs text-ink-light"><code><?= e((string) $job['settingKey']) ?></code></span>
+              <?php endif; ?>
+            </td>
+            <td class="num">
+              <?php if ($job['lastRun'] === null): ?>
+                <span class="text-ink-light">—</span>
+                <br><span class="text-xs text-ink-light">cron kurulmamış olabilir</span>
+              <?php else: ?>
+                <?= e(dt((string) $job['lastRun'])) ?>
+                <?php if ($job['lastResult'] !== null): ?>
+                  <br><span class="text-xs text-ink-light"><?= e((string) $job['lastResult']) ?></span>
+                <?php endif; ?>
+              <?php endif; ?>
+            </td>
+            <td class="text-ink-muted"><?= e((string) $job['measure']) ?></td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sheet-foot">
+    <p class="text-sm text-ink-muted mb-2">
+      cPanel → <strong>Cron Jobs</strong> → satırdaki sıklığı seçip ilgili komutu yapıştırın:
     </p>
-  <?php else: ?>
-    <ul class="divide-y divide-warm-secondary">
-      <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
-        <span class="text-sm text-ink w-56 shrink-0">Durum</span>
-        <span class="chip <?= $reminder['enabled'] ? 'chip-go' : 'chip-neutral' ?>">
-          <?= $reminder['enabled'] ? 'açık' : 'kapalı' ?>
-        </span>
-        <span class="text-xs text-ink-light flex-1 min-w-48">
-          <code>settings.reminders_enabled</code> değeri ile kapatılabilir.
-        </span>
-      </li>
-      <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
-        <span class="text-sm text-ink w-56 shrink-0">Son çalışma</span>
-        <span class="chip <?= $reminder['lastRun'] === null ? 'chip-stop' : 'chip-go' ?>">
-          <?= $reminder['lastRun'] === null ? 'hiç çalışmadı' : 'çalıştı' ?>
-        </span>
-        <span class="text-xs text-ink-light flex-1 min-w-48 num">
-          <?php if ($reminder['lastRun'] === null): ?>
-            Cron kurulmamış olabilir — aşağıdaki komutu cPanel → Cron Jobs ekranına ekleyin.
-          <?php else: ?>
-            <?= e(dt($reminder['lastRun'])) ?> — <?= e((string) $reminder['lastResult']) ?>
-          <?php endif; ?>
-        </span>
-      </li>
-      <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
-        <span class="text-sm text-ink w-56 shrink-0">Sıradaki gönderim</span>
-        <span class="text-xs text-ink-light flex-1 min-w-48">
-          <span class="num"><?= (int) $reminder['queued'] ?></span> randevu bekliyor
-          (önümüzdeki <span class="num"><?= (int) $reminder['hours'] ?></span> saat, e-posta adresi kayıtlı olanlar)
-        </span>
-      </li>
-    </ul>
+    <pre class="text-xs bg-white border border-warm-tertiary rounded-md p-3 overflow-x-auto"><code><?php
+      foreach ($jobs as $job):
+        echo e(str_pad((string) $job['cron'], 12)) . e($phpBinary) . ' ' . e($cronDir . $job['script']) . "\n";
+      endforeach;
+    ?></code></pre>
 
-    <div class="sheet-foot">
-      <p class="text-xs text-ink-muted mb-2">
-        cPanel → <strong>Cron Jobs</strong> → “Saatte bir” (<code>0 * * * *</code>) seçip komutu yapıştırın:
-      </p>
-      <pre class="text-xs bg-white border border-warm-tertiary rounded-md p-3 overflow-x-auto"><code><?= e($phpBinary) ?> <?= e(dirname(PANEL_ROOT)) ?>/panel/cron/reminders.php</code></pre>
-    </div>
-  <?php endif; ?>
-</section>
-
-<?php // Check-in cron'u randevu hatırlatmasından ayrı bir işi var: buradaki
-      // asıl bilgi "çalıştı mı" değil, doldurma oranı. Pilotun kararı o sayıya
-      // bakılarak veriliyor. ?>
-<section class="sheet mb-6">
-  <div class="sheet-head">
-    <div>
-      <h2 class="sheet-title">Seanslar arası check-in</h2>
-      <p class="text-xs text-ink-light mt-1">
-        Haftalık hatırlatma yalnız terapistin döngüyü başlattığı görüşmecilere gider.
-        Gönderimi cPanel'deki cron çalıştırır; panel kendi kendine tetiklemez.
-      </p>
-    </div>
-  </div>
-
-  <?php if (!$checkin['ready']): ?>
-    <p class="px-5 py-6 text-sm text-ink-muted">
-      Veritabanı güncellemesi bekleniyor — yukarıdaki düğmeyle uygulayın.
-    </p>
-  <?php else: ?>
-    <ul class="divide-y divide-warm-secondary">
-      <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
-        <span class="text-sm text-ink w-56 shrink-0">Durum</span>
-        <span class="chip <?= $checkin['enabled'] ? 'chip-go' : 'chip-neutral' ?>">
-          <?= $checkin['enabled'] ? 'açık' : 'kapalı' ?>
-        </span>
-        <span class="text-xs text-ink-light flex-1 min-w-48">
-          <code>settings.checkins_enabled</code> değeri ile kapatılabilir.
-        </span>
-      </li>
-      <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
-        <span class="text-sm text-ink w-56 shrink-0">Son çalışma</span>
-        <span class="chip <?= $checkin['lastRun'] === null ? 'chip-stop' : 'chip-go' ?>">
-          <?= $checkin['lastRun'] === null ? 'hiç çalışmadı' : 'çalıştı' ?>
-        </span>
-        <span class="text-xs text-ink-light flex-1 min-w-48 num">
-          <?php if ($checkin['lastRun'] === null): ?>
-            Cron kurulmamış olabilir — aşağıdaki komutu cPanel → Cron Jobs ekranına ekleyin.
-          <?php else: ?>
-            <?= e(dt($checkin['lastRun'])) ?> — <?= e((string) $checkin['lastResult']) ?>
-          <?php endif; ?>
-        </span>
-      </li>
-      <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
-        <span class="text-sm text-ink w-56 shrink-0">Doldurma oranı</span>
-        <span class="text-xs text-ink-light flex-1 min-w-48">
-          <span class="num"><?= (int) $checkin['sent'] ?></span> bağlantı gönderildi,
-          <span class="num"><?= (int) $checkin['completed'] ?></span> dolduruldu
-          <?php if ($checkin['sent'] > 0): ?>
-            (<span class="num"><?= (int) round($checkin['completed'] / $checkin['sent'] * 100) ?>%</span>)
-          <?php endif; ?>
-          — <span class="num"><?= (int) $checkin['enrolled'] ?></span> görüşmecide açık,
-          <span class="num"><?= (int) $checkin['pending'] ?></span> bağlantı bekliyor.
-        </span>
-      </li>
-    </ul>
-
-    <div class="sheet-foot">
-      <p class="text-xs text-ink-muted mb-2">
-        cPanel → <strong>Cron Jobs</strong> → pazartesi 09:00 (<code>0 9 * * 1</code>) seçip komutu yapıştırın:
-      </p>
-      <pre class="text-xs bg-white border border-warm-tertiary rounded-md p-3 overflow-x-auto"><code><?= e($phpBinary) ?> <?= e(dirname(PANEL_ROOT)) ?>/panel/cron/checkins.php</code></pre>
-      <p class="field-hint">
-        Oran düşükse ilk şüpheli e-posta kanalıdır, kod değil: bağlantı görüşmeci
-        sayfasından kopyalanıp başka bir kanaldan (ör. WhatsApp) denenebilir.
-      </p>
-    </div>
-  <?php endif; ?>
-</section>
-
-<?php // Yedeğin "alındı" demesi yetmez, ne zaman ve ne büyüklükte alındığı
-      // görünmeli: sıfır baytlık bir yedek de her gece başarıyla alınır. ?>
-<section class="sheet mb-6">
-  <div class="sheet-head">
-    <div>
-      <h2 class="sheet-title">Otomatik yedek</h2>
-      <p class="text-xs text-ink-light mt-1">
-        Veritabanının şifreli kopyası. Gönderimi cPanel'deki cron çalıştırır;
-        panel kendi kendine tetiklemez.
-      </p>
-    </div>
-    <span class="chip <?= $backup['ready'] ? 'chip-go' : 'chip-stop' ?>">
-      <?= $backup['ready'] ? 'açık' : 'kapalı' ?>
-    </span>
-  </div>
-
-  <?php if (!$backup['ready']): ?>
-    <div class="sheet-body">
-      <p class="note note-stop mb-3">
+    <?php if (!$backup['ready']): ?>
+      <?php // Yedek anahtarı eksikse iş hiç kurulamaz; komutu vermeden önce
+            // anahtarın nasıl üretileceği yazmalı. ?>
+      <p class="note note-stop mt-3">
         <code>security.backup_key</code> tanımlı değil — yedek alınmıyor.
+        Anahtarı üretmek için (SSH varsa):
       </p>
-      <p class="text-xs text-ink-muted mb-2">Anahtarı üretmek için (SSH varsa):</p>
-      <pre class="text-xs bg-white border border-warm-tertiary rounded-md p-3 overflow-x-auto"><code><?= e($phpBinary) ?> <?= e(dirname(PANEL_ROOT)) ?>/panel/cron/backup.php --anahtar-uret</code></pre>
+      <pre class="text-xs bg-white border border-warm-tertiary rounded-md p-3 overflow-x-auto mt-2"><code><?= e($phpBinary) ?> <?= e($cronDir) ?>backup.php --anahtar-uret</code></pre>
       <p class="field-hint">
         Çıkan satırı <code>config.php</code> içindeki <code>security</code> bölümüne ekleyin ve
         aynı değeri parola yöneticinize kaydedin — <strong><code>note_key</code>'den ayrı bir kayıt olarak.</strong>
         Bu anahtar kaybolursa yedekler açılamaz.
       </p>
-    </div>
-  <?php else: ?>
-    <ul class="divide-y divide-warm-secondary">
-      <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
-        <span class="text-sm text-ink w-56 shrink-0">Son çalışma</span>
-        <span class="chip <?= $backup['lastRun'] === null ? 'chip-stop' : 'chip-go' ?>">
-          <?= $backup['lastRun'] === null ? 'hiç çalışmadı' : 'çalıştı' ?>
-        </span>
-        <span class="text-xs text-ink-light flex-1 min-w-48 num">
-          <?php if ($backup['lastRun'] === null): ?>
-            Cron kurulmamış olabilir — aşağıdaki komutu cPanel → Cron Jobs ekranına ekleyin.
-          <?php else: ?>
-            <?= e(dt($backup['lastRun'])) ?> — <?= e((string) $backup['lastResult']) ?>
-          <?php endif; ?>
-        </span>
-      </li>
-      <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
-        <span class="text-sm text-ink w-56 shrink-0">Elde tutulan</span>
-        <span class="text-xs text-ink-light flex-1 min-w-48">
-          <span class="num"><?= (int) $backup['count'] ?></span> yedek
-          (en fazla <span class="num"><?= Panel\Backup::KEEP ?></span> saklanır)
-          <?php if ($backup['newest'] !== null): ?>
-            — en yenisi <span class="num"><?= e(date('d.m.Y H:i', $backup['newest']['time'])) ?></span>,
-            <span class="num"><?= e(number_format($backup['newest']['bytes'] / 1024, 0, ',', '.')) ?></span> KB
-          <?php endif; ?>
-        </span>
-      </li>
-      <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1">
-        <span class="text-sm text-ink w-56 shrink-0">Konum</span>
-        <span class="text-xs text-ink-light flex-1 min-w-48 font-mono"><?= e($backup['dir']) ?></span>
-      </li>
-    </ul>
-
-    <div class="sheet-foot">
-      <p class="text-xs text-ink-muted mb-2">
-        cPanel → <strong>Cron Jobs</strong> → her gece 03:00 (<code>0 3 * * *</code>) seçip komutu yapıştırın:
-      </p>
-      <pre class="text-xs bg-white border border-warm-tertiary rounded-md p-3 overflow-x-auto"><code><?= e($phpBinary) ?> <?= e(dirname(PANEL_ROOT)) ?>/panel/cron/backup.php</code></pre>
+    <?php else: ?>
       <p class="note note-info mt-3">
-        Bu yedek <strong>aynı sunucuda</strong> duruyor; sunucu giderse o da gider.
-        Ayda bir dosyayı indirmek hâlâ gerekli. Kurtarma:
-        <code>backup.php --coz &lt;dosya&gt; &lt;hedef.sql&gt;</code> → phpMyAdmin → İçe Aktar.
+        Yedekler <strong>aynı sunucuda</strong> duruyor (<code><?= e((string) $backup['dir']) ?></code>);
+        sunucu giderse onlar da gider. Ayda bir dosyayı indirmek hâlâ gerekli.
+        En fazla <span class="num"><?= Panel\Backup::KEEP ?></span> yedek saklanır.
+        Kurtarma: <code>backup.php --coz &lt;dosya&gt; &lt;hedef.sql&gt;</code> → phpMyAdmin → İçe Aktar.
       </p>
-    </div>
-  <?php endif; ?>
+    <?php endif; ?>
+
+    <p class="field-hint">
+      Check-in doldurma oranı düşükse ilk şüpheli e-posta kanalıdır, kod değil:
+      bağlantı görüşmeci sayfasından kopyalanıp başka bir kanaldan (ör. WhatsApp)
+      denenebilir.
+    </p>
+  </div>
 </section>
 
 <section class="sheet">

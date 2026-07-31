@@ -29,8 +29,11 @@ $prev = $isMonth ? $monthStart->modify('-1 month') : $rangeStart->modify('-7 day
 $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 days');
 ?>
 
+<?php // Başlık üstü satırı kimin takvimine bakıldığını söylüyor: sayfanın
+      // tamamı (şablon, izinler, takvim) tek bir terapiste ait ve yönetici
+      // ekranı başkasının seçili hâliyle bırakıp geri dönebiliyor. ?>
 <header class="mb-6">
-  <p class="eyebrow">Merkez</p>
+  <p class="eyebrow"><?= e($therapist === null ? 'Terapist yok' : (string) $therapist['full_name']) ?></p>
   <h1 class="page-title mt-2">Müsaitlik</h1>
   <p class="page-sub">
     Haftalık çalışma şablonu ve izinler. Randevu kaydını engellemez; dışına çıkıldığında uyarı verir.
@@ -50,7 +53,7 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
 
 <?php if ($isManager && $therapists !== []): ?>
   <form method="get" action="<?= e(url('/musaitlik')) ?>" data-autosubmit
-        class="mb-4 flex flex-wrap items-center gap-2">
+        class="ctl mb-4">
     <input type="hidden" name="gorunum" value="<?= e($mode) ?>">
     <input type="hidden" name="tarih" value="<?= e($anchor->format('Y-m-d')) ?>">
     <label for="terapist" class="eyebrow">Terapist</label>
@@ -79,7 +82,7 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
       <?php endif; ?>
     </h2>
 
-    <div class="flex flex-wrap items-center gap-3">
+    <div class="ctl">
       <nav class="flex items-center gap-1.5" aria-label="<?= $isMonth ? 'Ay' : 'Hafta' ?>">
         <a href="<?= e($link(['tarih' => $prev->format('Y-m-d')])) ?>" class="btn btn-quiet btn-sm">←&nbsp;Önceki</a>
         <a href="<?= e($link(['tarih' => $today])) ?>" class="btn btn-quiet btn-sm"><?= $isMonth ? 'Bu ay' : 'Bu hafta' ?></a>

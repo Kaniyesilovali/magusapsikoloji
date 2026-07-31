@@ -277,6 +277,19 @@ details > summary::-webkit-details-marker {
     margin-top: 0.35rem;
   }
 
+  /* Kutucuğa bağlı satır. Tıklanınca bir şey oluyorsa öyle görünmeli: bu
+     etiketler bir kutucuğu çeviriyor ama hiçbir geri bildirimi yoktu ve
+     satırın metin gibi durduğu yerde kimse üzerine basmayı denemiyordu.
+
+     Vurgu satırın tamamına değil yalnız etikete veriliyor — sağdaki
+     bağlantılar kutucuğu çevirmiyor, aynı zemini paylaşmaları onları da
+     çeviriyormuş gibi gösterirdi. */
+  .pick {
+    border-radius: 6px;
+    transition: background-color 0.15s;
+  }
+  .pick:hover { background: var(--color-warm); }
+
   /* ── Rozet ─────────────────────────────────────────────────────────── */
   .chip {
     display: inline-flex;
@@ -292,6 +305,19 @@ details > summary::-webkit-details-marker {
   .chip-go      { background: var(--color-primary-soft);   color: var(--color-primary-dark); }
   .chip-done    { background: transparent; color: var(--color-ink-light); box-shadow: inset 0 0 0 1px var(--color-warm-tertiary); }
   .chip-stop    { background: var(--color-accent-soft);    color: var(--color-accent-dark); }
+
+  /* ── Denetim şeridi ────────────────────────────────────────────────────
+     Randevular, Müsaitlik ve Ödemeler'in üçünde de aynı satır var: dönem
+     okları, bir görünüm anahtarı ve o görünüme ait bir seçici. Üçü de elle
+     dizilmişti ve boşluklarıyla sarma davranışları birbirinden ayrı düşmüştü —
+     aynı işi yapan üç şerit, üç farklı ritim. Tek kalıp: yatayda akar, dar
+     ekranda sarar, dikey hizası ortadır.                                   */
+  .ctl {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+  }
 
   /* ── Tablo ─────────────────────────────────────────────────────────── */
   .tbl { width: 100%; font-size: 0.875rem; border-collapse: collapse; }
@@ -429,6 +455,51 @@ details > summary::-webkit-details-marker {
     white-space: nowrap;
   }
 
+  /* ── Kişi arama kutusu ──────────────────────────────────────────────────
+     Menünün kendi rengine ait: beyaz bir alan koyu sütunun ortasında delik
+     gibi durur ve gözü menüden koparır. Zemin, beyazın en ince perdesi.
+     Kutu menüde, sayfada değil — çünkü aranan şey sayfaya bağlı değil.    */
+  .side-find {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin: 0 0.75rem 1rem;
+  }
+  /* Mobil menüde sarmalayıcının kendi yatay boşluğu var; iki kez girinti
+     kutuyu menü satırlarından ayrı bir yere düşürürdü. */
+  .side-find-flush { margin-inline: 0; }
+
+  .side-find-mark {
+    position: absolute;
+    left: 0.55rem;
+    width: 13px;
+    height: 13px;
+    color: rgb(255 255 255 / 0.4);
+    pointer-events: none;
+  }
+  .side-find input {
+    width: 100%;
+    padding: 0.4rem 0.6rem 0.4rem 1.85rem;
+    border: 1px solid rgb(255 255 255 / 0.12);
+    border-radius: 6px;
+    background: rgb(255 255 255 / 0.07);
+    color: #fff;
+    font-size: 0.8125rem;
+    line-height: 1.3;
+  }
+  .side-find input::placeholder { color: rgb(255 255 255 / 0.42); }
+  /* Kendi halkasını çiziyor, bu yüzden outline kapalı — .field ile aynı
+     yöntem. Halkasız bırakılsaydı klavye odağı bu kutuda kaybolurdu. */
+  .side-find input:focus {
+    outline: none;
+    border-color: var(--color-sage);
+    background: rgb(255 255 255 / 0.12);
+    box-shadow: 0 0 0 3px rgb(134 164 147 / 0.25);
+  }
+  /* Safari'nin eklediği temizleme düğmesi koyu zeminde görünmüyor. */
+  .side-find input::-webkit-search-decoration,
+  .side-find input::-webkit-search-cancel-button { -webkit-appearance: none; }
+
   .side-nav {
     flex: 1;
     overflow-y: auto;
@@ -523,6 +594,20 @@ details > summary::-webkit-details-marker {
   }
   .nav-tight .side-toggle:hover { background: rgb(255 255 255 / 0.12); }
   .nav-tight .side-toggle-fill { opacity: 0; }
+
+  /* Kutu daralmışken de kutu kalıyor, simgeye dönüşmüyor: tıklanacak yer
+     aynı yer. Yazı görünmez oluyor çünkü 3.5rem'e sığmaz — kutuya girildiği
+     anda geri geliyor ve işareti bırakıyor. */
+  .nav-tight .side-find { margin: 0 0.5rem 0.75rem; }
+  .nav-tight .side-find-mark { left: 50%; transform: translateX(-50%); }
+  .nav-tight .side-find input {
+    padding-inline: 0.4rem;
+    color: transparent;
+    text-align: center;
+  }
+  .nav-tight .side-find input::placeholder { color: transparent; }
+  .nav-tight .side-find:focus-within .side-find-mark { opacity: 0; }
+  .nav-tight .side-find input:focus { color: #fff; text-align: left; }
 
   .nav-tight .side-nav { gap: 0.5rem; padding: 0 0.5rem 0.75rem; }
   /* Öbek başlıkları sığmaz; öbeklerin arasını saç teli bir çizgi tutar. */

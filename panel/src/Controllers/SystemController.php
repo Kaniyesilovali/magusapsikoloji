@@ -32,15 +32,22 @@ final class SystemController
     {
         $actor = Auth::requirePermission('settings.manage');
 
+        $pending = Migrator::pending();
+        $backup  = Backup::status();
+
         View::render('system/index', [
             'title'    => 'Sistem',
-            'pending'  => Migrator::pending(),
+            'pending'  => $pending,
             'applied'  => Db::all('SELECT * FROM schema_migrations ORDER BY filename'),
             'checks'    => $this->checks(),
-            'reminder'  => $this->reminderStatus(),
-            'checkin'   => $this->checkinStatus(),
+            // Üç cron işi tek listede: üçü de aynı cinsten (bir sıklık, bir
+            // durum, bir son koşu, bir komut) ve arıza anında sorulan soru
+            // hepsi için aynı — "hangisi durmuş?". Ayrı yapraklardayken bu
+            // soru üç bölümü sırayla okumayı gerektiriyordu ve kurulum metni
+            // sayfada üç kez yazılıydı.
+            'jobs'      => $this->jobs($backup),
             'mail'      => Mailer::summary(),
-            'backup'    => Backup::status(),
+            'backup'    => $backup,
             'phpBinary' => $this->phpBinary(),
             'actor'     => $actor,
         ]);
@@ -129,6 +136,130 @@ final class SystemController
     }
 
     // ── Yardımcılar ─────────────────────────────────────────────
+
+    /**
+     * Zamanlanmış işlerin tek listesi.
+     *
+     * Üç iş de aynı sözleşmeye uyar: bir sıklık, bir açık/kapalı durumu, bir
+     * son koşu ve bir komut. Durum rozeti tek bir sırayla hesaplanıyor, çünkü
+     * "kapalı" ile "hiç çalışmadı" ile "durmuş olabilir" birbirinin yerine
+     * geçmez — ilki bir karar, ikincisi eksik kurulum, üçüncüsü arıza.
+     *
+     * Bayatlık eşiği işin kendi periyodunun birkaç katı: saatlik bir iş üç
+     * saattir koşmuyorsa durmuştur, haftalık bir iş sekiz gün sonra.
+     *
+     * @param array $backup Backup::status() çıktısı — iki kez okunmasın diye geçiliyor
+     * @return list<array<string,mixed>>
+     */
+    private function jobs(array $backup): array
+    {
+        $reminder = $this->reminderStatus();
+        $checkin  = $this->checkinStatus();
+
+        return [
+            $this->job(
+                'Randevu hatırlatmaları',
+                'saatte bir · randevudan ' . $reminder['hours'] . ' saat önce',
+                '0 * * * *',
+                'reminders.php',
+                $reminder['ready'] ? null : 'Veritabanı güncellemesi bekliyor.',
+                $reminder['enabled'],
+                'settings.reminders_enabled',
+                $reminder['lastRun'],
+                $reminder['lastResult'],
+                3 * 3600,
+                $reminder['queued'] === null
+                    ? '—'
+                    : $reminder['queued'] . ' randevu bekliyor'
+            ),
+            $this->job(
+                'Seanslar arası check-in',
+                'pazartesi 09:00 · yalnız döngüsü açık görüşmecilere',
+                '0 9 * * 1',
+                'checkins.php',
+                $checkin['ready'] ? null : 'Veritabanı güncellemesi bekliyor.',
+                $checkin['enabled'],
+                'settings.checkins_enabled',
+                $checkin['lastRun'],
+                $checkin['lastResult'],
+                8 * 86400,
+                // Buradaki asıl bilgi "çalıştı mı" değil doldurma oranı:
+                // pilotun kararı o sayıya bakılarak veriliyor.
+                $checkin['sent'] === 0
+                    ? 'henüz bağlantı gönderilmedi'
+                    : sprintf(
+                        'doldurma %d%% (%d/%d) · %d kişide açık',
+                        (int) round($checkin['completed'] / $checkin['sent'] * 100),
+                        $checkin['completed'],
+                        $checkin['sent'],
+                        $checkin['enrolled']
+                    )
+            ),
+            $this->job(
+                'Otomatik yedek',
+                'her gece 03:00 · veritabanının şifreli kopyası',
+                '0 3 * * *',
+                'backup.php',
+                // Yedeğin önkoşulu göç değil, şifreleme anahtarı: anahtarsız
+                // bir yedek alınamaz ve alınmış gibi görünmesi en kötüsü olurdu.
+                $backup['ready'] ? null : 'security.backup_key tanımlı değil.',
+                $backup['ready'],
+                null,
+                $backup['lastRun'],
+                $backup['lastResult'],
+                2 * 86400,
+                $backup['count'] === 0
+                    ? 'elde yedek yok'
+                    : sprintf(
+                        '%d yedek · en yenisi %s, %s KB',
+                        $backup['count'],
+                        $backup['newest'] === null ? '—' : date('d.m H:i', $backup['newest']['time']),
+                        $backup['newest'] === null
+                            ? '—'
+                            : number_format($backup['newest']['bytes'] / 1024, 0, ',', '.')
+                    )
+            ),
+        ];
+    }
+
+    /** Tek bir işin satırı — durum rozeti dâhil. @return array<string,mixed> */
+    private function job(
+        string $label,
+        string $schedule,
+        string $cron,
+        string $script,
+        ?string $blocked,
+        bool $enabled,
+        ?string $settingKey,
+        ?string $lastRun,
+        ?string $lastResult,
+        int $staleAfter,
+        string $measure
+    ): array {
+        $stale = $lastRun !== null && strtotime($lastRun) < time() - $staleAfter;
+
+        [$stateLabel, $stateChip] = match (true) {
+            $blocked !== null => ['kurulmadı',      'chip-stop'],
+            !$enabled         => ['kapalı',         'chip-neutral'],
+            $lastRun === null => ['hiç çalışmadı',  'chip-stop'],
+            $stale            => ['durmuş olabilir', 'chip-stop'],
+            default           => ['çalışıyor',      'chip-go'],
+        };
+
+        return [
+            'label'      => $label,
+            'schedule'   => $schedule,
+            'cron'       => $cron,
+            'script'     => $script,
+            'blocked'    => $blocked,
+            'settingKey' => $settingKey,
+            'lastRun'    => $lastRun,
+            'lastResult' => $lastResult,
+            'measure'    => $measure,
+            'stateLabel' => $stateLabel,
+            'stateChip'  => $stateChip,
+        ];
+    }
 
     /**
      * Cron komutunda gösterilecek PHP yorumlayıcısı.

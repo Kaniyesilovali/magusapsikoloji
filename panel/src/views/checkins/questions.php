@@ -6,20 +6,47 @@ use Panel\Csrf;
 /** @var array<string,array{label:string,low:string,high:string}> $measureDefaults */
 /** @var array<string,string> $texts @var array<string,array<string,mixed>> $textFields */
 /** @var list<array<string,mixed>> $roster @var bool $ready @var bool $switchable */
+/** @var bool $scalesReady */
 /** @var array{enabled:bool,lastRun:?string,lastResult:?string,stale:bool} $cron */
 
 // İki soru, tek ekran: haftalık bağlantıda NE soruluyor ve KİME gidiyor.
 // Ayrı sayfalara bölünseydi ikisi de tek başına yarım kalırdı — metni
 // değiştiren kişi çoğu zaman "bu ay şuna göndermeyelim" diyen kişiyle aynı.
 //
+// Aynı gerekçe formun kendisi için de geçerli ve bugüne kadar tutulmuyordu:
+// sayfa tek ekrandı ama İKİ form ve iki "Kaydet" taşıyordu. Yanlış düğmeye
+// basmak öteki formdaki kaydedilmemiş her şeyi sessizce siliyor, araya konan
+// uyarı bunu yalnız haber veriyordu. Artık tek form, tek düğme: silinecek bir
+// şey yok, uyarıya da gerek yok.
+//
 // Metin düzenlenebilir, ölçek değil. Her sorunun altında yönü yazılı duruyor:
 // terapist cümleyi değiştirirken 1'in ve 10'un ne anlama geldiğini görmezse
 // "kaygın ne kadar azdı?" gibi ters bir soru yazar ve eğri sessizce yalan söyler.
+
+$tones = [
+    'go'      => 'chip chip-go',
+    'stop'    => 'chip chip-stop',
+    'done'    => 'chip chip-done',
+    'neutral' => 'chip chip-neutral',
+];
 ?>
 
 <header class="flex flex-wrap items-end justify-between gap-4 mb-6">
   <div>
-    <p class="eyebrow">Seanslar arası check-in</p>
+    <?php // Başlık üstü satırı gönderimin o anki hâlini söylüyor: "Sırada"
+          // rozetleri bir söz veriyor ve sözü tutanın çalışıp çalışmadığı
+          // sayfanın en üstünde görünmeli. ?>
+    <p class="eyebrow">
+      <?php if (!$cron['enabled']): ?>
+        Haftalık gönderim kapalı
+      <?php elseif ($cron['lastRun'] === null): ?>
+        Cron hiç çalışmadı
+      <?php elseif ($cron['stale']): ?>
+        Cron durmuş olabilir
+      <?php else: ?>
+        Haftalık gönderim çalışıyor
+      <?php endif; ?>
+    </p>
     <h1 class="page-title mt-2">Haftalık check-in</h1>
     <p class="page-sub">
       Görüşmecinin gördüğü bütün metinler ve e-postanın kimlere gittiği. Ölçek her
@@ -33,11 +60,7 @@ use Panel\Csrf;
      class="btn btn-quiet">Formu önizle</a>
 </header>
 
-<?php // `data-dirty-guard`: bu formda değişiklik varken sayfadaki ÖTEKİ formun
-      // (gönderim listesi) kaydedilmesi buradaki metinleri sessizce çöpe atardı
-      // — iki ayrı form, tek sayfa, iki ayrı "Kaydet". Betik o durumda soruyor. ?>
-<form method="post" action="<?= e(url('/check-in-sorulari')) ?>" class="sheet"
-      data-dirty-guard="Soru ve metin alanlarında kaydedilmemiş değişiklik var; bu kaydetme yalnız gönderim listesini yazar ve o değişiklikler kaybolur. Devam edilsin mi?">
+<form method="post" action="<?= e(url('/check-in-sorulari')) ?>" class="sheet">
   <?= Csrf::field() ?>
 
   <?php if ($scalesReady): ?>
@@ -141,41 +164,24 @@ use Panel\Csrf;
     </div>
   <?php endforeach; ?>
 
-  <div class="sheet-foot">
-    <button class="btn btn-primary">Kaydet</button>
-    <p class="field-hint">
-      Değişiklik yalnız bundan sonra üretilen bağlantılarda görünür; şu an
-      görüşmecinin elinde bekleyen bir bağlantı varsa o eski metni gösterir.
-      Daha önce verilmiş cevaplar etkilenmez — sayılar aynı ölçekte kalır.
-    </p>
-  </div>
-</form>
-
-<?php
-// ── Kime gidiyor ────────────────────────────────────────────────
-//
-// Bu listedeki işaret YALNIZ haftalık e-postayı yönetir. Takibi kapatmaz,
-// kaydı arşivlemez, geçmişi gizlemez — kapalı bir görüşmeciye terapist elden
-// bağlantı gönderdiğinde form eskisi gibi çalışır. Bugüne kadar gönderimi
-// durdurmanın tek yolu kaydı arşivlemekti; "bu dönem doldurmayalım" diyen bir
-// aile için bu fazla ağır bir işlemdi.
-//
-// Listede puan ya da cümle YOK: ekran yöneticiye de açık (bkz. Rbac →
-// checkin.manage) ve cevaplar yalnız terapiste ait. Görünen tek şey adın
-// yanında gönderimin durumu.
-$tones = [
-    'go'      => 'chip chip-go',
-    'stop'    => 'chip chip-stop',
-    'done'    => 'chip chip-done',
-    'neutral' => 'chip chip-neutral',
-];
-?>
-
-<section class="sheet mt-6">
-  <div class="sheet-head">
+  <?php
+  // ── Kime gidiyor ────────────────────────────────────────────────
+  //
+  // Aynı formun devamı, ayrı bir gönderim değil. Buradaki işaret YALNIZ
+  // haftalık e-postayı yönetir. Takibi kapatmaz, kaydı arşivlemez, geçmişi
+  // gizlemez — kapalı bir görüşmeciye terapist elden bağlantı gönderdiğinde
+  // form eskisi gibi çalışır. Bugüne kadar gönderimi durdurmanın tek yolu
+  // kaydı arşivlemekti; "bu dönem doldurmayalım" diyen bir aile için bu fazla
+  // ağır bir işlemdi.
+  //
+  // Listede puan ya da cümle YOK: ekran yöneticiye de açık (bkz. Rbac →
+  // checkin.manage) ve cevaplar yalnız terapiste ait. Görünen tek şey adın
+  // yanında gönderimin durumu.
+  ?>
+  <div class="sheet-head border-t border-warm-secondary">
     <div>
       <h2 class="sheet-title">Haftalık e-posta kimlere gidiyor</h2>
-      <p class="text-xs text-ink-light mt-1">
+      <p class="text-sm text-ink-muted mt-1">
         İşaretli görüşmecilere cron haftada bir bağlantı yollar. İşareti
         kaldırmak takibi kapatmaz — terapist görüşmeci sayfasından elle bağlantı
         göndermeye devam edebilir.
@@ -184,7 +190,7 @@ $tones = [
             // Cron kurulmamışsa ya da anahtar kapalıysa sözü tutan yok ve liste
             // her hafta çalışıyormuş gibi görünür. Durum bu yüzden burada,
             // rozetlerin hemen üstünde duruyor. ?>
-      <p class="text-xs text-ink-light mt-2">
+      <p class="text-sm text-ink-muted mt-2">
         <?php if (!$cron['enabled']): ?>
           <span class="chip chip-stop">gönderim kapalı</span>
           Haftalık gönderim <code>settings.checkins_enabled</code> ile kapatılmış:
@@ -226,59 +232,61 @@ $tones = [
       </div>
     <?php endif; ?>
 
-    <form method="post" action="<?= e(url('/check-in-sorulari/alicilar')) ?>">
-      <?= Csrf::field() ?>
-
-      <?php foreach ($roster as $row): ?>
-        <?php
-        $state = $row['state'];
-        $email = trim((string) ($row['email'] ?? ''));
-        ?>
-        <?php // Kayda giden bağlantı etiketin DIŞINDA: <label> içine konan bir
-              // <a> hem geçersiz işaretleme hem de tıklandığında kutucuğu
-              // çeviriyor — kaydı açmak isteyen kişi gönderimi kapatmış olurdu. ?>
-        <div class="flex items-start gap-3 px-5 py-3 border-t border-warm-secondary">
-          <label class="flex items-start gap-3 min-w-0 flex-1 <?= $switchable ? 'cursor-pointer' : '' ?>">
-            <?php // İsim değeri değil anahtarı taşıyor: kaydederken işaretli
-                  // olanların id'si `alici` dizisinin anahtarlarından okunuyor. ?>
-            <input type="checkbox" name="alici[<?= (int) $row['id'] ?>]" value="1"
-                   <?= $row['auto'] ? 'checked' : '' ?>
-                   <?= $switchable ? '' : 'disabled' ?>
-                   class="mt-1 shrink-0">
-            <span class="min-w-0">
-              <span class="text-sm text-ink person"><?= e((string) $row['full_name']) ?></span>
-              <span class="<?= e($tones[$state['tone']] ?? $tones['neutral']) ?> ml-1"><?= e($state['label']) ?></span>
-              <span class="block text-xs text-ink-light mt-0.5"><?= e($state['detail']) ?></span>
-              <span class="block text-xs text-ink-light mt-0.5">
-                <?= $email !== '' ? e($email) : '<span class="text-accent-dark">e-posta yok</span>' ?>
-                <?php if ($row['last_checkin_at'] !== null): ?>
-                  · son check-in <span class="num"><?= e(dt((string) $row['last_checkin_at'], 'd.m.Y')) ?></span>
-                <?php elseif ((int) $row['request_count'] > 0): ?>
-                  · henüz hiç doldurulmadı
-                <?php endif; ?>
-              </span>
+    <?php foreach ($roster as $row): ?>
+      <?php
+      $state = $row['state'];
+      $email = trim((string) ($row['email'] ?? ''));
+      ?>
+      <?php // Kayda giden bağlantı etiketin DIŞINDA: <label> içine konan bir
+            // <a> hem geçersiz işaretleme hem de tıklandığında kutucuğu
+            // çeviriyor — kaydı açmak isteyen kişi gönderimi kapatmış olurdu. ?>
+      <div class="flex items-start gap-3 px-5 py-3 border-t border-warm-secondary">
+        <label class="flex items-start gap-3 min-w-0 flex-1 -m-1 p-1 <?= $switchable ? 'pick cursor-pointer' : '' ?>">
+          <?php // İsim değeri değil anahtarı taşıyor: kaydederken işaretli
+                // olanların id'si `alici` dizisinin anahtarlarından okunuyor. ?>
+          <input type="checkbox" name="alici[<?= (int) $row['id'] ?>]" value="1"
+                 <?= $row['auto'] ? 'checked' : '' ?>
+                 <?= $switchable ? '' : 'disabled' ?>
+                 class="mt-1 shrink-0">
+          <span class="min-w-0">
+            <span class="text-sm text-ink person"><?= e((string) $row['full_name']) ?></span>
+            <span class="<?= e($tones[$state['tone']] ?? $tones['neutral']) ?> ml-1"><?= e($state['label']) ?></span>
+            <span class="block text-xs text-ink-light mt-0.5"><?= e($state['detail']) ?></span>
+            <span class="block text-xs text-ink-light mt-0.5">
+              <?= $email !== '' ? e($email) : '<span class="text-accent-dark">e-posta yok</span>' ?>
+              <?php if ($row['last_checkin_at'] !== null): ?>
+                · son check-in <span class="num"><?= e(dt((string) $row['last_checkin_at'], 'd.m.Y')) ?></span>
+              <?php elseif ((int) $row['request_count'] > 0): ?>
+                · henüz hiç doldurulmadı
+              <?php endif; ?>
             </span>
-          </label>
-          <?php // Alan/metin uyarlaması tek tek dosyaya ait; listeden doğrudan
-                // açılıyor ki bunun için görüşmeci sayfasını dolaşmak gerekmesin. ?>
-          <span class="flex flex-col items-end gap-1 shrink-0">
-            <a href="<?= e(url('/danisanlar/' . (int) $row['id'] . '/alanlar')) ?>" class="btn-text btn-text-quiet">Alanlar</a>
-            <a href="<?= e(url('/danisanlar/' . (int) $row['id'])) ?>" class="btn-text btn-text-quiet">Kayıt</a>
           </span>
-        </div>
-      <?php endforeach; ?>
-
-      <div class="sheet-foot">
-        <button class="btn btn-primary" <?= $switchable ? '' : 'disabled' ?>>Gönderim listesini kaydet</button>
-        <p class="field-hint">
-          Yalnız bu listede görünen kayıtlar etkilenir. Aynı kişiye
-          <span class="num"><?= Checkins::MIN_DAYS_BETWEEN ?></span> gün geçmeden
-          ikinci bağlantı gitmez; üst üste cevapsız kalan
-          <span class="num"><?= Checkins::MAX_UNANSWERED ?></span> bağlantıdan
-          sonra gönderim kendiliğinden susar ve elle gönderilen bir bağlantı
-          doldurulunca sürer.
-        </p>
+        </label>
+        <?php // Alan/metin uyarlaması tek tek dosyaya ait; listeden doğrudan
+              // açılıyor ki bunun için görüşmeci sayfasını dolaşmak gerekmesin. ?>
+        <span class="flex flex-col items-end gap-1 shrink-0">
+          <a href="<?= e(url('/danisanlar/' . (int) $row['id'] . '/alanlar')) ?>" class="btn-text btn-text-quiet">Alanlar</a>
+          <a href="<?= e(url('/danisanlar/' . (int) $row['id'])) ?>" class="btn-text btn-text-quiet">Kayıt</a>
+        </span>
       </div>
-    </form>
+    <?php endforeach; ?>
   <?php endif; ?>
-</section>
+
+  <?php // Tek "Kaydet": metinler ve gönderim listesi aynı gönderime giriyor. ?>
+  <div class="sheet-foot">
+    <button class="btn btn-primary">Kaydet</button>
+    <p class="field-hint">
+      Metin değişikliği yalnız bundan sonra üretilen bağlantılarda görünür; şu an
+      görüşmecinin elinde bekleyen bir bağlantı varsa o eski metni gösterir.
+      Daha önce verilmiş cevaplar etkilenmez — sayılar aynı ölçekte kalır.
+    </p>
+    <p class="field-hint">
+      Gönderim listesinde yalnız yukarıda görünen kayıtlar etkilenir. Aynı kişiye
+      <span class="num"><?= Checkins::MIN_DAYS_BETWEEN ?></span> gün geçmeden
+      ikinci bağlantı gitmez; üst üste cevapsız kalan
+      <span class="num"><?= Checkins::MAX_UNANSWERED ?></span> bağlantıdan
+      sonra gönderim kendiliğinden susar ve elle gönderilen bir bağlantı
+      doldurulunca sürer.
+    </p>
+  </div>
+</form>

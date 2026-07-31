@@ -37,6 +37,32 @@ $groups = [
 
 $sideIcons = require __DIR__ . '/_icons.php';
 
+// Kişi arama kutusu menünün kendisine ait: günün en sık işi "şu kişinin kaydını
+// aç" ve yolu bugüne kadar dört adımdı (Görüşmeciler → ara → Filtrele → Aç).
+// Yalnız görüşmeci görebilenlere çiziliyor; görüşmecinin kendi hesabında yok.
+$canFindClients = Rbac::canAny($authUser, ['client.view.all', 'client.view.own']);
+
+// Kutu arşivi de tarar (durum=all): adı yazan kişi o kaydın arşivde olup
+// olmadığını bilmiyor, "bulunamadı" demek onu ikinci bir aramaya yolluyordu.
+// Listenin kendi filtresi parametresiz gelindiğinde hâlâ aktif kayıtlarda kalır.
+$findBox = static function (string $id, string $extra = '') use ($canFindClients): void {
+    if (!$canFindClients) {
+        return;
+    }
+    ?>
+    <form method="get" action="<?= e(url('/danisanlar')) ?>" class="side-find <?= e($extra) ?>" role="search">
+      <input type="hidden" name="durum" value="all">
+      <label for="<?= e($id) ?>" class="sr-only">Kişi ara</label>
+      <svg class="side-find-mark" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+        <circle cx="7" cy="7" r="4.4" fill="none" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M10.4 10.4 14 14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      <input type="search" id="<?= e($id) ?>" name="q" placeholder="Kişi ara…"
+             autocomplete="off" data-side-label="Kişi ara">
+    </form>
+    <?php
+};
+
 $groups = array_values(array_filter(array_map(static function (array $group) use ($authUser): array {
     $group['items'] = array_values(array_filter(
         $group['items'],
@@ -105,6 +131,8 @@ $sideInitials = static function (?string $name): string {
       </button>
     </div>
 
+    <?php $findBox('kisiAra'); ?>
+
     <nav class="side-nav" aria-label="Panel menüsü">
       <?php foreach ($groups as $group): ?>
         <div class="nav-group">
@@ -160,6 +188,7 @@ $sideInitials = static function (?string $name): string {
       <span class="eyebrow text-white/50">Menü ▾</span>
     </summary>
     <nav class="px-3 pb-3 space-y-4">
+      <?php $findBox('kisiAraMobil', 'side-find-flush'); ?>
       <?php foreach ($groups as $group): ?>
         <div>
           <p class="eyebrow text-white/30 px-3 mb-1"><?= e($group['label']) ?></p>

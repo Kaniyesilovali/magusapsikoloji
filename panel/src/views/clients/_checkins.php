@@ -17,11 +17,11 @@ $isActive = $client['status'] === 'active';
 $latest   = $checkins === [] ? null : $checkins[count($checkins) - 1];
 ?>
 
-<section class="sheet mb-6">
+<section class="sheet">
   <div class="sheet-head">
     <div>
       <h2 class="sheet-title">Seanslar arası check-in</h2>
-      <p class="text-xs text-ink-light mt-1">
+      <p class="text-sm text-ink-muted mt-1">
         Haftada bir, üç soru, giriş gerektirmeyen bir bağlantıyla.
         <a href="<?= e(url('/check-in-sorulari')) ?>" class="btn-text btn-text-quiet">Sorular ve gönderim</a>
         <a href="<?= e(url('/danisanlar/' . (int) $client['id'] . '/alanlar')) ?>" class="btn-text btn-text-quiet">Sorulan alanlar</a>

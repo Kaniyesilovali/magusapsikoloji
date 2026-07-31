@@ -1,15 +1,38 @@
 <?php
 use Panel\Rbac;
 /** @var array $clients @var string $search @var string $status @var array $actor */
+/** @var array{active:int,archived:int,unconsented:int} $tally */
+
+// Başlık üstü satırı merkezin durumunu söyler, listenin filtresini değil:
+// "onamı eksik 2" sayfayı açan kişiye bugün yapılacak bir şey veriyor.
+// Alt satır o an neye bakıldığını söylüyor — ikisi ayrı iş.
+$statusLine = match ($status) {
+    'archived' => 'Arşivlenmiş kayıtlar',
+    'all'      => 'Aktif ve arşiv birlikte',
+    default    => 'Aktif kayıtlar',
+};
 ?>
 
 <header class="flex flex-wrap items-end justify-between gap-4 mb-6">
   <div>
-    <p class="eyebrow">Merkez</p>
+    <p class="eyebrow">
+      <span class="num"><?= $tally['active'] ?></span> aktif
+      <?php if ($tally['archived'] > 0): ?>
+        · <span class="num"><?= $tally['archived'] ?></span> arşiv
+      <?php endif; ?>
+      <?php if ($tally['unconsented'] > 0): ?>
+        · onamı eksik <span class="num"><?= $tally['unconsented'] ?></span>
+      <?php endif; ?>
+    </p>
     <h1 class="page-title mt-2">Görüşmeciler</h1>
     <p class="page-sub">
-      <span class="num"><?= count($clients) ?></span> kayıt
-      <?php if (!Rbac::can($actor, 'client.view.all')): ?> — yalnız kendi görüşmecileriniz<?php endif; ?>
+      <?= e($statusLine) ?>
+      <?php if ($search !== ''): ?>
+        — “<?= e($search) ?>” için <span class="num"><?= count($clients) ?></span> sonuç
+      <?php else: ?>
+        — <span class="num"><?= count($clients) ?></span> kayıt
+      <?php endif; ?>
+      <?php if (!Rbac::can($actor, 'client.view.all')): ?> · yalnız kendi görüşmecileriniz<?php endif; ?>
     </p>
   </div>
   <?php if (Rbac::can($actor, 'client.create')): ?>

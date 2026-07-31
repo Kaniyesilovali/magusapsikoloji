@@ -134,9 +134,11 @@ $router->post('/danisanlar/{id}/check-in-gonderim', [ClientController::class, 't
 // Soru metinleri ve gönderim listesi panelden düzenlenir. Yol bilerek
 // `/check-in/` altında DEĞİL: o önek giriş gerektirmeyen jeton rotasına ve
 // şifre-değiştirme muafiyetine ait.
+// Metinler ve gönderim listesi tek forma, dolayısıyla tek gönderime bağlı:
+// ayrı iki "Kaydet" varken biri ötekinin kaydedilmemiş değişikliklerini
+// siliyordu (bkz. CheckinController::saveQuestions).
 $router->get('/check-in-sorulari',           [CheckinController::class, 'questions']);
 $router->post('/check-in-sorulari',          [CheckinController::class, 'saveQuestions']);
-$router->post('/check-in-sorulari/alicilar', [CheckinController::class, 'saveRecipients']);
 // Metni yazan kişinin sonucu görebildiği yer; jeton üretmez, kayıt yazmaz.
 $router->get('/check-in-sorulari/onizleme',  [CheckinController::class, 'preview']);
 // Hangi alanların sorulacağı görüşmeci başına değişir.

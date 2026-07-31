@@ -13,11 +13,11 @@ use Panel\Csrf;
 $isActive = $client['status'] === 'active';
 ?>
 
-<section class="sheet mb-6">
+<section class="sheet">
   <div class="sheet-head">
     <div>
       <h2 class="sheet-title">Seanslar arası check-in</h2>
-      <p class="text-xs text-ink-light mt-1">
+      <p class="text-sm text-ink-muted mt-1">
         Haftada bir, üç soru, giriş gerektirmeyen bir bağlantıyla.
         Cevaplar ve eğri yalnız terapistin ekranında görünür.
       </p>

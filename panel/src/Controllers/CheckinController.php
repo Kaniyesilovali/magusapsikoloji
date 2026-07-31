@@ -221,20 +221,25 @@ final class CheckinController
     }
 
     /**
-     * Haftalık e-posta kimlere gidecek.
+     * Haftalık e-posta kimlere gidecek — saveQuestions'ın bir parçası.
+     *
+     * Kendi rotası yok: metinlerle aynı formdan, aynı gönderimde geliyor.
+     * Ayrı bir POST olduğu sürece iki "Kaydet" birbirinin kaydedilmemiş
+     * değişikliklerini siliyordu.
      *
      * İşaretlenmemiş her satır kapatılır — ama YALNIZ bu kullanıcının gördüğü
      * satırlar. Liste ClientScope ile sınırlı olduğu için terapistin kaydettiği
      * form, görmediği bir görüşmecinin anahtarını sessizce kapatamaz.
+     *
+     * @return int Anahtarı değişen görüşmeci sayısı
      */
-    public function saveRecipients(): void
+    private function saveRecipients(array $actor): int
     {
-        $actor = Auth::requirePermission('checkin.manage');
-
+        // Göç uygulanmadıysa kutucuklar ekranda `disabled` çiziliyor ve hiçbiri
+        // gönderilmiyor. O hâlde boş bir `alici` dizisi "hepsini kapat" demek
+        // olurdu — bu yüzden liste burada hiç okunmuyor.
         if (!Schema::checkinDeliveryReady()) {
-            flash('error', 'Gönderim anahtarı için bekleyen bir veritabanı güncellemesi var. '
-                . 'Sistem ekranından uygulanınca bu liste kaydedilebilir.');
-            redirect('/check-in-sorulari');
+            return 0;
         }
 
         $wanted  = array_map('intval', array_keys((array) ($_POST['alici'] ?? [])));
@@ -253,13 +258,7 @@ final class CheckinController
             $changed++;
         }
 
-        flash(
-            'success',
-            $changed === 0
-                ? 'Gönderim listesinde değişiklik yok.'
-                : $changed . ' görüşmecide haftalık gönderim güncellendi.'
-        );
-        redirect('/check-in-sorulari');
+        return $changed;
     }
 
     /**
@@ -348,12 +347,23 @@ final class CheckinController
         // denetim kaydı — ekran tek bir metin.
         Checkins::saveTexts((array) ($_POST['metin'] ?? []));
 
+        // Gönderim listesi de aynı gönderime katıldı. Sayfa iki ayrı form ve
+        // iki ayrı "Kaydet" taşıdığı sürece biri her zaman ötekini sessizce
+        // çöpe atma riski taşıyordu; araya konan uyarı bunu haber veriyordu
+        // ama ortadan kaldırmıyordu. Tek form, tek düğme, risk yok.
+        $changed = $this->saveRecipients($actor);
+
         // İçerik loglanmaz; kimin ne zaman değiştirdiği yeter. Soru metni
         // klinik veri değil ama değişimi cevapların anlamını kaydırır, bu
         // yüzden iz kalması gerekiyor.
         Audit::log('checkin.questions_updated', 'settings', null, ['aktor' => (int) $actor['id']]);
 
-        flash('success', 'Check-in metinleri kaydedildi. Bundan sonra üretilen bağlantılar yeni metni gösterir.');
+        $message = 'Check-in metinleri kaydedildi. Bundan sonra üretilen bağlantılar yeni metni gösterir.';
+        if ($changed > 0) {
+            $message .= ' ' . $changed . ' görüşmecide haftalık gönderim güncellendi.';
+        }
+
+        flash('success', $message);
         redirect('/check-in-sorulari');
     }
 

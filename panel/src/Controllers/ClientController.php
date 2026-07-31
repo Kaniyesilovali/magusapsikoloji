@@ -74,11 +74,32 @@ final class ClientController
             $params
         );
 
+        // Başlık üstü satırı bugüne kadar menü öbeğinin adını ("Merkez")
+        // tekrarlıyordu — kenar çubuğunda o öbek zaten işaretli duruyor. Aynı
+        // yere sayfayı açan kişiye bir iş söyleyen sayımlar konuyor. Sayımlar
+        // listenin kendi filtresinden bağımsız: filtre "arşiv" iken bile
+        // merkezin toplamı aynı kalır, yoksa satır her filtrede başka bir
+        // şey söylerdi. Görünürlük kapsamı elbette korunuyor.
+        [$countScope, $countParams] = $this->visibilityFilter($actor);
+        $tally = Db::one(
+            "SELECT SUM(c.status = 'active')   AS active,
+                    SUM(c.status = 'archived') AS archived,
+                    SUM(c.status = 'active' AND c.consent_at IS NULL) AS unconsented
+               FROM clients c
+              WHERE {$countScope}",
+            $countParams
+        );
+
         View::render('clients/index', [
             'title'   => 'Görüşmeciler',
             'clients' => $clients,
             'search'  => $search,
             'status'  => $status,
+            'tally'   => [
+                'active'      => (int) ($tally['active'] ?? 0),
+                'archived'    => (int) ($tally['archived'] ?? 0),
+                'unconsented' => (int) ($tally['unconsented'] ?? 0),
+            ],
             'actor'   => $actor,
         ]);
     }
