@@ -8,7 +8,7 @@ $isNew  = $client === null;
 $action = $isNew ? url('/danisanlar/yeni') : url("/danisanlar/{$client['id']}/duzenle");
 $field  = static fn (string $key, string $fallback = ''): string => old($key, $fallback);
 
-// Rıza kutusunun ilk hâli: kayıtta rıza varsa işaretli gelir.
+// Onam kutusunun ilk hâli: kayıtta onam varsa işaretli gelir.
 $consentChecked = errors() !== [] ? old('consent') !== '' : ($client['consent_at'] ?? null) !== null;
 ?>
 
@@ -120,11 +120,11 @@ $consentChecked = errors() !== [] ? old('consent') !== '' : ($client['consent_at
         <input type="checkbox" name="consent" value="1" class="mt-0.5 w-4 h-4 accent-primary"
                <?= $consentChecked ? 'checked' : '' ?>>
         <span class="text-sm text-ink">
-          Aydınlatma metni okundu, görüşmeciden <strong>açık rıza</strong> alındı.
+          <strong>Onam formu</strong> okundu ve danışan tarafından imzalandı.
           <span class="block text-xs text-ink-muted mt-1">
-            Seans kayıtları özel nitelikli sağlık verisidir; rıza olmadan işlenemez.
+            Seans kayıtları özel nitelikli sağlık verisidir; onam olmadan işlenemez.
             <?php if (!$isNew && $client['consent_at'] !== null): ?>
-              <br>Kayıtlı rıza: <span class="num"><?= e(dt($client['consent_at'])) ?></span> —
+              <br>Kayıtlı onam: <span class="num"><?= e(dt($client['consent_at'])) ?></span> —
               sürüm <?= e((string) $client['consent_version']) ?>
             <?php endif; ?>
           </span>

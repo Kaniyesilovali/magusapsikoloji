@@ -42,7 +42,7 @@ use Panel\Rbac;
             <th>Ad Soyad</th>
             <th>Terapist</th>
             <th>Sonraki randevu</th>
-            <th>Açık rıza</th>
+            <th>Onam</th>
             <th></th>
           </tr>
         </thead>

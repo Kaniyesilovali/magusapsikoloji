@@ -8,10 +8,11 @@ use Panel\Csrf;
 
 <header class="mb-6">
   <p class="eyebrow">Site</p>
-  <h1 class="page-title mt-2">KVKK metni</h1>
+  <h1 class="page-title mt-2">Onam formu</h1>
   <p class="page-sub">
-    Görüşmecilere sunulan aydınlatma metni ve açık rıza beyanı. Şu an
-    <span class="num"><?= $signed ?></span> görüşmeci kaydında rıza işaretli.
+    Danışana imzalatılan bilgilendirilmiş onam formu: süreç, gizlilik, kişisel
+    bilgilerin kaydı ve gönüllülük tek metinde. Şu an
+    <span class="num"><?= $signed ?></span> danışan kaydında onam işaretli.
   </p>
 </header>
 
@@ -24,7 +25,7 @@ use Panel\Csrf;
   </div>
 <?php endif; ?>
 
-<form method="post" action="<?= e(url('/kvkk')) ?>" class="sheet">
+<form method="post" action="<?= e(url('/onam-formu')) ?>" class="sheet">
   <?= Csrf::field() ?>
 
   <div class="sheet-body space-y-5">
@@ -40,14 +41,14 @@ use Panel\Csrf;
         <input type="text" id="consent_version" name="consent_version" required maxlength="20"
                class="field num" value="<?= e($version) ?>">
         <p class="field-hint">
-          Metni değiştirdiyseniz sürümü de yükseltin. Her görüşmeci kaydı, rıza verdiği
+          Metni değiştirdiyseniz sürümü de yükseltin. Her danışan kaydı, onay verdiği
           sürümü ayrıca saklar.
         </p>
       </div>
       <div class="bg-warm rounded-md p-4 text-xs text-ink-muted leading-relaxed">
-        Sürüm değişikliği geçmişe dönük çalışmaz: eski rızalar eski sürüme bağlı kalır.
-        Metinde esaslı bir değişiklik yaptıysanız mevcut görüşmecilerden yeniden rıza
-        alınması gerekip gerekmediğini değerlendirin.
+        Sürüm değişikliği geçmişe dönük çalışmaz: imzalanmış formlar eski sürüme bağlı
+        kalır. Metinde esaslı bir değişiklik yaptıysanız mevcut danışanlardan yeniden
+        onam alınması gerekip gerekmediğini değerlendirin.
       </div>
     </div>
   </div>
@@ -58,8 +59,9 @@ use Panel\Csrf;
 </form>
 
 <p class="text-xs text-ink-light mt-6">
-  Görüşmeciye imzalatılacak çıktıyı, görüşmecinin kayıt sayfasındaki
-  <strong>"Rıza formunu yazdır"</strong> bağlantısından alabilirsiniz.
+  Danışana imzalatılacak çıktıyı, danışanın kayıt sayfasındaki
+  <strong>"Onam formunu yazdır"</strong> bağlantısından alabilirsiniz. Çıktıda,
+  metnin sonuna aile yakını bilgisi kutusu ve imza satırları eklenir.
 </p>
 
 </div>

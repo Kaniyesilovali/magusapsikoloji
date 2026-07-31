@@ -39,7 +39,7 @@ final class Audit
         'appointment.cancelled' => 'Randevu iptal edildi',
         'availability.updated' => 'Çalışma saatleri değişti',
         'availability.time_off' => 'İzin kaydı değişti',
-        'consent.updated'     => 'KVKK metni güncellendi',
+        'consent.updated'     => 'Onam formu güncellendi',
         'content.updated'     => 'Site içeriği güncellendi',
         'payment.fee_set'     => 'Seans ücreti belirlendi',
         'payment.recorded'    => 'Tahsilat kaydedildi',

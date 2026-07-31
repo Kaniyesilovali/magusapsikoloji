@@ -14,7 +14,7 @@ use RuntimeException;
  * yükleyemiyor — hosting desteği gerekiyor. Buradaki dosya phpMyAdmin'e
  * doğrudan verilebilir.
  *
- * Neden şifreli: dökümde açık rıza kayıtları, telefonlar, doğum tarihleri var.
+ * Neden şifreli: dökümde onam kayıtları, telefonlar, doğum tarihleri var.
  * (Seans notları zaten kendi içinde şifreli, ama gerisi düz metin.) Sunucuda
  * düz duran bir döküm, veritabanı erişimi olmayan birinin eline geçebilecek en
  * kolay tam kopyadır.

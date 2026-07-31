@@ -36,7 +36,7 @@ aksi hâlde `npm run build` onları `_site/panel/` içine kopyalar ve yayına ç
 | Ödeme/borç durumu | ✔ | ✔ | kendi seanslarının ücreti | kendi seansları (salt okunur) |
 | Randevu oluştur/düzenle/iptal | ✔ | ✔ | kendi takvimine | — |
 | Çalışma saati ve izin tanımla | ✔ | ✔ | kendi müsaitliği | — |
-| KVKK metnini düzenle | ✔ | ✔ | — | — |
+| Onam formunu düzenle | ✔ | ✔ | — | — |
 | **Seans notu okuma/yazma** | **—** | **—** | **yalnız kendi yazdığı** | — |
 | **Check-in eğrisi / bağlantı gönderme** | **—** | **—** | **kendi görüşmecileri** | — |
 | Check-in soruları + haftalık gönderim listesi | ✔ | ✔ | kendi görüşmecileri | — |
@@ -529,15 +529,26 @@ kurulum yönergesi gösterir, panelin geri kalanı etkilenmez.
 
 ---
 
-## KVKK metni
+## Onam formu
 
-`/kvkk` — aydınlatma metni ve açık rıza beyanı `settings` tablosunda sürümlü tutulur.
-Görüşmeci kaydındaki `consent_version`, rızanın hangi metne verildiğini gösterir; bu
+`/onam-formu` — danışana imzalatılan **bilgilendirilmiş onam formu** `settings`
+tablosunda sürümlü tutulur. Tek metinde dört bölüm var: psikoterapi süreci (seans
+süresi, iptal, kayıt yasağı), gizlilik ve güvenilirlik (ve gizliliğin ihlal
+edilebileceği iki koşul), kişisel bilgilerin kaydı (eski KVKK aydınlatma metninin
+karşılığı) ve gönüllülük.
+
+Görüşmeci kaydındaki `consent_version`, onamın hangi metne verildiğini gösterir; bu
 yüzden **metin değişince sürüm de değişmek zorundadır** ve panel sürümü yükseltmeden
 kaydetmeye izin vermez.
 
-Görüşmeci sayfasındaki **"Rıza formunu yazdır"** bağlantısı, görüşmecinin adıyla birlikte
-güncel metni imza alanlarıyla yazdırılabilir biçimde açar.
+Görüşmeci sayfasındaki **"Onam formunu yazdır"** bağlantısı, görüşmecinin adıyla
+birlikte güncel metni açar; çıktının sonuna metnin söz verdiği **aile yakını bilgisi**
+kutusu ile danışan ve psikolog imza satırları eklenir.
+
+> Önceki sürümlerde bu ekran "KVKK metni" adıyla `/kvkk` altındaydı ve süreç
+> anlaşması ayrı bir kâğıt olarak imzalanıyordu. İkisi 2.0 sürümünde tek forma
+> indi ([`009_onam_formu.sql`](../panel/migrations/009_onam_formu.sql)); metnini
+> elle düzenlemiş kurumların sürümüne dokunulmaz.
 
 > Paneldeki başlangıç metni bir **taslaktır**, hukuki tavsiye değildir. Köşeli
 > parantezli alanlar kurumun bilgileriyle doldurulmalı ve metin bir hukukçuya
@@ -578,7 +589,7 @@ Panel özel nitelikli kişisel veri (sağlık verisi) işler. Teknik tarafta kar
 
 Kurumun tamamlaması gerekenler:
 
-1. Panele özel **aydınlatma metni** ve görüşmeciden **açık rıza** (kayıtta `clients.consent_at` + `consent_version`).
+1. Kurumun kendi bilgileriyle doldurulmuş **onam formu** ve danışandan imza (kayıtta `clients.consent_at` + `consent_version`).
 2. **Saklama ve imha politikası**; görüşmeci kaydını anonimleştirme akışı (silme hakkı).
 3. Hosting sağlayıcısıyla **veri işleyen sözleşmesi**.
 4. **VERBİS** kayıt yükümlülüğünün kontrolü.

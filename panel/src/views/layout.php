@@ -26,7 +26,7 @@ $groups = [
     ]],
     ['label' => 'Site', 'items' => [
         ['path' => '/icerik',      'label' => 'Site içeriği', 'icon' => 'icerik',       'permissions' => ['content.manage']],
-        ['path' => '/kvkk',        'label' => 'KVKK metni',   'icon' => 'kvkk',         'permissions' => ['consent.manage']],
+        ['path' => '/onam-formu',  'label' => 'Onam formu',   'icon' => 'onam',         'permissions' => ['consent.manage']],
     ]],
     ['label' => 'Yönetim', 'items' => [
         ['path' => '/kullanicilar', 'label' => 'Kullanıcılar',     'icon' => 'kullanicilar', 'permissions' => ['user.view']],

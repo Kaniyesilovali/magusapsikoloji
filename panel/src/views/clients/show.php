@@ -58,8 +58,8 @@ $chip = [
 
 <?php if ($client['consent_at'] === null): ?>
   <div class="note note-stop mb-6">
-    Bu kayıt için <strong>açık rıza</strong> işaretlenmemiş. Seans verisi işlemeden önce
-    aydınlatma metni sunulup rıza alınmalı ve kayıt düzenlenerek işaretlenmelidir.
+    Bu kayıt için <strong>onam</strong> işaretlenmemiş. Seans verisi işlemeden önce
+    onam formu imzalatılmalı ve kayıt düzenlenerek işaretlenmelidir.
   </div>
 <?php endif; ?>
 
@@ -96,21 +96,21 @@ $chip = [
 
   <section class="sheet">
     <div class="sheet-head">
-      <h2 class="sheet-title">KVKK</h2>
+      <h2 class="sheet-title">Onam</h2>
     </div>
     <div class="sheet-body">
       <?php if ($client['consent_at'] !== null): ?>
-        <p class="text-sm text-ink">Açık rıza alındı.</p>
+        <p class="text-sm text-ink">Onam formu imzalandı.</p>
         <p class="text-xs text-ink-light mt-1">
           <span class="num"><?= e(dt($client['consent_at'])) ?></span><br>
           Metin sürümü: <?= e((string) $client['consent_version']) ?>
         </p>
       <?php else: ?>
-        <p class="text-sm text-ink-muted">Rıza kaydı yok.</p>
+        <p class="text-sm text-ink-muted">Onam kaydı yok.</p>
       <?php endif; ?>
-      <a href="<?= e(url("/danisanlar/{$client['id']}/riza")) ?>" target="_blank" rel="noopener"
+      <a href="<?= e(url("/danisanlar/{$client['id']}/onam")) ?>" target="_blank" rel="noopener"
          class="btn-text inline-block mt-3">
-        Rıza formunu yazdır →
+        Onam formunu yazdır →
       </a>
     </div>
   </section>

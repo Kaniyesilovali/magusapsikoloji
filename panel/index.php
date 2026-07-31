@@ -140,7 +140,7 @@ $router->post('/check-in-sorulari/alicilar', [CheckinController::class, 'saveRec
 // Hangi alanların sorulacağı görüşmeci başına değişir.
 $router->get('/danisanlar/{id}/alanlar',  [CheckinController::class, 'domains']);
 $router->post('/danisanlar/{id}/alanlar', [CheckinController::class, 'saveDomains']);
-$router->get('/danisanlar/{id}/riza',     [ConsentController::class, 'printForm']);
+$router->get('/danisanlar/{id}/onam',     [ConsentController::class, 'printForm']);
 $router->get('/danisanlar/{id}/dosya',    [CaseFileController::class, 'form']);
 $router->post('/danisanlar/{id}/dosya',   [CaseFileController::class, 'save']);
 
@@ -184,8 +184,8 @@ $router->get('/icerik/sss',           [FaqController::class, 'index']);
 $router->get('/icerik/sss-duzenle',   [FaqController::class, 'edit']);
 $router->post('/icerik/sss-duzenle',  [FaqController::class, 'save']);
 
-$router->get('/kvkk',  [ConsentController::class, 'index']);
-$router->post('/kvkk', [ConsentController::class, 'update']);
+$router->get('/onam-formu',  [ConsentController::class, 'index']);
+$router->post('/onam-formu', [ConsentController::class, 'update']);
 
 $router->get('/kayitlar', [AuditController::class, 'index']);
 
