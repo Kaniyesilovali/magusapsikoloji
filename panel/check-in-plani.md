@@ -98,6 +98,32 @@ kaydı arşivlemekti — takibi bitiren, geçmişi kapatan fazla ağır bir işl
       (`checkin.auto_on` / `checkin.auto_off`).
 - [ ] `/sistem`'den 007'yi uygula ← **sunucuda yapılacak**
 
+### Faz 4c — Metinler ve soru listesi panelde · ~1 gün
+
+İki adım, iki commit. Birincisi: formdaki **her cümle** panelden düzenlenebilir
+(giriş, üç soru, ölçek uçları, cümle alanı, halka, ✦ satırı, teşekkür sayfası) —
+yarısı düzenlenebilir bir form, okuyana hangi cümlenin merkeze ait olduğunu
+göstermiyor, yalnız iki dil arasındaki dikişi gösteriyor.
+
+İkincisi: soruların **sayısı** da veri oldu.
+
+- [x] `panel/migrations/010_checkin_olcekleri.sql` — `checkin_scales` (tanım) +
+      `checkin_scores` (cevap). Koddaki üç ölçek, settings'e yazılmış
+      düzenlemeleriyle birlikte bir kez kopyalanıyor; geçmiş cevaplar da taşınıyor.
+- [x] En fazla 6 açık soru (`Scales::MAX`). Form her kaydırıcıda uzuyor ve
+      ölçtüğümüz tek şey doldurma oranı.
+- [x] **Yön veri:** +1 yüksek iyi, −1 yüksek kötü. Koddan gelen üçünde kilitli —
+      on iki haftalık bir eğrinin yönü değişirse geçmiş de baş aşağı okunur.
+      Bu üçü silinemez, yalnız kapatılır.
+- [x] Kapatılan/kaldırılan ölçeğin cevapları KALIR (`scale_key` yabancı anahtar
+      değil); eğri o satırı veri bitene kadar çizer. Yeni ölçeğin eğrisi ilk
+      cevaptan başlar, geçmiş haftalar sıfır sayılmaz.
+- [x] Örüntülerin karşılaştırdığı ölçek `Scales::primaryKey()` — ruh hali yoksa
+      yüksek değeri iyi olan ilk ölçek; kaygıyla kurulan aynı cümle ters okunurdu.
+- [x] Göç uygulanmadan da çalışır: liste koddaki üç ölçekten kurulur, cevaplar
+      eski sütunlara yazılır, ekran neyin eksik olduğunu söyler.
+- [ ] `/sistem`'den 010'u uygula ← **sunucuda yapılacak**
+
 ### Faz 5 — Pilot · ~2–3 hafta (gerçek zaman, az kod)
 - [ ] 3–4 gerçek danışanda çalıştır (görüşmeci sayfasındaki düğme döngüyü başlatır)
 - [ ] Tek ölçülen sayı: doldurma oranı — **Sistem** ekranında gönderilen/doldurulan

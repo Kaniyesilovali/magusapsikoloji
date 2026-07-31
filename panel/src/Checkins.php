@@ -171,10 +171,17 @@ final class Checkins
      * Kaydın id'si de dönüyor: ekolojik işaretler (bkz. Ecosystem) bu kayda
      * bağlanıyor ve ikinci sayfa aynı gönderimin parçası.
      *
+     * Sayılar iki yere birden yazılıyor: her ölçek için `checkin_scores`
+     * satırı, koddan gelen üç ölçek içinse ayrıca `checkins` tablosunun kendi
+     * sütunu. İkincisi kopya ama bilinçli — yedeği elden inceleyen ya da
+     * doğrudan SQL yazan biri için `checkins` tablosu tek başına anlamlı
+     * kalıyor. Göç uygulanmadıysa tek yazılan yer zaten o sütunlar.
+     *
+     * @param array<string,int> $scores ölçek anahtarı → 1–10
      * @return array{id:int, noteSaved:bool} noteSaved, cümle yazıldıysa
      *         şifrelenerek saklanabildi mi (yazılmadıysa true).
      */
-    public static function save(array $request, int $mood, int $sleep, int $anxiety, string $note): array
+    public static function save(array $request, array $scores, string $note): array
     {
         $cipher    = null;
         $nonce     = null;
@@ -191,12 +198,33 @@ final class Checkins
             }
         }
 
+        $legacy = [];
+        foreach (Scales::BUILTIN as $key) {
+            // Kapatılmış ölçeğin sütunu NULL kalır (bkz. 010): olmayan bir
+            // cevabı sıfırla doldurmak, doldurulmuş bir 1 gibi okunurdu.
+            $legacy[$key] = array_key_exists($key, $scores) ? self::score((string) $scores[$key]) : null;
+        }
+
         $id = Db::insert(
             'INSERT INTO checkins (client_id, request_id, mood, sleep_quality, anxiety,
                                    note_ciphertext, note_nonce, created_at)
              VALUES (?, ?, ?, ?, ?, ?, ?, NOW())',
-            [$request['client_id'], $request['id'], $mood, $sleep, $anxiety, $cipher, $nonce]
+            [
+                $request['client_id'], $request['id'],
+                $legacy['mood'], $legacy['sleep_quality'], $legacy['anxiety'],
+                $cipher, $nonce,
+            ]
         );
+
+        if (Schema::checkinScalesReady()) {
+            foreach ($scores as $key => $value) {
+                Db::run(
+                    'INSERT INTO checkin_scores (checkin_id, scale_key, value) VALUES (?, ?, ?)',
+                    [$id, (string) $key, self::score((string) $value)]
+                );
+            }
+        }
+
         Db::run('UPDATE checkin_requests SET completed_at = NOW() WHERE id = ?', [$request['id']]);
 
         return ['id' => $id, 'noteSaved' => $noteSaved];
@@ -208,6 +236,10 @@ final class Checkins
      * En eskiden yeniye sıralı geçmiş; cümleler çözülmüş olarak gelir.
      *
      * Sıra eskiden yeniye çünkü çıktısı bir eğri: zaman soldan sağa akar.
+     *
+     * Her satırda `scores` var: ölçek anahtarı → sayı. Kapatılmış, hatta
+     * listeden kaldırılmış ölçeklerin geçmiş cevapları da burada — ölçmeyi
+     * bırakmak ölçtüğünü unutmak değil, eğri o satırı çizmeye devam ediyor.
      *
      * @return list<array<string,mixed>>
      */
@@ -224,7 +256,10 @@ final class Checkins
             [$clientId]
         );
 
+        $scores = self::scoresFor(array_map(static fn (array $row): int => (int) $row['id'], $rows));
+
         foreach ($rows as $index => $row) {
+            $rows[$index]['scores']     = $scores[(int) $row['id']] ?? self::legacyScores($row);
             $rows[$index]['note']       = null;
             $rows[$index]['note_error'] = false;
 
@@ -242,6 +277,48 @@ final class Checkins
         }
 
         return $rows;
+    }
+
+    /**
+     * Verilen check-in'lerin bütün ölçek cevapları.
+     *
+     * @param  list<int> $ids
+     * @return array<int,array<string,int>> checkin id → (ölçek → sayı)
+     */
+    private static function scoresFor(array $ids): array
+    {
+        if ($ids === [] || !Schema::checkinScalesReady()) {
+            return [];
+        }
+
+        $in     = implode(',', array_fill(0, count($ids), '?'));
+        $scores = [];
+        foreach (Db::all("SELECT checkin_id, scale_key, value FROM checkin_scores WHERE checkin_id IN ({$in})", $ids) as $row) {
+            $scores[(int) $row['checkin_id']][(string) $row['scale_key']] = (int) $row['value'];
+        }
+
+        return $scores;
+    }
+
+    /**
+     * Göç öncesi kayıtların cevapları — üç sütundan okunur.
+     *
+     * Göç bunları `checkin_scores`'a kopyalıyor; bu yol, göç uygulanmamış bir
+     * panelde (ya da kopyalanmamış tek bir satırda) eğrinin boş kalmaması için
+     * duruyor.
+     *
+     * @return array<string,int>
+     */
+    private static function legacyScores(array $row): array
+    {
+        $scores = [];
+        foreach (Scales::BUILTIN as $key) {
+            if (($row[$key] ?? null) !== null) {
+                $scores[$key] = (int) $row[$key];
+            }
+        }
+
+        return $scores;
     }
 
     /** Kaç kayıt var? (geçmiş penceresinden bağımsız) */
@@ -459,8 +536,12 @@ final class Checkins
     /**
      * Bir ölçünün eğrisi.
      *
+     * Cevabı olmayan hafta ATLANIR, sıfır sayılmaz: ölçek sonradan eklendiyse
+     * eğri eklendiği haftadan başlar, kapatıldıysa kapandığı haftada biter.
+     * Aradaki boşluğu doldurmak, sorulmamış bir soruya cevap uydurmak olurdu.
+     *
      * @param  list<array<string,mixed>> $rows  history() çıktısı (eskiden yeniye)
-     * @param  string $field                    mood | sleep_quality | anxiety
+     * @param  string $field                    ölçek anahtarı (mood, uyku, istah…)
      * @return array{points:string, dots:list<array{x:float,y:float,value:int,label:string}>, last:?array{x:float,y:float,value:int,label:string}, top:float, mid:float, bottom:float, left:int, right:int}
      */
     public static function curve(array $rows, string $field): array
@@ -476,7 +557,11 @@ final class Checkins
         $dots   = [];
         $points = [];
         foreach ($rows as $index => $row) {
-            $value = self::score((string) $row[$field]);
+            $raw = $row['scores'][$field] ?? $row[$field] ?? null;
+            if ($raw === null) {
+                continue;
+            }
+            $value = self::score((string) $raw);
 
             // Tek kayıtta zaman ekseni yok: nokta sağ uca konur, "buradan
             // başladı" demek için yeterli.

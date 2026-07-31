@@ -10,6 +10,7 @@ use Panel\ClientScope;
 use Panel\Crypto;
 use Panel\Db;
 use Panel\Ecosystem;
+use Panel\Scales;
 use Panel\Schema;
 use Panel\View;
 
@@ -78,11 +79,19 @@ final class CheckinController
             return;
         }
 
+        // Cevaplar açık ölçeklere göre toplanıyor, sabit üç alana göre değil.
+        // `olcek[anahtar]` yeni formun adlandırması; tek başına `anahtar` ise
+        // bu sürümden önce açılmış, hâlâ bir sekmede duran formun.
+        $posted = (array) ($_POST['olcek'] ?? []);
+        $scores = [];
+        foreach (Scales::all(true) as $scale) {
+            $key          = $scale['key'];
+            $scores[$key] = Checkins::score((string) ($posted[$key] ?? post($key)));
+        }
+
         $saved = Checkins::save(
             $request,
-            Checkins::score(post('mood')),
-            Checkins::score(post('sleep_quality')),
-            Checkins::score(post('anxiety')),
+            $scores,
             Crypto::available() ? post('note') : ''
         );
 
@@ -135,6 +144,11 @@ final class CheckinController
             'defaults'   => Checkins::QUESTIONS,
             'measures'   => Checkins::measures(),
             'measureDefaults' => Checkins::MEASURES,
+            // Ölçek listesi düzenlenebilir mi (010) — değilse ekran koddaki üç
+            // soruyu gösterir ve neyin eksik olduğunu söyler.
+            'scalesReady' => Schema::checkinScalesReady(),
+            'scales'      => Scales::all(),
+            'scaleMax'    => Scales::MAX,
             // Formun geri kalan metinleri: giriş, cümle alanı, halka, teşekkür.
             'texts'      => Checkins::texts(),
             'textFields' => Checkins::TEXTS,
@@ -256,14 +270,22 @@ final class CheckinController
     {
         $actor = Auth::requirePermission('checkin.manage');
 
-        $input = [];
-        foreach (array_keys(Checkins::QUESTIONS) as $field) {
-            $input[$field] = post($field);
+        if (Schema::checkinScalesReady()) {
+            // Ölçekler artık veri: sıra, ad, cümle, uçlar, yön ve açık/kapalı
+            // tek listeden geliyor (bkz. Scales::save).
+            Scales::save(array_values((array) ($_POST['olcek'] ?? [])));
+        } else {
+            // Göç uygulanmadan yalnız koddaki üç sorunun metni düzenlenebilir.
+            $input = [];
+            foreach (array_keys(Checkins::QUESTIONS) as $field) {
+                $input[$field] = post($field);
+            }
+            Checkins::saveQuestions($input);
+            Checkins::saveMeasures((array) ($_POST['olcek'] ?? []));
         }
-        Checkins::saveQuestions($input);
-        // Ölçek adları/uçları ve formun geri kalan metinleri aynı formda
-        // geliyor: tek "Kaydet", tek denetim kaydı — ekran tek bir metin.
-        Checkins::saveMeasures((array) ($_POST['olcek'] ?? []));
+
+        // Formun geri kalan metinleri aynı formda geliyor: tek "Kaydet", tek
+        // denetim kaydı — ekran tek bir metin.
         Checkins::saveTexts((array) ($_POST['metin'] ?? []));
 
         // İçerik loglanmaz; kimin ne zaman değiştirdiği yeter. Soru metni

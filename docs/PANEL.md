@@ -450,6 +450,25 @@ bağlantılarda görünür, geçmiş cevaplar aynı ölçekte kalır.
 Halkanın sorusu buradaki değer **varsayılandır**; tek bir dosyada değiştirmek için
 görüşmeci sayfası → "Sorulan alanlar".
 
+**Soruların kendisi de liste** (`checkin_scales`, bkz. `Scales`): kaç tane sorulacağı,
+sırası, hangi cümleyle ve hangi yönde. En fazla **6** açık soru — form her kaydırıcıda
+uzuyor ve ölçülen tek şey doldurma oranı. Ad verilmeyen yuva yok sayılır; ekleme işlemi
+budur, ayrı bir düğme yok.
+
+Yön (`direction`) süs değil **veridir**: +1 yüksek değer iyi, −1 yüksek değer kötü
+(kaygı). Koddan gelen üç ölçekte kilitlidir — on iki haftalık bir eğrinin yönünü
+değiştirmek geçmiş haftaları da baş aşağı okuturdu. Bu üçü silinemez, yalnız kapatılır.
+
+Cevaplar `checkin_scores` tablosunda (`checkin_id` + `scale_key`), üç varsayılan ölçek
+için ayrıca `checkins` tablosunun kendi sütunlarında. `scale_key` yabancı anahtar
+**değil**: kapatılan ya da listeden kaldırılan bir ölçeğin geçmiş cevapları durur ve eğri
+o satırı veri bitene kadar çizmeye devam eder — ölçmeyi bırakmak, ölçtüğünü unutmak
+değildir. Yeni eklenen ölçeğin eğrisi ilk cevabın geldiği haftadan başlar; geçmiş
+haftalar boş kalır, **sıfır sayılmaz**.
+
+Örüntü cümlelerinin ikinci yarısı ("… ruh hali düşüyor") tek bir ölçekten gelir: ruh hali
+açıksa o, değilse yüksek değeri iyi olan ilk ölçek (`Scales::primaryKey`).
+
 **Gönderim listesi.** Her aktif görüşmeci için tek bir işaret (`clients.checkin_auto`,
 varsayılan açık) ve durumunun açıklaması: *sırada, bu hafta doldu, bağlantı bekliyor,
 susuldu, başlamadı, e-posta yok, kapalı*. "Sırada" kararını ekran ikinci kez

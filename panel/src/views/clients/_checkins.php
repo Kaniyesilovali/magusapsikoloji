@@ -3,7 +3,7 @@ use Panel\Checkins;
 use Panel\Csrf;
 /** @var array $client @var list<array> $checkins @var int $checkinTotal */
 /** @var ?array $checkinPending @var ?array $checkinLink @var array $ecosystem */
-/** @var bool $checkinAuto @var bool $checkinSwitchable */
+/** @var bool $checkinAuto @var bool $checkinSwitchable @var list<array> $scaleRows */
 
 // Seanslar arası check-in — terapistin gördüğü yüz.
 //
@@ -46,13 +46,27 @@ $latest   = $checkins === [] ? null : $checkins[count($checkins) - 1];
     </p>
   <?php else: ?>
 
-    <?php // Ölçek adları panelden düzenlenebilir; eğrinin başlığı ile formdaki
-          // cümle aynı yerden okunmalı, yoksa iki ekran aynı sayıya iki ad verir. ?>
-    <?php foreach (Checkins::measures() as $field => $measure): ?>
+    <?php
+    // Satırlar ölçek listesinden değil, ELDEKİ VERİDEN çıkıyor: sonradan
+    // eklenen bir ölçek ilk cevabıyla belirir, kapatılan bir ölçek geçmişi
+    // bitene kadar kalır. Ölçmeyi bırakmak ölçtüğünü unutmak değil.
+    $drawn = [];
+    foreach ($scaleRows as $scale) {
+        foreach ($checkins as $row) {
+            if (($row['scores'][$scale['key']] ?? null) !== null) {
+                $drawn[] = $scale;
+                break;
+            }
+        }
+    }
+    ?>
+    <?php foreach ($drawn as $measure): ?>
       <?php
+      $field = $measure['key'];
       $curve = Checkins::curve($checkins, $field);
-      $note  = '1 · ' . $measure['low'] . '  ·  10 · ' . $measure['high'];
+      $note  = trim('1 · ' . $measure['low'] . '  ·  10 · ' . $measure['high'], ' ·');
       ?>
+      <?php if ($curve['last'] === null) { continue; } ?>
       <div class="px-5 py-4 border-t border-warm-secondary">
         <div class="flex items-baseline justify-between gap-3">
           <h3 class="text-sm font-medium text-ink"><?= e($measure['label']) ?></h3>
@@ -109,9 +123,9 @@ $latest   = $checkins === [] ? null : $checkins[count($checkins) - 1];
         <thead>
           <tr>
             <th>Hafta</th>
-            <th>Ruh hali</th>
-            <th>Uyku</th>
-            <th>Kaygı</th>
+            <?php foreach ($drawn as $measure): ?>
+              <th><?= e($measure['label']) ?></th>
+            <?php endforeach; ?>
           </tr>
         </thead>
         <tbody>
@@ -121,13 +135,15 @@ $latest   = $checkins === [] ? null : $checkins[count($checkins) - 1];
                 <span class="text-ink"><?= e(Checkins::weekLabel((string) $row['created_at'])) ?></span>
                 <span class="block text-xs text-ink-light num"><?= e(dt($row['created_at'])) ?></span>
               </td>
-              <td class="num text-ink"><?= (int) $row['mood'] ?></td>
-              <td class="num text-ink"><?= (int) $row['sleep_quality'] ?></td>
-              <td class="num text-ink"><?= (int) $row['anxiety'] ?></td>
+              <?php foreach ($drawn as $measure): ?>
+                <?php $value = $row['scores'][$measure['key']] ?? null; ?>
+                <?php // O hafta sorulmamış ölçek boş kalır, sıfır yazılmaz. ?>
+                <td class="num text-ink"><?= $value === null ? '—' : (int) $value ?></td>
+              <?php endforeach; ?>
             </tr>
             <?php if ($row['note'] !== null || $row['note_error']): ?>
               <tr>
-                <td colspan="4" class="text-sm">
+                <td colspan="<?= count($drawn) + 1 ?>" class="text-sm">
                   <?php if ($row['note_error']): ?>
                     <span class="text-accent-dark">
                       Bu check-in'in cümlesi çözülemedi — şifreleme anahtarı değişmiş olabilir.

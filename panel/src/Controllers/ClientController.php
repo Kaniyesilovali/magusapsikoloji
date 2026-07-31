@@ -16,6 +16,7 @@ use Panel\Mailer;
 use Panel\Notifications;
 use Panel\Patterns;
 use Panel\Rbac;
+use Panel\Scales;
 use Panel\Schema;
 use Panel\Settings;
 use Panel\View;
@@ -158,6 +159,9 @@ final class ClientController
             'checkinLink'     => Checkins::pendingLink(),
             // Haftalık gönderim anahtarı: durumu kaydın kendisinde, çevrilebilir
             // olması göçe bağlı (bkz. Schema::checkinDeliveryReady).
+            // Eğrinin satırları: bütün ölçekler (kapatılmışlar dâhil) — hangisinin
+            // çizileceğine elindeki veriye bakarak görünüm karar veriyor.
+            'scaleRows'         => Scales::all(),
             'checkinAuto'       => Checkins::autoEnabled($client),
             'checkinSwitchable' => Schema::checkinDeliveryReady(),
             // Şerit eğrinin altında, aynı haftaların üstünde duruyor.

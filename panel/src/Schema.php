@@ -106,6 +106,18 @@ final class Schema
             && self::hasColumn('clients', 'checkin_prompt');
     }
 
+    /**
+     * Sorular düzenlenebilir bir liste mi (010) — yoksa koddaki üç sabit ölçek?
+     *
+     * Göç uygulanmadan da form çalışır: ölçekler `Checkins::MEASURES`'tan
+     * okunur, cevaplar eski üç sütuna yazılır. Uygulandıktan sonra tek kaynak
+     * `checkin_scales` tablosudur.
+     */
+    public static function checkinScalesReady(): bool
+    {
+        return self::hasTable('checkin_scales') && self::hasTable('checkin_scores');
+    }
+
     public static function hasTable(string $table): bool
     {
         $key = 'table:' . $table;

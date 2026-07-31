@@ -2,6 +2,7 @@
 use Panel\Checkins;
 use Panel\Csrf;
 use Panel\Ecosystem;
+use Panel\Scales;
 /** @var string $token @var string $firstName @var bool $noteOpen @var string $prompt */
 /** @var list<array{key:string,label:string,hint:string}> $domains */
 
@@ -11,8 +12,8 @@ use Panel\Ecosystem;
 //
 // Sayfadaki her cümle panelden düzenlenebilir (bkz. Checkins::TEXTS): merkezin
 // dili ile yazılımın dili aynı formda yan yana durmasın diye.
-$texts   = Checkins::texts();
-$scales  = Checkins::measures();
+$texts  = Checkins::texts();
+$scales = Scales::all(true);
 ?>
 
 <div class="sheet-body">
@@ -26,29 +27,29 @@ $scales  = Checkins::measures();
 <form method="post" action="<?= e(url('/check-in/' . $token)) ?>">
   <?= Csrf::field() ?>
 
-  <?php foreach (Checkins::questions() as $field => $question): ?>
+  <?php foreach ($scales as $scale): ?>
     <?php
-    $scale = $scales[$field];
+    $field = $scale['key'];
     $outId = $field . 'Out';
     ?>
     <div class="ci-q">
       <div class="ci-q-head">
         <label class="ci-q-label" for="<?= e($field) ?>">
-          <?= e($question) ?>
+          <?= e($scale['question']) ?>
         </label>
         <?php // Değeri betik güncelliyor; JS kapalıysa kaydırıcının yeri zaten söylüyor. ?>
         <output class="ci-out num" id="<?= e($outId) ?>" for="<?= e($field) ?>">5</output>
       </div>
 
       <input class="ci-range" type="range"
-             id="<?= e($field) ?>" name="<?= e($field) ?>"
+             id="<?= e($field) ?>" name="olcek[<?= e($field) ?>]"
              min="1" max="10" step="1" value="5"
              list="ciTicks" data-range-output="#<?= e($outId) ?>"
              aria-describedby="<?= e($field) ?>Scale">
 
       <p class="ci-scale" id="<?= e($field) ?>Scale">
-        <span>1 · <?= e($scale['low']) ?></span>
-        <span>10 · <?= e($scale['high']) ?></span>
+        <span>1<?= $scale['low'] !== '' ? ' · ' . e($scale['low']) : '' ?></span>
+        <span>10<?= $scale['high'] !== '' ? ' · ' . e($scale['high']) : '' ?></span>
       </p>
     </div>
   <?php endforeach; ?>

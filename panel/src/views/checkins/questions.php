@@ -28,6 +28,10 @@ use Panel\Csrf;
 <form method="post" action="<?= e(url('/check-in-sorulari')) ?>" class="sheet">
   <?= Csrf::field() ?>
 
+  <?php if ($scalesReady): ?>
+    <?php require __DIR__ . '/_scales.php'; ?>
+  <?php else: ?>
+
   <?php foreach ($questions as $field => $text): ?>
     <?php
     $measure = $measures[$field];
@@ -78,6 +82,15 @@ use Panel\Csrf;
       </p>
     </div>
   <?php endforeach; ?>
+
+  <div class="px-5 pb-4">
+    <p class="note note-info">
+      Soru ekleyip çıkarabilmek için bekleyen bir veritabanı güncellemesi var;
+      şu an koddaki üç sorunun metni düzenlenebiliyor. Sistem ekranından
+      uygulandığında liste bu ekrandan yönetilebilir olacak.
+    </p>
+  </div>
+  <?php endif; ?>
 
   <?php // ── Formun geri kalan metinleri ────────────────────────────────
         // Soruların cümlesi düzenlenebilirken teşekkür sayfası kodda kilitli

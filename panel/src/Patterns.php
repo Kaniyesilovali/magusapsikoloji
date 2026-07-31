@@ -41,7 +41,21 @@ final class Patterns
      */
     public static function find(array $checkins, array $strip): array
     {
-        $mood = array_map(static fn (array $row): int => (int) $row['mood'], $checkins);
+        // Cümlenin ikinci yarısı ("… ruh hali düşüyor") tek bir ölçekten
+        // geliyor. Hangisi olduğuna Scales karar veriyor: ruh hali açıksa o,
+        // değilse yüksek değeri iyi olan ilk ölçek — kaygıyla kurulan aynı
+        // cümle ters okunurdu.
+        $primary = Scales::primaryKey();
+        $mood    = [];
+        foreach ($checkins as $row) {
+            $value = $row['scores'][$primary] ?? $row[$primary] ?? null;
+            if ($value === null) {
+                // Ölçek o hafta sorulmamışsa örüntü kurulamaz; eksik haftayı
+                // uydurulmuş bir sayıyla doldurmak yanlış cümle üretirdi.
+                return ['rows' => [], 'anchors' => []];
+            }
+            $mood[] = (int) $value;
+        }
 
         $found = [];
         foreach ($strip['rows'] as $row) {
