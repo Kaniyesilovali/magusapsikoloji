@@ -564,9 +564,12 @@ birlikte güncel metni açar; çıktının sonuna metnin söz verdiği **aile ya
 kutusu ile danışan ve psikolog imza satırları eklenir.
 
 > Önceki sürümlerde bu ekran "KVKK metni" adıyla `/kvkk` altındaydı ve süreç
-> anlaşması ayrı bir kâğıt olarak imzalanıyordu. İkisi 2.0 sürümünde tek forma
-> indi ([`009_onam_formu.sql`](../panel/migrations/009_onam_formu.sql)); metnini
-> elle düzenlemiş kurumların sürümüne dokunulmaz.
+> anlaşması ayrı bir kâğıt olarak imzalanıyordu. İkisi 2.0 sürümünde tek forma indi:
+> [`009_onam_formu.sql`](../panel/migrations/009_onam_formu.sql) sürümü,
+> [`010_onam_metni.sql`](../panel/migrations/010_onam_metni.sql) ise kayıtlı metni
+> günceller — çünkü **kayıtlı metin koddaki taslağı ezer**. 010, değiştirdiği metnin
+> eskisini `consent_text_onam_oncesi` anahtarına kopyalar; kurumun elle girdiği
+> unvan/süre/adres bilgileri kaybolmaz.
 
 > Paneldeki başlangıç metni bir **taslaktır**, hukuki tavsiye değildir. Köşeli
 > parantezli alanlar kurumun bilgileriyle doldurulmalı ve metin bir hukukçuya

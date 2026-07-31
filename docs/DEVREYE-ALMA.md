@@ -172,15 +172,15 @@ Sistem kayıtları, Sistem).
   **Görüşmeciler** → *Yeni görüşmeci*. Ad, telefon, birincil terapist. **Açık rıza kutusunu
   işaretleyin.** E-posta adresi de girin — 28. adımdaki hatırlatma testi buna bağlı.
 
-  *Tamam sayılır:* Görüşmeci sayfasında “Açık rıza alındı” ve tarih görünüyor.
+  *Tamam sayılır:* Görüşmeci sayfasında “Onam formu imzalandı” ve tarih görünüyor.
 
-- [ ] **12 · Rıza formunu yazdır** — *Panel*
+- [ ] **12 · Onam formunu yazdır** — *Panel*
 
-  Görüşmeci sayfası → KVKK kutusundaki **“Rıza formunu yazdır”**. Yeni sekmede açılır,
+  Görüşmeci sayfası → Onam kutusundaki **“Onam formunu yazdır”**. Yeni sekmede açılır,
   üstte *Yazdır* düğmesi var.
 
-  *Tamam sayılır:* Çıktı önizlemesinde görüşmecinin adı, metin ve imza alanları var;
-  panel menüsü çıktıda görünmüyor.
+  *Tamam sayılır:* Çıktı önizlemesinde görüşmecinin adı, metin, **aile yakını bilgisi
+  kutusu** ve iki imza alanı (danışan, psikolog) var; panel menüsü çıktıda görünmüyor.
 
 - [ ] **13 · Randevu oluştur** — *Panel*
 
