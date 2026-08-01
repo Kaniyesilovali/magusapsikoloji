@@ -524,6 +524,9 @@
   })();
 
   // data-confirm taşıyan formlar gönderilmeden önce onay ister.
+  // Kilitlenen düğmeler burada tutuluyor; geri dönüşte açan yer aşağıda.
+  var locked = [];
+
   document.addEventListener('submit', function (event) {
     // Önceki bir dinleyici gönderimi durdurduysa burada yapılacak iş yok:
     // aşağıdaki düğme kilidi çalışırsa vazgeçilen form bir daha gönderilemez.
@@ -539,11 +542,29 @@
     }
 
     // Çift gönderimi engelle (yavaş bağlantıda iki kullanıcı oluşmasın).
+    // Yalnız POST formlarında: GET formları arama ve filtredir, iki kez
+    // gönderilmelerinin bir bedeli yok — kilit orada yalnız zarar veriyordu.
+    if ((form.method || 'get').toLowerCase() !== 'post') return;
+
     var button = form.querySelector('button[type="submit"], button:not([type])');
     if (button) {
       window.setTimeout(function () {
         button.disabled = true;
+        locked.push(button);
       }, 0);
     }
+  });
+
+  // Geri tuşuyla dönülen sayfa tarayıcının önbelleğinden canlı DOM'uyla gelir:
+  // kilitlenen düğme kapalı olarak geri döner ve form bir daha gönderilemez.
+  // Enter da çalışmaz — örtük gönderim formun varsayılan düğmesine tıklayarak
+  // işler, kapalı bir düğmeye yapılan tıklama hiçbir şey yapmaz. Kilit yalnız
+  // bu betiğin kapattığı düğmelerde açılıyor: sunucunun bilerek kapalı bastığı
+  // bir düğmeyi geri dönüş açmamalı.
+  window.addEventListener('pageshow', function (event) {
+    if (!event.persisted) return;
+
+    locked.forEach(function (button) { button.disabled = false; });
+    locked.length = 0;
   });
 })();
