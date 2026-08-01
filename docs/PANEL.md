@@ -649,6 +649,11 @@ Kurallar:
   açıyor — JS kapalıyken de hiç görünmez.
 - Klavye: `←` `→` adımlar, `Esc` kapatır; odak kart içinde tutulur.
 
+Menüdeki her ekranın ve görüşmeci kaydının kendi adımları var. **Formlar bilinçli olarak
+dışarıda** (randevu, görüşmeci, kullanıcı, seans notu, görüşmeci dosyası): orada tur
+yarım kalmış bir işin üstünü örterdi ve alanların kendi etiketi ile ipucu zaten yanlarında
+duruyor.
+
 **"Gördü" bilgisi çerezde** (`panel_tur`), veritabanında değil — menü daraltma durumu da
 öyle (`panel_nav`). Bir karşılama ekranı için `users` tablosuna sütun açmak, göç
 gerektiren bir şema değişikliğini yalnızca "bir daha gösterme" için ödemek olurdu. Bedeli:

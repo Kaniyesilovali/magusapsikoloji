@@ -32,7 +32,10 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
 <?php // Başlık üstü satırı kimin takvimine bakıldığını söylüyor: sayfanın
       // tamamı (şablon, izinler, takvim) tek bir terapiste ait ve yönetici
       // ekranı başkasının seçili hâliyle bırakıp geri dönebiliyor. ?>
-<header class="mb-6">
+<?php // Tur adımları 20'den başlar; 10–19 kenar çubuğunun (bkz. views/layout.php). ?>
+<header class="mb-6"
+        data-tour="20" data-tour-title="Bir kural, bir engel değil"
+        data-tour-text="Sayfanın tamamı tek bir terapiste ait; üstteki satır kimin takvimine baktığınızı söyler. Buradaki saatler randevu kaydını engellemez — dışına çıkıldığında yalnız uyarı verir. Takvim şablonu ve izinleri gerçek tarihlerin üzerinde bir arada gösterir.">
   <p class="eyebrow"><?= e($therapist === null ? 'Terapist yok' : (string) $therapist['full_name']) ?></p>
   <h1 class="page-title mt-2">Müsaitlik</h1>
   <p class="page-sub">
@@ -205,7 +208,9 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
   <?php endif; ?>
 </section>
 
-<section class="sheet mb-6">
+<section class="sheet mb-6"
+         data-tour="21" data-tour-title="Haftalık şablon"
+         data-tour-text="Her hafta tekrar eden kural: gün, başlangıç, bitiş. Bir güne birden çok aralık girilebilir (öğle arası böyle çıkar). Şablon hiç girilmemişse her saat uygun sayılır. Haftalık bir kural tek bir günün kutusundan silinemez — düzenleme hep burada.">
   <div class="sheet-head">
     <div>
       <h2 class="sheet-title">Haftalık çalışma saatleri</h2>
@@ -270,7 +275,9 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
   </form>
 </section>
 
-<section class="sheet">
+<section class="sheet"
+         data-tour="22" data-tour-title="İzinler"
+         data-tour-text="Şablon haftalık bir kural, izin belirli günlere yazılır: tatil, kongre, rapor. Tarih ve saat birlikte verilir, yani yarım günlük bir izin de girilebilir. Geçmiş izinler listeden kendiliğinden düşer.">
   <div class="sheet-head">
     <div>
       <h2 class="sheet-title">İzinler</h2>

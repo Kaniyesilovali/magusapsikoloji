@@ -31,7 +31,10 @@ $tones = [
 ];
 ?>
 
-<header class="flex flex-wrap items-end justify-between gap-4 mb-6">
+<?php // Tur adımları 20'den başlar; 10–19 kenar çubuğunun (bkz. views/layout.php). ?>
+<header class="flex flex-wrap items-end justify-between gap-4 mb-6"
+        data-tour="20" data-tour-title="Görüşmecinin gördüğü metinler"
+        data-tour-text="Formdaki her cümle buradan yazılır. Üstteki satır haftalık gönderimin o anki hâlini söyler: kapalıysa ya da cron durmuşsa aşağıda “Sırada” yazsa bile e-posta çıkmıyor demektir. “Formu önizle” kaydedilmiş metni yeni sekmede gösterir, kayıt yazmaz.">
   <div>
     <?php // Başlık üstü satırı gönderimin o anki hâlini söylüyor: "Sırada"
           // rozetleri bir söz veriyor ve sözü tutanın çalışıp çalışmadığı
@@ -178,7 +181,9 @@ $tones = [
   // checkin.manage) ve cevaplar yalnız terapiste ait. Görünen tek şey adın
   // yanında gönderimin durumu.
   ?>
-  <div class="sheet-head border-t border-warm-secondary">
+  <div class="sheet-head border-t border-warm-secondary"
+       data-tour="22" data-tour-title="Kime gidiyor"
+       data-tour-text="Aynı formun devamı, ayrı bir kayıt değil — tek “Kaydet” hepsini birden yazar. Buradaki işaret yalnız haftalık e-postayı yönetir: kaldırmak takibi kapatmaz, terapist görüşmeci sayfasından elle bağlantı göndermeye devam edebilir. Listede puan ya da cevap yok; bu ekran yöneticiye de açık.">
     <div>
       <h2 class="sheet-title">Haftalık e-posta kimlere gidiyor</h2>
       <p class="text-sm text-ink-muted mt-1">

@@ -71,7 +71,10 @@ if (!Rbac::can($actor, 'payment.view.all')) {
 }
 ?>
 
-<header class="mb-6">
+<?php // Tur adımları 20'den başlar; 10–19 kenar çubuğunun (bkz. views/layout.php). ?>
+<header class="mb-6"
+        data-tour="20" data-tour-title="Bekleyen tutar"
+        data-tour-text="Bu ekranın var oluş sebebi en üstteki satır: seçili dönemde kaç seans var ve ne kadarı tahsil edilmedi. Başlık dönemin kendisi, altındaki satır uygulanan filtreler.">
   <?php // Başlık üstü satırı menü öbeğini değil, bakılan dönemin özetini
         // söylüyor: bekleyen tutar bu ekranın var oluş sebebi. ?>
   <p class="eyebrow">
@@ -116,7 +119,9 @@ if (!Rbac::can($actor, 'payment.view.all')) {
       // Ödemelere neredeyse hep ay ay bakılıyor, bu yüzden "Ay" seçer seçmez
       // gidiyor; serbest aralık düğmesini koruyor çünkü orada iki alan birlikte
       // kuruluyor ve her değişiklikte yenilemek yarım bir aralığı uygulardı. ?>
-<div class="ctl mb-3">
+<div class="ctl mb-3"
+     data-tour="21" data-tour-title="Dönem"
+     data-tour-text="Ödemelere neredeyse hep ay ay bakılır: “Ay” seçilir seçilmez gider. Serbest bir aralık için “Aralık” — orada iki tarih birlikte kurulduğu için “Göster” düğmesi duruyor, yoksa yarım bir aralık uygulanırdı. Oklar seçili dönemi bir adım öteler.">
   <nav class="flex items-center gap-1.5" aria-label="Dönem">
     <a href="<?= e($link($nav['prev'])) ?>" class="btn btn-quiet btn-sm">←&nbsp;Önceki</a>
     <a href="<?= e($link(['ay' => date('Y-m')])) ?>" class="btn btn-quiet btn-sm">Bu ay</a>
@@ -210,7 +215,9 @@ if (!Rbac::can($actor, 'payment.view.all')) {
   <button class="btn-text" data-no-js>Göster</button>
 </form>
 
-<div class="sheet">
+<div class="sheet"
+     data-tour="22" data-tour-title="Ücret ile tahsilat ayrı şeyler"
+     data-tour-text="Her satır bir seans. “Ücret” o seansın fiyatı, “Tahsil” bugüne kadar alınan tutar; ikisi arasındaki fark durumu belirler. Satıra girip ücreti yazabilir, kısmi tahsilat ekleyebilirsiniz — bir seans birden çok ödemeyle kapanabilir.">
   <?php if ($rows === []): ?>
     <p class="sheet-empty">Bu aralıkta kayıt yok.</p>
   <?php else: ?>

@@ -14,7 +14,10 @@ $troubled = array_values(array_filter(
 ));
 ?>
 
-<header class="mb-6">
+<?php // Tur adımları 20'den başlar; 10–19 kenar çubuğunun (bkz. views/layout.php). ?>
+<header class="mb-6"
+        data-tour="20" data-tour-title="Bir şey aksadıysa burası"
+        data-tour-text="Üstteki satır sayfanın özeti: bekleyen bir güncelleme ya da durmuş bir iş varsa aşağı inmeden söyler. Sayfa gündelik iş için değil — bir şeyin neden çalışmadığını anlamak için açılır.">
   <p class="eyebrow">
     <?php if ($pending !== []): ?>
       <span class="num"><?= count($pending) ?></span> güncelleme bekliyor
@@ -30,7 +33,9 @@ $troubled = array_values(array_filter(
 
 <?php if ($pending !== []): ?>
   <?php // Bekleyen göç bir uyarı değil, bir karar: rozet clay, yaprağın kendisi sakin. ?>
-  <section class="sheet mb-6">
+  <section class="sheet mb-6"
+           data-tour="21" data-tour-title="Bekleyen güncelleme"
+           data-tour-text="Panelin yeni bir sürümü veritabanında bir değişiklik istiyorsa burada belirir ve düğmeye basılana kadar bekler. Uygulamadan önce cPanel'den veritabanı yedeği almak iyi bir alışkanlık. Bu bölüm, bekleyen bir şey yoksa hiç çizilmez.">
     <div class="sheet-head">
       <h2 class="sheet-title">Bekleyen veritabanı güncellemesi</h2>
       <span class="chip chip-stop">uygulanmadı</span>
@@ -139,7 +144,9 @@ $troubled = array_values(array_filter(
 // Kurulum metni de bir kez yazılıyor. Komutların üçü aynı kalıp; değişen
 // yalnız sıklık ile dosya adı, ki tablo zaten satır satır onu söylüyor.
 ?>
-<section class="sheet mb-6">
+<section class="sheet mb-6"
+         data-tour="22" data-tour-title="Zamanlanmış işler"
+         data-tour-text="Randevu hatırlatmaları, haftalık check-in ve yedekleme. Üçünü de cPanel'deki cron çalıştırır; panel kendi kendine tetiklemez. Satırdaki durum “en son ne zaman koştu”ya bakar: bir iş sessizce durduğunda tek uyarı burasıdır.">
   <div class="sheet-head">
     <div>
       <h2 class="sheet-title">Zamanlanmış işler</h2>

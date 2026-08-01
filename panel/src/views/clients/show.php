@@ -36,7 +36,10 @@ $canManage    = Rbac::can($actor, 'user.create');
 $manualInvite = Invites::pending('client');
 ?>
 
-<header class="mb-6">
+<?php // Tur adımları 20'den başlar; 10–19 kenar çubuğunun (bkz. views/layout.php). ?>
+<header class="mb-6"
+        data-tour="20" data-tour-title="Kaydın kapağı"
+        data-tour-text="Ad, kayıt tarihi ve birincil terapist. Sağdaki düğmeler bu kişiyle ilgili işler: randevu vermek, künyeyi düzenlemek, onam formunu yazdırmak. Arşivlenmiş bir kayıtta adın yanında rozeti durur.">
   <a href="<?= e(url('/danisanlar')) ?>" class="btn-text btn-text-quiet">← Görüşmeciler</a>
   <div class="flex flex-wrap items-start justify-between gap-3 mt-2">
     <div>
@@ -123,7 +126,9 @@ $manualInvite = Invites::pending('client');
 ?>
 <div class="lg:grid lg:grid-cols-[minmax(0,1fr)_19rem] lg:gap-6 lg:items-start">
 
-  <div class="flex flex-col gap-6">
+  <div class="flex flex-col gap-6"
+       data-tour="21" data-tour-title="Seans öncesi okunan sütun"
+       data-tour-text="Bu sayfa çoğu zaman “iki seans arasında ne oldu?” diye açılır ve cevap üstten alta okunur: önce göze çarpan örüntüler, sonra check-in eğrisi, en altta randevu geçmişi. Eşiği geçen bir şey yoksa örüntüler bölümü hiç çizilmez.">
     <?php // Örüntüler en üstte: seansa girmeden önceki 40 saniyede bakılan yer
           // burası. Eşiği geçen bir şey yoksa kendisi hiç çizilmiyor. ?>
     <?php if ($canSeeCheckins): ?>
@@ -171,7 +176,9 @@ $manualInvite = Invites::pending('client');
 
   <?php // Künye uzun sayfalarda yerinde kalır: eğri ve randevu geçmişi
         // kaydırılırken telefon numarası hâlâ ekranda. ?>
-  <aside class="mt-6 lg:mt-0 lg:sticky lg:top-8">
+  <aside class="mt-6 lg:mt-0 lg:sticky lg:top-8"
+         data-tour="22" data-tour-title="Künye"
+         data-tour-text="Telefon, e-posta, onam durumu ve panel hesabı. Bunlar bakılan şeyler, üzerinde çalışılanlar değil — o yüzden dar bir sütunda, klinik içeriğin yanında duruyorlar. Dar ekranda alta iner.">
     <section class="sheet">
       <div class="sheet-head">
         <h2 class="sheet-title">Künye</h2>

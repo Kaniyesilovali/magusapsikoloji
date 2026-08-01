@@ -4,7 +4,10 @@ use Panel\Rbac;
 /** @var array $rows @var int $page @var int $pages @var int $total @var string $action */
 ?>
 
-<header class="mb-6">
+<?php // Tur adımları 20'den başlar; 10–19 kenar çubuğunun (bkz. views/layout.php). ?>
+<header class="mb-6"
+        data-tour="20" data-tour-title="Kim, neyi, ne zaman"
+        data-tour-text="Panelde yapılan işlemlerin izi. KVKK kapsamında erişim izlenebilirliği için tutulur: bir kaydın kim tarafından açıldığını ya da silindiğini sonradan sorabilmek gerekiyor. Kayıtlar buradan değiştirilemez, yalnız okunur.">
   <p class="eyebrow">Yönetim</p>
   <h1 class="page-title mt-2">Sistem kayıtları</h1>
   <p class="page-sub">
@@ -13,7 +16,9 @@ use Panel\Rbac;
   </p>
 </header>
 
-<form method="get" action="<?= e(url('/kayitlar')) ?>" class="flex items-center gap-2 mb-4">
+<form method="get" action="<?= e(url('/kayitlar')) ?>" class="flex items-center gap-2 mb-4"
+      data-tour="21" data-tour-title="İşleme göre süzün"
+      data-tour-text="Kayıt sayısı hızla büyür ve aranan şey genelde tek bir işlem türüdür: giriş denemeleri, silinen kayıtlar, gönderilen davetler. Liste tarihe göre yeniden eskiye sıralıdır, altında sayfalama vardır.">
   <label for="islem" class="eyebrow">İşlem</label>
   <select id="islem" name="islem" class="field w-auto py-1.5 text-[0.8125rem]">
     <option value="">Tüm işlemler</option>

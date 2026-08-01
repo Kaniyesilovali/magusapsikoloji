@@ -13,7 +13,10 @@ $statusBadge = [
 ];
 ?>
 
-<header class="flex flex-wrap items-end justify-between gap-4 mb-6">
+<?php // Tur adımları 20'den başlar; 10–19 kenar çubuğunun (bkz. views/layout.php). ?>
+<header class="flex flex-wrap items-end justify-between gap-4 mb-6"
+        data-tour="20" data-tour-title="Panele kim girebilir"
+        data-tour-text="Buradaki liste giriş yetkisi olan herkes: yöneticiler, terapistler ve panel hesabı açılmış görüşmeciler. Yeni bir hesap “davetli” olarak açılır — şifreyi kişinin kendisi belirler, panelde kimsenin şifresi görünmez.">
   <div>
     <p class="eyebrow">Yönetim</p>
     <h1 class="page-title mt-2">Kullanıcılar</h1>
@@ -30,7 +33,9 @@ $statusBadge = [
 $manualInvite = Invites::pending();
 ?>
 <?php if ($manualInvite !== null): ?>
-  <div class="sheet mb-4">
+  <div class="sheet mb-4"
+       data-tour="21" data-tour-title="E-posta ulaşmadıysa"
+       data-tour-text="Davet e-postası gitmediğinde ya da ulaşmadığında bağlantı burada çıkar; WhatsApp gibi başka bir kanaldan iletebilirsiniz. 48 saat geçerli, tek kullanımlık ve bağlantıyı alan herkes o hesabın şifresini belirleyebilir — yalnız kişinin kendisine verin.">
     <div class="sheet-body">
       <p class="sheet-title"><?= e($manualInvite['name']) ?> için şifre belirleme bağlantısı</p>
       <p class="text-xs text-ink-light mt-1 mb-3">
@@ -56,7 +61,9 @@ $manualInvite = Invites::pending();
          class="field w-full sm:w-72">
 </form>
 
-<div class="sheet">
+<div class="sheet"
+     data-tour="22" data-tour-title="Rol, durum, son giriş"
+     data-tour-text="Rol kişinin panelde ne görebildiğini belirler (kurallar Roller tablosunda). Durum “davetli” ise kişi henüz şifresini belirlememiştir; daveti yenilemek satırdaki eylemlerde. Kimse kendi rolünü değiştiremez ya da kendi hesabını silemez.">
   <?php if ($users === []): ?>
     <p class="sheet-empty">Kayıt bulunamadı.</p>
   <?php else: ?>

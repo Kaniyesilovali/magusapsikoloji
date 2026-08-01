@@ -9,7 +9,10 @@ use Panel\Scheduling;
 $saat = static fn (int $dakika): string => number_format($dakika / 60, 1, ',', '.');
 ?>
 
-<header class="flex flex-wrap items-end justify-between gap-4 mb-6">
+<?php // Tur adımları 20'den başlar; 10–19 kenar çubuğunun (bkz. views/layout.php). ?>
+<header class="flex flex-wrap items-end justify-between gap-4 mb-6"
+        data-tour="20" data-tour-title="Üç soru, üç bölüm"
+        data-tour-text="Bu ay ne kazandık, kaç seans boşa gitti, terapistler ne kadar doldu. Sayfa tek bir aya bakar; sağdaki kutulardan ay ve terapist seçilir, seçim anında uygulanır.">
   <div>
     <p class="eyebrow">Yönetim</p>
     <h1 class="page-title mt-2"><?= e(tr_month_name((int) $month->format('n')) . ' ' . $month->format('Y')) ?></h1>
@@ -40,7 +43,9 @@ $saat = static fn (int $dakika): string => number_format($dakika / 60, 1, ',', '
   </form>
 </header>
 
-<section class="sheet mb-6">
+<section class="sheet mb-6"
+         data-tour="21" data-tour-title="Gelir"
+         data-tour-text="Toplam ücret o ayki seansların fiyatı, tahsil edilen eldeki para, bekleyen ikisinin farkı. Bekleyen tutarın ayrıntısı Ödemeler ekranında: hangi seans, kimden.">
   <div class="sheet-head"><h2 class="sheet-title">Gelir</h2></div>
   <div class="grid gap-px bg-warm-secondary sm:grid-cols-3">
     <div class="bg-white px-5 py-4">
@@ -99,7 +104,9 @@ $saat = static fn (int $dakika): string => number_format($dakika / 60, 1, ',', '
   <?php endif; ?>
 </section>
 
-<section class="sheet">
+<section class="sheet"
+         data-tour="22" data-tour-title="Doluluk"
+         data-tour-text="Terapistin haftalık çalışma şablonuna göre o ayki saatlerinin ne kadarı seansla dolmuş. Payda Müsaitlik ekranındaki şablondan gelir — şablon girilmemişse bu bölüm bir şey söyleyemez.">
   <div class="sheet-head">
     <div>
       <h2 class="sheet-title">Doluluk</h2>

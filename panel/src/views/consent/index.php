@@ -6,7 +6,10 @@ use Panel\Csrf;
 <?php // Metin alanı geniş olmalı ama sayfa sütununun tamamı kadar değil. ?>
 <div class="max-w-3xl">
 
-<header class="mb-6">
+<?php // Tur adımları 20'den başlar; 10–19 kenar çubuğunun (bkz. views/layout.php). ?>
+<header class="mb-6"
+        data-tour="20" data-tour-title="İmzalatılan metin"
+        data-tour-text="Danışana imzalatılan bilgilendirilmiş onam formunun kendisi: süreç, gizlilik, kişisel bilgilerin kaydı ve gönüllülük tek metinde. Yazdırılabilir hâli görüşmeci kaydından alınır.">
   <p class="eyebrow">Site</p>
   <h1 class="page-title mt-2">Onam formu</h1>
   <p class="page-sub">
@@ -29,13 +32,16 @@ use Panel\Csrf;
   <?= Csrf::field() ?>
 
   <div class="sheet-body space-y-5">
-    <div>
+    <div data-tour="21" data-tour-title="Köşeli parantezler sizin"
+         data-tour-text="Paneldeki metin bir taslaktır, hukuki tavsiye değil. Köşeli parantezli yerleri (saklama süresi, iletişim adresi) kurumun bilgileriyle doldurun ve metni bir hukukçuya onaylatın.">
       <label for="consent_text" class="field-label">Metin</label>
       <textarea id="consent_text" name="consent_text" rows="24" required
                 class="field leading-relaxed font-mono"><?= e($text) ?></textarea>
     </div>
 
-    <div class="grid sm:grid-cols-2 gap-4 items-start">
+    <div class="grid sm:grid-cols-2 gap-4 items-start"
+         data-tour="22" data-tour-title="Sürüm geçmişe dönmez"
+         data-tour-text="Her danışan kaydı, onay verdiği sürümü ayrıca saklar. Metni değiştirdiyseniz sürümü de yükseltin; imzalanmış formlar eski sürüme bağlı kalır. Esaslı bir değişiklikte mevcut danışanlardan yeniden onam gerekip gerekmediğini değerlendirin.">
       <div>
         <label for="consent_version" class="field-label">Sürüm</label>
         <input type="text" id="consent_version" name="consent_version" required maxlength="20"

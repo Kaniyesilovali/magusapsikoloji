@@ -96,7 +96,9 @@ $scaleRow = static function (int $index, ?array $scale): void {
 };
 ?>
 
-<div class="sheet-head">
+<div class="sheet-head"
+     data-tour="21" data-tour-title="Soruları merkez belirler"
+     data-tour-text="Kaç soru, hangi cümleyle, hangi sırayla. Adı boş bırakılan yuva yok sayılır — ekleme işlemi bu. Yön (yüksek değer iyi mi kötü mü) eğrinin nasıl okunacağını belirler; koddan gelen üç ölçekte kilitlidir, çünkü değiştirmek geçmiş haftaları da baş aşağı okuturdu. Kapatılan sorunun cevapları silinmez.">
   <div>
     <h2 class="sheet-title">Sorular</h2>
     <p class="text-xs text-ink-light mt-1">
