@@ -55,7 +55,10 @@ foreach ($therapists as $therapist) {
 }
 ?>
 
-<header class="flex flex-wrap items-end justify-between gap-4 mb-6">
+<?php // Tur adımları 20'den başlar; 10–19 kenar çubuğunun (bkz. views/layout.php). ?>
+<header class="flex flex-wrap items-end justify-between gap-4 mb-6"
+        data-tour="20" data-tour-title="Neye bakıyorsunuz"
+        data-tour-text="Başlık, ekranda duran aralığın kendisidir: bir hafta ya da bir ay. Üstündeki satır hangi terapistin randevularını gördüğünüzü söyler.">
   <div>
     <p class="eyebrow"><?= e($filterLabel) ?></p>
     <h1 class="page-title mt-2">
@@ -72,7 +75,9 @@ foreach ($therapists as $therapist) {
   <?php endif; ?>
 </header>
 
-<div class="ctl mb-4">
+<div class="ctl mb-4"
+     data-tour="21" data-tour-title="Aynı randevular, üç okuma"
+     data-tour-text="Hafta saatleriyle çizer, Ay hangi günün ne kadar dolu olduğunu söyler, Liste ise eylemleri taşıyan görünümdür — not, durum ve iptal orada. Oklar bir adım ileri geri gider; adımın boyu seçtiğiniz görünüm kadardır.">
     <nav class="flex items-center gap-1.5" aria-label="<?= $isMonth ? 'Ay' : 'Hafta' ?>">
       <a href="<?= e($link(['tarih' => $prev->format('Y-m-d')])) ?>" class="btn btn-quiet btn-sm">←&nbsp;Önceki</a>
       <a href="<?= e($link(['tarih' => $today])) ?>" class="btn btn-quiet btn-sm"><?= $isMonth ? 'Bu ay' : 'Bu hafta' ?></a>

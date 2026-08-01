@@ -210,6 +210,290 @@
   // değişikliklerini silmesini haber veriyordu ama sorunu ortadan
   // kaldırmıyordu; formlar birleşince silinecek bir şey de kalmadı.
 
+  // ── Tanıtım turu ───────────────────────────────────────────────────────
+  //
+  // Tur ayrı bir betik dosyası ya da adımların sayıldığı bir liste DEĞİL:
+  // her adım, anlattığı öğenin kendi üzerinde durur.
+  //
+  //   <section data-tour="21" data-tour-title="Gün cetveli"
+  //            data-tour-text="Seanslar süreleri kadar yer kaplar…">
+  //
+  // Sıra data-tour'daki sayıdan gelir; layout kenar çubuğu için 10–19'u
+  // kullanır, sayfalar 20'den başlar. Bunun tek nedeni şu: adımın metni
+  // anlattığı şeyden ayrı bir dosyada dursaydı, ekran değişince metin orada
+  // kalırdı. Burada bölüm silinince adımı da onunla gidiyor.
+  //
+  // Görünmeyen adım atlanır — kenar çubuğu dar ekranda kapalı bir <details>
+  // içinde ve yetkisi olmayan kişinin menüsünde o satır hiç basılmıyor. Yani
+  // tur, sayfayı açan kişinin gerçekten gördüğü ekranı anlatıyor.
+  (function () {
+    var starters = Array.prototype.slice.call(document.querySelectorAll('[data-tour-start]'));
+    if (!starters.length) return;
+
+    var all = Array.prototype.slice.call(document.querySelectorAll('[data-tour]'));
+    all.sort(function (a, b) {
+      return parseInt(a.getAttribute('data-tour'), 10) - parseInt(b.getAttribute('data-tour'), 10);
+    });
+    // Anlatacak bir şeyi olmayan ekranda düğme de yok: JS kapalıyken hiçbir işe
+    // yaramayacağı için zaten gizli geliyor (bkz. [data-reveal] ile aynı yöntem).
+    if (!all.length) return;
+
+    var motion = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var GAP = 12;   // kart ile hedef arasındaki hava
+    var PAD = 6;    // ışık halkasının hedeften taşma payı
+
+    var steps = [];
+    var index = 0;
+    var open = false;
+    var lastFocus = null;
+    var frame = 0;
+    var veil, hole, card, elCount, elTitle, elText, btnBack, btnNext, btnSkip;
+
+    var onScreen = function (el) {
+      return el.getClientRects().length > 0;
+    };
+
+    var build = function () {
+      // Perde saydam: karartmayı deliğin kendi gölgesi çiziyor (bkz. .tour-hole).
+      // Buradaki tek iş tıklamayı yakalamak — karanlığa tıklamak turu kapatır.
+      //
+      // Aydınlık alan bunun dışında: perde onun da üstünde duruyor, yani oraya
+      // basan kişi tur penceresine değil anlatılan şeye basmış oluyor. Turu
+      // kapatmak olmaz; kapanma isteği "başka bir yere" tıklamakla anlaşılır.
+      veil = document.createElement('div');
+      veil.className = 'tour-veil';
+      veil.addEventListener('click', function (event) {
+        var box = hole.getBoundingClientRect();
+        var inside = event.clientX >= box.left && event.clientX <= box.right
+                  && event.clientY >= box.top  && event.clientY <= box.bottom;
+        if (!inside) close();
+      });
+
+      hole = document.createElement('div');
+      hole.className = 'tour-hole';
+
+      card = document.createElement('div');
+      card.className = 'tour-card';
+      card.setAttribute('role', 'dialog');
+      card.setAttribute('aria-modal', 'true');
+      card.setAttribute('aria-labelledby', 'tur-baslik');
+      card.tabIndex = -1;
+
+      elCount = document.createElement('p');
+      elCount.className = 'eyebrow tour-count';
+
+      elTitle = document.createElement('h2');
+      elTitle.className = 'tour-title';
+      elTitle.id = 'tur-baslik';
+
+      elText = document.createElement('p');
+      elText.className = 'tour-text';
+
+      btnSkip = document.createElement('button');
+      btnSkip.type = 'button';
+      btnSkip.className = 'btn-text btn-text-quiet';
+      btnSkip.textContent = 'Kapat';
+      btnSkip.addEventListener('click', close);
+
+      btnBack = document.createElement('button');
+      btnBack.type = 'button';
+      btnBack.className = 'btn btn-quiet btn-sm';
+      btnBack.textContent = 'Geri';
+      btnBack.addEventListener('click', function () { go(index - 1); });
+
+      btnNext = document.createElement('button');
+      btnNext.type = 'button';
+      btnNext.className = 'btn btn-primary btn-sm';
+      btnNext.addEventListener('click', function () { go(index + 1); });
+
+      var acts = document.createElement('span');
+      acts.className = 'tour-acts';
+      acts.appendChild(btnBack);
+      acts.appendChild(btnNext);
+
+      var foot = document.createElement('div');
+      foot.className = 'tour-foot';
+      foot.appendChild(btnSkip);
+      foot.appendChild(acts);
+
+      card.appendChild(elCount);
+      card.appendChild(elTitle);
+      card.appendChild(elText);
+      card.appendChild(foot);
+    };
+
+    // Kart hedefin altına konur; sığmıyorsa üstüne. Uzun bir hedefin (kenar
+    // çubuğu menüsü ekran boyunda) altı da üstü de yok — o zaman yanına geçer.
+    var place = function () {
+      var step = steps[index];
+      if (!step) return;
+
+      var box = step.getBoundingClientRect();
+      var vw = document.documentElement.clientWidth;
+      var vh = document.documentElement.clientHeight;
+
+      hole.style.top    = (box.top - PAD) + 'px';
+      hole.style.left   = (box.left - PAD) + 'px';
+      hole.style.width  = (box.width + PAD * 2) + 'px';
+      hole.style.height = (box.height + PAD * 2) + 'px';
+
+      var cw = card.offsetWidth;
+      var ch = card.offsetHeight;
+      var top, left;
+
+      if (box.height > vh * 0.6 && box.width < vw * 0.5) {
+        left = box.right + GAP;
+        if (left + cw > vw - GAP) left = box.left - GAP - cw;
+        top = box.top;
+      } else {
+        top = box.bottom + GAP;
+        if (top + ch > vh - GAP) {
+          var above = box.top - GAP - ch;
+          if (above >= GAP) top = above;
+        }
+        left = box.left + box.width / 2 - cw / 2;
+      }
+
+      card.style.top  = Math.max(GAP, Math.min(top, vh - ch - GAP)) + 'px';
+      card.style.left = Math.max(GAP, Math.min(left, vw - cw - GAP)) + 'px';
+    };
+
+    var go = function (next) {
+      if (next < 0) return;
+      if (next >= steps.length) { close(); return; }
+
+      index = next;
+      var step = steps[index];
+
+      elCount.textContent = 'Adım ' + (index + 1) + ' / ' + steps.length;
+      elTitle.textContent = step.getAttribute('data-tour-title') || '';
+      elText.textContent  = step.getAttribute('data-tour-text') || '';
+      btnBack.disabled = index === 0;
+      btnNext.textContent = index === steps.length - 1 ? 'Bitir' : 'İleri';
+
+      // Ekranın dışında kalan hedefe önce gidilir. Ekranı zaten dolduran bir
+      // hedef (kenar çubuğu ekran boyunda) kaydırılmıyor: ortalanacak bir şey
+      // yok, sayfa boşuna oynardı. Yumuşak kaydırma sürerken kart yerinde
+      // durmaz; kaydırmayı zaten dinlediğimiz için kendini düzeltiyor
+      // (bkz. aşağıdaki scroll dinleyicisi).
+      var box = step.getBoundingClientRect();
+      var vh = document.documentElement.clientHeight;
+      var away = box.bottom < GAP || box.top > vh - GAP;
+      var cut  = box.height < vh * 0.8 && (box.top < GAP || box.bottom > vh - GAP);
+      if (away || cut) {
+        step.scrollIntoView({ block: 'center', behavior: motion ? 'smooth' : 'auto' });
+      }
+
+      place();
+      card.focus();
+    };
+
+    function close() {
+      if (!open) return;
+      open = false;
+
+      veil.remove();
+      hole.remove();
+      card.remove();
+      remember();
+
+      // Kapatan kişi turu başlattığı düğmeye dönsün; kendiliğinden açıldıysa
+      // odak sayfanın başındaydı ve orada kalır.
+      if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
+    }
+
+    // "Gördü" bilgisi çerezde tutuluyor — menü daraltma durumu da öyle
+    // (bkz. panel_nav). Değer kişi kimliğiyle işaretli: merkezdeki ortak
+    // bilgisayarda ikinci kişi turu kendi ilk girişinde yine görsün.
+    //
+    // Kapatmak da görmüş saymak için yeterli: turu kapatan biri onu bir daha
+    // istemiyor demektir, her sayfa yüklemesinde önüne çıkarmak ısrar olurdu.
+    var remember = function () {
+      var key = starters[0].getAttribute('data-tour-key');
+      if (!key) return;
+
+      var raw = (document.cookie.match(/(?:^|;\s*)panel_tur=([^;]*)/) || [])[1] || '';
+      var list = decodeURIComponent(raw).split(',').filter(function (token) {
+        return token !== '' && token !== key;
+      });
+      list.unshift(key);
+
+      document.cookie = 'panel_tur=' + encodeURIComponent(list.slice(0, 6).join(','))
+        + '; path=' + (starters[0].getAttribute('data-tour-path') || '/')
+        + '; max-age=31536000; samesite=lax'
+        + (window.location.protocol === 'https:' ? '; secure' : '');
+    };
+
+    var start = function () {
+      if (open) return;
+
+      steps = all.filter(onScreen);
+      if (!steps.length) return;
+      if (!card) build();
+
+      lastFocus = document.activeElement;
+      document.body.appendChild(veil);
+      document.body.appendChild(hole);
+      document.body.appendChild(card);
+      open = true;
+      go(0);
+    };
+
+    starters.forEach(function (button) {
+      button.hidden = false;
+      button.addEventListener('click', function () {
+        // Mobil menüden başlatıldıysa menü kapanır: açık kalsaydı tur, üstünü
+        // örttüğü bir sayfayı anlatıyor olurdu.
+        var box = button.closest('details');
+        if (box) box.open = false;
+        start();
+      });
+    });
+
+    var onMove = function () {
+      if (!open || frame) return;
+      frame = window.requestAnimationFrame(function () {
+        frame = 0;
+        place();
+      });
+    };
+    window.addEventListener('scroll', onMove, true);   // capture: iç kaydırma alanları da
+    window.addEventListener('resize', onMove);
+
+    document.addEventListener('keydown', function (event) {
+      if (!open) return;
+
+      if (event.key === 'Escape')     { close();          return; }
+      if (event.key === 'ArrowRight') { go(index + 1);    return; }
+      if (event.key === 'ArrowLeft')  { go(index - 1);    return; }
+      if (event.key !== 'Tab') return;
+
+      // Odak kartın içinde kalır: turun arkasındaki sayfa şu an tıklanamıyor,
+      // sekmeyle oraya düşen bir odak görünmez bir yerde kaybolurdu.
+      var items = Array.prototype.filter.call(card.querySelectorAll('button'), function (b) {
+        return !b.disabled;
+      });
+      if (!items.length) return;
+
+      var first = items[0];
+      var last = items[items.length - 1];
+      if (event.shiftKey && (document.activeElement === first || document.activeElement === card)) {
+        last.focus();
+        event.preventDefault();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        first.focus();
+        event.preventDefault();
+      }
+    });
+
+    // Kendiliğinden açılış: yalnız turu hiç görmemiş kişide ve yalnız "Bugün"
+    // ekranında (bkz. views/layout.php). Kısa gecikme sayfanın yerine
+    // oturması için — ilk boyamada ölçülen yerler daha kayıyor.
+    if (starters.filter(function (b) { return b.hasAttribute('data-tour-auto'); }).length) {
+      window.setTimeout(start, 400);
+    }
+  })();
+
   // data-confirm taşıyan formlar gönderilmeden önce onay ister.
   document.addEventListener('submit', function (event) {
     // Önceki bir dinleyici gönderimi durdurduysa burada yapılacak iş yok:

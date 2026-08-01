@@ -36,7 +36,12 @@ $chip = [
 <?php // Panelin en dar sayfası: gün sütunu sayfanın tamamına yayılmamalı. ?>
 <div class="max-w-5xl">
 
-<header class="flex flex-wrap items-end justify-between gap-4 mb-7">
+<?php // Tur adımları 20'den başlar; 10–19 kenar çubuğunun (bkz. views/layout.php).
+      // Metin anlattığı bölümün üzerinde duruyor ki bölüm değişince metin de
+      // gözden kaçmasın. ?>
+<header class="flex flex-wrap items-end justify-between gap-4 mb-7"
+        data-tour="20" data-tour-title="Gün burada başlar"
+        data-tour-text="Panel her girişte bu ekrana düşer: bugünün tarihi, kaç seans olduğu, ilk ve son saat. Tek satırda günün cevabı.">
   <div>
     <p class="eyebrow">Bugün</p>
     <h1 class="page-title mt-2"><?= e(tr_date_label($now->format('Y-m-d'))) ?></h1>
@@ -70,7 +75,9 @@ $chip = [
       <a href="<?= e(url('/randevular')) ?>" class="btn-text">Haftanın tamamı →</a>
     </div>
 
-    <div class="rail rail-<?= (int) $rail['hours'] ?>h">
+    <div class="rail rail-<?= (int) $rail['hours'] ?>h"
+         data-tour="21" data-tour-title="Gün cetveli"
+         data-tour-text="Seanslar süreleri kadar yer kaplar; aradaki boşluk gerçek boşluktur. Çizgi şu anı gösterir, kutunun rengi randevunun durumunu. Bir seansa tıklamak görüşmecinin kaydını açar.">
       <?php for ($h = 0; $h <= $rail['hours']; $h++): ?>
         <div class="rail-hour at-<?= $h * 12 ?>">
           <span><?= sprintf('%02d:00', $rail['startHour'] + $h) ?></span>
@@ -131,7 +138,11 @@ $chip = [
 <?php // ── Sonraki günler ─────────────────────────────────────────────────
       // Görüşmeci için tek liste bu; personel için cetvelin devamı. ?>
 <div class="<?= $isStaff ? 'mt-8 lg:mt-0 lg:sticky lg:top-8' : '' ?>">
-<section class="sheet">
+<section class="sheet"
+         data-tour="22" data-tour-title="<?= e($isStaff ? 'Sonraki günler' : 'Randevularınız') ?>"
+         data-tour-text="<?= e($isStaff
+             ? 'Bugünden sonrası: birkaç günlük ileriye bakış. Haftanın tamamı için Randevular ekranına geçin.'
+             : 'Merkez sizin için bir randevu girdiğinde burada görünür. Gün, saat ve görüşmenin nerede yapılacağı bu listede.') ?>">
   <div class="sheet-head">
     <h2 class="sheet-title"><?= $isStaff ? 'Sonraki günler' : 'Randevularım' ?></h2>
     <?php if ($isStaff): ?>

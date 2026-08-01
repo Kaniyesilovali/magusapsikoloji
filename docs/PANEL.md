@@ -609,6 +609,50 @@ kutusu ile danışan ve psikolog imza satırları eklenir.
 
 ---
 
+## Tanıtım turu
+
+Panele ilk kez giren kişi, "Bugün" ekranında kendiliğinden açılan bir turla karşılanır:
+ekranın geri kalanı kararır, anlatılan yer aydınlık kalır, kart adım adım ilerler.
+Menünün dibindeki **Tanıtım turu** düğmesi turu her ekranda yeniden başlatır.
+
+Motor [`panel.js`](../panel/assets/panel.js) içindedir, biçim
+[`src/panel.css`](../src/panel.css) sonundaki `.tour-*` bloğunda.
+
+**Adımlar ayrı bir dosyada tutulmaz; anlattıkları öğenin üzerinde dururlar:**
+
+```html
+<div class="rail" data-tour="21"
+     data-tour-title="Gün cetveli"
+     data-tour-text="Seanslar süreleri kadar yer kaplar…">
+```
+
+Kurallar:
+
+- **Sıra `data-tour` sayısındandır.** 10–19 kenar çubuğuna ayrıldı
+  ([`layout.php`](../panel/src/views/layout.php)), sayfalar 20'den başlar. Yeni bir ekrana
+  tur eklemek için o ekranın görünümüne birkaç öznitelik yazmak yeter; kaydedilecek,
+  tanımlanacak ya da bir yere ekleneceği başka bir liste yok.
+- **Metin anlattığı şeyle birlikte yaşar.** Bölüm silinince adımı da onunla gider; ayrı
+  bir adım listesi, kaldırılmış bir bölümü anlatmaya devam ederdi.
+- **Görünmeyen adım atlanır.** Yetkisi olmayan kişinin menüsünde o satır hiç basılmıyor,
+  dar ekranda kenar çubuğu kapalı `<details>` içinde. Tur, sayfayı açan kişinin gerçekten
+  gördüğü ekranı anlatır; sayımı (`Adım 2 / 5`) da ona göre yapar.
+- **Anlatacak adımı olmayan ekranda düğme çıkmaz.** Düğme `hidden` geliyor, `panel.js`
+  yalnız sayfada `[data-tour]` varsa açıyor — JS kapalıyken de hiç görünmez.
+- Klavye: `←` `→` adımlar, `Esc` kapatır; odak kart içinde tutulur.
+
+**"Gördü" bilgisi çerezde** (`panel_tur`), veritabanında değil — menü daraltma durumu da
+öyle (`panel_nav`). Bir karşılama ekranı için `users` tablosuna sütun açmak, göç
+gerektiren bir şema değişikliğini yalnızca "bir daha gösterme" için ödemek olurdu. Bedeli:
+tur tarayıcı başına bir kez çıkar. Çerezin değeri `<kullanıcı kimliği>-<tur sürümü>`
+biçiminde: merkezdeki ortak bilgisayarda ikinci kişi turu kendi ilk girişinde yine görür.
+Turu **kapatmak da görmüş saymaya yeter**; kapatan biri onu bir daha istemiyor demektir.
+
+> Tur metinleri değişip herkesin yeniden görmesi istenirse `layout.php` içindeki
+> `$tourVersion` bir artırılır — eski çerez değeri eşleşmez ve tur yeniden karşılar.
+
+---
+
 ## Güvenlik
 
 Uygulanan önlemler:

@@ -100,4 +100,12 @@ return [
     'cikis' => '
         <path d="M9.4 2.7H4.3a1.7 1.7 0 0 0-1.7 1.7v7.2a1.7 1.7 0 0 0 1.7 1.7h5.1"/>
         <path d="M11 5.5L13.5 8 11 10.5M13.5 8H6.5"/>',
+
+    // Tanıtım turu: soru işareti ya da ampul değil, turun ekranda çizdiği
+    // şeyin ta kendisi — karartılmış sayfada aydınlık kalan halka
+    // (bkz. .tour-hole). Işınlar dört yönde; sekiz ışın 18 pikselde lekeye
+    // dönüşüyordu.
+    'tur' => '
+        <circle cx="8" cy="8" r="3.1"/>
+        <path d="M8 1.5v1.7M8 12.8v1.7M1.5 8h1.7M12.8 8h1.7"/>',
 ];

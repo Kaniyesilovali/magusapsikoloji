@@ -13,7 +13,10 @@ $statusLine = match ($status) {
 };
 ?>
 
-<header class="flex flex-wrap items-end justify-between gap-4 mb-6">
+<?php // Tur adımları 20'den başlar; 10–19 kenar çubuğunun (bkz. views/layout.php). ?>
+<header class="flex flex-wrap items-end justify-between gap-4 mb-6"
+        data-tour="20" data-tour-title="Merkezin durumu"
+        data-tour-text="Üstteki satır listenin değil merkezin sayısıdır: kaç aktif kayıt, kaç arşiv, onamı eksik kaç kişi. Altındaki satır o an neye baktığınızı söyler.">
   <div>
     <p class="eyebrow">
       <span class="num"><?= $tally['active'] ?></span> aktif
@@ -40,7 +43,9 @@ $statusLine = match ($status) {
   <?php endif; ?>
 </header>
 
-<form method="get" action="<?= e(url('/danisanlar')) ?>" class="mb-4 flex flex-wrap items-center gap-2">
+<form method="get" action="<?= e(url('/danisanlar')) ?>" class="mb-4 flex flex-wrap items-center gap-2"
+      data-tour="21" data-tour-title="Arama ve arşiv"
+      data-tour-text="Ad, telefon ya da e-postanın bir parçası yeter. Arşivlenmiş bir kayıt aradığınızda Durum'u Arşiv ya da Tümü yapın — liste kendiliğinden yalnız aktif kayıtları gösterir.">
   <?php // Arama kutusunun yer tutucusu kendini anlatıyor; etiket ekran okuyucu için. ?>
   <label for="q" class="sr-only">Ara</label>
   <input type="search" id="q" name="q" value="<?= e($search) ?>" placeholder="Ad, telefon veya e-posta…"
@@ -54,7 +59,9 @@ $statusLine = match ($status) {
   <button class="btn-text">Filtrele</button>
 </form>
 
-<div class="sheet">
+<div class="sheet"
+     data-tour="22" data-tour-title="Kaydın kapısı"
+     data-tour-text="Ada tıklamak o kişinin kaydını açar: randevuları, ödemeleri, onamı, seans dosyası ve seanslar arası check-in hep orada. Bu liste yalnız oraya giden yoldur.">
   <?php if ($clients === []): ?>
     <p class="sheet-empty">Kayıt bulunamadı.</p>
   <?php else: ?>

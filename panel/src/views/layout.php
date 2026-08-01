@@ -45,12 +45,17 @@ $canFindClients = Rbac::canAny($authUser, ['client.view.all', 'client.view.own']
 // Kutu arşivi de tarar (durum=all): adı yazan kişi o kaydın arşivde olup
 // olmadığını bilmiyor, "bulunamadı" demek onu ikinci bir aramaya yolluyordu.
 // Listenin kendi filtresi parametresiz gelindiğinde hâlâ aktif kayıtlarda kalır.
-$findBox = static function (string $id, string $extra = '') use ($canFindClients): void {
+// $step yalnız geniş ekrandaki kopyaya veriliyor: tur, aynı kutuyu iki kez
+// anlatmasın. Mobil kopya turun gözünde zaten yok — kapalı <details> içindeki
+// öğe ekranda görünmüyor ve o adım atlanıyor (bkz. panel.js).
+$findBox = static function (string $id, string $extra = '', ?int $step = null) use ($canFindClients): void {
     if (!$canFindClients) {
         return;
     }
     ?>
-    <form method="get" action="<?= e(url('/danisanlar')) ?>" class="side-find <?= e($extra) ?>" role="search">
+    <form method="get" action="<?= e(url('/danisanlar')) ?>" class="side-find <?= e($extra) ?>" role="search"
+          <?php if ($step !== null): ?>data-tour="<?= $step ?>" data-tour-title="Kişi ara"
+          data-tour-text="Günün en sık işi bir kaydı açmak. Adın ilk harfleri yeter; arama arşivdeki kayıtları da tarar, kutu her ekranda burada."<?php endif; ?>>
       <input type="hidden" name="durum" value="all">
       <label for="<?= e($id) ?>" class="sr-only">Kişi ara</label>
       <svg class="side-find-mark" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
@@ -81,6 +86,26 @@ $isActive = static fn (string $path): bool
 // menüyle boyanır, betik çalışınca daralırdı. Sunucu çerezi okuyup <body>'yi
 // doğru sınıfla basınca o sıçrama hiç olmuyor. Çerezi panel.js yazar.
 $navTight = ($_COOKIE['panel_nav'] ?? '') === 'tight';
+
+// ── Tanıtım turu ────────────────────────────────────────────────────────
+// Adımların metni burada değil, anlattıkları ekranların kendi işaretlemesinde
+// duruyor (data-tour; bkz. panel.js). Layout'un işi iki şey: turu başlatan
+// düğme ve "bu kişi turu gördü mü" bilgisi.
+//
+// Görüldü bilgisi çerezde tutuluyor, veritabanında değil — menü daraltma
+// durumu da öyle (bkz. $navTight). Bir karşılama ekranı için users tablosuna
+// sütun açmak, göç gerektiren bir şema değişikliğini yalnızca "bir daha
+// gösterme" için ödemek olurdu. Bedeli: tur tarayıcı başına bir kez çıkar.
+// Değer kişi kimliğiyle işaretli, çünkü merkezde ortak bir bilgisayar var ve
+// birinin turu görmüş olması ötekini karşılamasız bırakmamalı.
+$tourVersion = 1;
+$tourKey  = (int) ($authUser['id'] ?? 0) . '-' . $tourVersion;
+$tourSeen = in_array($tourKey, explode(',', (string) ($_COOKIE['panel_tur'] ?? '')), true);
+
+// Kendiliğinden yalnız "Bugün"de açılır: panelin ilk düştüğü ekran orası.
+// Başka bir sayfada açılsaydı, tur birinin işini yaptığı yerde önüne çıkmış
+// olurdu — istendiğinde menüdeki düğme her ekranda duruyor.
+$tourAuto = !$tourSeen && $here === '/';
 
 // Menü daraldığında kişinin adı da kısalır. mb_strtoupper 'i' harfini 'I'
 // yapardı; Türkçede karşılığı 'İ'.
@@ -120,7 +145,9 @@ $sideInitials = static function (?string $name): string {
            panel.js açıyor (bkz. [data-reveal] için aynı yöntem). -->
       <button type="button" class="side-toggle" hidden
               data-side-toggle data-side-path="<?= e(url('/')) ?>"
-              aria-controls="yan-menu" aria-expanded="<?= $navTight ? 'false' : 'true' ?>">
+              aria-controls="yan-menu" aria-expanded="<?= $navTight ? 'false' : 'true' ?>"
+              data-tour="12" data-tour-title="Menüyü daraltın"
+              data-tour-text="Menü işaretlere iner, ekran genişler. Bir işaretin üzerine gelince adı yazar. Seçiminiz hatırlanır; sonraki girişte de daraltılmış açılır.">
         <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
           <rect x="1.65" y="2.65" width="12.7" height="10.7" rx="2.4"
                 fill="none" stroke="currentColor" stroke-width="1.3"/>
@@ -131,9 +158,11 @@ $sideInitials = static function (?string $name): string {
       </button>
     </div>
 
-    <?php $findBox('kisiAra'); ?>
+    <?php $findBox('kisiAra', '', 11); ?>
 
-    <nav class="side-nav" aria-label="Panel menüsü">
+    <nav class="side-nav" aria-label="Panel menüsü"
+         data-tour="10" data-tour-title="Panelin menüsü"
+         data-tour-text="Üç öbek, üç ayrı iş: Merkez günlük işleyiştir, Site herkese açık sayfaların metni, Yönetim sistemin kendisi. Yalnız yetkiniz olan satırlar görünür — menüsü herkeste aynı değildir.">
       <?php foreach ($groups as $group): ?>
         <div class="nav-group">
           <p class="eyebrow nav-group-label"><?= e($group['label']) ?></p>
@@ -156,9 +185,25 @@ $sideInitials = static function (?string $name): string {
       $sideName = (string) ($authUser['full_name'] ?? '');
       $sideRole = Rbac::label($authUser['role'] ?? null);
       ?>
+      <?php // Turu başlatan düğme. JS kapalıyken yapacağı bir şey yok, o yüzden
+            // gizli geliyor; panel.js yalnız o ekranda anlatacak bir adım varsa
+            // açıyor. Yeri menünün dibi: bir daha aranmayacak ama arandığında
+            // hep aynı yerde duran şeyler burada. ?>
+      <button type="button" class="nav-link w-full" hidden
+              data-tour-start
+              data-tour-key="<?= e($tourKey) ?>"
+              data-tour-path="<?= e(url('/')) ?>"
+              <?= $tourAuto ? 'data-tour-auto' : '' ?>
+              data-side-label="Tanıtım turu">
+        <svg class="nav-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><?= $sideIcons['tur'] ?></svg>
+        <span class="nav-full">Tanıtım turu</span>
+      </button>
+
       <?php if (Rbac::can($authUser, 'profile.self')): ?>
         <a href="<?= e(url('/profil')) ?>" class="side-person"
            data-side-label="<?= e($sideName) ?>"
+           data-tour="13" data-tour-title="Hesabınız"
+           data-tour-text="Adınız, e-postanız ve şifreniz burada. Yanındaki satır rolünüzü söyler: panelde ne görebildiğiniz ona bağlı."
            <?= $isActive('/profil') ? 'aria-current="page"' : '' ?>>
           <span class="side-person-name"><?= e($sideName) ?></span>
           <span class="side-person-mark" aria-hidden="true"><?= e($sideInitials($sideName)) ?></span>
@@ -202,6 +247,17 @@ $sideInitials = static function (?string $name): string {
         </div>
       <?php endforeach; ?>
       <div class="border-t border-white/10 pt-2">
+        <?php // Turun mobil kopyası. Menü kendisi tam ekranı kapladığı için
+              // düğmeye basınca <details> kapanıyor (bkz. panel.js): tur,
+              // üstünü örttüğü bir sayfayı anlatamaz. ?>
+        <button type="button" class="nav-link w-full" hidden
+                data-tour-start
+                data-tour-key="<?= e($tourKey) ?>"
+                data-tour-path="<?= e(url('/')) ?>"
+                <?= $tourAuto ? 'data-tour-auto' : '' ?>>
+          <svg class="nav-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><?= $sideIcons['tur'] ?></svg>
+          <span class="nav-full">Tanıtım turu</span>
+        </button>
         <?php if (Rbac::can($authUser, 'profile.self')): ?>
           <a href="<?= e(url('/profil')) ?>" class="nav-link">
             <svg class="nav-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><?= $sideIcons['profil'] ?></svg>
