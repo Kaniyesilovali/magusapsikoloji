@@ -612,8 +612,9 @@ kutusu ile danışan ve psikolog imza satırları eklenir.
 ## Tanıtım turu
 
 Panele ilk kez giren kişi, "Bugün" ekranında kendiliğinden açılan bir turla karşılanır:
-ekranın geri kalanı kararır, anlatılan yer aydınlık kalır, kart adım adım ilerler.
-Menünün dibindeki **Tanıtım turu** düğmesi turu her ekranda yeniden başlatır.
+ekranın geri kalanı kararır, anlatılan yer aydınlık kalır, kart adım adım ilerler. O ilk
+tur hem paneli hem o ekranı anlatır. Sonrası için menünün dibindeki **Tanıtım turu**
+düğmesi var: her ekranda durur ve **yalnız bulunduğunuz ekranı** anlatır.
 
 Motor [`panel.js`](../panel/assets/panel.js) içindedir, biçim
 [`src/panel.css`](../src/panel.css) sonundaki `.tour-*` bloğunda.
@@ -628,17 +629,24 @@ Motor [`panel.js`](../panel/assets/panel.js) içindedir, biçim
 
 Kurallar:
 
-- **Sıra `data-tour` sayısındandır.** 10–19 kenar çubuğuna ayrıldı
-  ([`layout.php`](../panel/src/views/layout.php)), sayfalar 20'den başlar. Yeni bir ekrana
-  tur eklemek için o ekranın görünümüne birkaç öznitelik yazmak yeter; kaydedilecek,
-  tanımlanacak ya da bir yere ekleneceği başka bir liste yok.
+- **Sayının iki işi var: sıra ve kapsam.** 20'nin altı **paneli** anlatır (menü, kişi
+  arama, daraltma, hesap — [`layout.php`](../panel/src/views/layout.php), 10–19), 20'den
+  başlayanlar **o ekranı**. Yeni bir ekrana tur eklemek için o ekranın görünümüne birkaç
+  öznitelik yazmak yeter; kaydedilecek ya da bir yere eklenecek başka bir liste yok.
+- **Panel bir kez tanıtılır.** Kenar çubuğunun adımları yalnız turu hiç görmemiş kişiye
+  açılır; sonraki her "Tanıtım turu" doğrudan o ekranın kendi adımlarıyla başlar. İkinci
+  kez basan kişi menünün ne olduğunu değil, o an baktığı ekranı soruyor — menüyü yeniden
+  anlatmak ilk anlatışı da değersizleştirirdi.
+- **Kendi adımı olmayan ekranda panel turu geri gelir.** Düğmeye basan biri bir şey
+  bekliyor ve "bu ekran için söyleyecek bir şeyim yok" demenin en kötü yolu hiçbir şey
+  olmamasıdır. Menüyü hatırlamanın da tek yolu bu.
 - **Metin anlattığı şeyle birlikte yaşar.** Bölüm silinince adımı da onunla gider; ayrı
   bir adım listesi, kaldırılmış bir bölümü anlatmaya devam ederdi.
 - **Görünmeyen adım atlanır.** Yetkisi olmayan kişinin menüsünde o satır hiç basılmıyor,
   dar ekranda kenar çubuğu kapalı `<details>` içinde. Tur, sayfayı açan kişinin gerçekten
   gördüğü ekranı anlatır; sayımı (`Adım 2 / 5`) da ona göre yapar.
-- **Anlatacak adımı olmayan ekranda düğme çıkmaz.** Düğme `hidden` geliyor, `panel.js`
-  yalnız sayfada `[data-tour]` varsa açıyor — JS kapalıyken de hiç görünmez.
+- **Hiç `[data-tour]` olmayan ekranda düğme çıkmaz.** Düğme `hidden` geliyor, `panel.js`
+  açıyor — JS kapalıyken de hiç görünmez.
 - Klavye: `←` `→` adımlar, `Esc` kapatır; odak kart içinde tutulur.
 
 **"Gördü" bilgisi çerezde** (`panel_tur`), veritabanında değil — menü daraltma durumu da

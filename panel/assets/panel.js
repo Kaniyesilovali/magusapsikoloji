@@ -218,10 +218,14 @@
   //   <section data-tour="21" data-tour-title="Gün cetveli"
   //            data-tour-text="Seanslar süreleri kadar yer kaplar…">
   //
-  // Sıra data-tour'daki sayıdan gelir; layout kenar çubuğu için 10–19'u
-  // kullanır, sayfalar 20'den başlar. Bunun tek nedeni şu: adımın metni
-  // anlattığı şeyden ayrı bir dosyada dursaydı, ekran değişince metin orada
-  // kalırdı. Burada bölüm silinince adımı da onunla gidiyor.
+  // Sıra data-tour'daki sayıdan gelir ve sayının ikinci bir işi var: 20'nin
+  // altı PANELİ anlatır (menü, arama, daraltma, hesap — layout'ta), 20'den
+  // başlayanlar O EKRANI. Ayrım şunun için: panel bir kez tanıtılır. İkinci
+  // kez "Tanıtım turu"na basan kişi menünün ne olduğunu değil, o an baktığı
+  // ekranı sorar; ona menüyü yeniden anlatmak ilk anlatışı da değersizleştirir.
+  //
+  // Adımın metni anlattığı şeyden ayrı bir dosyada dursaydı, ekran değişince
+  // metin orada kalırdı. Burada bölüm silinince adımı da onunla gidiyor.
   //
   // Görünmeyen adım atlanır — kenar çubuğu dar ekranda kapalı bir <details>
   // içinde ve yetkisi olmayan kişinin menüsünde o satır hiç basılmıyor. Yani
@@ -237,6 +241,10 @@
     // Anlatacak bir şeyi olmayan ekranda düğme de yok: JS kapalıyken hiçbir işe
     // yaramayacağı için zaten gizli geliyor (bkz. [data-reveal] ile aynı yöntem).
     if (!all.length) return;
+
+    var OWN = 20;   // 20 ve üstü: ekranın kendi adımları
+    var panelSteps  = all.filter(function (el) { return parseInt(el.getAttribute('data-tour'), 10) < OWN; });
+    var screenSteps = all.filter(function (el) { return parseInt(el.getAttribute('data-tour'), 10) >= OWN; });
 
     var motion = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var GAP = 12;   // kart ile hedef arasındaki hava
@@ -409,6 +417,11 @@
     // Kapatmak da görmüş saymak için yeterli: turu kapatan biri onu bir daha
     // istemiyor demektir, her sayfa yüklemesinde önüne çıkarmak ısrar olurdu.
     var remember = function () {
+      // Panel bir kez tanıtıldı. Sayfa yenilenmeden ikinci kez basılırsa sunucu
+      // bunu henüz bilmiyor; işareti burada da düşürüyoruz ki tur bu sayfada da
+      // sonraki sayfalarda olacağı gibi davransın.
+      starters.forEach(function (button) { button.removeAttribute('data-tour-intro'); });
+
       var key = starters[0].getAttribute('data-tour-key');
       if (!key) return;
 
@@ -424,10 +437,26 @@
         + (window.location.protocol === 'https:' ? '; secure' : '');
     };
 
+    // Turun bu seferki adımları. Panel tanıtımı yalnız onu hiç görmemiş kişide
+    // öne ekleniyor (sunucu karar veriyor, bkz. views/layout.php).
+    //
+    // Ekranın kendi adımı yoksa panel turu geri geliyor: düğmeye basan kişi bir
+    // şey bekliyor ve "bu ekran hakkında söyleyecek bir şeyim yok" demenin en
+    // kötü yolu hiçbir şey olmamasıdır. Menüyü hatırlamanın da tek yolu bu —
+    // panel bir kez tanıtıldıktan sonra başka kapısı kalmıyordu.
+    var pick = function () {
+      var wantsIntro = starters[0].hasAttribute('data-tour-intro');
+      var own = screenSteps.filter(onScreen);
+      var intro = panelSteps.filter(onScreen);
+
+      if (!own.length) return intro;
+      return wantsIntro ? intro.concat(own) : own;
+    };
+
     var start = function () {
       if (open) return;
 
-      steps = all.filter(onScreen);
+      steps = pick();
       if (!steps.length) return;
       if (!card) build();
 

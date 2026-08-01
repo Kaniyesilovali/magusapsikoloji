@@ -102,10 +102,16 @@ $tourVersion = 1;
 $tourKey  = (int) ($authUser['id'] ?? 0) . '-' . $tourVersion;
 $tourSeen = in_array($tourKey, explode(',', (string) ($_COOKIE['panel_tur'] ?? '')), true);
 
+// Panel bir kez tanıtılır. Kenar çubuğunun adımları (10–19) yalnız turu hiç
+// görmemiş kişiye açılır; sonraki her "Tanıtım turu" o ekranın kendi
+// adımlarıyla (20+) başlar. Menüyü ikinci kez anlatmak, ilk anlatışı da
+// değersizleştirirdi — basan kişi o an baktığı ekranı soruyor.
+$tourIntro = !$tourSeen;
+
 // Kendiliğinden yalnız "Bugün"de açılır: panelin ilk düştüğü ekran orası.
 // Başka bir sayfada açılsaydı, tur birinin işini yaptığı yerde önüne çıkmış
 // olurdu — istendiğinde menüdeki düğme her ekranda duruyor.
-$tourAuto = !$tourSeen && $here === '/';
+$tourAuto = $tourIntro && $here === '/';
 
 // Menü daraldığında kişinin adı da kısalır. mb_strtoupper 'i' harfini 'I'
 // yapardı; Türkçede karşılığı 'İ'.
@@ -193,6 +199,7 @@ $sideInitials = static function (?string $name): string {
               data-tour-start
               data-tour-key="<?= e($tourKey) ?>"
               data-tour-path="<?= e(url('/')) ?>"
+              <?= $tourIntro ? 'data-tour-intro' : '' ?>
               <?= $tourAuto ? 'data-tour-auto' : '' ?>
               data-side-label="Tanıtım turu">
         <svg class="nav-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><?= $sideIcons['tur'] ?></svg>
@@ -254,6 +261,7 @@ $sideInitials = static function (?string $name): string {
                 data-tour-start
                 data-tour-key="<?= e($tourKey) ?>"
                 data-tour-path="<?= e(url('/')) ?>"
+                <?= $tourIntro ? 'data-tour-intro' : '' ?>
                 <?= $tourAuto ? 'data-tour-auto' : '' ?>>
           <svg class="nav-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><?= $sideIcons['tur'] ?></svg>
           <span class="nav-full">Tanıtım turu</span>
