@@ -7,7 +7,9 @@ use Panel\Audit;
 use Panel\Auth;
 use Panel\ClientScope;
 use Panel\Db;
+use Panel\Money;
 use Panel\Rbac;
+use Panel\Scheduling;
 use Panel\Settings;
 use Panel\View;
 
@@ -55,18 +57,35 @@ final class ConsentController
         $currentText    = Settings::get('consent_text', self::starterText());
         $currentVersion = Settings::get('consent_version', self::DEFAULT_VERSION);
 
+        // Hata hâlinde yazılan metin geri veriliyor (bkz. old(), views/consent/index.php).
+        // Eskiden gönderim reddedilince textarea kayıttaki metinle yeniden
+        // doluyordu: sürüm numarası yüzünden geri çevrilen bir düzeltme,
+        // yarım saatlik yazıyı da götürüyordu. Kaydedilmeyen bir metni geri
+        // vermemek, "önce sürümü yükselt" kuralını cezaya çeviriyordu.
+        $input = ['consent_text' => $text, 'consent_version' => $version];
+
         if (mb_strlen($text) < 100) {
+            remember_input($input, ['consent_text' => 'Metin en az birkaç paragraf olmalı.']);
             flash('error', 'Metin çok kısa görünüyor. Onam formu en az birkaç paragraf olmalı.');
             redirect('/onam-formu');
         }
         if ($version === '' || mb_strlen($version) > 20) {
+            remember_input($input, ['consent_version' => 'Sürüm numarası boş bırakılamaz (en fazla 20 karakter).']);
             flash('error', 'Sürüm numarası boş bırakılamaz (en fazla 20 karakter).');
             redirect('/onam-formu');
         }
 
         // Sürüm, verilmiş onamların hangi metne ait olduğunu gösteren tek bağdır.
         if ($text !== $currentText && $version === $currentVersion) {
-            flash('error', 'Metni değiştirdiniz. Sürüm numarasını da yükseltin (ör. ' . $currentVersion . ' → ' . self::nextVersion($currentVersion) . '); daha önce imzalanmış formlar eski sürüme bağlı kalır.');
+            $next = self::nextVersion($currentVersion);
+            // Önerilen sürüm alana yazılı gelir: kural yerinde duruyor, ama
+            // uygulaması tek tuş — sürümü yükseltmek isteyen kişi yeniden
+            // kaydete basıyor, istemeyen sayıyı kendisi değiştiriyor.
+            remember_input(
+                ['consent_text' => $text, 'consent_version' => $next],
+                ['consent_version' => "Metin değişti; sürüm de değişmeli. Önerilen: {$next}"]
+            );
+            flash('error', 'Metni değiştirdiniz. Sürüm numarasını da yükseltin (ör. ' . $currentVersion . ' → ' . $next . '); daha önce imzalanmış formlar eski sürüme bağlı kalır. Yazdığınız metin duruyor, önerilen sürüm alana yazıldı.');
             redirect('/onam-formu');
         }
 
@@ -104,16 +123,90 @@ final class ConsentController
             exit;
         }
 
+        $this->renderPrint($client, $actor);
+    }
+
+    /**
+     * Kaydı henüz açılmamış kişi için boş form.
+     *
+     * İlk görüşmeye gelen kişinin kaydı çoğu zaman görüşmeden SONRA açılıyor —
+     * onam ise görüşmeden önce imzalanması gereken kâğıt. Kayıt açmayı kâğıdın
+     * önkoşulu yapmak, kapıda bekleyen birinin karşısında künye doldurtuyordu.
+     * Bu çıktıda ad da elle yazılır; kayıt sonradan açılınca onam kutusu
+     * işaretlenir (bkz. clients/form.php).
+     */
+    public function printBlank(): void
+    {
+        $actor = Auth::requireLogin();
+        if (!Rbac::canAny($actor, ['client.view.all', 'client.view.own', 'consent.manage'])) {
+            Audit::log('access.denied', 'permission', null, ['permission' => 'consent.print']);
+            View::error(403, 'Yetkiniz yok', 'Onam formu çıktısı alma yetkiniz bulunmuyor.');
+            exit;
+        }
+
+        $this->renderPrint(null, $actor);
+    }
+
+    // ── Yardımcılar ─────────────────────────────────────────────
+
+    /** @param array<string,mixed>|null $client null = kaydı olmayan kişi için boş form */
+    private function renderPrint(?array $client, array $actor): void
+    {
         // Düzen (layout) kullanılmaz: çıktıda menü ve kenar çubuğu olmamalı.
         View::render('consent/print', [
             'title'   => 'Onam formu',
             'client'  => $client,
+            'terms'   => self::terms($client, $actor),
             'text'    => Settings::get('consent_text', self::starterText()),
             'version' => Settings::get('consent_version', self::DEFAULT_VERSION),
         ], '');
     }
 
-    // ── Yardımcılar ─────────────────────────────────────────────
+    /**
+     * Kâğıdın üstünde kişiden kişiye değişen tek şey: tarih ve seans koşulları.
+     *
+     * Bunlar metnin İÇİNE yazılmıyor. Metin sürümlüdür ve herkeste aynı olmak
+     * zorunda — birinin ücreti için metni değiştirmek, sürümü de değiştirmek
+     * ve o güne kadar imzalanmış bütün formları başka bir metne bağlamak
+     * demekti. Değişen sayılar bu yüzden ayrı bir kutuda, çıktının üstünde
+     * doldurulan alanlar olarak duruyor.
+     *
+     * Değerler yalnız başlangıç değeridir; kutunun içinde düzeltilebilir ve
+     * hiçbir yere kaydedilmez — kâğıdın kaydı imzalı hâlidir.
+     *
+     * @param  array<string,mixed>|null $client
+     * @return array{fee:string, minutes:int, frequency:string, date:string}
+     */
+    private static function terms(?array $client, array $actor): array
+    {
+        // Ücret, o kişiye en son yazılmış seans ücreti: konuşulan rakam
+        // zaten odur, yeniden hatırlanması gerekmesin.
+        $fee = '';
+        if ($client !== null) {
+            $last = Db::value(
+                'SELECT fee FROM appointments
+                  WHERE client_id = ? AND fee IS NOT NULL
+               ORDER BY starts_at DESC LIMIT 1',
+                [(int) $client['id']]
+            );
+            if ($last !== null) {
+                $fee = Money::format((string) $last);
+            }
+        }
+
+        // Süre, kaydın birincil terapistinin varsayılanı; kayıt yoksa formu
+        // basan kişinin kendi varsayılanı (bkz. Scheduling::defaultDuration).
+        $therapistId = $client['primary_therapist_id'] ?? $actor['id'];
+
+        return [
+            'fee'       => $fee,
+            'minutes'   => Scheduling::defaultDuration($therapistId === null ? null : (int) $therapistId),
+            // Metnin kendisi "haftalık veya iki haftada bir" diyor; kâğıtta
+            // ikisinden hangisi olduğu yazılı olsun diye sık olanı öneriyoruz.
+            'frequency' => 'Haftada bir',
+            'date'      => date('d.m.Y'),
+        ];
+    }
 
     /** '1.0' → '1.1'; sayısal olmayan sürümlerde ipucu vermeden döner. */
     private static function nextVersion(string $current): string

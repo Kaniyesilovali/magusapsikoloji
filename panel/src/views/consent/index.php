@@ -1,6 +1,11 @@
 <?php
 use Panel\Csrf;
 /** @var string $text @var string $version @var bool $isDraft @var int $signed @var array $actor */
+
+// Geri çevrilmiş bir gönderim varsa ekranda kayıttaki metin değil, kişinin
+// yazdığı metin durur (bkz. ConsentController::update).
+$text    = old('consent_text', $text);
+$version = old('consent_version', $version);
 ?>
 
 <?php // Metin alanı geniş olmalı ama sayfa sütununun tamamı kadar değil. ?>
@@ -9,14 +14,22 @@ use Panel\Csrf;
 <?php // Tur adımları 20'den başlar; 10–19 kenar çubuğunun (bkz. views/layout.php). ?>
 <header class="mb-6"
         data-tour="20" data-tour-title="İmzalatılan metin"
-        data-tour-text="Danışana imzalatılan bilgilendirilmiş onam formunun kendisi: süreç, gizlilik, kişisel bilgilerin kaydı ve gönüllülük tek metinde. Yazdırılabilir hâli görüşmeci kaydından alınır.">
-  <p class="eyebrow">Site</p>
-  <h1 class="page-title mt-2">Onam formu</h1>
-  <p class="page-sub">
-    Danışana imzalatılan bilgilendirilmiş onam formu: süreç, gizlilik, kişisel
-    bilgilerin kaydı ve gönüllülük tek metinde. Şu an
-    <span class="num"><?= $signed ?></span> danışan kaydında onam işaretli.
-  </p>
+        data-tour-text="Danışana imzalatılan bilgilendirilmiş onam formunun kendisi: süreç, gizlilik, kişisel bilgilerin kaydı ve gönüllülük tek metinde. Çıktısı ya görüşmeci kaydından ya da buradaki “Boş form yazdır” düğmesinden alınır — ikincisi, kaydı henüz açılmamış kişi için.">
+  <p class="eyebrow">Merkez</p>
+  <div class="flex flex-wrap items-start justify-between gap-3 mt-2">
+    <div>
+      <h1 class="page-title">Onam formu</h1>
+      <p class="page-sub">
+        Danışana imzalatılan bilgilendirilmiş onam formu: süreç, gizlilik, kişisel
+        bilgilerin kaydı ve gönüllülük tek metinde. Şu an
+        <span class="num"><?= $signed ?></span> danışan kaydında onam işaretli.
+      </p>
+    </div>
+    <?php // Kapıdan gelen kişinin kaydı çoğu zaman görüşmeden sonra açılıyor;
+          // kâğıt ise önce imzalanıyor. Bu düğme o sırayı bozmuyor. ?>
+    <a href="<?= e(url('/onam-formu/yazdir')) ?>" target="_blank" rel="noopener"
+       class="btn btn-primary shrink-0">Boş form yazdır</a>
+  </div>
 </header>
 
 <?php if ($isDraft): ?>
@@ -46,6 +59,9 @@ use Panel\Csrf;
         <label for="consent_version" class="field-label">Sürüm</label>
         <input type="text" id="consent_version" name="consent_version" required maxlength="20"
                class="field num" value="<?= e($version) ?>">
+        <?php if (error_for('consent_version') !== null): ?>
+          <p class="field-error"><?= e(error_for('consent_version')) ?></p>
+        <?php endif; ?>
         <p class="field-hint">
           Metni değiştirdiyseniz sürümü de yükseltin. Her danışan kaydı, onay verdiği
           sürümü ayrıca saklar.
@@ -65,9 +81,12 @@ use Panel\Csrf;
 </form>
 
 <p class="text-xs text-ink-light mt-6">
-  Danışana imzalatılacak çıktıyı, danışanın kayıt sayfasındaki
-  <strong>"Onam formunu yazdır"</strong> bağlantısından alabilirsiniz. Çıktıda,
-  metnin sonuna aile yakını bilgisi kutusu ve imza satırları eklenir.
+  Kayıtlı bir görüşmecinin çıktısı, kayıt sayfasının üstündeki
+  <strong>"Onam formu"</strong> düğmesinden alınır; adı basılı gelir. Kaydı
+  henüz açılmamış kişi için yukarıdaki <strong>"Boş form yazdır"</strong>
+  kullanılır. İki çıktıda da metnin sonuna seans koşulları, aile yakını bilgisi
+  kutusu ve imza satırları eklenir; seans ücreti, süresi ve sıklığı yazdırmadan
+  önce çıktının üstünde düzeltilebilir — bunun için metne dokunmak gerekmez.
 </p>
 
 </div>

@@ -15,6 +15,11 @@ $groups = [
         ['path' => '/',            'label' => 'Bugün',        'icon' => 'bugun',        'permissions' => ['dashboard.view']],
         ['path' => '/randevular',  'label' => 'Randevular',   'icon' => 'randevular',   'permissions' => ['appointment.view.all', 'appointment.view.own']],
         ['path' => '/danisanlar',  'label' => 'Görüşmeciler', 'icon' => 'gorusmeciler', 'permissions' => ['client.view.all', 'client.view.own']],
+        // Onam "Site" öbeğindeydi, çünkü uzun süre yalnız yöneticinin KVKK
+        // metniydi. Metni artık psikolog da güncelliyor ve o kâğıt public
+        // sitede hiç görünmüyor: ilk seansın kapısında imzalanan bir merkez
+        // belgesi. Öbeği de bunu söylüyor.
+        ['path' => '/onam-formu',  'label' => 'Onam formu',   'icon' => 'onam',         'permissions' => ['consent.manage']],
         // Check-in menüde kendi satırı: soru metnini ve haftalık e-postanın
         // kime çıktığını yönetici de düzenliyor (bkz. Rbac → checkin.manage) ve
         // yönetici bir görüşmeci sayfasındaki check-in bölümünü hiç görmüyor —
@@ -26,7 +31,6 @@ $groups = [
     ]],
     ['label' => 'Site', 'items' => [
         ['path' => '/icerik',      'label' => 'Site içeriği', 'icon' => 'icerik',       'permissions' => ['content.manage']],
-        ['path' => '/onam-formu',  'label' => 'Onam formu',   'icon' => 'onam',         'permissions' => ['consent.manage']],
     ]],
     ['label' => 'Yönetim', 'items' => [
         ['path' => '/kullanicilar', 'label' => 'Kullanıcılar',     'icon' => 'kullanicilar', 'permissions' => ['user.view']],

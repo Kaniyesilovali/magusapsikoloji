@@ -277,6 +277,39 @@ details > summary::-webkit-details-marker {
     margin-top: 0.35rem;
   }
 
+  /* Kâğıdın üstünde doldurulan alan (onam formu çıktısı). .field bir ekran
+     kutusudur — beyaz zemin, kenarlık, köşe yuvarlaması; kâğıda basıldığında
+     formun içinde bir arayüz parçası gibi duruyordu. Bu alan bir kutu değil,
+     doldurulacak bir çizgi: yalnız altında ince bir hat var ve yazı, yanındaki
+     basılı metinle aynı boyda. Tarayıcı input'un o anki değerini yazdırdığı
+     için ekranda yazılan kâğıda geçer. */
+  .fill {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--color-warm-tertiary);
+    border-radius: 0;
+    padding: 0.1rem 0.15rem 0.25rem;
+    font: inherit;
+    color: var(--color-ink);
+  }
+  .fill:focus {
+    outline: none;
+    border-bottom-color: var(--color-primary);
+    background: var(--color-warm);
+  }
+  /* font: inherit yukarıda .person'ın serifini de siliyor: elle yazılan ad,
+     kayıttan basılan adla aynı yazıyla görünsün. */
+  .fill.person { font-family: var(--font-serif); font-weight: 500; }
+  /* Çıktıda çizgi kalır, odak zemini kalmaz — kâğıtta gri bir dikdörtgen
+     olarak basılırdı. */
+  @media print {
+    .fill {
+      background: transparent;
+      border-bottom-color: rgb(27 38 32 / 0.4);
+    }
+  }
+
   /* Kutucuğa bağlı satır. Tıklanınca bir şey oluyorsa öyle görünmeli: bu
      etiketler bir kutucuğu çeviriyor ama hiçbir geri bildirimi yoktu ve
      satırın metin gibi durduğu yerde kimse üzerine basmayı denemiyordu.

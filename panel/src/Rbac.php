@@ -84,6 +84,13 @@ final class Rbac
             // görüşmecinin ölçümünü açığa vermez. Bu ekranlarda görüşmecinin
             // adı ve gönderim durumu görünür, puanı ya da cümlesi görünmez.
             'checkin.manage',
+            // Onam metni, psikoloğun kendi süreç anlaşmasıdır: seans süresi,
+            // iptal koşulu, gizlilik sınırları. Bunları yazan da masada
+            // savunan da terapist; metni güncellemek için yöneticiyi beklemek,
+            // kapıdan gelen kişiye eski kâğıdı imzalatmak demekti.
+            // Sürüm yükseltme zorunluluğu ve denetim kaydı yerinde duruyor —
+            // kim değiştirdi, hangi sürümden hangisine, hepsi kayıtlı.
+            'consent.manage',
             'profile.self',
         ],
         self::CLIENT => [

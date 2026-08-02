@@ -190,6 +190,9 @@ $router->post('/icerik/sss-duzenle',  [FaqController::class, 'save']);
 
 $router->get('/onam-formu',  [ConsentController::class, 'index']);
 $router->post('/onam-formu', [ConsentController::class, 'update']);
+// Kaydı olmayan kişi için boş çıktı. Kayıtlı bir görüşmecininki
+// /danisanlar/{id}/onam altında — o kâğıda ad basılı gelir.
+$router->get('/onam-formu/yazdir', [ConsentController::class, 'printBlank']);
 
 $router->get('/kayitlar', [AuditController::class, 'index']);
 

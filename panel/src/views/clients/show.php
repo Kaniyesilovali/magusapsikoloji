@@ -68,6 +68,11 @@ $manualInvite = Invites::pending('client');
           <?= $hasCaseFile ? 'Dosya ✓' : 'Dosya' ?>
         </a>
       <?php endif; ?>
+      <?php // Onam çıktısı künyenin içindeydi; ilk seans öncesi en sık basılan
+            // düğme, sağ sütunda telefon numarasının altında aranıyordu. Sayfanın
+            // işleri burada duruyor, o da bir iş. Künyede yalnız durumu kaldı. ?>
+      <a href="<?= e(url("/danisanlar/{$client['id']}/onam")) ?>" target="_blank" rel="noopener"
+         class="btn btn-quiet">Onam formu</a>
       <?php if (Rbac::can($actor, 'client.update')): ?>
         <a href="<?= e(url("/danisanlar/{$client['id']}/duzenle")) ?>" class="btn btn-quiet">Düzenle</a>
       <?php endif; ?>
@@ -212,10 +217,6 @@ $manualInvite = Invites::pending('client');
             <?php else: ?>
               <span class="chip chip-stop">Eksik</span>
             <?php endif; ?>
-            <a href="<?= e(url("/danisanlar/{$client['id']}/onam")) ?>" target="_blank" rel="noopener"
-               class="btn-text inline-block mt-2">
-              Onam formunu yazdır →
-            </a>
           </dd>
         </div>
 
