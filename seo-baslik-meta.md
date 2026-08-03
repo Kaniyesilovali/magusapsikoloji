@@ -67,17 +67,12 @@ Mevcut hizmet sayfaları: `hizmetler/` ve `en/services/` altında, Türkçe + İ
 
 ---
 
-## Kaygı Terapisi
-**URL:** `/hizmetler/kaygi-terapisi.html` & `/en/services/anxiety-therapy.html`
+## ~~Kaygı Terapisi~~ (kaldırıldı — 2026-08-03)
 
-| | Türkçe | İngilizce |
-|---|---|---|
-| **Title** | Kaygı Terapisi Mağusa \| Anksiyete Tedavisi KKTC | Anxiety Therapy Famagusta \| Anxiety Treatment North Cyprus |
-| **Meta** | Mağusa'da kaygı ve anksiyete terapisi. Panik atak, sosyal kaygı ve genel anksiyete bozukluğu için uzman psikolojik destek. | Anxiety therapy in Famagusta. Expert support for panic attacks, social anxiety and generalised anxiety disorder in North Cyprus. |
-| **H1** | Kaygı Terapisi — Mağusa | Anxiety Therapy — Famagusta |
-| **H2 önerileri** | Kaygı Bozukluğu Nedir? · Panik Atak Belirtileri · BDT ile Kaygı Tedavisi |
-
-**Not:** Bu sayfa blog yazılarına (`kaygi-bozuklugu-nedir`, `panik-atak-belirtileri`) iç bağlantı vermek için ideal.
+Hizmet yayından kaldırıldı; iki dildeki sayfa da silindi. Eski adresler
+(`/hizmetler/kaygi-terapisi.html`, `/en/services/anxiety-therapy.html`)
+`static/.htaccess` içinde hizmet listesine 301 ile yönlendiriliyor. Konu
+blog tarafında duruyor: `kaygi-bozuklugu-nedir`, `panik-atak-belirtileri`.
 
 ---
 

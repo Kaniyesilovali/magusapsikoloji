@@ -9,3 +9,9 @@ RewriteRule ^(.*)$ https://magusapsikoloji.com/$1 [R=301,L]
 # Meta-refresh yerine gerçek 301; link değerini korur.
 Redirect 301 /beyin-beden.html https://magusapsikoloji.com/blog/beyin-beden.html
 Redirect 301 /blog/dau-ogrencileri-psikolojik-destek.html https://magusapsikoloji.com/blog/universite-ogrencileri-psikolojik-destek.html
+
+# --- Kaldırılan hizmet: Kaygı Terapisi (2026-08-03) ---
+# Sayfa yayından kalktı; adresler indekste ve dış bağlantılarda duruyor.
+# Hizmet listesine yönlendiriliyor: konu olarak en yakın karşılık orada.
+Redirect 301 /hizmetler/kaygi-terapisi.html https://magusapsikoloji.com/hizmetler/
+Redirect 301 /en/services/anxiety-therapy.html https://magusapsikoloji.com/en/services/

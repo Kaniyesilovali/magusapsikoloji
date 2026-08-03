@@ -96,14 +96,6 @@
             "@type": "Offer",
             "itemOffered": {
               "@type": "Service",
-              "name": "Kaygı Terapisi",
-              "url": "https://magusapsikoloji.com/hizmetler/kaygi-terapisi.html"
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
               "name": "Öğrenci Danışmanlık",
               "url": "https://magusapsikoloji.com/hizmetler/ogrenci-danismanlik.html"
             }
