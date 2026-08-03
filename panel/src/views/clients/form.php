@@ -10,6 +10,13 @@ $field  = static fn (string $key, string $fallback = ''): string => old($key, $f
 
 // Onam kutusunun ilk hâli: kayıtta onam varsa işaretli gelir.
 $consentChecked = errors() !== [] ? old('consent') !== '' : ($client['consent_at'] ?? null) !== null;
+
+// Danışan metni çevrimiçi onaylamış ama seansta henüz kapanmamış olabilir.
+// Kutu o hâlde İŞARETSİZ geliyor — ve doğrusu bu: tik "imzalandı" demek,
+// çevrimiçi onay imza değil. Ama söylenmezse kutu yanlış okunuyordu: terapist
+// "danışan zaten onayladı" diye işaretleyip hiç atılmamış bir imzayı kayda
+// geçirebilirdi. Kutunun altındaki satır bu yüzden var.
+$consentOnline = $isNew ? null : Panel\Consent::latestOnline((int) $client['id']);
 ?>
 
 <?php // Form sayfası dar tutulur: içerik sütunu 6xl, alanlar o genişlikte okunmuyor. ?>
@@ -126,6 +133,12 @@ $consentChecked = errors() !== [] ? old('consent') !== '' : ($client['consent_at
             <?php if (!$isNew && $client['consent_at'] !== null): ?>
               <br>Kayıtlı onam: <span class="num"><?= e(dt($client['consent_at'])) ?></span> —
               sürüm <?= e((string) $client['consent_version']) ?>
+            <?php elseif ($consentOnline !== null): ?>
+              <br><strong>Danışan metni çevrimiçi onayladı</strong>
+              (<span class="num"><?= e(dt((string) $consentOnline['approved_at'])) ?></span> —
+              sürüm <?= e((string) $consentOnline['version']) ?>).
+              Bu kutu <em>ıslak imza</em> içindir; imza gerçekten atıldıysa işaretleyin.
+              Online görüşüyorsanız sözlü onamı birey sayfasından kaydedin.
             <?php endif; ?>
           </span>
         </span>
