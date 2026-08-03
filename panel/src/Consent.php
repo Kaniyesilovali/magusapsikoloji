@@ -325,8 +325,16 @@ final class Consent
      *
      * ip ve user_agent burada saklanıyor çünkü tiki işaretleyenin oturumu yok:
      * onun kimliğinin tek karşılığı bağlantının kendisi ve isteğin izi.
+     *
+     * Sürüm DIŞARIDAN veriliyor ve bilerek `$request['version']` DEĞİL. İstek
+     * satırındaki numara bağlantının ÜRETİLDİĞİ andaki sürüm; metin araya
+     * girip düzenlenmiş olabilir ve kişi sayfada güncel metni okur. İkisi
+     * karıştırılırsa kayıt, danışanın hiç görmediği bir sürüme onam vermiş
+     * gibi görünür — sonra da çıktı o sürümün metnini basıp imzalatır.
+     * Denetleyici, sayfada gösterilen sürümü gizli alanla geri alıp güncelle
+     * karşılaştırdıktan SONRA burayı çağırıyor.
      */
-    public static function approve(array $request): void
+    public static function approve(array $request, string $version): void
     {
         Db::run(
             'INSERT INTO consent_records
@@ -334,7 +342,7 @@ final class Consent
              VALUES (?, \'online\', ?, NOW(), ?, ?, ?, NOW())',
             [
                 (int) $request['client_id'],
-                (string) $request['version'],
+                $version,
                 (int) $request['id'],
                 client_ip(),
                 mb_substr((string) ($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 255),

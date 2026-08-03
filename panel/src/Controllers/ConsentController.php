@@ -229,26 +229,39 @@ final class ConsentController
      * koymak okumadığı bir kâğıdı imzalatmak olurdu. Böyle bir durumda çıktının
      * üstünde ayrıca bir uyarı satırı duruyor (bkz. consent/print.php).
      *
-     * Sürüm numarası iki dilde de aynı: İngilizce kâğıt ayrı bir metin değil,
-     * o sürümün çevirisi. Çeviri Türkçe metnin gerisinde kaldıysa çıktının
-     * üstünde (yalnız ekranda, kâğıda geçmeyen) bir uyarı duruyor.
+     * İngilizce kâğıt ayrı bir metin değil, bir sürümün çevirisi — ve kâğıda
+     * basılan sürüm numarası, ELDEKİ ÇEVİRİNİN ait olduğu sürümdür. İstenen
+     * sürümün çevirisi yoksa numarayı yine de o sürüm gibi basmak, kâğıdı
+     * olmadığı bir metnin çevirisi gibi gösterirdi.
      */
     private function renderPrint(?array $client, array $actor, string $lang = 'tr'): void
     {
         $current = Consent::currentVersion();
         $online  = $client === null ? null : Consent::latestOnline((int) $client['id']);
 
+        // Basılması gereken sürüm: danışanın onayladığı, yoksa güncel olan.
         $version = $online === null ? $current : (string) $online['version'];
-        $text    = $lang === 'en' ? Consent::versionTextEn($version) : Consent::versionText($version);
 
-        // Arşivde yoksa (göç öncesinde onaylanmış bir sürüm, ya da çevirisi hiç
-        // yazılmamış bir sürüm) elde yalnız güncel metin var. Boş kâğıt
-        // basmaktansa güncelini basıp bunu söylemek doğru: kâğıdın üstündeki
-        // sürüm numarası neyin imzalandığını yine de kayda geçiriyor.
-        $missing = $text === null;
-        if ($missing) {
-            $version = $current;
-            $text    = $lang === 'en' ? Consent::currentTextEn() : Consent::currentText();
+        if ($lang === 'en') {
+            $text    = Consent::versionTextEn($version);
+            $missing = $text === null;
+            // O sürümün çevirisi yazılmamış: eldeki çeviri basılıyor ve kâğıda
+            // onun sürümü yazılıyor.
+            if ($missing) {
+                $text    = Consent::currentTextEn();
+                $version = Consent::translatedVersion();
+            }
+        } else {
+            $text    = Consent::versionText($version);
+            $missing = $text === null;
+            // Arşivde yoksa (göç öncesinde onaylanmış bir sürüm) elde yalnız
+            // güncel metin var. Boş kâğıt basmaktansa güncelini basıp bunu
+            // söylemek doğru: kâğıdın üstündeki sürüm numarası neyin
+            // imzalandığını yine de kayda geçiriyor.
+            if ($missing) {
+                $text    = Consent::currentText();
+                $version = $current;
+            }
         }
 
         // Düzen (layout) kullanılmaz: çıktıda menü ve kenar çubuğu olmamalı.
@@ -369,7 +382,12 @@ final class ConsentController
         // Sayfada gösterilen sürüm gizli alanda taşınıyor. Metin, kişi okurken
         // panelden düzenlenmiş olabilir; okuduğundan başka bir metne onam
         // yazmak, onamı ispat değeri olmayan bir tıklamaya çevirirdi.
-        if (post('surum') !== Consent::currentVersion()) {
+        //
+        // Kayda geçen sürüm de bu: bağlantının üretildiği andaki sürüm
+        // (consent_requests.version) değil, kişinin GÖRDÜĞÜ sürüm.
+        $version = Consent::currentVersion();
+
+        if (post('surum') !== $version) {
             flash('warning', 'Form, siz okurken güncellendi. Yeni metni okuyup yeniden onaylamanız gerekiyor.');
             $this->renderLink($token, $request);
             return;
@@ -383,11 +401,11 @@ final class ConsentController
             return;
         }
 
-        Consent::approve($request);
+        Consent::approve($request, $version);
 
         // İçerik değil, olay loglanır. Aktör boş: bu isteği yapan kişinin
         // panelde oturumu yok.
-        Audit::log('consent.approved', 'client', (int) $request['client_id']);
+        Audit::log('consent.approved', 'client', (int) $request['client_id'], ['surum' => $version]);
 
         redirect('/onam/tesekkurler');
     }

@@ -124,11 +124,20 @@ $other = url(current_path() . ($en ? '' : '?dil=en'));
     onaylatın.
   </p>
 <?php endif; ?>
-<?php if (!empty($missing)): ?>
+<?php if (!empty($missing) && !$en): ?>
   <p class="no-print max-w-3xl mx-auto mt-2 px-4 text-xs text-ink-muted">
     <strong>Dikkat:</strong> danışanın onayladığı sürümün metni arşivde
     bulunamadı (onay, sürüm arşivi kurulmadan önce alınmış olabilir). Kâğıt
     güncel metni basıyor — imzalatmadan önce iki metnin aynı olduğundan emin olun.
+  </p>
+<?php endif; ?>
+<?php // Aynı eksik, İngilizce tarafta: o sürümün çevirisi hiç yazılmamış olabilir. ?>
+<?php if (!empty($missing) && $en): ?>
+  <p class="no-print max-w-3xl mx-auto mt-2 px-4 text-xs text-ink-muted">
+    <strong>Dikkat:</strong> danışanın onayladığı sürümün İngilizce çevirisi yok.
+    Kâğıt eldeki çeviriyi (<span class="num"><?= e($version) ?></span> sürümü)
+    basıyor — imzalatmadan önce Türkçe formla karşılaştırın ya da Türkçe formu
+    kullanın.
   </p>
 <?php endif; ?>
 
