@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace Panel;
 
 /**
- * "Bu kullanıcı hangi görüşmeci kayıtlarını görebilir?" sorusunun tek cevabı.
+ * "Bu kullanıcı hangi birey kayıtlarını görebilir?" sorusunun tek cevabı.
  *
- * Hem görüşmeci listesinde hem randevu formunda aynı kural işlemeli; iki ayrı
+ * Hem birey listesinde hem randevu formunda aynı kural işlemeli; iki ayrı
  * yerde yazılsaydı biri gevşediğinde fark edilmezdi. Filtre `clients` tablosunun
  * `c` takma adıyla sorgulandığını varsayar.
  */
@@ -20,8 +20,8 @@ final class ClientScope
         }
 
         if ($actor['role'] === Rbac::THERAPIST) {
-            // Terapistin "kendi görüşmecisi": birincil terapisti olduğu ya da fiilen
-            // randevusunu gördüğü kişi. İkincisi olmadan, devredilen bir görüşmecinin
+            // Terapistin "kendi bireyi": birincil terapisti olduğu ya da fiilen
+            // randevusunu gördüğü kişi. İkincisi olmadan, devredilen bir bireyin
             // geçmişi terapiste kapanırdı.
             return [
                 '(c.primary_therapist_id = ?
@@ -30,7 +30,7 @@ final class ClientScope
             ];
         }
 
-        // Görüşmeci ve yetkisiz roller: yalnız kendi kaydı (varsa).
+        // Birey ve yetkisiz roller: yalnız kendi kaydı (varsa).
         return ['c.user_id = ?', [$actor['id']]];
     }
 }

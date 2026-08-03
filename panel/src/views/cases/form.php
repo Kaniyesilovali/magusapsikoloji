@@ -5,7 +5,7 @@ use Panel\Csrf;
 
 <header class="mb-6">
   <a href="<?= e(url("/danisanlar/{$client['id']}")) ?>" class="btn-text btn-text-quiet">← <?= e($client['full_name']) ?></a>
-  <p class="eyebrow mt-3">Görüşmeci dosyası</p>
+  <p class="eyebrow mt-3">Birey dosyası</p>
   <h1 class="page-title mt-2"><?= e($client['full_name']) ?></h1>
   <p class="page-sub">
     Başvuru nedeni, öykü, formülasyon ve plan. Seans notlarından ayrıdır —
@@ -16,7 +16,7 @@ use Panel\Csrf;
 <?php if (!$available): ?>
   <div class="note note-stop">
     <strong>Şifreleme kullanılamıyor.</strong>
-    Görüşmeci dosyası yalnız şifreli saklanabilir. Sunucuda <code>sodium</code> eklentisi kapalı
+    Birey dosyası yalnız şifreli saklanabilir. Sunucuda <code>sodium</code> eklentisi kapalı
     ya da <code>note_key</code> geçersiz olduğu için dosya yazılamıyor.
     cPanel → <strong>Select PHP Version</strong> ekranından <code>sodium</code> kutusunu işaretleyin.
   </div>

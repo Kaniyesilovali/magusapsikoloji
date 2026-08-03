@@ -4,16 +4,16 @@
 -- Bu göç yeni bir ürün kurmuyor: mevcut check-in kaydına üç sayının yanına
 -- birkaç işaret ekliyor. Aynı bağlantı, aynı jeton, aynı gönderim.
 
--- ── Görüşmeci başına açık alanlar ─────────────────────────────────────────
--- Hangi alanların sorulacağı görüşmeciye göre değişir: kardeşi olmayan bir
+-- ── Birey başına açık alanlar ─────────────────────────────────────────
+-- Hangi alanların sorulacağı bireye göre değişir: kardeşi olmayan bir
 -- çocuğa her hafta "Kardeş" sormak formu kendi gözünde gereksiz kılar.
 --
 -- Satır YOKSA varsayılan geçerlidir (Ecosystem::defaultsFor). Yani kayıt
 -- açılırken sekiz satır yazmaya gerek yok; tablo yalnız terapistin
 -- varsayılandan saptığı yerleri tutar. `enabled = 0` da bu yüzden anlamlı:
--- "çekirdek olduğu hâlde bu görüşmecide kapalı" demek.
+-- "çekirdek olduğu hâlde bu bireyde kapalı" demek.
 --
--- Aynı görüşmecide en fazla 11 açık alan kuralı PHP tarafında (Ecosystem::MAX_OPEN);
+-- Aynı bireyde en fazla 11 açık alan kuralı PHP tarafında (Ecosystem::MAX_OPEN);
 -- veritabanı bir satırın diğerlerini sayamaz, sayabilse de hata mesajı okunmaz olurdu.
 CREATE TABLE IF NOT EXISTS ecosystem_domains (
   id         INT UNSIGNED    NOT NULL AUTO_INCREMENT,

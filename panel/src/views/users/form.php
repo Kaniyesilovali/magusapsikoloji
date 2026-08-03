@@ -65,7 +65,7 @@ $readonlyCls = 'field bg-warm-secondary text-ink-muted';
         <label for="role" class="field-label">Rol</label>
         <select id="role" name="role" required class="field">
           <?php // Yeni kayıtta listenin ilk rolü seçili gelir; eski varsayılan
-                // (Görüşmeci) artık bu listede yok, hesabı görüşmeci kaydı açıyor. ?>
+                // (Birey) artık bu listede yok, hesabı birey kaydı açıyor. ?>
           <?php $selectedRole = $field('role', (string) ($user['role'] ?? ($roles[0] ?? ''))); ?>
           <?php foreach ($roles as $role): ?>
             <option value="<?= e($role) ?>" <?= $selectedRole === $role ? 'selected' : '' ?>>
@@ -77,7 +77,7 @@ $readonlyCls = 'field bg-warm-secondary text-ink-muted';
           <p class="field-error"><?= e($message) ?></p>
         <?php elseif ($isNew): ?>
           <p class="field-hint">
-            Görüşmeci hesabı buradan açılmaz; görüşmeci kaydı oluşturulurken kendiliğinden açılır.
+            Birey hesabı buradan açılmaz; birey kaydı oluşturulurken kendiliğinden açılır.
           </p>
         <?php endif; ?>
       <?php endif; ?>

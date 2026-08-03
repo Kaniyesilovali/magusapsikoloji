@@ -44,7 +44,7 @@ $scaleRow = static function (int $index, ?array $scale): void {
       </div>
 
       <div class="mt-3">
-        <label class="field-label" for="<?= e($id) ?>_soru">Görüşmeciye sorulan cümle</label>
+        <label class="field-label" for="<?= e($id) ?>_soru">Bireye sorulan cümle</label>
         <input class="field" type="text" id="<?= e($id) ?>_soru" name="<?= e($name) ?>[soru]"
                maxlength="200" value="<?= e((string) ($scale['question'] ?? '')) ?>"
                placeholder="Örn. Bu hafta iştahın nasıldı?">

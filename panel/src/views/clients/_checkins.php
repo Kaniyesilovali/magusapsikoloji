@@ -8,7 +8,7 @@ use Panel\Csrf;
 // Seanslar arası check-in — terapistin gördüğü yüz.
 //
 // Bu bölümün varlık sebebi tek bir soru: "iki seans arasında ne oldu?" Cevabı
-// bugüne kadar yalnız görüşmecinin hatırladığı kadarıyla, seansın ilk on
+// bugüne kadar yalnız bireyin hatırladığı kadarıyla, seansın ilk on
 // dakikasında alınabiliyordu. Üç sayı bunu bir eğriye çeviriyor.
 //
 // Eğri üç ayrı satır, tek kutu değil: kaygıda yukarı kötüdür, diğer ikisinde
@@ -169,7 +169,7 @@ $latest   = $checkins === [] ? null : $checkins[count($checkins) - 1];
         <p class="text-xs text-ink-light mt-1 mb-3">
           <?= !empty($checkinLink['sent'])
               ? 'E-posta gönderildi. Ulaşmazsa bu bağlantıyı doğrudan (ör. WhatsApp) iletebilirsiniz.'
-              : 'Bu bağlantıyı görüşmeciye kendiniz iletin.' ?>
+              : 'Bu bağlantıyı bireye kendiniz iletin.' ?>
           <span class="num"><?= Checkins::TTL_DAYS ?></span> gün geçerli, tek kullanımlık.
         </p>
         <div class="flex gap-2">
@@ -239,7 +239,7 @@ $latest   = $checkins === [] ? null : $checkins[count($checkins) - 1];
               Cron her hafta bağlantı yolluyor. Durdurulursa yalnız e-posta
               kesilir; buradan elle bağlantı göndermeye devam edebilirsiniz.
             <?php else: ?>
-              Cron bu görüşmeciye bağlantı yollamıyor. Yukarıdaki düğme yine
+              Cron bu bireye bağlantı yollamıyor. Yukarıdaki düğme yine
               çalışır — elle gönderilen bağlantı geçerlidir.
             <?php endif; ?>
           </p>

@@ -142,7 +142,7 @@ final class AuthController
         // Bağlantı çoğu zaman merkezin bilgisayarında, yönetici oturumu açıkken
         // açılıyor (ekrandaki bağlantı kopyalanıp aynı tarayıcıya yapıştırılıyor).
         // O oturum kapatılmazsa /giris "zaten girişlisin" deyip panele
-        // yönlendirir: şifresini yeni belirleyen görüşmeci, kendi sayfası yerine
+        // yönlendirir: şifresini yeni belirleyen birey, kendi sayfası yerine
         // yöneticinin oturumunun içine düşer. Şifre belirlemek, tarayıcıda açık
         // duran oturumu her hâlükârda sonlandırır.
         if (Auth::check()) {

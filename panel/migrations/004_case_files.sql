@@ -1,4 +1,4 @@
--- Görüşmeci dosyası (vaka formülasyonu) — özel nitelikli sağlık verisi.
+-- Birey dosyası (vaka formülasyonu) — özel nitelikli sağlık verisi.
 -- Çalıştırma:  panel → Sistem → "Bekleyen güncellemeleri uygula"
 
 -- Seans notundan farkı: seans notu tek bir görüşmeyi anlatır, dosya ise sürecin
@@ -6,7 +6,7 @@
 -- bunu yeniden okumak ister; seans notlarını tek tek açmak istemez.
 --
 -- Saklama seans notuyla aynı kuralda: yalnız şifreli, yalnız yazarına açık.
--- Bu yüzden görüşmeci başına değil, (görüşmeci, terapist) çifti başına tek kayıt
+-- Bu yüzden birey başına değil, (birey, terapist) çifti başına tek kayıt
 -- tutulur — devir hâlinde devralan terapist öncekinin dosyasını açamaz, kendi
 -- formülasyonunu yazar.
 CREATE TABLE IF NOT EXISTS case_files (

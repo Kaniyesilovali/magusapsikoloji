@@ -6,13 +6,13 @@ declare(strict_types=1);
  *
  *   0 9 * * 1  /usr/local/bin/php /home/<kullanıcı>/public_html/panel/cron/checkins.php
  *
- * Kime gider: döngüsü BAŞLATILMIŞ ve haftalık gönderimi AÇIK görüşmecilere.
- * Kayıt olması yetmez; terapistin görüşmeci sayfasından bir kez "Check-in
- * bağlantısı gönder" demesi gerekir. Neden böyle: "aktif tüm görüşmeciler"
+ * Kime gider: döngüsü BAŞLATILMIŞ ve haftalık gönderimi AÇIK bireylere.
+ * Kayıt olması yetmez; terapistin birey sayfasından bir kez "Check-in
+ * bağlantısı gönder" demesi gerekir. Neden böyle: "aktif tüm bireyler"
  * desek, cron kurulduğu an merkezin bütün listesine e-posta çıkardı.
  *
  * İlk bağlantı döngüyü başlatır, clients.checkin_auto ise onu durdurup yeniden
- * açar (panel → Check-in → gönderim listesi, ya da görüşmeci sayfasındaki
+ * açar (panel → Check-in → gönderim listesi, ya da birey sayfasındaki
  * anahtar). İkisi ayrı sorular: "bu kişiyle check-in yapıyor muyuz" ve "bu
  * dönem haftalık e-posta çıksın mı".
  *

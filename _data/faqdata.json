@@ -132,7 +132,7 @@
         },
         {
           "q": "Terapi işe yaramazsa ne olur?",
-          "a": "Terapide ilerleme doğrusal olmayabilir ve terapist-görüşmeci uyumu önemlidir. İlk terapistle bağ kuramadıysanız başka birini denemek çok normaldir. Birkaç seanstan sonra ilerleme hissetmiyorsanız bu durumu terapistinizle açıkça konuşun."
+          "a": "Terapide ilerleme doğrusal olmayabilir ve terapist-birey uyumu önemlidir. İlk terapistle bağ kuramadıysanız başka birini denemek çok normaldir. Birkaç seanstan sonra ilerleme hissetmiyorsanız bu durumu terapistinizle açıkça konuşun."
         },
         {
           "q": "Sadece mutsuz olduğum için terapiye gidebilir miyim?",
@@ -204,7 +204,7 @@
         },
         {
           "q": "Kuzey Kıbrıs'ta psikolog bulmak zor mu?",
-          "a": "Gazimağusa'daki merkezimiz bölgede erişilebilir psikolojik destek sunmaktadır. Yüz yüze seansların yanı sıra online terapi da mevcut olduğundan ulaşım sorunu olan görüşmecilerimize kolaylık sağlıyoruz."
+          "a": "Gazimağusa'daki merkezimiz bölgede erişilebilir psikolojik destek sunmaktadır. Yüz yüze seansların yanı sıra online terapi da mevcut olduğundan ulaşım sorunu olan bireylerimize kolaylık sağlıyoruz."
         },
         {
           "q": "Psikoloji ile psikiyatri hangi konularda örtüşür?",
@@ -1012,11 +1012,11 @@
         },
         {
           "q": "Online terapide terapistimle gerçek bir bağ kurabilir miyim?",
-          "a": "Evet. Araştırmalar, terapinin etkisini büyük ölçüde belirleyen terapötik ittifakın görüntülü seanslarda da kurulduğunu gösteriyor. Görüşmecilerin çoğu birkaç seans sonra formatı düşünmeyi bıraktığını söylüyor."
+          "a": "Evet. Araştırmalar, terapinin etkisini büyük ölçüde belirleyen terapötik ittifakın görüntülü seanslarda da kurulduğunu gösteriyor. Bireylerin çoğu birkaç seans sonra formatı düşünmeyi bıraktığını söylüyor."
         },
         {
           "q": "Uzaktan psikolojik destek kimler için uygun olmayabilir?",
-          "a": "Akut kriz dönemlerinde, yakın güvenlik takibi gereken durumlarda ya da evinde mahrem bir alan bulamayan görüşmeciler için yüz yüze seans daha uygun bir başlangıç olabilir. İlk görüşmede doğru formatı birlikte değerlendiririz."
+          "a": "Akut kriz dönemlerinde, yakın güvenlik takibi gereken durumlarda ya da evinde mahrem bir alan bulamayan bireyler için yüz yüze seans daha uygun bir başlangıç olabilir. İlk görüşmede doğru formatı birlikte değerlendiririz."
         },
         {
           "q": "Online terapinin etkisini artırmak için ne yapabilirim?",
@@ -1197,11 +1197,11 @@
         "items": [
           {
             "q": "Seanslarda söylediklerim gizli kalır mı?",
-            "a": "Evet. Psikolog-görüşmeci gizliliği mesleki etik kodların temelini oluşturur. Yasal istisnalar (kendinize veya başkasına zarar verme riski, çocuk istismarı bildirimi zorunluluğu gibi) dışında paylaşımlarınız tamamen gizlidir ve psikolog tarafından üçüncü kişilerle paylaşılmaz."
+            "a": "Evet. Psikolog-birey gizliliği mesleki etik kodların temelini oluşturur. Yasal istisnalar (kendinize veya başkasına zarar verme riski, çocuk istismarı bildirimi zorunluluğu gibi) dışında paylaşımlarınız tamamen gizlidir ve psikolog tarafından üçüncü kişilerle paylaşılmaz."
           },
           {
             "q": "İngilizce seans mümkün mü?",
-            "a": "Evet. Ekibimiz hem Türkçe hem de İngilizce seans vermektedir. Expat görüşmecilerimiz ve uluslararası öğrenciler için İngilizce seanslar mevcuttur."
+            "a": "Evet. Ekibimiz hem Türkçe hem de İngilizce seans vermektedir. Expat bireylerimiz ve uluslararası öğrenciler için İngilizce seanslar mevcuttur."
           }
         ]
       },

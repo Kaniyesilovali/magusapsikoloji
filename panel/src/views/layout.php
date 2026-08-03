@@ -14,7 +14,7 @@ $groups = [
     ['label' => 'Merkez', 'items' => [
         ['path' => '/',            'label' => 'Bugün',        'icon' => 'bugun',        'permissions' => ['dashboard.view']],
         ['path' => '/randevular',  'label' => 'Randevular',   'icon' => 'randevular',   'permissions' => ['appointment.view.all', 'appointment.view.own']],
-        ['path' => '/danisanlar',  'label' => 'Görüşmeciler', 'icon' => 'gorusmeciler', 'permissions' => ['client.view.all', 'client.view.own']],
+        ['path' => '/danisanlar',  'label' => 'Bireyler', 'icon' => 'gorusmeciler', 'permissions' => ['client.view.all', 'client.view.own']],
         // Onam "Site" öbeğindeydi, çünkü uzun süre yalnız yöneticinin KVKK
         // metniydi. Metni artık psikolog da güncelliyor ve o kâğıt public
         // sitede hiç görünmüyor: ilk seansın kapısında imzalanan bir merkez
@@ -22,7 +22,7 @@ $groups = [
         ['path' => '/onam-formu',  'label' => 'Onam formu',   'icon' => 'onam',         'permissions' => ['consent.manage']],
         // Check-in menüde kendi satırı: soru metnini ve haftalık e-postanın
         // kime çıktığını yönetici de düzenliyor (bkz. Rbac → checkin.manage) ve
-        // yönetici bir görüşmeci sayfasındaki check-in bölümünü hiç görmüyor —
+        // yönetici bir birey sayfasındaki check-in bölümünü hiç görmüyor —
         // oradan girilen bir bağlantı olarak kalsaydı, ekran ona kapalıydı.
         ['path' => '/check-in-sorulari', 'label' => 'Check-in', 'icon' => 'checkin', 'permissions' => ['checkin.manage']],
         ['path' => '/musaitlik',   'label' => 'Müsaitlik',    'icon' => 'musaitlik',    'permissions' => ['availability.manage.all', 'availability.manage.own']],
@@ -42,8 +42,8 @@ $groups = [
 $sideIcons = require __DIR__ . '/_icons.php';
 
 // Kişi arama kutusu menünün kendisine ait: günün en sık işi "şu kişinin kaydını
-// aç" ve yolu bugüne kadar dört adımdı (Görüşmeciler → ara → Filtrele → Aç).
-// Yalnız görüşmeci görebilenlere çiziliyor; görüşmecinin kendi hesabında yok.
+// aç" ve yolu bugüne kadar dört adımdı (Bireyler → ara → Filtrele → Aç).
+// Yalnız birey görebilenlere çiziliyor; bireyin kendi hesabında yok.
 $canFindClients = Rbac::canAny($authUser, ['client.view.all', 'client.view.own']);
 
 // Kutu arşivi de tarar (durum=all): adı yazan kişi o kaydın arşivde olup

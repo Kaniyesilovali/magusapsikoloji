@@ -27,7 +27,7 @@ $statusLine = match ($status) {
         · onamı eksik <span class="num"><?= $tally['unconsented'] ?></span>
       <?php endif; ?>
     </p>
-    <h1 class="page-title mt-2">Görüşmeciler</h1>
+    <h1 class="page-title mt-2">Bireyler</h1>
     <p class="page-sub">
       <?= e($statusLine) ?>
       <?php if ($search !== ''): ?>
@@ -35,11 +35,11 @@ $statusLine = match ($status) {
       <?php else: ?>
         — <span class="num"><?= count($clients) ?></span> kayıt
       <?php endif; ?>
-      <?php if (!Rbac::can($actor, 'client.view.all')): ?> · yalnız kendi görüşmecileriniz<?php endif; ?>
+      <?php if (!Rbac::can($actor, 'client.view.all')): ?> · yalnız kendi bireyleriniz<?php endif; ?>
     </p>
   </div>
   <?php if (Rbac::can($actor, 'client.create')): ?>
-    <a href="<?= e(url('/danisanlar/yeni')) ?>" class="btn btn-primary">Yeni görüşmeci</a>
+    <a href="<?= e(url('/danisanlar/yeni')) ?>" class="btn btn-primary">Yeni birey</a>
   <?php endif; ?>
 </header>
 

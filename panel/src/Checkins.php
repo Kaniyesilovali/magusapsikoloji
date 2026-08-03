@@ -18,7 +18,7 @@ use RuntimeException;
  *
  *  1. Form GİRİŞ GEREKTİRMEZ. Ölçülen tek şey doldurma oranı ve o oranın önüne
  *     konan her adım (giriş, şifre hatırlama) onu düşürür. Yetki, bağlantının
- *     kendisinde: tek kullanımlık, süreli, yalnız o görüşmeciye ait.
+ *     kendisinde: tek kullanımlık, süreli, yalnız o bireye ait.
  *  2. Cümle özel nitelikli sağlık verisi — yalnız şifreli saklanır, seans
  *     notuyla aynı kuralda (bkz. Crypto). Sayılar şifrelenmez: eğriyi çizmek
  *     için sıralanıp toplanmaları gerekiyor ve tek başına "7" bir şey söylemez.
@@ -149,7 +149,7 @@ final class Checkins
         if (strtotime((string) $request['expires_at']) < time()) {
             return 'expired';
         }
-        // Arşivlenen görüşmeciye artık takip yapılmıyor; eldeki eski bağlantı da
+        // Arşivlenen bireye artık takip yapılmıyor; eldeki eski bağlantı da
         // o anda kapanmalı, yoksa arşivleme yarım bir işlem olurdu.
         if ($request['client_status'] !== 'active') {
             return 'closed';
@@ -344,7 +344,7 @@ final class Checkins
     // (cron/checkins.php) panelin gönderim listesi de buradan okuyor: kural iki
     // yerde yazılsaydı ekran "sırada" derken cron susabilir ve fark edilmezdi.
     //
-    // Anahtarın kendisi görüşmecinin satırında (clients.checkin_auto), ayrı bir
+    // Anahtarın kendisi bireyin satırında (clients.checkin_auto), ayrı bir
     // tabloda değil: tek bir evet/hayır ve kaydın ömrü boyunca en çok birkaç kez
     // değişiyor; geçmişini tutmak için tablo açmak, sorulmayan bir soruya cevap
     // saklamak olurdu. Kim ne zaman değiştirdi denetim kaydında duruyor.
@@ -356,7 +356,7 @@ final class Checkins
     public const MAX_UNANSWERED = 3;
 
     /**
-     * Bu görüşmeciye haftalık e-posta çıkıyor mu?
+     * Bu bireye haftalık e-posta çıkıyor mu?
      *
      * Sütun yoksa (göç uygulanmadıysa) "açık": panelin bugünkü davranışı bu ve
      * deploy ile göç arasındaki boşlukta gönderim kendiliğinden durmamalı.
@@ -379,7 +379,7 @@ final class Checkins
     }
 
     /**
-     * Cron şu an koşsa bağlantı gönderilecek görüşmeciler.
+     * Cron şu an koşsa bağlantı gönderilecek bireyler.
      *
      * Sıralama ve alanlar cron'un ihtiyacına göre: ad, e-posta, id.
      *
@@ -418,10 +418,10 @@ final class Checkins
     }
 
     /**
-     * Panelin gönderim listesi: aktif görüşmeciler, anahtarları ve neden
+     * Panelin gönderim listesi: aktif bireyler, anahtarları ve neden
      * gidip gitmediği.
      *
-     * Görünürlük ClientScope ile sınırlı — terapist kendi görüşmecilerini,
+     * Görünürlük ClientScope ile sınırlı — terapist kendi bireylerini,
      * yönetici hepsini görür. Listede PUAN YOK: bu ekran yöneticiye de açık ve
      * cevaplar klinik veri (bkz. Rbac → checkin.manage).
      *
@@ -480,7 +480,7 @@ final class Checkins
 
         if (!self::autoEnabled($row)) {
             return $state('kapali', 'Kapalı', 'stop',
-                'Haftalık e-posta gitmiyor. Terapist görüşmeci sayfasından elle bağlantı gönderebilir.');
+                'Haftalık e-posta gitmiyor. Terapist birey sayfasından elle bağlantı gönderebilir.');
         }
         if (trim((string) ($row['email'] ?? '')) === '') {
             return $state('eposta_yok', 'E-posta yok', 'stop',
@@ -488,7 +488,7 @@ final class Checkins
         }
         if ((int) $row['request_count'] === 0) {
             return $state('baslamadi', 'Başlamadı', 'neutral',
-                'Döngü henüz başlamadı. İlk bağlantıyı terapist görüşmeci sayfasından gönderir; cron sonrasını sürdürür.');
+                'Döngü henüz başlamadı. İlk bağlantıyı terapist birey sayfasından gönderir; cron sonrasını sürdürür.');
         }
         if ((int) $row['unanswered'] >= self::MAX_UNANSWERED) {
             return $state('susuldu', 'Susuldu', 'stop',
@@ -657,7 +657,7 @@ final class Checkins
         'halka_soru' => [
             'group'   => 'Haftanın hâli',
             'label'   => 'Halkanın sorusu',
-            'hint'    => 'Varsayılan bu; tek bir dosyada değiştirmek için görüşmeci sayfası → Sorulan alanlar.',
+            'hint'    => 'Varsayılan bu; tek bir dosyada değiştirmek için birey sayfası → Sorulan alanlar.',
             'default' => Ecosystem::PROMPT,
             'max'     => 200,
         ],

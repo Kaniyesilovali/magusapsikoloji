@@ -28,11 +28,11 @@ $needsAck    = error_for('confirm_warnings') !== null;
 <?php if ($clients === []): ?>
   <div class="sheet">
     <div class="sheet-body">
-      <p class="text-sm text-ink">Randevu yazılacak görüşmeci kaydı yok.</p>
+      <p class="text-sm text-ink">Randevu yazılacak birey kaydı yok.</p>
       <?php if (Rbac::can($actor, 'client.create')): ?>
-        <a href="<?= e(url('/danisanlar/yeni')) ?>" class="btn btn-primary mt-4">Önce görüşmeci ekle</a>
+        <a href="<?= e(url('/danisanlar/yeni')) ?>" class="btn btn-primary mt-4">Önce birey ekle</a>
       <?php else: ?>
-        <p class="field-hint">Görüşmeci kaydını merkez yönetimi oluşturur.</p>
+        <p class="field-hint">Birey kaydını merkez yönetimi oluşturur.</p>
       <?php endif; ?>
     </div>
   </div>
@@ -43,7 +43,7 @@ $needsAck    = error_for('confirm_warnings') !== null;
 
   <div class="sheet-body space-y-5">
     <div>
-      <label for="client_id" class="field-label">Görüşmeci</label>
+      <label for="client_id" class="field-label">Birey</label>
       <?php $selectedClient = $field('client_id', (string) ($appointment['client_id'] ?? '')); ?>
       <select id="client_id" name="client_id" required class="field">
         <option value="">— seçin —</option>
@@ -171,7 +171,7 @@ $needsAck    = error_for('confirm_warnings') !== null;
         <span class="text-sm text-ink">
           E-posta ile bildir
           <span class="block text-xs text-ink-muted mt-1">
-            Görüşmeciye (e-posta adresi kayıtlıysa) ve randevunun terapistine tarih/saat bilgisi gönderilir.
+            Bireye (e-posta adresi kayıtlıysa) ve randevunun terapistine tarih/saat bilgisi gönderilir.
             İdari not ve diğer kayıt bilgileri e-postaya konmaz.
           </span>
         </span>

@@ -67,11 +67,11 @@ final class UserController
         $input  = ['full_name' => post('full_name'), 'email' => mb_strtolower(post('email')), 'phone' => post('phone'), 'role' => post('role')];
         $errors = $this->validate($input, $actor, null);
 
-        // Görüşmeci hesabı buradan açılmaz: hesap görüşmeci kaydının parçasıdır ve
-        // onunla birlikte açılır. Buradan açılan bir görüşmeci hesabı hiçbir kayda
+        // Birey hesabı buradan açılmaz: hesap birey kaydının parçasıdır ve
+        // onunla birlikte açılır. Buradan açılan bir birey hesabı hiçbir kayda
         // bağlı olmadığı için giriş yapar ama hiçbir şey göremezdi.
         if ($input['role'] === Rbac::CLIENT) {
-            $errors['role'] = 'Görüşmeci hesabı Görüşmeciler ekranından, kayıtla birlikte açılır.';
+            $errors['role'] = 'Birey hesabı Bireyler ekranından, kayıtla birlikte açılır.';
         }
 
         if ($errors !== []) {
@@ -270,10 +270,10 @@ final class UserController
     }
 
     /**
-     * Yeni hesap açarken seçilebilecek roller. Görüşmeci listede yoktur; o hesap
-     * görüşmeci kaydıyla birlikte açılır (bkz. ClientAccount). Mevcut görüşmeci
+     * Yeni hesap açarken seçilebilecek roller. Birey listede yoktur; o hesap
+     * birey kaydıyla birlikte açılır (bkz. ClientAccount). Mevcut birey
      * hesapları bu ekrandan düzenlenmeye devam eder — assignableRoles hâlâ
-     * görüşmeciyi içerir, yalnızca "yeni kayıt" yolu kapalıdır.
+     * bireyi içerir, yalnızca "yeni kayıt" yolu kapalıdır.
      *
      * @return array<int,string>
      */

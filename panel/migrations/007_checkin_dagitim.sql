@@ -1,4 +1,4 @@
--- Haftalık check-in e-postası kime gidiyor — görüşmeci başına açma/kapama.
+-- Haftalık check-in e-postası kime gidiyor — birey başına açma/kapama.
 -- Çalıştırma:  panel → Sistem → "Bekleyen güncellemeleri uygula"
 
 -- Bugüne kadar "kime gider" sorusunun cevabı dolaylıydı: döngüsü bir kez
@@ -12,6 +12,6 @@
 -- "açık" varsayıyor; bkz. Checkins::autoEnabled.
 --
 -- Bu bir GÖNDERİM ayarıdır, bir rıza kaydı değil: kapalıyken bağlantı elle hâlâ
--- üretilebilir (görüşmeci sayfasındaki düğme). Durdurduğu tek şey cron.
+-- üretilebilir (birey sayfasındaki düğme). Durdurduğu tek şey cron.
 ALTER TABLE clients
   ADD COLUMN checkin_auto TINYINT(1) NOT NULL DEFAULT 1 AFTER status;

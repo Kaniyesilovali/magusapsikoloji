@@ -77,7 +77,7 @@ $chip = [
 
     <div class="rail rail-<?= (int) $rail['hours'] ?>h"
          data-tour="21" data-tour-title="Gün cetveli"
-         data-tour-text="Seanslar süreleri kadar yer kaplar; aradaki boşluk gerçek boşluktur. Çizgi şu anı gösterir, kutunun rengi randevunun durumunu. Bir seansa tıklamak görüşmecinin kaydını açar.">
+         data-tour-text="Seanslar süreleri kadar yer kaplar; aradaki boşluk gerçek boşluktur. Çizgi şu anı gösterir, kutunun rengi randevunun durumunu. Bir seansa tıklamak bireyin kaydını açar.">
       <?php for ($h = 0; $h <= $rail['hours']; $h++): ?>
         <div class="rail-hour at-<?= $h * 12 ?>">
           <span><?= sprintf('%02d:00', $rail['startHour'] + $h) ?></span>
@@ -136,7 +136,7 @@ $chip = [
 <?php endif; ?>
 
 <?php // ── Sonraki günler ─────────────────────────────────────────────────
-      // Görüşmeci için tek liste bu; personel için cetvelin devamı. ?>
+      // Birey için tek liste bu; personel için cetvelin devamı. ?>
 <div class="<?= $isStaff ? 'mt-8 lg:mt-0 lg:sticky lg:top-8' : '' ?>">
 <section class="sheet"
          data-tour="22" data-tour-title="<?= e($isStaff ? 'Sonraki günler' : 'Randevularınız') ?>"

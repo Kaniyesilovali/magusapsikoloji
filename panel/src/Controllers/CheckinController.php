@@ -18,14 +18,14 @@ use Panel\View;
 /**
  * Seanslar arası check-in formu — panelin GİRİŞ GEREKTİRMEYEN tek ekranı.
  *
- * Yetki bağlantının kendisinde: tek kullanımlık, süreli, tek bir görüşmeciye
+ * Yetki bağlantının kendisinde: tek kullanımlık, süreli, tek bir bireye
  * ait 256 bitlik bir jeton. Bunun önüne giriş ekranı koymak teknik olarak
  * kolaydı; döngünün ölçtüğü tek şey doldurma oranı olduğu için pahalı olurdu.
  * Şifre hatırlamak zorunda kalan biri formu telefonda otuz saniyede doldurmaz.
  *
  * Bu yüzden buradaki her yanıt bilinçli olarak az şey söyler: geçersiz bir
  * bağlantı "bu bağlantı geçerli değil" der, kimin bağlantısı olduğunu ya da
- * neden geçersiz olduğunu ele vermez. Sayfada görüşmecinin adı yalnız jeton
+ * neden geçersiz olduğunu ele vermez. Sayfada bireyin adı yalnız jeton
  * geçerliyken görünür.
  */
 final class CheckinController
@@ -188,12 +188,12 @@ final class CheckinController
     }
 
     /**
-     * Görüşmecinin göreceği form — panelden, gönderimsiz.
+     * Bireyin göreceği form — panelden, gönderimsiz.
      *
      * Metni yazan kişi bugüne kadar sonucu ancak gerçek bir bağlantı üretip
      * telefonda açarak görebiliyordu. Ters yazılmış bir uç ("kaygın ne kadar
      * azdı?"), adı boş bırakılmış bir ölçek ya da fazla uzamış bir form ilk kez
-     * görüşmecide görünüyordu; düzeltmek de o hafta için geç oluyordu.
+     * bireyde görünüyordu; düzeltmek de o hafta için geç oluyordu.
      *
      * Ekran formun KENDİ görünümünü çiziyor, kopyasını değil. İki şablon
      * olsaydı önizleme birkaç sürüm sonra sessizce gerçeği göstermeyi bırakır
@@ -208,7 +208,7 @@ final class CheckinController
             // Şablonun tek farkı bu bayrak: gönderim yok, jeton yok.
             'preview'   => true,
             'token'     => '',
-            // Uydurma bir görüşmeci adı yerine önizleyenin kendi adı: sayfada
+            // Uydurma bir birey adı yerine önizleyenin kendi adı: sayfada
             // gerçek bir dosyaya ait hiçbir şey yok ama selamlamanın nereye
             // oturduğu görünüyor.
             'firstName' => $this->firstName((string) $actor['full_name']),
@@ -229,9 +229,9 @@ final class CheckinController
      *
      * İşaretlenmemiş her satır kapatılır — ama YALNIZ bu kullanıcının gördüğü
      * satırlar. Liste ClientScope ile sınırlı olduğu için terapistin kaydettiği
-     * form, görmediği bir görüşmecinin anahtarını sessizce kapatamaz.
+     * form, görmediği bir bireyin anahtarını sessizce kapatamaz.
      *
-     * @return int Anahtarı değişen görüşmeci sayısı
+     * @return int Anahtarı değişen birey sayısı
      */
     private function saveRecipients(array $actor): int
     {
@@ -262,7 +262,7 @@ final class CheckinController
     }
 
     /**
-     * Bir görüşmecide hangi alanların, hangi kelimelerle sorulacağı.
+     * Bir bireyde hangi alanların, hangi kelimelerle sorulacağı.
      *
      * Yetki `checkin.manage`: soruyu yazan da, alanın adını ailenin kullandığı
      * ada çeviren de çoğu zaman merkezi yöneten kişi. Ekranı terapiste kapatmak
@@ -280,7 +280,7 @@ final class CheckinController
         $client = $this->scopedClient($clientId, $actor);
 
         if ($client === null) {
-            View::error(404, 'Görüşmeci bulunamadı');
+            View::error(404, 'Birey bulunamadı');
             return;
         }
         if (!Schema::ecosystemReady()) {
@@ -310,7 +310,7 @@ final class CheckinController
         $client = $this->scopedClient($clientId, $actor);
 
         if ($client === null) {
-            View::error(404, 'Görüşmeci bulunamadı');
+            View::error(404, 'Birey bulunamadı');
             return;
         }
 
@@ -360,7 +360,7 @@ final class CheckinController
 
         $message = 'Check-in metinleri kaydedildi. Bundan sonra üretilen bağlantılar yeni metni gösterir.';
         if ($changed > 0) {
-            $message .= ' ' . $changed . ' görüşmecide haftalık gönderim güncellendi.';
+            $message .= ' ' . $changed . ' bireyde haftalık gönderim güncellendi.';
         }
 
         flash('success', $message);

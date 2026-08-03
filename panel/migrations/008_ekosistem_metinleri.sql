@@ -1,4 +1,4 @@
--- "Haftanın hâli" halkasının metinleri — görüşmeci başına uyarlanabilir.
+-- "Haftanın hâli" halkasının metinleri — birey başına uyarlanabilir.
 -- Çalıştırma:  panel → Sistem → "Bekleyen güncellemeleri uygula"
 
 -- Alan sözlüğü koddan geliyor (Ecosystem::DOMAINS) ve öyle kalıyor: on sekiz
@@ -23,7 +23,7 @@ ALTER TABLE ecosystem_domains
   ADD COLUMN hint  VARCHAR(120) NULL AFTER label;
 
 -- Halkanın üstündeki tek soru. NULL = koddaki varsayılan (Ecosystem::PROMPT).
--- Görüşmecinin kendi satırında duruyor çünkü sorulan kişi o: ergen dosyasında
+-- Bireyin kendi satırında duruyor çünkü sorulan kişi o: ergen dosyasında
 -- "senin sırtını", ebeveyn dosyasında "çocuğunun sırtını".
 ALTER TABLE clients
   ADD COLUMN checkin_prompt VARCHAR(200) NULL AFTER checkin_auto;

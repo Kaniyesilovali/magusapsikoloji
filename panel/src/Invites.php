@@ -6,7 +6,7 @@ namespace Panel;
 /**
  * Davet gönderimi — "hesap açıldı, şifreni belirle" akışının tek kaynağı.
  *
- * Kullanıcı ekranından elle açılan hesaplar da, görüşmeci kaydıyla birlikte
+ * Kullanıcı ekranından elle açılan hesaplar da, birey kaydıyla birlikte
  * kendiliğinden açılan hesaplar da buradan geçer; iki yerde ayrı yazılsaydı
  * biri düzeltilirken diğeri geride kalırdı.
  */
@@ -42,7 +42,7 @@ final class Invites
     }
 
     /**
-     * Görüşmeciye gönderilen davet, yönetici davetinden başka bir şey vaat eder:
+     * Bireye gönderilen davet, yönetici davetinden başka bir şey vaat eder:
      * kişi panele "çalışmaya" değil, kendi randevu ve ödeme durumuna bakmaya
      * geliyor. Metin bunu söylemezse gelen e-posta yanlış yere davet ediyor gibi
      * okunur.
@@ -111,7 +111,7 @@ final class Invites
      * Saklanan bağlantıyı bir kez okur ve siler.
      *
      * Bağlam eşleşmezse dokunulmaz: kullanıcı ekranından açılan bir davetin
-     * bağlantısı, yönetici araya bir görüşmeci sayfası açtı diye orada gösterilip
+     * bağlantısı, yönetici araya bir birey sayfası açtı diye orada gösterilip
      * tükenmemeli.
      */
     public static function pending(string $context = 'user'): ?array

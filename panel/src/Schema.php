@@ -16,7 +16,7 @@ namespace Panel;
  * MySQL'in sunucu tarafı hazırlanmış ifade protokolünde yer tutucu kabul etmiyor;
  * Db bağlantısı ATTR_EMULATE_PREPARES=false ile açıldığı için `SHOW COLUMNS … LIKE ?`
  * her çağrıda hata atıyordu ve hata yutulduğu için sonuç daima "sütun yok" oluyordu.
- * Ödemeler ve görüşmeci dosyası ekranları, migration uygulanmış olmasına rağmen
+ * Ödemeler ve birey dosyası ekranları, migration uygulanmış olmasına rağmen
  * bu yüzden 503 veriyordu. information_schema düz bir SELECT'tir; olmayan tablo
  * ya da sütun hata değil, sıfır satır döndürür — bu yüzden try/catch de gerekmez.
  *
@@ -56,7 +56,7 @@ final class Schema
         return self::hasColumn('appointments', 'reminder_sent_at');
     }
 
-    /** Görüşmeci dosyası (004_case_files) uygulanmış mı? */
+    /** Birey dosyası (004_case_files) uygulanmış mı? */
     public static function caseFilesReady(): bool
     {
         return self::hasTable('case_files');
@@ -83,7 +83,7 @@ final class Schema
     }
 
     /**
-     * Görüşmeci başına haftalık gönderim anahtarı (007_checkin_dagitim) var mı?
+     * Birey başına haftalık gönderim anahtarı (007_checkin_dagitim) var mı?
      *
      * Check-in'in kendisi bu göç olmadan da çalışır: anahtar yokken herkes
      * "açık" sayılır, yani bugünkü davranış. Ayrı sorulmasının sebebi, göç
@@ -95,7 +95,7 @@ final class Schema
     }
 
     /**
-     * Halkanın metinleri görüşmeciye göre uyarlanabilir mi (008)?
+     * Halkanın metinleri bireye göre uyarlanabilir mi (008)?
      *
      * Uygulanmadan da her şey çalışır: halka koddaki adlarla çizilir, soru
      * varsayılan cümledir, uyarlama ekranı yalnız neyin eksik olduğunu söyler.
@@ -116,6 +116,21 @@ final class Schema
     public static function checkinScalesReady(): bool
     {
         return self::hasTable('checkin_scales') && self::hasTable('checkin_scores');
+    }
+
+    /**
+     * Onamın kaydı (011_onam_kaydi) uygulanmış mı?
+     *
+     * Uygulanmadan da onam yolu tam çalışır: kayıt sayfasındaki kutucuk
+     * eskisi gibi `clients.consent_at`'i dolduruyor, çıktı eskisi gibi
+     * alınıyor. Eksik olan tek şey çevrimiçi bağlantı — o yüzden bağlantı
+     * düğmesi hiç çizilmiyor, olmayan bir tabloya yazmaya çalışmıyor.
+     */
+    public static function consentReady(): bool
+    {
+        return self::hasTable('consent_requests')
+            && self::hasTable('consent_records')
+            && self::hasTable('consent_versions');
     }
 
     public static function hasTable(string $table): bool

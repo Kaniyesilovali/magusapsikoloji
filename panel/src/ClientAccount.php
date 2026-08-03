@@ -6,16 +6,16 @@ namespace Panel;
 use PDOException;
 
 /**
- * Görüşmecinin panel hesabı — `clients` kaydı ile `users` kaydı arasındaki bağ.
+ * Bireyin panel hesabı — `clients` kaydı ile `users` kaydı arasındaki bağ.
  *
- * Kural: görüşmeci kaydı açılınca hesabı da açılır. Ön büro "hesap açayım mı"
+ * Kural: birey kaydı açılınca hesabı da açılır. Ön büro "hesap açayım mı"
  * diye karar vermez, iki ekran arasında gidip gelmez; e-posta girilmişse
  * hesap kendiliğinden oluşur ve davet gider. E-posta yoksa kayıt yine de
- * açılır (telefonla gelen görüşmeci kaybolmasın) ve hesap sonradan tek düğmeyle
+ * açılır (telefonla gelen birey kaybolmasın) ve hesap sonradan tek düğmeyle
  * açılabilir.
  *
  * Bağ tek yönlüdür ve `clients.user_id` üzerinde benzersizdir: bir panel hesabı
- * yalnız bir görüşmeci kaydını açar. Bu sınıf o bağı kuran/koparan tek yerdir.
+ * yalnız bir birey kaydını açar. Bu sınıf o bağı kuran/koparan tek yerdir.
  */
 final class ClientAccount
 {
@@ -29,7 +29,7 @@ final class ClientAccount
     public const CREATED = 'created';
 
     /**
-     * Görüşmeci kaydı için hesabı açar ve davet gönderir.
+     * Birey kaydı için hesabı açar ve davet gönderir.
      *
      * Davet bağlantısı e-posta gitse de gitmese de saklanır (bkz. Invites::share)
      * — yönetici gerekirse başka kanaldan iletir.
@@ -58,8 +58,8 @@ final class ClientAccount
             if ($existing['role'] !== Rbac::CLIENT) {
                 return ['status' => self::TAKEN, 'user_id' => null];
             }
-            // Görüşmeci rolünde ama başka bir kayda bağlıysa da devralınmaz;
-            // iki görüşmeci tek hesabı paylaşamaz.
+            // Birey rolünde ama başka bir kayda bağlıysa da devralınmaz;
+            // iki birey tek hesabı paylaşamaz.
             if (Db::value('SELECT id FROM clients WHERE user_id = ?', [$existing['id']]) !== null) {
                 return ['status' => self::TAKEN, 'user_id' => null];
             }
@@ -79,7 +79,7 @@ final class ClientAccount
                     $actor['id'],
                 ]
             );
-            Audit::log('user.created', 'user', $userId, ['role' => Rbac::CLIENT, 'email' => $email, 'via' => 'görüşmeci kaydı']);
+            Audit::log('user.created', 'user', $userId, ['role' => Rbac::CLIENT, 'email' => $email, 'via' => 'birey kaydı']);
         }
 
         Db::run('UPDATE clients SET user_id = ?, updated_at = NOW() WHERE id = ?', [$userId, $clientId]);
@@ -102,7 +102,7 @@ final class ClientAccount
     }
 
     /**
-     * Erişimi kapatır/açar. Hesap silinmez, `suspended` olur: görüşmeci geri
+     * Erişimi kapatır/açar. Hesap silinmez, `suspended` olur: birey geri
      * geldiğinde aynı hesap yeniden açılır, geçmiş davet zinciri korunur.
      *
      * Şifresini hiç belirlememiş (`invited`) hesap açılırken `active` yapılmaz —
@@ -134,7 +134,7 @@ final class ClientAccount
     }
 
     /**
-     * Görüşmecinin adı/e-postası düzeltildiğinde hesabı da takip eder. Aksi hâlde
+     * Bireyin adı/e-postası düzeltildiğinde hesabı da takip eder. Aksi hâlde
      * davet eski adrese gider ve panelde iki farklı isim görünürdü.
      *
      * E-posta başkasına aitse sessizce atlanır: kayıt düzenlemesi, hesabın
@@ -154,7 +154,7 @@ final class ClientAccount
     }
 
     /**
-     * Görüşmeci kaydı kalıcı silinirken hesabı da gider — KVKK silme talebi
+     * Birey kaydı kalıcı silinirken hesabı da gider — KVKK silme talebi
      * "kayıt silindi ama giriş hesabı duruyor" ile karşılanmış olmaz.
      * Silinemezse (beklenmedik bağlı kayıt) hesap en azından kapatılır.
      */
@@ -174,7 +174,7 @@ final class ClientAccount
     public static function explain(string $status): ?string
     {
         return match ($status) {
-            self::NO_EMAIL => 'Kayıtta e-posta olmadığı için panel hesabı açılmadı. E-posta ekledikten sonra görüşmeci sayfasından açabilirsiniz.',
+            self::NO_EMAIL => 'Kayıtta e-posta olmadığı için panel hesabı açılmadı. E-posta ekledikten sonra birey sayfasından açabilirsiniz.',
             self::TAKEN    => 'Bu e-posta adresi başka bir hesapta kayıtlı olduğu için panel hesabı açılmadı.',
             default        => null,
         };

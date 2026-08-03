@@ -231,7 +231,7 @@ final class PaymentController
                 'Ödeme takibi henüz kurulmadı',
                 match (true) {
                     Rbac::can($user, 'settings.manage') => 'Sistem ekranından bekleyen veritabanı güncellemesini uygulayın.',
-                    // Görüşmeciye ekibin iç işleyişi anlatılmaz; ne yapacağı söylenir.
+                    // Bireye ekibin iç işleyişi anlatılmaz; ne yapacağı söylenir.
                     $user['role'] === Rbac::CLIENT      => 'Ödeme bilgileri şu an görüntülenemiyor. Merkezle görüşebilirsiniz.',
                     default                             => 'Veritabanı güncellemesi bekleniyor. Süper admin ile görüşün.',
                 }
@@ -251,8 +251,8 @@ final class PaymentController
         if ($actor['role'] === Rbac::THERAPIST) {
             return ['a.therapist_id = ?', [$actor['id']]];
         }
-        // Görüşmeci: yalnız kendi kaydına bağlı seanslar. Bağ users.id ↔ clients.user_id
-        // üzerinden gider; panel hesabı hiçbir görüşmeci kaydına bağlı değilse
+        // Birey: yalnız kendi kaydına bağlı seanslar. Bağ users.id ↔ clients.user_id
+        // üzerinden gider; panel hesabı hiçbir birey kaydına bağlı değilse
         // hiçbir satır dönmez — randevu kapsamıyla (AppointmentController) aynı kural.
         return ['c.user_id = ?', [$actor['id']]];
     }
@@ -283,9 +283,9 @@ final class PaymentController
     /**
      * Ücreti yönetim ya da randevunun kendi terapisti belirleyebilir.
      *
-     * Rol açıkça aranır: `payment.view.own` artık görüşmecide da var ve o yetki
+     * Rol açıkça aranır: `payment.view.own` artık bireyde da var ve o yetki
      * tek başına ücret yazma hakkı vermez. Kimlik karşılaştırması bunu bugün
-     * zaten engelliyor (görüşmecinin hesabı bir randevunun therapist_id'si olamaz)
+     * zaten engelliyor (bireyin hesabı bir randevunun therapist_id'si olamaz)
      * ama kural kimliğe değil role dayanmalı.
      */
     private function canSetFee(array $actor, array $appointment): bool

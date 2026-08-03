@@ -1,4 +1,4 @@
--- Seanslar arası check-in — görüşmecinin haftada bir doldurduğu kısa ölçüm.
+-- Seanslar arası check-in — bireyin haftada bir doldurduğu kısa ölçüm.
 -- Çalıştırma:  panel → Sistem → "Bekleyen güncellemeleri uygula"
 
 -- ── Bağlantı istekleri ────────────────────────────────────────────────────
@@ -11,7 +11,7 @@
 -- check-in doldurabilecek bağlantı üretemez.
 --
 -- sent_at ayrı duruyor çünkü bağlantı e-postasız da üretilebiliyor: terapist
--- görüşmeci sayfasından üretip WhatsApp'tan yollayabilir. NULL = bu bağlantı
+-- birey sayfasından üretip WhatsApp'tan yollayabilir. NULL = bu bağlantı
 -- panelden elle alındı, e-posta çıkmadı.
 CREATE TABLE IF NOT EXISTS checkin_requests (
   id           INT UNSIGNED NOT NULL AUTO_INCREMENT,

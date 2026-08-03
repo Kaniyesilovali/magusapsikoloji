@@ -108,7 +108,7 @@ final class Backup
         self::writeEncrypted($path, gzencode($sql, 6), (string) $key);
         @chmod($path, 0600);
 
-        // Döküm bellekten hemen düşsün: içinde bütün görüşmeci kayıtları var.
+        // Döküm bellekten hemen düşsün: içinde bütün birey kayıtları var.
         sodium_memzero($sql);
 
         return [

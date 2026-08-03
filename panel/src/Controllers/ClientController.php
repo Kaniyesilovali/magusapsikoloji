@@ -10,6 +10,7 @@ use Panel\Auth;
 use Panel\Checkins;
 use Panel\ClientAccount;
 use Panel\ClientScope;
+use Panel\Consent;
 use Panel\Db;
 use Panel\Ecosystem;
 use Panel\Mailer;
@@ -18,21 +19,20 @@ use Panel\Patterns;
 use Panel\Rbac;
 use Panel\Scales;
 use Panel\Schema;
-use Panel\Settings;
 use Panel\View;
 use PDOException;
 
 /**
- * Görüşmeci kayıtları.
+ * Birey kayıtları.
  *
  * Görünürlük iki katmanlı: yöneticiler tüm kayıtları, terapistler yalnız
- * kendi görüşmecilerini görür. Filtre tek yerde (visibilityFilter) kurulur ve
+ * kendi bireylerini görür. Filtre tek yerde (visibilityFilter) kurulur ve
  * hem listeye hem tekil kayda uygulanır — "listede gizle ama URL'den aç"
  * boşluğu bu sayede oluşmaz.
  *
  * Panel hesabı kayıtla birlikte açılır (bkz. ClientAccount): formda "hesap
  * bağla" diye bir alan yoktur, e-posta girilmişse hesap kendiliğinden oluşur
- * ve davet gider. Hesabı sonradan açmak/kapatmak görüşmeci sayfasındaki
+ * ve davet gider. Hesabı sonradan açmak/kapatmak birey sayfasındaki
  * düğmelerin işidir.
  */
 final class ClientController
@@ -91,7 +91,7 @@ final class ClientController
         );
 
         View::render('clients/index', [
-            'title'   => 'Görüşmeciler',
+            'title'   => 'Bireyler',
             'clients' => $clients,
             'search'  => $search,
             'status'  => $status,
@@ -109,7 +109,7 @@ final class ClientController
         $actor  = $this->requireView();
         $client = $this->find($id, $actor);
 
-        // Terapist, görüşmecinin başka terapistlerle olan randevularını görmez.
+        // Terapist, bireyin başka terapistlerle olan randevularını görmez.
         $onlyOwn = !Rbac::can($actor, 'appointment.view.all');
         $params  = [$id];
         $filter  = '';
@@ -138,7 +138,7 @@ final class ClientController
 
         // Check-in eğrisi yalnız terapiste açık (bkz. Rbac → checkin.view.own).
         // Kaydın görünürlüğü zaten find() içinde ClientScope ile sınırlandı;
-        // buraya gelen kayıt terapistin kendi görüşmecisi.
+        // buraya gelen kayıt terapistin kendi bireyi.
         $canSeeCheckins = Schema::checkinsReady() && Rbac::can($actor, 'checkin.view.own');
         // Eğriyi göremeyen ama check-in'in idari yüzünü yöneten kullanıcı
         // (yönetici) sayfada küçük bir kart görür — ölçüm değil, kapı.
@@ -150,7 +150,7 @@ final class ClientController
         // Şeridin başlıkları bu dosyanın kendi adlarıyla yazılıyor (uyarlanmış
         // "Nine ve dede", elle eklenmiş "Dans kursu"): terapist ebeveynin
         // gördüğü kelimeyi görmeli, yoksa iki ekran aynı haftayı iki dille
-        // anlatır. Bunun için görüşmeci kimliği de geçiyor.
+        // anlatır. Bunun için birey kimliği de geçiyor.
         $ecosystem = $canSeeCheckins
             ? Ecosystem::strip(
                 $checkins,
@@ -193,19 +193,27 @@ final class ClientController
             'patterns'        => $canSeeCheckins
                 ? Patterns::find($checkins, $ecosystem)
                 : ['rows' => [], 'anchors' => []],
+            // Onam üç hâlli: eksik · çevrimiçi onaylandı · alındı. Kararı
+            // görünüm değil Consent veriyor, iki ekran farklı sonuca varmasın
+            // (bkz. Consent::status).
+            'consent'         => Consent::status($client),
+            'consentHistory'  => Consent::history($id),
+            'consentPending'  => Consent::pendingRequest($id),
+            'consentLink'     => Consent::pendingLink(),
+            'consentReady'    => Schema::consentReady(),
             'actor'           => $actor,
         ]);
     }
 
     /**
-     * Check-in bağlantısı üretir ve görüşmeciye yollar.
+     * Check-in bağlantısı üretir ve bireye yollar.
      *
      * Bağlantı e-posta gitmiş olsa bile ekranda gösterilir: pilotun ölçtüğü şey
      * doldurma oranı ve oranı düşüren ilk şüpheli kanalın kendisi. Terapist aynı
      * bağlantıyı WhatsApp'tan yollayıp iki kanalı karşılaştırabilmeli.
      *
      * Haftalık gönderimi cron yapıyor (cron/checkins.php); bu düğme döngüyü
-     * BAŞLATAN el hareketi — cron yalnız bir kez bağlantı almış görüşmecilere
+     * BAŞLATAN el hareketi — cron yalnız bir kez bağlantı almış bireylere
      * devam eder.
      */
     public function sendCheckin(int $id): void
@@ -218,7 +226,7 @@ final class ClientController
             redirect("/danisanlar/{$id}");
         }
         if ($client['status'] !== 'active') {
-            flash('error', 'Arşivlenmiş görüşmeciye check-in gönderilmez. Önce kaydı arşivden çıkarın.');
+            flash('error', 'Arşivlenmiş bireye check-in gönderilmez. Önce kaydı arşivden çıkarın.');
             redirect("/danisanlar/{$id}");
         }
 
@@ -250,7 +258,7 @@ final class ClientController
     }
 
     /**
-     * Bu görüşmeciye haftalık check-in e-postası gitsin mi.
+     * Bu bireye haftalık check-in e-postası gitsin mi.
      *
      * Aynı anahtar toplu listede de var (panel → Check-in); buradaki kopya
      * kararın verildiği yerde duruyor: terapist eğriye bakarken "bu dönem
@@ -282,17 +290,125 @@ final class ClientController
         redirect("/danisanlar/{$id}");
     }
 
+    // ── Onam ────────────────────────────────────────────────────
+    //
+    // Üç el hareketi: bağlantıyı gönder, ıslak imzayı işaretle, sözlü onamı
+    // işaretle. Üçü de `client.update` yetkisinde — telefonda randevu alan da,
+    // seansta imzayı alan da aynı kişiler.
+
+    /**
+     * Onam bağlantısı üretir ve danışana yollar.
+     *
+     * Telefonda randevu alınırken gönderiliyor: kişi metni seanstan önce,
+     * evinde okuyor. Seansta okutmak iki türlü de kötüydü — ya süreden
+     * gideceği için gerilen kişi metni gerçekten okumuyordu ya da seansın ilk
+     * on dakikası okumaya gidiyordu.
+     *
+     * Bağlantı e-posta gitmiş olsa bile ekranda gösteriliyor: bu akışın asıl
+     * kanalı WhatsApp ve panelde WhatsApp/SMS gönderimi yok (bkz.
+     * Consent::share — check-in bağlantısındaki aynı gerekçe).
+     */
+    public function sendConsentLink(int $id): void
+    {
+        $actor  = Auth::requirePermission('client.update');
+        $client = $this->find($id, $actor);
+
+        if (!Schema::consentReady()) {
+            flash('error', 'Onam tabloları henüz kurulmamış. Sistem ekranından bekleyen veritabanı güncellemesini uygulayın.');
+            redirect("/danisanlar/{$id}");
+        }
+        if ($client['status'] !== 'active') {
+            flash('error', 'Arşivlenmiş kayda onam bağlantısı gönderilmez. Önce kaydı arşivden çıkarın.');
+            redirect("/danisanlar/{$id}");
+        }
+        // Taslak metin gönderilmez: kurumun kendi bilgileriyle doldurulmamış,
+        // hukukçuya onaylatılmamış bir metne alınan onay bir şey ifade etmez.
+        if (Consent::isDraft()) {
+            flash('error', 'Onam metni henüz kaydedilmemiş; panelde taslak görünüyor. '
+                . 'Önce Onam formu ekranından metni gözden geçirip kaydedin.');
+            redirect("/danisanlar/{$id}");
+        }
+
+        $token = Consent::createRequest($id);
+        $sent  = $client['email'] !== null
+            && Notifications::consentRequest($client, Consent::link($token));
+
+        Consent::share((string) $client['full_name'], $token, $sent);
+        if ($sent) {
+            Consent::markSent($token);
+        }
+
+        Audit::log('consent.link_sent', 'client', $id, ['eposta' => $sent]);
+
+        if ($client['email'] === null) {
+            flash('info', 'Kayıtta e-posta adresi yok; bağlantıyı aşağıdan kopyalayıp kendiniz iletin.');
+        } elseif (!$sent) {
+            flash('warning', 'E-posta gönderilemedi'
+                . (Mailer::lastError() !== null ? ' (' . Mailer::lastError() . ')' : '')
+                . '. Bağlantıyı aşağıdan kopyalayıp iletebilirsiniz.');
+        } elseif (!Mailer::isLive()) {
+            flash('warning', 'E-posta gönderimi kapalı (log sürücüsü) — ileti ÇIKMADI. '
+                . 'Aşağıdaki bağlantıyı elle iletin.');
+        } else {
+            flash('success', 'Onam bağlantısı ' . $client['email'] . ' adresine gönderildi.');
+        }
+
+        redirect("/danisanlar/{$id}");
+    }
+
+    /** Seansta çıktı imzalandı — onamı kapatan iki yoldan biri. */
+    public function markConsentSigned(int $id): void
+    {
+        $this->closeConsent($id, 'paper');
+    }
+
+    /**
+     * Online görüşmede sözlü onam alındı — onamı kapatan ikinci yol.
+     *
+     * Ses/görüntü dosyası PANELE YÜKLENMİYOR ve yüklenmeyecek: merkez kayıtları
+     * kendi klasöründe tutuyor, panelde hiç dosya yükleme altyapısı yok ve
+     * mikrofon/kamera panel genelinde kapalı (bkz. .htaccess → Permissions-Policy).
+     * Buraya yazılan tek şey o dosyanın NEREDE olduğunu söyleyen kısa bir künye.
+     */
+    public function markConsentVerbal(int $id): void
+    {
+        $this->closeConsent($id, 'verbal', post('kunye'));
+    }
+
+    private function closeConsent(int $id, string $method, string $reference = ''): void
+    {
+        $actor  = Auth::requirePermission('client.update');
+        $client = $this->find($id, $actor);
+
+        if ($client['consent_at'] !== null) {
+            flash('info', 'Bu kayıtta onam zaten tamamlanmış görünüyor.');
+            redirect("/danisanlar/{$id}");
+        }
+
+        Consent::record($id, $method, (int) $actor['id'], $reference);
+
+        // İçerik değil, olay loglanıyor: künye satırı da (dosyanın yeri)
+        // kayda geçmiyor — nerede durduğunu bilmek denetim kaydının işi değil.
+        Audit::log($method === 'verbal' ? 'consent.verbal' : 'consent.signed', 'client', $id);
+
+        flash('success', $method === 'verbal'
+            ? 'Sözlü onam kaydedildi. Ses/görüntü kaydını kendi klasörünüzde saklamayı unutmayın.'
+            : 'İmzalı onam kaydedildi. Kâğıdı dosyaya eklemeyi unutmayın.');
+
+        redirect("/danisanlar/{$id}");
+    }
+
     public function createForm(): void
     {
         $actor = Auth::requirePermission('client.create');
 
         View::render('clients/form', [
-            'title'       => 'Yeni Görüşmeci',
+            'title'       => 'Yeni Birey',
             'client'      => null,
             'therapists'  => $this->therapistOptions(),
             'canAssign'   => Rbac::can($actor, 'client.assign_therapist'),
             // Kaydı bir terapist açıyorsa seçim kendisine gelir: kendi
-            // görüşmecisini kaydedip listesinde göremediği bir durum olmasın.
+            // bireyini kaydedip listesinde göremediği bir durum olmasın.
             'defaultTherapistId' => $actor['role'] === Rbac::THERAPIST ? (int) $actor['id'] : null,
             'actor'       => $actor,
         ]);
@@ -314,18 +430,24 @@ final class ClientController
         $clientId = Db::insert(
             'INSERT INTO clients (full_name, phone, email, birth_date, primary_therapist_id,
                                   status, consent_at, consent_version, created_by, created_at)
-             VALUES (?, ?, ?, ?, ?, \'active\', ?, ?, ?, NOW())',
+             VALUES (?, ?, ?, ?, ?, \'active\', NULL, NULL, ?, NOW())',
             [
                 $input['full_name'],
                 $input['phone'],
                 $input['email'],
                 $input['birth_date'],
                 $input['primary_therapist_id'],
-                $input['consent'] ? date('Y-m-d H:i:s') : null,
-                $input['consent'] ? $this->consentVersion() : null,
                 $actor['id'],
             ]
         );
+
+        // Onam sütunları doğrudan yazılmıyor: kutucuk "form okundu ve
+        // imzalandı" demek ve bunun bir kaydı olmalı — kim işaretledi, hangi
+        // sürüme, hangi yolla. Consent tek kapı (bkz. Consent::record).
+        if ($input['consent']) {
+            Consent::record($clientId, 'paper', (int) $actor['id']);
+            Audit::log('consent.signed', 'client', $clientId, ['kaynak' => 'kayit_formu']);
+        }
 
         Audit::log('client.created', 'client', $clientId, ['consent' => $input['consent']]);
 
@@ -337,9 +459,9 @@ final class ClientController
         );
 
         if ($account['status'] === ClientAccount::CREATED) {
-            flash('success', 'Görüşmeci kaydı oluşturuldu ve panel hesabı açıldı.');
+            flash('success', 'Birey kaydı oluşturuldu ve panel hesabı açıldı.');
         } else {
-            flash('success', 'Görüşmeci kaydı oluşturuldu.');
+            flash('success', 'Birey kaydı oluşturuldu.');
             if ($reason = ClientAccount::explain($account['status'])) {
                 flash('info', $reason);
             }
@@ -362,7 +484,7 @@ final class ClientController
         $client = $this->find($id, $actor);
 
         View::render('clients/form', [
-            'title'      => 'Görüşmeciyi Düzenle',
+            'title'      => 'Bireyi Düzenle',
             'client'     => $client,
             'therapists' => $this->therapistOptions(
                 $client['primary_therapist_id'] !== null ? (int) $client['primary_therapist_id'] : null
@@ -395,21 +517,10 @@ final class ClientController
             redirect("/danisanlar/{$id}/duzenle");
         }
 
-        // Onam bir kez alınır; sonradan geri çekilebilir ama tarihi yeniden yazılmaz.
-        $consentAt      = $client['consent_at'];
-        $consentVersion = $client['consent_version'];
-        if ($input['consent'] && $consentAt === null) {
-            $consentAt      = date('Y-m-d H:i:s');
-            $consentVersion = $this->consentVersion();
-        } elseif (!$input['consent']) {
-            $consentAt      = null;
-            $consentVersion = null;
-        }
-
         Db::run(
             'UPDATE clients
                 SET full_name = ?, phone = ?, email = ?, birth_date = ?,
-                    primary_therapist_id = ?, consent_at = ?, consent_version = ?, updated_at = NOW()
+                    primary_therapist_id = ?, updated_at = NOW()
               WHERE id = ?',
             [
                 $input['full_name'],
@@ -417,11 +528,28 @@ final class ClientController
                 $input['email'],
                 $input['birth_date'],
                 $input['primary_therapist_id'],
-                $consentAt,
-                $consentVersion,
                 $id,
             ]
         );
+
+        // Onam sütunları bu UPDATE'in dışında: kutucuğun iki yönü de artık bir
+        // OLAY ve olayın kaydı tutuluyor (bkz. Consent).
+        //
+        // İşaretin kaldırılması eskiden consent_at ve consent_version'ı sessizce
+        // NULL'lıyordu; verilmiş bir onamın izi yalnız denetim kaydında
+        // kalıyordu. Artık kayıt silinmiyor, geri alındı olarak kapanıyor —
+        // verilmiş bir onam geri alınabilir ama verilmemiş sayılamaz. Danışan
+        // metni çevrimiçi onaylamışsa kayıt o hâle geri düşüyor.
+        $consentAt = $client['consent_at'];
+        if ($input['consent'] && $consentAt === null) {
+            Consent::record($id, 'paper', (int) $actor['id']);
+            Audit::log('consent.signed', 'client', $id, ['kaynak' => 'kayit_formu']);
+            $consentAt = date('Y-m-d H:i:s');
+        } elseif (!$input['consent'] && $consentAt !== null) {
+            Consent::revoke($id, (int) $actor['id']);
+            Audit::log('consent.revoked', 'client', $id, ['kaynak' => 'kayit_formu']);
+            $consentAt = null;
+        }
 
         // Bağlı hesap kaydı takip eder; yoksa düzeltilen e-posta ile hesabın
         // e-postası ayrışır ve davet eski adrese gitmeye devam ederdi.
@@ -430,7 +558,7 @@ final class ClientController
         }
 
         Audit::log('client.updated', 'client', $id, ['consent' => $consentAt !== null]);
-        flash('success', 'Görüşmeci kaydı güncellendi.');
+        flash('success', 'Birey kaydı güncellendi.');
 
         // Atamayı başka bir terapiste devretmiş olabilir — devrettiği kaydın
         // sayfasına gitmek 404 gösterirdi (bkz. store).
@@ -451,7 +579,7 @@ final class ClientController
         $newStatus = $client['status'] === 'archived' ? 'active' : 'archived';
         Db::run('UPDATE clients SET status = ?, updated_at = NOW() WHERE id = ?', [$newStatus, $id]);
 
-        // Arşivlenen görüşmeci panele giremez: kayıt "artık takip etmiyoruz"
+        // Arşivlenen birey panele giremez: kayıt "artık takip etmiyoruz"
         // demekken girişin açık kalması sessiz bir açık kapı olurdu.
         if ($client['user_id'] !== null) {
             ClientAccount::setSuspended($client, $newStatus === 'archived');
@@ -459,8 +587,8 @@ final class ClientController
 
         Audit::log('client.archived', 'client', $id, ['status' => $newStatus]);
         flash('success', $newStatus === 'archived'
-            ? 'Görüşmeci arşivlendi. Kayıt ve randevu geçmişi duruyor; panel erişimi kapatıldı.'
-            : 'Görüşmeci yeniden etkinleştirildi.');
+            ? 'Birey arşivlendi. Kayıt ve randevu geçmişi duruyor; panel erişimi kapatıldı.'
+            : 'Birey yeniden etkinleştirildi.');
         redirect("/danisanlar/{$id}");
     }
 
@@ -486,7 +614,7 @@ final class ClientController
         ClientAccount::purge($client['user_id'] !== null ? (int) $client['user_id'] : null);
 
         Audit::log('client.deleted', 'client', $id, ['full_name' => $client['full_name']]);
-        flash('success', 'Görüşmeci kaydı, panel hesabı ve bağlı tüm randevu/seans notu kayıtları silindi.');
+        flash('success', 'Birey kaydı, panel hesabı ve bağlı tüm randevu/seans notu kayıtları silindi.');
         redirect('/danisanlar');
     }
 
@@ -505,14 +633,14 @@ final class ClientController
         // Arşivlenmiş kayda erişim açmak, arşivlemenin erişimi kapatmasıyla
         // çelişirdi; önce kayıt geri alınmalı.
         if ($client['status'] === 'archived') {
-            flash('error', 'Arşivlenmiş görüşmeciye panel erişimi açılmaz. Önce kaydı arşivden çıkarın.');
+            flash('error', 'Arşivlenmiş bireye panel erişimi açılmaz. Önce kaydı arşivden çıkarın.');
             redirect("/danisanlar/{$id}");
         }
 
         $result = ClientAccount::provision($client, $actor);
 
         if ($result['status'] === ClientAccount::EXISTS) {
-            flash('info', 'Bu görüşmecinin panel hesabı zaten var.');
+            flash('info', 'Bu bireyin panel hesabı zaten var.');
         } elseif ($result['status'] !== ClientAccount::CREATED) {
             flash('error', (string) ClientAccount::explain($result['status']));
         }
@@ -527,7 +655,7 @@ final class ClientController
         $client = $this->find($id, $actor);
 
         if ($client['user_id'] === null) {
-            flash('error', 'Bu görüşmecinin panel hesabı yok.');
+            flash('error', 'Bu bireyin panel hesabı yok.');
             redirect("/danisanlar/{$id}");
         }
 
@@ -542,7 +670,7 @@ final class ClientController
         $client = $this->find($id, $actor);
 
         if ($client['user_id'] === null) {
-            flash('error', 'Bu görüşmecinin panel hesabı yok.');
+            flash('error', 'Bu bireyin panel hesabı yok.');
             redirect("/danisanlar/{$id}");
         }
 
@@ -558,7 +686,7 @@ final class ClientController
     // ── Yardımcılar ─────────────────────────────────────────────
 
     /**
-     * Hesap işlemleri yönetimde kalır. Terapist görüşmeci kaydını düzeltebilir ama
+     * Hesap işlemleri yönetimde kalır. Terapist birey kaydını düzeltebilir ama
      * kimin panele girebileceğine karar veremez — o karar giriş yetkisi dağıtmaktır.
      */
     private function requireAccountManage(): array
@@ -577,7 +705,7 @@ final class ClientController
         $user = Auth::requireLogin();
         if (!Rbac::canAny($user, ['client.view.all', 'client.view.own'])) {
             Audit::log('access.denied', 'permission', null, ['permission' => 'client.view']);
-            View::error(403, 'Yetkiniz yok', 'Görüşmeci kayıtlarını görüntüleme yetkiniz bulunmuyor.');
+            View::error(403, 'Yetkiniz yok', 'Birey kayıtlarını görüntüleme yetkiniz bulunmuyor.');
             exit;
         }
         return $user;
@@ -588,7 +716,7 @@ final class ClientController
         $user = $this->requireView();
         if (!Rbac::can($user, 'client.update')) {
             Audit::log('access.denied', 'permission', null, ['permission' => 'client.update']);
-            View::error(403, 'Yetkiniz yok', 'Görüşmeci kaydını değiştirme yetkiniz bulunmuyor.');
+            View::error(403, 'Yetkiniz yok', 'Birey kaydını değiştirme yetkiniz bulunmuyor.');
             exit;
         }
         return $user;
@@ -633,7 +761,7 @@ final class ClientController
         );
 
         if ($client === null) {
-            View::error(404, 'Görüşmeci bulunamadı', 'Kayıt silinmiş olabilir ya da görüntüleme yetkiniz yok.');
+            View::error(404, 'Birey bulunamadı', 'Kayıt silinmiş olabilir ya da görüntüleme yetkiniz yok.');
             exit;
         }
         return $client;
@@ -664,7 +792,7 @@ final class ClientController
             $errors['full_name'] = 'Ad soyad en az 3 karakter olmalı.';
         }
 
-        // Yalnız kendi görüşmecilerini gören biri, atama yapmadan kayıt bırakırsa
+        // Yalnız kendi bireylerini gören biri, atama yapmadan kayıt bırakırsa
         // o kaydı bir daha açamaz: ClientScope onu göstermez, randevusu da yoktur.
         // Yöneticide böyle bir tuzak yok, o zaten tüm kayıtları görüyor.
         if ($input['primary_therapist_id'] === null && !Rbac::can($actor, 'client.view.all')) {
@@ -723,8 +851,4 @@ final class ClientController
         );
     }
 
-    private function consentVersion(): string
-    {
-        return Settings::get('consent_version', '1.0');
-    }
 }

@@ -57,9 +57,9 @@ CREATE TABLE IF NOT EXISTS therapist_profiles (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ─────────────────────────────────────────────────────────────
--- Görüşmeciler ve randevular
+-- Bireyler ve randevular
 -- ─────────────────────────────────────────────────────────────
--- user_id NULL olabilir: panele hiç girmeyen (yalnız kayıtta duran) görüşmeciler için.
+-- user_id NULL olabilir: panele hiç girmeyen (yalnız kayıtta duran) bireyler için.
 CREATE TABLE IF NOT EXISTS clients (
   id                   INT UNSIGNED NOT NULL AUTO_INCREMENT,
   user_id              INT UNSIGNED NULL,

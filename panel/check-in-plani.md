@@ -52,7 +52,7 @@ PHQ-9 / GAD-7 gibi standart ölçekler ilk sürümde YOK — pilot tutarsa gelir
 - [ ] Linki kendi telefonuna atıp elle test et (cron'u BEKLEME) ← **sunucuda yapılacak**
 
 ### Faz 3 — Terapist eğri görünümü · ~1–2 gün
-- [x] Görüşmeci sayfasına check-in bölümü (`clients/_checkins.php`), idari
+- [x] Birey sayfasına check-in bölümü (`clients/_checkins.php`), idari
       alanların önünde
 - [x] Inline SVG (harici kütüphane yok) — üç ölçü **üç ayrı satırda**: kaygıda
       yukarı kötü, diğer ikisinde iyi; tek eksene çakıştırmak yönü okunmaz yapardı.
@@ -64,7 +64,7 @@ PHQ-9 / GAD-7 gibi standart ölçekler ilk sürümde YOK — pilot tutarsa gelir
 - [x] `panel/cron/checkins.php` — randevu hatırlatma deseninin aynısı
 - [x] Haftalık job: jeton üretip `Notifications::checkinRequest` ile yolluyor
 - [x] Aynı hafta doldurmuşsa / son 6 günde bağlantı almışsa tekrar gitmiyor
-- [x] **Kime gider:** yalnız terapistin bir kez bağlantı gönderdiği görüşmecilere.
+- [x] **Kime gider:** yalnız terapistin bir kez bağlantı gönderdiği bireylere.
       "Aktif tüm danışanlar" olsaydı cron kurulduğu an bütün listeye e-posta çıkardı;
       pilot 3–4 kişiyle yürüyor.
 - [x] Israr etmiyor: son dolan check-in'den beri 3 bağlantı cevapsızsa cron susuyor
@@ -80,15 +80,15 @@ kaydı arşivlemekti — takibi bitiren, geçmişi kapatan fazla ağır bir işl
       eğriyi okuma yetkisinden (`checkin.view.own`) **ayrı** ve yöneticide de var.
       Ayrımın yeri: cevap sağlık verisidir, soru değil. Ekranda hiçbir puan ya da
       cümle görünmüyor, yalnız ad, adres ve gönderim durumu.
-- [x] Menüde kendi satırı (`/check-in-sorulari`) — yönetici bir görüşmeci
+- [x] Menüde kendi satırı (`/check-in-sorulari`) — yönetici bir birey
       sayfasındaki check-in bölümünü hiç görmüyor; oradan girilen bir bağlantı
       olarak kalsaydı ekran ona kapalıydı.
 - [x] `panel/migrations/007_checkin_dagitim.sql` — `clients.checkin_auto`
       (varsayılan 1: göç uygulandığında bugün e-posta alan herkes almaya devam eder)
-- [x] Gönderim listesi: aktif görüşmeciler, tek işaret ve durumun açıklaması
+- [x] Gönderim listesi: aktif bireyler, tek işaret ve durumun açıklaması
       (*sırada · bu hafta doldu · bağlantı bekliyor · susuldu · başlamadı ·
       e-posta yok · kapalı*). Liste `ClientScope` ile sınırlı.
-- [x] Aynı anahtarın tekil hâli görüşmeci sayfasında — karar çoğunlukla eğriye
+- [x] Aynı anahtarın tekil hâli birey sayfasında — karar çoğunlukla eğriye
       bakarken veriliyor.
 - [x] "Sırada" kararı tek yerde (`Checkins::due()`): cron da liste de aynı
       sorguyu okuyor. İki kopya olsaydı ekran "sırada" derken cron susabilir
@@ -125,7 +125,7 @@ göstermiyor, yalnız iki dil arasındaki dikişi gösteriyor.
 - [ ] `/sistem`'den 010'u uygula ← **sunucuda yapılacak**
 
 ### Faz 5 — Pilot · ~2–3 hafta (gerçek zaman, az kod)
-- [ ] 3–4 gerçek danışanda çalıştır (görüşmeci sayfasındaki düğme döngüyü başlatır)
+- [ ] 3–4 gerçek danışanda çalıştır (birey sayfasındaki düğme döngüyü başlatır)
 - [ ] Tek ölçülen sayı: doldurma oranı — **Sistem** ekranında gönderilen/doldurulan
       olarak duruyor
 - [ ] İzlenecek ikinci şey: kaydırıcılar 5'te başlıyor. Gelen kayıtların çoğu

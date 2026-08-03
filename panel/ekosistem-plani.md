@@ -175,7 +175,7 @@ oranını öldürür. Katmanlı yapı:
 7. **Hareket & oyun** — spor, dışarıda geçen zaman
 8. **Ekran & dijital dünya**
 
-### Koşullu (terapist görüşmeci sayfasından açar; en fazla +3)
+### Koşullu (terapist birey sayfasından açar; en fazla +3)
 - **Kardeş** — yalnız kardeş varsa
 - **Bakım düzeni** — iki ev / boşanma / nöbetleşe bakım
 - **İnanç & gelenek** — varsayılan **kapalı**, aile isterse
@@ -188,7 +188,7 @@ oranını öldürür. Katmanlı yapı:
   ölüm, hastalık, ayrılık, kaza, sınav, doğum. Şeritte dikey işaret olarak
   çizilir; ekolojik okumanın en değerli tek verisi budur.
 
-**Kural:** hiçbir görüşmecide aynı anda 11 alandan fazlası açık olamaz. Kod
+**Kural:** hiçbir bireyde aynı anda 11 alandan fazlası açık olamaz. Kod
 seviyesinde sınırlanır, terapistin insafına bırakılmaz.
 
 ---
@@ -349,7 +349,7 @@ yüklenirken hesaplanır, saklanmaz.
 Tek entegrasyon kuralı: **terapistin zaten açtığı sayfada, zaten açtığı anda.**
 Ayrı bir "ekosistem paneli" yapılırsa hiç açılmaz (§18).
 
-### Seans öncesi — görüşmeci sayfasının en üstü
+### Seans öncesi — birey sayfasının en üstü
 Şerit + en fazla 3 örüntü satırı, idari alanların üstünde. Terapist seansa
 girmeden önceki 40 saniyede bakar. Tek eylem: bir örüntüyü **"seansta sor"**
 olarak işaretlemek — bu, seans notu formuna hazır bir satır düşürür.
@@ -525,7 +525,7 @@ değişmeyen, nötr — *"Kaydedildi. Bir sonraki seansta konuşulur."*
 
 ## 12. Yapay zekânın rolü — ve kesin sınırları
 
-Kullanılırsa **tek bir iş** için kullanılır: terapist görüşmeci sayfasını açtığı
+Kullanılırsa **tek bir iş** için kullanılır: terapist birey sayfasını açtığı
 anda, şeridi 3 maddelik nesir özete çevirmek. Zaman kazandırır, karar vermez.
 
 ### Girdi (kısıtlı)
@@ -771,7 +771,7 @@ hiç dokunmaz.
 
 ### Terapistlerin gerçekçi olarak bakmayacakları
 
-- **Ayrı bir "ekosistem" sekmesi/panosu.** Açılmaz. Şerit, görüşmeci sayfasının
+- **Ayrı bir "ekosistem" sekmesi/panosu.** Açılmaz. Şerit, birey sayfasının
   üstünde, tek tıkla açılan bir sayfada olmalı — zaten açılan sayfada.
 - **Uzun otomatik raporlar.** 3 satırdan fazlası okunmaz.
 - **Bildirim/uyarı sistemi.** Yanlış alarm üretir, iki hafta sonra görmezden
@@ -799,7 +799,7 @@ hiç dokunmaz.
 
 ### Sonuç olarak ilk sürüm
 
-**Mevcut check-in formunun ikinci sayfasında 8 alanlık rüzgâr halkası + görüşmeci
+**Mevcut check-in formunun ikinci sayfasında 8 alanlık rüzgâr halkası + birey
 sayfasında ekolojik şerit. Hepsi bu.** Yaklaşık 3–4 gün iş. Geri kalan her şey
 bu ikisinin gerçek ailelerde çalıştığı kanıtlandıktan sonra.
 
@@ -813,7 +813,7 @@ bu ikisinin gerçek ailelerde çalıştığı kanıtlandıktan sonra.
 
 ### Faz 1 — Veri modeli · ~0.5 gün
 - [ ] `panel/migrations/006_ecosystem.sql`
-  - `ecosystem_domains` — `client_id, domain_key, enabled, sort` (görüşmeci
+  - `ecosystem_domains` — `client_id, domain_key, enabled, sort` (birey
     başına açık alan seti; kod tarafında en fazla 11 ile sınırlı)
   - `ecosystem_marks` — `checkin_id, domain_key, valence TINYINT` (−1 / 0 / +1)
   - `ecosystem_events` — `checkin_id, label_ciphertext, label_nonce` (✦ olayı;
@@ -858,9 +858,9 @@ yazılmamıştı.
 - [x] Halkadaki çipin kısa adı uyarlanmış addan türetiliyor (`shorten`) —
       elle yazılmış kısa ad yalnız sözlük adı aynen duruyorsa kullanılıyor.
 - [x] Şeridin satır başlıkları da dosyanın kendi adlarıyla (`strip` artık
-      görüşmeci kimliğini alıyor): terapist ebeveynin gördüğü kelimeyi görmeli,
+      birey kimliğini alıyor): terapist ebeveynin gördüğü kelimeyi görmeli,
       yoksa iki ekran aynı haftayı iki dille anlatır.
-- [x] Uyarlama ekranı: görüşmeci sayfası → "Sorulan alanlar". Yetki değişmedi
+- [x] Uyarlama ekranı: birey sayfası → "Sorulan alanlar". Yetki değişmedi
       (`checkin.view.own`) — bu klinik bir karar, idari ayar değil.
 - [x] Uyarlanmış metin denetim kaydına YAZILMAZ: bir ailenin hayatından bir
       ayrıntı olabiliyor. Kimin ne zaman değiştirdiği yeter.

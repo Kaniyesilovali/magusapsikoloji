@@ -6,10 +6,12 @@ namespace Panel\Controllers;
 use Panel\Audit;
 use Panel\Auth;
 use Panel\ClientScope;
+use Panel\Consent;
 use Panel\Db;
 use Panel\Money;
 use Panel\Rbac;
 use Panel\Scheduling;
+use Panel\Schema;
 use Panel\Settings;
 use Panel\View;
 
@@ -26,23 +28,40 @@ use Panel\View;
  * hangi metne onay verildiğini gösterir. Bu yüzden metin değişince sürüm de
  * değişmek ZORUNDA — aksi hâlde iki farklı metne aynı sürüm numarasıyla onam
  * verilmiş görünür ve kayıt ispat değerini kaybeder.
+ *
+ * Metnin, sürümün ve verilmiş onayların kendisi Consent sınıfında; burada
+ * yalnız ekranlar var. Üç tanesi (publicForm, publicApprove, publicThanks)
+ * GİRİŞ GEREKTİRMEZ: danışan metni seanstan önce, evinde okuyor.
  */
 final class ConsentController
 {
-    // Birleştirilmiş metin, eski KVKK taslağıyla aynı kâğıt değil: hiç
-    // elle kaydedilmemiş kurumlar 2.0'dan başlasın (bkz. 009 numaralı göç).
-    private const DEFAULT_VERSION = '2.0';
-
     public function index(): void
     {
         $actor = Auth::requirePermission('consent.manage');
 
         View::render('consent/index', [
             'title'   => 'Onam formu',
-            'text'    => Settings::get('consent_text', self::starterText()),
-            'version' => Settings::get('consent_version', self::DEFAULT_VERSION),
-            'isDraft' => Settings::get('consent_text') === '',
+            'text'    => Consent::currentText(),
+            'version' => Consent::currentVersion(),
+            'isDraft' => Consent::isDraft(),
+            // İngilizce yalnız çıktı için: aynı metnin, aynı sürümün çevirisi.
+            'textEn'    => Consent::currentTextEn(),
+            'isDraftEn' => Consent::isDraftEn(),
+            // Türkçe metin çeviriden sonra değişmişse çeviri eskimiştir; ekran
+            // bunu söylemezse İngilizce kâğıt sessizce yanlış basılır.
+            'staleEn'   => Consent::translationStale(),
+            'versionEn' => Consent::translatedVersion(),
             'signed'  => (int) Db::value('SELECT COUNT(*) FROM clients WHERE consent_at IS NOT NULL'),
+            // Tiki işaretleyip henüz seansta kapanmamış kayıtlar: metnin
+            // okunduğu ama imzanın beklendiği aralık. Onam ekranının kendisi
+            // bu aralığı göstermezse kimse bakmıyor.
+            'online'  => Schema::consentReady()
+                ? (int) Db::value(
+                    'SELECT COUNT(DISTINCT r.client_id) FROM consent_records r
+                       JOIN clients c ON c.id = r.client_id
+                      WHERE r.method = \'online\' AND r.revoked_at IS NULL AND c.consent_at IS NULL'
+                )
+                : 0,
             'actor'   => $actor,
         ]);
     }
@@ -52,21 +71,31 @@ final class ConsentController
         Auth::requirePermission('consent.manage');
 
         $text    = trim((string) ($_POST['consent_text'] ?? ''));
+        $textEn  = trim((string) ($_POST['consent_text_en'] ?? ''));
         $version = post('consent_version');
 
-        $currentText    = Settings::get('consent_text', self::starterText());
-        $currentVersion = Settings::get('consent_version', self::DEFAULT_VERSION);
+        $currentText    = Consent::currentText();
+        $currentTextEn  = Consent::currentTextEn();
+        $currentVersion = Consent::currentVersion();
 
         // Hata hâlinde yazılan metin geri veriliyor (bkz. old(), views/consent/index.php).
         // Eskiden gönderim reddedilince textarea kayıttaki metinle yeniden
         // doluyordu: sürüm numarası yüzünden geri çevrilen bir düzeltme,
         // yarım saatlik yazıyı da götürüyordu. Kaydedilmeyen bir metni geri
         // vermemek, "önce sürümü yükselt" kuralını cezaya çeviriyordu.
-        $input = ['consent_text' => $text, 'consent_version' => $version];
+        $input = ['consent_text' => $text, 'consent_text_en' => $textEn, 'consent_version' => $version];
 
         if (mb_strlen($text) < 100) {
             remember_input($input, ['consent_text' => 'Metin en az birkaç paragraf olmalı.']);
             flash('error', 'Metin çok kısa görünüyor. Onam formu en az birkaç paragraf olmalı.');
+            redirect('/onam-formu');
+        }
+        // Çeviri boş bırakılabilir — kurumda İngilizce çıktı gerekmiyor olabilir.
+        // Yarım bir çeviri ise kaydedilmiyor: masaya konan kâğıt, okunmayan bir
+        // dilde eksik bir metin olamaz.
+        if ($textEn !== '' && mb_strlen($textEn) < 100) {
+            remember_input($input, ['consent_text_en' => 'Çeviri en az birkaç paragraf olmalı.']);
+            flash('error', 'İngilizce metin çok kısa görünüyor. Çeviriyi tamamlayın ya da alanı tamamen boş bırakın.');
             redirect('/onam-formu');
         }
         if ($version === '' || mb_strlen($version) > 20) {
@@ -77,12 +106,12 @@ final class ConsentController
 
         // Sürüm, verilmiş onamların hangi metne ait olduğunu gösteren tek bağdır.
         if ($text !== $currentText && $version === $currentVersion) {
-            $next = self::nextVersion($currentVersion);
+            $next = Consent::nextVersion($currentVersion);
             // Önerilen sürüm alana yazılı gelir: kural yerinde duruyor, ama
             // uygulaması tek tuş — sürümü yükseltmek isteyen kişi yeniden
             // kaydete basıyor, istemeyen sayıyı kendisi değiştiriyor.
             remember_input(
-                ['consent_text' => $text, 'consent_version' => $next],
+                ['consent_text' => $text, 'consent_text_en' => $textEn, 'consent_version' => $next],
                 ['consent_version' => "Metin değişti; sürüm de değişmeli. Önerilen: {$next}"]
             );
             flash('error', 'Metni değiştirdiniz. Sürüm numarasını da yükseltin (ör. ' . $currentVersion . ' → ' . $next . '); daha önce imzalanmış formlar eski sürüme bağlı kalır. Yazdığınız metin duruyor, önerilen sürüm alana yazıldı.');
@@ -92,14 +121,44 @@ final class ConsentController
         Settings::set('consent_text', $text);
         Settings::set('consent_version', $version);
 
+        // Sürüm numarası, verilmiş onamın hangi metne ait olduğunu gösteren
+        // tek bağ. Arşive yazılmasaydı o bağ bir sonraki düzenlemede kopardı:
+        // eski metin ayarlardan silinir ve 2.0'a onam vermiş kişinin ne
+        // okuduğu geri getirilemezdi.
+        Consent::archive($version, $text);
+
+        // Çeviri, yalnız GERÇEKTEN değiştiğinde hangi sürüme ait olduğunu
+        // tazeliyor. Kaydet'e her basışta ilerleseydi, Türkçe metni düzenleyip
+        // çeviriye dokunmayan bir kayıt eskimiş çeviriyi güncel gösterirdi —
+        // panelin uyaracak bir şeyi kalmazdı (bkz. Consent::translatedVersion).
+        //
+        // İlk kayıt da tazeliyor: ekrandaki alan paneldeki taslak çeviriyle dolu
+        // geliyor ve olduğu gibi kaydedilebilir. Değişmedi diye sürüm damgası
+        // atılmasaydı, o çeviri hangi metne ait olduğunu hiç söylemezdi.
+        $translated = $textEn !== ''
+            && ($textEn !== $currentTextEn || Settings::get('consent_text_en_version') === '');
+
+        Settings::set('consent_text_en', $textEn);
+        if ($translated) {
+            Settings::set('consent_text_en_version', $version);
+            Consent::archiveTranslation($version, $textEn);
+        }
+
         Audit::log('consent.updated', 'settings', null, [
             'eski_surum' => $currentVersion,
             'yeni_surum' => $version,
+            'ceviri'     => $translated ? 'guncellendi' : 'degismedi',
         ]);
 
-        flash('success', "Onam formu {$version} sürümü olarak kaydedildi.");
+        flash('success', "Onam formu {$version} sürümü olarak kaydedildi."
+            . ($translated ? ' İngilizce çeviri de kaydedildi.' : ''));
         if ($version !== $currentVersion) {
             flash('warning', 'Yeni sürüm yalnız bundan sonra imzalanacak formlar için geçerlidir. Mevcut danışanlardan yeniden onam alınması gerekip gerekmediğini değerlendirin.');
+        }
+        // Metin yükseldi, çeviri yerinde kaldı: İngilizce çıktı artık başka bir
+        // metni basıyor. Ekranın uyarısı kalıcı, bu satır o an söylenmiş hâli.
+        if (!$translated && $textEn !== '' && Consent::translationStale()) {
+            flash('warning', 'İngilizce çeviri ' . Consent::translatedVersion() . ' sürümüne ait; Türkçe metin ' . $version . '. Çeviriyi güncelleyene kadar İngilizce çıktı eski metni basar.');
         }
         redirect('/onam-formu');
     }
@@ -110,7 +169,7 @@ final class ConsentController
         $actor = Auth::requireLogin();
         if (!Rbac::canAny($actor, ['client.view.all', 'client.view.own'])) {
             Audit::log('access.denied', 'permission', null, ['permission' => 'client.view']);
-            View::error(403, 'Yetkiniz yok', 'Görüşmeci kayıtlarını görüntüleme yetkiniz bulunmuyor.');
+            View::error(403, 'Yetkiniz yok', 'Birey kayıtlarını görüntüleme yetkiniz bulunmuyor.');
             exit;
         }
 
@@ -119,11 +178,11 @@ final class ConsentController
 
         $client = Db::one("SELECT c.* FROM clients c WHERE c.id = ? AND ({$scope}) LIMIT 1", $params);
         if ($client === null) {
-            View::error(404, 'Görüşmeci bulunamadı');
+            View::error(404, 'Birey bulunamadı');
             exit;
         }
 
-        $this->renderPrint($client, $actor);
+        $this->renderPrint($client, $actor, self::lang());
     }
 
     /**
@@ -144,21 +203,74 @@ final class ConsentController
             exit;
         }
 
-        $this->renderPrint(null, $actor);
+        $this->renderPrint(null, $actor, self::lang());
     }
 
     // ── Yardımcılar ─────────────────────────────────────────────
 
-    /** @param array<string,mixed>|null $client null = kaydı olmayan kişi için boş form */
-    private function renderPrint(?array $client, array $actor): void
+    /**
+     * Çıktının dili — adres satırındaki ?dil=en.
+     *
+     * Ayrı bir yol (route) değil, aynı kâğıdın öteki dili: hangi danışana hangi
+     * dilde çıktı verileceği kayda bağlı bir ayar değil, o masada verilen bir
+     * karar. Tanınmayan her değer Türkçeye düşüyor.
+     */
+    private static function lang(): string
     {
+        return query('dil') === 'en' ? 'en' : 'tr';
+    }
+
+    /**
+     * @param array<string,mixed>|null $client null = kaydı olmayan kişi için boş form
+     * @param string                   $lang   'tr' | 'en' (bkz. lang())
+     *
+     * Kâğıt, danışanın ONAYLADIĞI sürümü basar — güncel sürümü değil. Kişi
+     * 2.0'ı okuyup tikledikten sonra metin panelde 2.1 olduysa, masaya 2.1
+     * koymak okumadığı bir kâğıdı imzalatmak olurdu. Böyle bir durumda çıktının
+     * üstünde ayrıca bir uyarı satırı duruyor (bkz. consent/print.php).
+     *
+     * Sürüm numarası iki dilde de aynı: İngilizce kâğıt ayrı bir metin değil,
+     * o sürümün çevirisi. Çeviri Türkçe metnin gerisinde kaldıysa çıktının
+     * üstünde (yalnız ekranda, kâğıda geçmeyen) bir uyarı duruyor.
+     */
+    private function renderPrint(?array $client, array $actor, string $lang = 'tr'): void
+    {
+        $current = Consent::currentVersion();
+        $online  = $client === null ? null : Consent::latestOnline((int) $client['id']);
+
+        $version = $online === null ? $current : (string) $online['version'];
+        $text    = $lang === 'en' ? Consent::versionTextEn($version) : Consent::versionText($version);
+
+        // Arşivde yoksa (göç öncesinde onaylanmış bir sürüm, ya da çevirisi hiç
+        // yazılmamış bir sürüm) elde yalnız güncel metin var. Boş kâğıt
+        // basmaktansa güncelini basıp bunu söylemek doğru: kâğıdın üstündeki
+        // sürüm numarası neyin imzalandığını yine de kayda geçiriyor.
+        $missing = $text === null;
+        if ($missing) {
+            $version = $current;
+            $text    = $lang === 'en' ? Consent::currentTextEn() : Consent::currentText();
+        }
+
         // Düzen (layout) kullanılmaz: çıktıda menü ve kenar çubuğu olmamalı.
         View::render('consent/print', [
-            'title'   => 'Onam formu',
-            'client'  => $client,
-            'terms'   => self::terms($client, $actor),
-            'text'    => Settings::get('consent_text', self::starterText()),
-            'version' => Settings::get('consent_version', self::DEFAULT_VERSION),
+            'title'    => 'Onam formu',
+            'client'   => $client,
+            'terms'    => self::terms($client, $actor, $lang),
+            'text'     => $text,
+            'version'  => $version,
+            'lang'     => $lang,
+            // Çevrimiçi onay künyesi: kâğıt "bunu zaten okudunuz" diyor.
+            // Seansta okuma değil doğrulama yapılmasının görünür karşılığı.
+            'online'   => $online,
+            // Metin, onaylanan sürümden sonra değişmiş mi?
+            'outdated' => $online !== null && (string) $online['version'] !== $current,
+            'missing'  => $missing && $online !== null,
+            // Çevirinin kendi iki kusuru: hiç kaydedilmemiş olması (elde yalnız
+            // paneldeki taslak var) ve Türkçe metnin gerisinde kalmış olması.
+            // İkisi de yalnız İngilizce çıktıda ve yalnız ekranda söyleniyor.
+            'draftEn'  => $lang === 'en' && Consent::isDraftEn(),
+            'staleEn'  => $lang === 'en' && !Consent::isDraftEn() && Consent::translationStale(),
+            'versionEn' => Consent::translatedVersion(),
         ], '');
     }
 
@@ -175,9 +287,10 @@ final class ConsentController
      * hiçbir yere kaydedilmez — kâğıdın kaydı imzalı hâlidir.
      *
      * @param  array<string,mixed>|null $client
+     * @param  string                   $lang 'tr' | 'en'
      * @return array{fee:string, minutes:int, frequency:string, date:string}
      */
-    private static function terms(?array $client, array $actor): array
+    private static function terms(?array $client, array $actor, string $lang = 'tr'): array
     {
         // Ücret, o kişiye en son yazılmış seans ücreti: konuşulan rakam
         // zaten odur, yeniden hatırlanması gerekmesin.
@@ -203,111 +316,146 @@ final class ConsentController
             'minutes'   => Scheduling::defaultDuration($therapistId === null ? null : (int) $therapistId),
             // Metnin kendisi "haftalık veya iki haftada bir" diyor; kâğıtta
             // ikisinden hangisi olduğu yazılı olsun diye sık olanı öneriyoruz.
-            'frequency' => 'Haftada bir',
-            'date'      => date('d.m.Y'),
+            'frequency' => $lang === 'en' ? 'Weekly' : 'Haftada bir',
+            // İngilizce kâğıtta ay adı yazıyla: 03.08.2026'yı 3 Ağustos diye
+            // okuyan da var, 8 Mart diye okuyan da. İmza tarihi tek okunmalı.
+            'date'      => $lang === 'en' ? date('j F Y') : date('d.m.Y'),
         ];
     }
 
-    /** '1.0' → '1.1'; sayısal olmayan sürümlerde ipucu vermeden döner. */
-    private static function nextVersion(string $current): string
+    // ── Danışanın gördüğü sayfa (giriş gerektirmez) ─────────────
+    //
+    // Panelin giriş gerektirmeyen ikinci ekranı — birincisi check-in. Yetki
+    // bağlantının kendisinde: tek kullanımlık, süreli, tek bir kişiye ait
+    // 256 bitlik bir jeton.
+    //
+    // Buradaki her yanıt bilinçli olarak az şey söyler: geçersiz bir bağlantı
+    // "bu bağlantı geçerli değil" der, kimin bağlantısı olduğunu ya da neden
+    // geçersiz olduğunu ele vermez. Ad yalnız jeton geçerliyken görünür.
+
+    public function publicForm(string $token): void
     {
-        if (preg_match('/^(\d+)\.(\d+)$/', $current, $parts) === 1) {
-            return $parts[1] . '.' . ((int) $parts[2] + 1);
+        if (!Schema::consentReady()) {
+            $this->closed('Bu bağlantı şu anda kullanılamıyor', 'Sistem henüz hazır değil. Lütfen merkezimizle iletişime geçin.');
+            return;
         }
-        return $current . '-2';
+
+        $request = Consent::request($token);
+        $state   = Consent::state($request);
+
+        if ($state !== 'ok') {
+            $this->explain($state);
+            return;
+        }
+
+        $this->renderLink($token, $request);
     }
 
-    /**
-     * Başlangıç taslağı. Hukuki metin DEĞİLDİR; kurumun kendi bilgileriyle
-     * doldurulup bir hukukçuya onaylatılması gerekir. Panelde her yerde
-     * "taslak" olarak işaretlenir.
-     *
-     * Başlık burada yok: kâğıdın üstüne kurum adıyla birlikte çıktı sayfası
-     * basıyor (consent/print.php). Metin, doğrudan danışana hitapla başlıyor.
-     */
-    private static function starterText(): string
+    public function publicApprove(string $token): void
     {
-        return <<<'METIN'
-        Bilgilendirilmiş Onam Formu, sahip olduğunuz haklarla ve sorumluluklarla
-        ilgili sizi bilgilendirmek amacıyla oluşturulmuştur. Psikoloğunuzla
-        karşılıklı olarak onayladığınız bir anlaşma niteliği taşıyacaktır.
+        if (!Schema::consentReady()) {
+            $this->closed('Bu bağlantı şu anda kullanılamıyor', 'Sistem henüz hazır değil. Lütfen merkezimizle iletişime geçin.');
+            return;
+        }
 
-        PSİKOTERAPİ SÜRECİNE YÖNELİK BİLGİLENDİRME
+        $request = Consent::request($token);
+        $state   = Consent::state($request);
 
-        - Seans süresi ortalama 45-50 dakikadır.
-        - Seanslara düzenli ve zamanında katılım, sağlıklı bir psikoterapötik
-          ilişki kurabilmek için önemli ve gereklidir.
-        - Seansa danışan tarafından geç kalınması durumunda, yalnızca geriye kalan
-          süre kadar görüşme yapılabilecektir. Eğer gecikme psikolog kaynaklıysa,
-          psikolog süreyi tamamlamakla yükümlüdür.
-        - Seans ücreti, seans öncesinde ödenmektedir.
-        - Seansı erteleme veya iptal etmeniz gereken durumlarda, seans saatinden
-          en az 24 saat öncesinde bilgi vermeniz beklenmektedir. Son 24 saat içinde
-          iptal olan seanslar için seans ücreti talep edilmektedir.
-        - Yeni randevular, psikoterapi sürecinin seyrine göre haftalık veya iki
-          haftada bir olacak şekilde planlanır.
-        - Online görüşmeler sırasında ise rahatsız edilme ihtimali olmayan, sessiz
-          ve sakin, dikkat dağıtıcı unsurların olmadığı ortamlar tercih edilmelidir.
-        - Seans süresince telefonlar sessizde olmalıdır.
-        - Etik ilkeler ve gizliliğin korunması amacıyla, ses ve/veya görüntü kaydı
-          almaya izin verilmemektedir.
+        if ($state !== 'ok') {
+            $this->explain($state);
+            return;
+        }
 
-        GİZLİLİK VE GÜVENİLİRLİK İLKESİ
+        // Sayfada gösterilen sürüm gizli alanda taşınıyor. Metin, kişi okurken
+        // panelden düzenlenmiş olabilir; okuduğundan başka bir metne onam
+        // yazmak, onamı ispat değeri olmayan bir tıklamaya çevirirdi.
+        if (post('surum') !== Consent::currentVersion()) {
+            flash('warning', 'Form, siz okurken güncellendi. Yeni metni okuyup yeniden onaylamanız gerekiyor.');
+            $this->renderLink($token, $request);
+            return;
+        }
 
-        - Psikolog ve danışan arasında konuşulan her şey gizlidir ve üçüncü
-          kişilerle paylaşılmaz.
-        - Psikolog, seans notları da dahil olmak üzere, psikoterapi süreci boyunca
-          tutacağı raporları ve danışanın kişisel bilgilerini, kimsenin
-          ulaşamayacağı şekilde saklamak ve muhafaza etmekle yükümlüdür. Bu kural,
-          psikoterapötik süreç sona erdikten sonra da geçerlidir.
-        - Gizlilik ilkesinin, psikolog tarafından ihlal edilebileceği sadece 2 koşul
-          mevcuttur:
-          - Bu koşulların en önemlisi; danışanın kendine ve/veya bir başkasına zarar
-            verme riski görülmesidir. Bu gibi durumlarda, psikolog gerekli mercilere
-            bilgi vermek ve/veya danışanın bir aile yakınıyla iletişime geçmek
-            durumundadır.
-          - Diğer bir koşul ise herhangi bir hukuki süreçte, mahkeme kararıyla
-            psikologdan bilgi istenilmesi durumudur. Bu durumda da psikolog yasal
-            olarak, mahkeme kararını uygulamaya geçirmek zorundadır.
-        - Psikoterapötik süreç içinde gerçekleşebilecek herhangi bir olağandışı
-          durumda danışanı koruyabilmek ve erken müdahaleyi sağlayabilmek için bir
-          aile yakını bilgisi almak gereklidir.
+        // Tik zorunlu: onam, kutunun işaretlenmesiyle veriliyor. İşaretsiz
+        // gönderim sessizce kabul edilseydi kayıt bir şey ifade etmezdi.
+        if (post('onay') === '') {
+            flash('error', 'Devam etmek için en alttaki onay kutusunu işaretlemeniz gerekiyor.');
+            $this->renderLink($token, $request);
+            return;
+        }
 
-        KİŞİSEL BİLGİLERİNİZİN KAYDI
+        Consent::approve($request);
 
-        - Kaydınızda ad-soyadınız, iletişim bilgileriniz ve doğum tarihiniz,
-          randevularınız ve seans sürecine ilişkin notlar tutulur. Seans notları,
-          yasa önünde sağlık verisi sayılır; en korunaklı bilgi türüdür.
-        - Bu bilgiler yalnızca randevunuzun planlanması, sürecin yürütülmesi ve
-          takibi ile yasal saklama yükümlülükleri için kullanılır. Başka hiçbir
-          amaçla kullanılmaz.
-        - Seans notları şifrelenerek saklanır ve yalnızca notu tutan psikolog
-          tarafından görüntülenebilir. Kayıtlar [saklama süresi] süresince saklanır,
-          sürenin sonunda imha edilir.
-        - Kaydınız, yukarıdaki gizlilik başlığında belirtilen iki koşul dışında
-          hiç kimseyle paylaşılmaz.
-        - Sağlık verisi niteliğindeki seans notlarınız, KVKK m.6 uyarınca yalnızca
-          açık rızanızla işlenebilir; bu formu imzalamanız bu rızayı da kapsar.
-          Diğer bilgileriniz sözleşmenin kurulması ve ifası hukuki sebebine dayanır.
-        - KVKK m.11 kapsamında bilgilerinize erişme, düzeltilmesini veya silinmesini
-          isteme ve işlenmesine itiraz etme haklarına sahipsiniz. Başvurularınızı
-          [iletişim adresi] üzerinden iletebilirsiniz.
+        // İçerik değil, olay loglanır. Aktör boş: bu isteği yapan kişinin
+        // panelde oturumu yok.
+        Audit::log('consent.approved', 'client', (int) $request['client_id']);
 
-        GÖNÜLLÜLÜK İLKESİ
+        redirect('/onam/tesekkurler');
+    }
 
-        - Psikoterapi sürecine başlamak ve sürecin devamlılığını sağlamak için
-          danışanın gönüllülüğü çok önemlidir. Danışanın kendi isteğiyle ve hiçbir
-          zorlama altında olmadan psikolojik destek istediğinden emin olunmalıdır.
-        - Danışan, istediği zaman görüşmeleri sonlandırma hakkına sahiptir.
-        - Psikoterapötik sürecinize son vermek istemeniz, yeniden başlamaya ihtiyaç
-          duyduğunuzda bir engel oluşturmaz. İstediğiniz zaman yeniden randevu
-          alabilir ve sürecinize geri dönebilirsiniz.
+    public function publicThanks(): void
+    {
+        View::render('consent/link_done', ['title' => 'Onayınız alındı'], 'checkin_layout');
+    }
 
-        "Bu formu imzalayarak, yukarıda belirtilen hak ve sorumlulukları kabul
-        ediyorum. Psikolojik destek süreci için gönüllü ve psikoloğum ile iş birliği
-        içinde çalışmaya istekli olduğumu beyan ederim. Seans notlarım dahil kişisel
-        bilgilerimin yukarıda anlatılan biçimde işlenmesine açık rızam ile onay
-        veriyorum."
-        METIN;
+    /** @param array<string,mixed> $request */
+    private function renderLink(string $token, array $request): void
+    {
+        View::render('consent/link', [
+            'title'     => 'Onam formu',
+            'token'     => $token,
+            'firstName' => $this->firstName((string) $request['full_name']),
+            'text'      => Consent::currentText(),
+            'version'   => Consent::currentVersion(),
+            // Uzun bir hukuki metin telefon genişliğindeki kolonda okunmuyor;
+            // kabuk bu sayfada geniş kuruluyor (bkz. checkin_layout).
+            'wide'      => true,
+        ], 'checkin_layout');
+    }
+
+    // ── Yardımcılar ─────────────────────────────────────────────
+
+    /**
+     * Kapanmış bağlantıların hepsi kibar ve kısa: kişi bir şeyi yanlış
+     * yapmadı, bağlantının ömrü doldu. "Hata" dili burada yanlış olurdu.
+     */
+    private function explain(string $state): void
+    {
+        [$title, $message] = match ($state) {
+            'used' => [
+                'Bu formu zaten onayladınız',
+                'Teşekkürler — onayınız kaydedildi. Seansta formun çıktısı üzerinden kısaca doğrulanacak, '
+                . 'yeniden okumanız gerekmiyor.',
+            ],
+            'expired' => [
+                'Bu bağlantının süresi doldu',
+                'Bağlantılar ' . Consent::TTL_DAYS . ' gün geçerli. Seansınızdan önce onaylamak isterseniz '
+                . 'merkezimize yazın, yeni bir bağlantı gönderelim.',
+            ],
+            'closed' => [
+                'Bu bağlantı artık geçerli değil',
+                'Kaydınız şu anda açık görünmüyor. Sorusu olan biri varsa merkezimizle iletişime geçebilir.',
+            ],
+            default => [
+                'Bu bağlantı geçerli değil',
+                'Bağlantı eksik kopyalanmış olabilir. Size iletilen adresin tamamını kullanmayı deneyin.',
+            ],
+        };
+
+        $this->closed($title, $message);
+    }
+
+    private function closed(string $title, string $message): void
+    {
+        View::render('consent/link_closed', [
+            'title'   => $title,
+            'heading' => $title,
+            'message' => $message,
+        ], 'checkin_layout');
+    }
+
+    private function firstName(string $fullName): string
+    {
+        $parts = preg_split('/\s+/', trim($fullName)) ?: [];
+        return (string) ($parts[0] ?? '');
     }
 }

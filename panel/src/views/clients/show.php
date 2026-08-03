@@ -8,6 +8,8 @@ use Panel\Scheduling;
 /** @var bool $canSeeCheckins @var bool $canManageCheckins */
 /** @var list<array> $checkins @var int $checkinTotal */
 /** @var ?array $checkinPending @var ?array $checkinLink */
+/** @var array $consent @var list<array> $consentHistory */
+/** @var ?array $consentPending @var ?array $consentLink @var bool $consentReady */
 
 $age      = age_from($client['birth_date']);
 $isActive = $client['status'] === 'active';
@@ -27,10 +29,10 @@ $accountState = $hasAccount ? (string) $client['account_status'] : 'none';
 $canManage    = Rbac::can($actor, 'user.create');
 
 [$accountChip, $accountChipClass, $accountLine] = match ($accountState) {
-    'invited'   => ['Davet gönderildi', 'chip-stop', 'Davet e-postası gönderildi; görüşmeci şifresini henüz belirlemedi.'],
-    'active'    => ['Açık',             'chip-go',   'Görüşmeci panele girip kendi randevularını ve ödeme durumunu görebiliyor.'],
+    'invited'   => ['Davet gönderildi', 'chip-stop', 'Davet e-postası gönderildi; birey şifresini henüz belirlemedi.'],
+    'active'    => ['Açık',             'chip-go',   'Birey panele girip kendi randevularını ve ödeme durumunu görebiliyor.'],
     'suspended' => ['Kapalı',           'chip-done', 'Erişim kapatıldı. Hesap duruyor, istendiğinde yeniden açılabilir.'],
-    default     => ['Hesap yok',        'chip-neutral', 'Bu görüşmecinin panel hesabı yok.'],
+    default     => ['Hesap yok',        'chip-neutral', 'Bu bireyin panel hesabı yok.'],
 };
 
 $manualInvite = Invites::pending('client');
@@ -40,7 +42,7 @@ $manualInvite = Invites::pending('client');
 <header class="mb-6"
         data-tour="20" data-tour-title="Kaydın kapağı"
         data-tour-text="Ad, kayıt tarihi ve birincil terapist. Sağdaki düğmeler bu kişiyle ilgili işler: randevu vermek, künyeyi düzenlemek, onam formunu yazdırmak. Arşivlenmiş bir kayıtta adın yanında rozeti durur.">
-  <a href="<?= e(url('/danisanlar')) ?>" class="btn-text btn-text-quiet">← Görüşmeciler</a>
+  <a href="<?= e(url('/danisanlar')) ?>" class="btn-text btn-text-quiet">← Bireyler</a>
   <div class="flex flex-wrap items-start justify-between gap-3 mt-2">
     <div>
       <h1 class="page-title">
@@ -73,6 +75,17 @@ $manualInvite = Invites::pending('client');
             // işleri burada duruyor, o da bir iş. Künyede yalnız durumu kaldı. ?>
       <a href="<?= e(url("/danisanlar/{$client['id']}/onam")) ?>" target="_blank" rel="noopener"
          class="btn btn-quiet">Onam formu</a>
+      <?php // Bağlantı, telefonda randevu alınırken gönderilen şey: metin
+            // seanstan ÖNCE, evde okunsun diye. Onam tamamlanmışsa düğme yok —
+            // gönderecek bir şey kalmadı. ?>
+      <?php if ($consentReady && $isActive && $consent['key'] !== 'tam' && Rbac::can($actor, 'client.update')): ?>
+        <form method="post" action="<?= e(url("/danisanlar/{$client['id']}/onam-baglantisi")) ?>" class="inline">
+          <?= Csrf::field() ?>
+          <button class="btn btn-quiet">
+            <?= $consentPending !== null ? 'Onam bağlantısını yenile' : 'Onam bağlantısı gönder' ?>
+          </button>
+        </form>
+      <?php endif; ?>
       <?php if (Rbac::can($actor, 'client.update')): ?>
         <a href="<?= e(url("/danisanlar/{$client['id']}/duzenle")) ?>" class="btn btn-quiet">Düzenle</a>
       <?php endif; ?>
@@ -87,11 +100,96 @@ $manualInvite = Invites::pending('client');
 // bağlantısı iletilince kendiliğinden kaybolurlar. Künyeye konsalardı, hem
 // dar sütuna sığmaz hem de kalıcı bir alan gibi görünürlerdi.
 ?>
-<?php if ($client['consent_at'] === null): ?>
+<?php
+// ── Onam ───────────────────────────────────────────────────────────────
+// Üç hâl, üç ayrı cümle. Eskiden tek bir kırmızı şerit vardı ve "onam
+// işaretlenmemiş" diyordu; metni evinde okuyup onaylamış birinin kaydında da
+// aynı şeyi diyordu. Bu, terapiste yapılmış bir işi yapılmamış gibi gösterip
+// danışana ikinci kez okutmasına yol açardı — kaçınılmak istenen şeyin ta
+// kendisi.
+//
+// Çevrimiçi onay KIRMIZI DEĞİL: kimse bir şeyi yanlış yapmadı, sıradaki adım
+// seansta. Kırmızı, gerçekten eksik olan için ayrılıyor.
+?>
+<?php if ($consent['key'] === 'eksik'): ?>
   <div class="note note-stop mb-4">
-    Bu kayıt için <strong>onam</strong> işaretlenmemiş. Seans verisi işlemeden önce
-    onam formu imzalatılmalı ve kayıt düzenlenerek işaretlenmelidir.
+    Bu kayıt için <strong>onam</strong> alınmamış. Seans verisi işlemeden önce
+    onam formu okunmalı ve imzalanmalı.
+    <?php if ($consentReady && $isActive): ?>
+      Danışan metni seanstan önce okusun isterseniz yukarıdan
+      <strong>onam bağlantısı</strong> gönderebilirsiniz; internete girmeyen biri
+      için formun çıktısını alıp yüz yüze okuyun.
+    <?php endif; ?>
   </div>
+<?php elseif ($consent['key'] === 'cevrimici'): ?>
+  <?php
+  // Metin okundu, imza bekleniyor. Buradaki iki düğme seansın içinde,
+  // konuşmanın ortasında basılacak şeyler — bu yüzden kayıt düzenleme
+  // ekranında değil, sayfanın en üstünde ve tek dokunuşluk.
+  $canClose = Rbac::can($actor, 'client.update') && $isActive;
+  ?>
+  <section class="sheet mb-4">
+    <div class="sheet-body">
+      <p class="text-sm text-ink"><strong>Onam çevrimiçi onaylandı</strong> — seansta kapanması bekleniyor.</p>
+      <p class="text-sm text-ink-muted mt-1"><?= e($consent['detail']) ?></p>
+
+      <?php if ($canClose): ?>
+        <p class="text-sm text-ink-muted mt-3">
+          Metni yeniden okutmanız gerekmiyor. Merkeze geldiyse
+          <a href="<?= e(url("/danisanlar/{$client['id']}/onam")) ?>" target="_blank" rel="noopener"
+             class="btn-text">formun çıktısını alıp</a>
+          imzalatın; online görüşüyorsanız onayını sözlü olarak beyan etmesini isteyin.
+        </p>
+
+        <div class="flex flex-wrap items-start gap-3 mt-4">
+          <form method="post" action="<?= e(url("/danisanlar/{$client['id']}/onam/imza")) ?>">
+            <?= Csrf::field() ?>
+            <button class="btn btn-primary">Islak imza alındı</button>
+          </form>
+
+          <?php // Sözlü onamın künyesi: ses/görüntü dosyası panele YÜKLENMİYOR,
+                // merkezin kendi klasöründe duruyor. Buraya yalnız o dosyanın
+                // nerede olduğu yazılıyor. ?>
+          <form method="post" action="<?= e(url("/danisanlar/{$client['id']}/onam/sozlu")) ?>"
+                class="flex flex-wrap items-start gap-2">
+            <?= Csrf::field() ?>
+            <div>
+              <label for="kunye" class="sr-only">Kaydın nerede saklandığı</label>
+              <input id="kunye" type="text" name="kunye" maxlength="200"
+                     class="field text-sm" placeholder="Kayıt nerede duruyor? (isteğe bağlı)">
+              <p class="field-hint mt-1">
+                Yalnız dosyanın yerini yazın (ör. “onam klasörü, 02.08 ses kaydı”).
+                Buraya klinik içerik yazılmaz.
+              </p>
+            </div>
+            <button class="btn btn-quiet">Sözlü onam alındı</button>
+          </form>
+        </div>
+      <?php endif; ?>
+    </div>
+  </section>
+<?php endif; ?>
+
+<?php if (!empty($consentLink)): ?>
+  <?php // Bağlantı e-posta gitmiş olsa bile gösteriliyor: bu akışın asıl kanalı
+        // WhatsApp ve panelde WhatsApp gönderimi yok (bkz. Consent::share). ?>
+  <section class="sheet mb-4">
+    <div class="sheet-body">
+      <p class="text-sm text-ink"><?= e($consentLink['name']) ?> için onam formu bağlantısı</p>
+      <p class="text-sm text-ink-muted mt-1 mb-3">
+        <?= !empty($consentLink['sent'])
+            ? 'E-posta gönderildi. Ulaşmazsa (spam filtresi, yanlış adres) bu bağlantıyı doğrudan iletebilirsiniz.'
+            : 'Bu bağlantıyı danışana kendiniz iletin — WhatsApp ya da mesajla.' ?>
+        <?= Panel\Consent::TTL_DAYS ?> gün geçerli ve tek kullanımlık. Yalnızca kişinin kendisine verin.
+      </p>
+      <div class="flex gap-2">
+        <label for="consentLinkUrl" class="sr-only">Onam formu bağlantısı</label>
+        <input id="consentLinkUrl" type="text" readonly value="<?= e($consentLink['url']) ?>"
+               class="field flex-1 min-w-0 text-xs font-mono text-ink-muted">
+        <button type="button" data-copy="#consentLinkUrl" class="btn btn-primary shrink-0">Kopyala</button>
+      </div>
+    </div>
+  </section>
 <?php endif; ?>
 
 <?php if ($manualInvite !== null): ?>
@@ -102,7 +200,7 @@ $manualInvite = Invites::pending('client');
       <p class="text-sm text-ink-muted mt-1 mb-3">
         <?= !empty($manualInvite['sent'])
             ? 'E-posta gönderildi. Ulaşmazsa (spam filtresi, yanlış adres) bu bağlantıyı doğrudan iletebilirsiniz.'
-            : 'E-posta gönderilemedi; bu bağlantıyı görüşmeciye kendiniz iletin.' ?>
+            : 'E-posta gönderilemedi; bu bağlantıyı bireye kendiniz iletin.' ?>
         48 saat geçerli ve tek kullanımlık. Yalnızca kişinin kendisine verin.
       </p>
       <div class="flex gap-2">
@@ -209,13 +307,44 @@ $manualInvite = Invites::pending('client');
         <div class="px-5 py-3 border-t border-warm-secondary">
           <dt class="eyebrow">Onam</dt>
           <dd class="mt-1">
+            <span class="chip chip-<?= e($consent['tone']) ?>"><?= e($consent['label']) ?></span>
             <?php if ($client['consent_at'] !== null): ?>
-              <span class="chip chip-go">Alındı</span>
               <p class="text-xs text-ink-light mt-1 num">
                 <?= e(dt($client['consent_at'])) ?> · sürüm <?= e((string) $client['consent_version']) ?>
               </p>
-            <?php else: ?>
-              <span class="chip chip-stop">Eksik</span>
+            <?php endif; ?>
+
+            <?php
+            // Kısa geçmiş: kim, ne zaman, hangi yolla. "Bu kayıtta onam neden
+            // yok?" sorusunun cevabı çoğu zaman bir zamanlar VAR OLDUĞU ve
+            // kaldırıldığıdır; geri alınanlar bu yüzden listede kalıyor.
+            ?>
+            <?php if ($consentHistory !== []): ?>
+              <ul class="mt-2 space-y-1">
+                <?php foreach ($consentHistory as $row): ?>
+                  <li class="text-xs text-ink-light<?= $row['revoked_at'] !== null ? ' line-through' : '' ?>">
+                    <?= e(Panel\Consent::methodLabel((string) $row['method'])) ?> ·
+                    <span class="num"><?= e(dt((string) $row['approved_at'], 'd.m.Y')) ?></span>
+                    <span class="num">· <?= e((string) $row['version']) ?></span>
+                    <?php if ($row['recorded_by_name'] !== null): ?>
+                      — <?= e((string) $row['recorded_by_name']) ?>
+                    <?php endif; ?>
+                    <?php if ($row['reference'] !== null): ?>
+                      <span class="block text-ink-light"><?= e((string) $row['reference']) ?></span>
+                    <?php endif; ?>
+                    <?php if ($row['revoked_at'] !== null): ?>
+                      <span class="block no-underline">geri alındı</span>
+                    <?php endif; ?>
+                  </li>
+                <?php endforeach; ?>
+              </ul>
+            <?php endif; ?>
+
+            <?php if ($consentPending !== null && $consent['key'] === 'eksik'): ?>
+              <p class="text-xs text-ink-light mt-2">
+                Bağlantı gönderildi, henüz onaylanmadı
+                (<span class="num"><?= e(dt((string) $consentPending['expires_at'], 'd.m.Y')) ?></span> tarihine kadar geçerli).
+              </p>
             <?php endif; ?>
           </dd>
         </div>

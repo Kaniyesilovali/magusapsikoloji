@@ -2,9 +2,16 @@
 /** @var string $content @var array $flashes @var string $title */
 
 // Check-in düzeni panelin kendi chrome'unu KULLANMAZ: burada gezinen bir
-// yönetici değil, telefonunda bir bağlantıya dokunmuş bir görüşmeci var. Menü,
+// yönetici değil, telefonunda bir bağlantıya dokunmuş bir birey var. Menü,
 // kenar çubuğu, "yönetim paneli" ibaresi — hepsi yanlış yere gelmiş hissi verir.
 // Sayfada tek bir şey yapılabiliyor, o yüzden sayfada tek bir şey var.
+//
+// Aynı kabuğu onam bağlantısı da kullanıyor (bkz. ConsentController::publicForm)
+// ama tek farkla: onam metni birkaç sayfalık hukuki bir metin ve telefon
+// genişliğindeki kolonda satırlar o kadar kısalıyor ki okuma bırakılıyor.
+// İkinci bir kabuk yazmak yerine tek ölçü değişiyor — iki şablon olsaydı biri
+// birkaç sürüm sonra sessizce ötekinden ayrılırdı.
+$shellWidth = !empty($wide) ? 'max-w-2xl' : 'max-w-md';
 ?>
 <!doctype html>
 <html lang="tr">
@@ -18,17 +25,17 @@
 </head>
 <body class="min-h-screen font-sans px-4 py-8 sm:py-12">
 
-<div class="w-full max-w-md mx-auto">
+<div class="w-full <?= $shellWidth ?> mx-auto">
   <p class="font-serif text-lg text-ink">Mağusa Psikoloji</p>
 
-  <?php // Önizlemede tek eklenti bu şerit. Sayfanın geri kalanı görüşmecinin
+  <?php // Önizlemede tek eklenti bu şerit. Sayfanın geri kalanı bireyin
         // gördüğünün AYNISI olmalı; yoksa önizlemenin bir değeri kalmaz. ?>
   <?php if (!empty($preview)): ?>
     <div class="note note-info mt-5">
-      <strong>Önizleme.</strong> Görüşmecinin gördüğü sayfa; buradan hiçbir şey
+      <strong>Önizleme.</strong> Bireyin gördüğü sayfa; buradan hiçbir şey
       kaydedilmez ve kimseye ileti çıkmaz. Selamlamada kendi adınız yazıyor,
       alanlar da uyarlanmamış varsayılan liste — bir dosyada hangi alanların
-      açık olduğu görüşmeci sayfasındaki <em>Alanlar</em> ekranında.
+      açık olduğu birey sayfasındaki <em>Alanlar</em> ekranında.
       Sayfa <strong>kaydedilmiş</strong> metni gösterir; henüz kaydetmediğiniz
       değişiklikler burada görünmez.
       <a href="<?= e(url('/check-in-sorulari')) ?>" class="btn-text">Metinlere dön</a>

@@ -33,7 +33,7 @@ $tones = [
 
 <?php // Tur adımları 20'den başlar; 10–19 kenar çubuğunun (bkz. views/layout.php). ?>
 <header class="flex flex-wrap items-end justify-between gap-4 mb-6"
-        data-tour="20" data-tour-title="Görüşmecinin gördüğü metinler"
+        data-tour="20" data-tour-title="Bireyin gördüğü metinler"
         data-tour-text="Formdaki her cümle buradan yazılır. Üstteki satır haftalık gönderimin o anki hâlini söyler: kapalıysa ya da cron durmuşsa aşağıda “Sırada” yazsa bile e-posta çıkmıyor demektir. “Formu önizle” kaydedilmiş metni yeni sekmede gösterir, kayıt yazmaz.">
   <div>
     <?php // Başlık üstü satırı gönderimin o anki hâlini söylüyor: "Sırada"
@@ -52,7 +52,7 @@ $tones = [
     </p>
     <h1 class="page-title mt-2">Haftalık check-in</h1>
     <p class="page-sub">
-      Görüşmecinin gördüğü bütün metinler ve e-postanın kimlere gittiği. Ölçek her
+      Bireyin gördüğü bütün metinler ve e-postanın kimlere gittiği. Ölçek her
       soruda 1–10 arası bir kaydırıcı; değişen cümleler ve uçların adları.
     </p>
   </div>
@@ -172,7 +172,7 @@ $tones = [
   //
   // Aynı formun devamı, ayrı bir gönderim değil. Buradaki işaret YALNIZ
   // haftalık e-postayı yönetir. Takibi kapatmaz, kaydı arşivlemez, geçmişi
-  // gizlemez — kapalı bir görüşmeciye terapist elden bağlantı gönderdiğinde
+  // gizlemez — kapalı bir bireye terapist elden bağlantı gönderdiğinde
   // form eskisi gibi çalışır. Bugüne kadar gönderimi durdurmanın tek yolu
   // kaydı arşivlemekti; "bu dönem doldurmayalım" diyen bir aile için bu fazla
   // ağır bir işlemdi.
@@ -183,12 +183,12 @@ $tones = [
   ?>
   <div class="sheet-head border-t border-warm-secondary"
        data-tour="22" data-tour-title="Kime gidiyor"
-       data-tour-text="Aynı formun devamı, ayrı bir kayıt değil — tek “Kaydet” hepsini birden yazar. Buradaki işaret yalnız haftalık e-postayı yönetir: kaldırmak takibi kapatmaz, terapist görüşmeci sayfasından elle bağlantı göndermeye devam edebilir. Listede puan ya da cevap yok; bu ekran yöneticiye de açık.">
+       data-tour-text="Aynı formun devamı, ayrı bir kayıt değil — tek “Kaydet” hepsini birden yazar. Buradaki işaret yalnız haftalık e-postayı yönetir: kaldırmak takibi kapatmaz, terapist birey sayfasından elle bağlantı göndermeye devam edebilir. Listede puan ya da cevap yok; bu ekran yöneticiye de açık.">
     <div>
       <h2 class="sheet-title">Haftalık e-posta kimlere gidiyor</h2>
       <p class="text-sm text-ink-muted mt-1">
-        İşaretli görüşmecilere cron haftada bir bağlantı yollar. İşareti
-        kaldırmak takibi kapatmaz — terapist görüşmeci sayfasından elle bağlantı
+        İşaretli bireylere cron haftada bir bağlantı yollar. İşareti
+        kaldırmak takibi kapatmaz — terapist birey sayfasından elle bağlantı
         göndermeye devam edebilir.
       </p>
       <?php // Aşağıdaki "Sırada" rozeti bir söz: cron koşarsa bu kişiye gider.
@@ -224,7 +224,7 @@ $tones = [
       güncellemelerini uygulayın.
     </p>
   <?php elseif ($roster === []): ?>
-    <p class="sheet-empty">Aktif görüşmeci yok.</p>
+    <p class="sheet-empty">Aktif birey yok.</p>
   <?php else: ?>
 
     <?php if (!$switchable): ?>
@@ -268,7 +268,7 @@ $tones = [
           </span>
         </label>
         <?php // Alan/metin uyarlaması tek tek dosyaya ait; listeden doğrudan
-              // açılıyor ki bunun için görüşmeci sayfasını dolaşmak gerekmesin. ?>
+              // açılıyor ki bunun için birey sayfasını dolaşmak gerekmesin. ?>
         <span class="flex flex-col items-end gap-1 shrink-0">
           <a href="<?= e(url('/danisanlar/' . (int) $row['id'] . '/alanlar')) ?>" class="btn-text btn-text-quiet">Alanlar</a>
           <a href="<?= e(url('/danisanlar/' . (int) $row['id'])) ?>" class="btn-text btn-text-quiet">Kayıt</a>
@@ -282,7 +282,7 @@ $tones = [
     <button class="btn btn-primary">Kaydet</button>
     <p class="field-hint">
       Metin değişikliği yalnız bundan sonra üretilen bağlantılarda görünür; şu an
-      görüşmecinin elinde bekleyen bir bağlantı varsa o eski metni gösterir.
+      bireyin elinde bekleyen bir bağlantı varsa o eski metni gösterir.
       Daha önce verilmiş cevaplar etkilenmez — sayılar aynı ölçekte kalır.
     </p>
     <p class="field-hint">

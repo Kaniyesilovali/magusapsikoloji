@@ -21,7 +21,7 @@ final class Rbac
         self::SUPER_ADMIN => 'Süper Admin',
         self::ADMIN       => 'Admin',
         self::THERAPIST   => 'Terapist',
-        self::CLIENT      => 'Görüşmeci',
+        self::CLIENT      => 'Birey',
     ];
 
     private const MATRIX = [
@@ -55,10 +55,10 @@ final class Rbac
         ],
         self::THERAPIST => [
             'dashboard.view',
-            // Terapist kendi görüşmecisini açar ve birincil terapist olarak
+            // Terapist kendi bireyini açar ve birincil terapist olarak
             // kendini atar. Bu bilinçli bir karar: merkez tek kişilik çalışıyor
             // ve kaydı açanla seansı yapan aynı insan. Kayıt açmayı yönetime
-            // bırakmak, her yeni görüşmeci için hesap değiştirmek demekti.
+            // bırakmak, her yeni birey için hesap değiştirmek demekti.
             //
             // Bedeli: ikinci bir terapist geldiğinde, gördüğü bir kaydın
             // birincil terapistini kendi üzerine alabilir. Görünürlük yine
@@ -81,7 +81,7 @@ final class Rbac
             // Ayrımın yeri şu: cevap sağlık verisidir, soru değil. Sorunun
             // metni ile haftalık e-postanın kime çıktığı — ikisi de merkezin
             // dışarıya nasıl göründüğüne dair idari kararlar; hiçbiri tek bir
-            // görüşmecinin ölçümünü açığa vermez. Bu ekranlarda görüşmecinin
+            // bireyin ölçümünü açığa vermez. Bu ekranlarda bireyin
             // adı ve gönderim durumu görünür, puanı ya da cümlesi görünmez.
             'checkin.manage',
             // Onam metni, psikoloğun kendi süreç anlaşmasıdır: seans süresi,
@@ -96,7 +96,7 @@ final class Rbac
         self::CLIENT => [
             'dashboard.view',
             'appointment.view.own',
-            // Görüşmeci kendi seanslarının ücretini ve kendisi adına girilmiş
+            // Birey kendi seanslarının ücretini ve kendisi adına girilmiş
             // tahsilatları görür — kendi borcunu sormak için merkezi aramak
             // zorunda kalmasın diye. Yazma yetkisi yok: ücreti de tahsilatı da
             // merkez girer.
@@ -139,7 +139,7 @@ final class Rbac
      * Kurallar:
      *  - Kimse kendi hesabını silemez / rolünü değiştiremez.
      *  - Yalnızca süper admin, süper adminleri yönetebilir ve süper admin atayabilir.
-     *  - Admin; terapist ve görüşmeci hesaplarını yönetir, admin hesaplarına dokunamaz.
+     *  - Admin; terapist ve birey hesaplarını yönetir, admin hesaplarına dokunamaz.
      */
     public static function canManageUser(array $actor, array $target): bool
     {

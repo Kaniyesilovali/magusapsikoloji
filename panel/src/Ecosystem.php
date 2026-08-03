@@ -24,7 +24,7 @@ final class Ecosystem
     public const TAILWIND =  1;   // sırt rüzgârı — iyi geldi
 
     /**
-     * Bir görüşmecide aynı anda açık olabilecek en fazla alan sayısı.
+     * Bir bireyde aynı anda açık olabilecek en fazla alan sayısı.
      *
      * Kod seviyesinde sınırlanır, terapistin insafına bırakılmaz: 18 alanın
      * hepsi açıldığında form 90 saniyeden dört dakikaya çıkıyor ve doldurma
@@ -33,7 +33,7 @@ final class Ecosystem
     public const MAX_OPEN = 11;
 
     /**
-     * Ebeveyne sorulan tek soru — VARSAYILAN. Görüşmeciye göre uyarlanmış hâli
+     * Ebeveyne sorulan tek soru — VARSAYILAN. Bireye göre uyarlanmış hâli
      * için promptFor(); ergen dosyasında "çocuğunun" yanlış kişiye sesleniyor.
      */
     public const PROMPT = 'Bu hafta çocuğunun sırtını hangileri itti, hangileri karşıdan esti?';
@@ -71,8 +71,8 @@ final class Ecosystem
      * kısa ad hiçbir yerde tek başına anlam taşımak zorunda değil, çünkü halkada
      * her çipin altında zaten çocuğun adı ve bağlam duruyor.
      *
-     * `core` olanlar her görüşmecide açık başlar. Diğerleri terapistin
-     * görüşmeci sayfasından açtıklarıdır — hepsi kapalı doğar, çünkü "kardeş"
+     * `core` olanlar her bireyde açık başlar. Diğerleri terapistin
+     * birey sayfasından açtıklarıdır — hepsi kapalı doğar, çünkü "kardeş"
      * alanı tek çocuklu bir ailede her hafta boş kalırsa form kendini
      * gereksiz gösterir.
      *
@@ -194,7 +194,7 @@ final class Ecosystem
     private const PRESCHOOL_MAX_AGE = 6;
 
     /**
-     * Bir görüşmeci için açık başlayacak alanlar.
+     * Bir birey için açık başlayacak alanlar.
      *
      * Yaş bilinmiyorsa çekirdek 8 verilir — tahmin etmek yerine varsayılana
      * dönmek, yanlış alan setiyle sekiz hafta veri toplamaktan iyidir.
@@ -252,7 +252,7 @@ final class Ecosystem
     }
 
     /**
-     * Bu görüşmeciye sorulan cümle.
+     * Bu bireye sorulan cümle.
      *
      * Kaydın kendi satırından okunur; boşsa koddaki varsayılan. Ebeveyn
      * dosyasında "çocuğunun sırtını", ergen dosyasında "senin sırtını" —
@@ -278,7 +278,7 @@ final class Ecosystem
         return in_array($int, [self::HEADWIND, self::CALM, self::TAILWIND], true) ? $int : self::CALM;
     }
 
-    // ── Görüşmeci başına açık alanlar ───────────────────────────
+    // ── Birey başına açık alanlar ───────────────────────────
 
     /**
      * Doğum tarihinden yaş. Yoksa null — tahmin edilmez.
@@ -298,11 +298,11 @@ final class Ecosystem
     }
 
     /**
-     * Bir görüşmecide formda gösterilecek alanlar, sırasıyla.
+     * Bir bireyde formda gösterilecek alanlar, sırasıyla.
      *
      * Varsayılan set ile terapistin açtığı/kapattığı satırlar burada birleşir.
      * `ecosystem_domains` yalnız sapmaları tuttuğu için varsayılan tarafı kodda
-     * kalıyor ve yeni bir çekirdek alan eklendiğinde mevcut görüşmecilerde
+     * kalıyor ve yeni bir çekirdek alan eklendiğinde mevcut bireylerde
      * kendiliğinden açılıyor — her kayda satır yazmak gerekmiyor.
      *
      * MAX_OPEN burada uygulanır, kaydetme yolunda değil: veritabanında fazladan

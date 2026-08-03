@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS checkin_scales (
   id         INT UNSIGNED     NOT NULL AUTO_INCREMENT,
   scale_key  VARCHAR(32)      NOT NULL,
   label      VARCHAR(60)      NOT NULL,          -- panelde ve eğride görünen ad
-  question   VARCHAR(200)     NOT NULL,          -- görüşmeciye sorulan cümle
+  question   VARCHAR(200)     NOT NULL,          -- bireye sorulan cümle
   low_label  VARCHAR(60)      NOT NULL,          -- 1 ucunun adı
   high_label VARCHAR(60)      NOT NULL,          -- 10 ucunun adı
   -- Yön: +1 yüksek değer iyi (ruh hali, uyku), -1 yüksek değer kötü (kaygı).

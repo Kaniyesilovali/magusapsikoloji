@@ -67,15 +67,19 @@ if ($method === 'POST') {
 
 // Şifre değiştirmeye zorlanan kullanıcı (davetle açılan hesap, yönetici sıfırlaması)
 // başka hiçbir sayfada dolaşamaz.
-// Check-in bu kuralın dışında: o akış oturumu hiç kullanmıyor, yetkisini
-// bağlantıdaki jetondan alıyor. Tarayıcıda açık bir oturum bulunduğu için
-// birini şifre ekranına göndermek, giriş gerektirmeyen bir formun önüne giriş
-// duvarı koymak olurdu.
+// Check-in ve onam bu kuralın dışında: o akışlar oturumu hiç kullanmıyor,
+// yetkilerini bağlantıdaki jetondan alıyor. Tarayıcıda açık bir oturum
+// bulunduğu için birini şifre ekranına göndermek, giriş gerektirmeyen bir
+// formun önüne giriş duvarı koymak olurdu.
+//
+// Önek eğik çizgiyle bitiyor: `/onam-formu` (panel içi, giriş gerektiren
+// düzenleme ekranı) bu muafiyete girmemeli.
 $MUST_CHANGE_ALLOWED = ['/profil/sifre', '/cikis'];
 $currentUser = Auth::user();
 if ($currentUser !== null && (int) $currentUser['must_change_password'] === 1
     && !in_array($path, $MUST_CHANGE_ALLOWED, true)
-    && !str_starts_with($path, '/check-in/')) {
+    && !str_starts_with($path, '/check-in/')
+    && !str_starts_with($path, '/onam/')) {
     flash('warning', 'Devam etmeden önce yeni bir şifre belirlemelisiniz.');
     redirect('/profil/sifre');
 }
@@ -103,6 +107,16 @@ $router->get('/check-in/tesekkurler', [CheckinController::class, 'thanks']);
 $router->get('/check-in/{token}',     [CheckinController::class, 'form']);
 $router->post('/check-in/{token}',    [CheckinController::class, 'submit']);
 
+// ── Onam formu (giriş gerektirmez) ──────────────────────────────
+// Danışan metni seanstan ÖNCE, evinde okuyup onaylıyor. Aynı jeton deseni:
+// tek kullanımlık, süreli, tek kişiye ait. Teşekkür sayfası yine ÖNCE.
+//
+// Yol `/onam/` — panel içi düzenleme ekranı `/onam-formu` ve o giriş
+// gerektiriyor. İkisi ayrı önek olmalı ki muafiyet birine geçmesin.
+$router->get('/onam/tesekkurler', [ConsentController::class, 'publicThanks']);
+$router->get('/onam/{token}',     [ConsentController::class, 'publicForm']);
+$router->post('/onam/{token}',    [ConsentController::class, 'publicApprove']);
+
 // ── Panel ───────────────────────────────────────────────────────
 $router->get('/', [DashboardController::class, 'index']);
 
@@ -129,7 +143,7 @@ $router->post('/danisanlar/{id}/davet-gonder',  [ClientController::class, 'resen
 $router->post('/danisanlar/{id}/erisim',        [ClientController::class, 'toggleAccess']);
 // Check-in döngüsünü başlatan/sürdüren el hareketi; haftalık gönderim cron'da.
 $router->post('/danisanlar/{id}/check-in', [ClientController::class, 'sendCheckin']);
-// Haftalık gönderim anahtarı — görüşmeci sayfasındaki kopya.
+// Haftalık gönderim anahtarı — birey sayfasındaki kopya.
 $router->post('/danisanlar/{id}/check-in-gonderim', [ClientController::class, 'toggleCheckinAuto']);
 // Soru metinleri ve gönderim listesi panelden düzenlenir. Yol bilerek
 // `/check-in/` altında DEĞİL: o önek giriş gerektirmeyen jeton rotasına ve
@@ -141,10 +155,15 @@ $router->get('/check-in-sorulari',           [CheckinController::class, 'questio
 $router->post('/check-in-sorulari',          [CheckinController::class, 'saveQuestions']);
 // Metni yazan kişinin sonucu görebildiği yer; jeton üretmez, kayıt yazmaz.
 $router->get('/check-in-sorulari/onizleme',  [CheckinController::class, 'preview']);
-// Hangi alanların sorulacağı görüşmeci başına değişir.
+// Hangi alanların sorulacağı birey başına değişir.
 $router->get('/danisanlar/{id}/alanlar',  [CheckinController::class, 'domains']);
 $router->post('/danisanlar/{id}/alanlar', [CheckinController::class, 'saveDomains']);
 $router->get('/danisanlar/{id}/onam',     [ConsentController::class, 'printForm']);
+// Onam bağlantısını üreten el hareketi: telefonda randevu alan kişiye gider.
+$router->post('/danisanlar/{id}/onam-baglantisi', [ClientController::class, 'sendConsentLink']);
+// Seansta kapanan onam — ıslak imza ya da online görüşmede sözlü beyan.
+$router->post('/danisanlar/{id}/onam/imza',  [ClientController::class, 'markConsentSigned']);
+$router->post('/danisanlar/{id}/onam/sozlu', [ClientController::class, 'markConsentVerbal']);
 $router->get('/danisanlar/{id}/dosya',    [CaseFileController::class, 'form']);
 $router->post('/danisanlar/{id}/dosya',   [CaseFileController::class, 'save']);
 
@@ -190,7 +209,7 @@ $router->post('/icerik/sss-duzenle',  [FaqController::class, 'save']);
 
 $router->get('/onam-formu',  [ConsentController::class, 'index']);
 $router->post('/onam-formu', [ConsentController::class, 'update']);
-// Kaydı olmayan kişi için boş çıktı. Kayıtlı bir görüşmecininki
+// Kaydı olmayan kişi için boş çıktı. Kayıtlı bir bireyinki
 // /danisanlar/{id}/onam altında — o kâğıda ad basılı gelir.
 $router->get('/onam-formu/yazdir', [ConsentController::class, 'printBlank']);
 

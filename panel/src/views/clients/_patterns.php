@@ -2,7 +2,7 @@
 use Panel\Patterns;
 /** @var array{rows:list<array{text:string,detail:string}>,anchors:list<array{label:string,before:list<int>,after:list<int>}>} $patterns */
 
-// Seans öncesi 40 saniye. Bu blok görüşmeci sayfasının en üstünde, idari
+// Seans öncesi 40 saniye. Bu blok birey sayfasının en üstünde, idari
 // alanların üstünde duruyor — plandaki tek entegrasyon kuralı: terapistin
 // zaten açtığı sayfada, zaten açtığı anda. Ayrı bir "ekosistem paneli" hiç
 // açılmazdı.

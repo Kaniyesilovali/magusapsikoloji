@@ -34,9 +34,9 @@ $statusChip = [
     'odendi'   => 'chip-go',
 ];
 
-// Görüşmeci bu listede yalnız kendi seanslarını görür: her satırda kendi adını
-// tekrarlamak bilgi taşımaz, o yüzden "Görüşmeci" sütunu ona çizilmez. Ad, görüşmeci
-// kaydına bağlantıdır ve görüşmecinin o kaydı açma yetkisi de yok.
+// Birey bu listede yalnız kendi seanslarını görür: her satırda kendi adını
+// tekrarlamak bilgi taşımaz, o yüzden "Birey" sütunu ona çizilmez. Ad, birey
+// kaydına bağlantıdır ve bireyin o kaydı açma yetkisi de yok.
 $isClient = ($actor['role'] ?? '') === Rbac::CLIENT;
 
 // Dönem denetimi bugüne kadar iki şeritti: üstte oklar ve seçer seçmez giden
@@ -226,7 +226,7 @@ if (!Rbac::can($actor, 'payment.view.all')) {
         <thead>
           <tr>
             <th>Tarih</th>
-            <?php if (!$isClient): ?><th>Görüşmeci</th><?php endif; ?>
+            <?php if (!$isClient): ?><th>Birey</th><?php endif; ?>
             <th>Terapist</th>
             <th class="text-right">Ücret</th>
             <th class="text-right">Tahsil</th>

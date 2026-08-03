@@ -235,7 +235,7 @@ $troubled = array_values(array_filter(
 
     <p class="field-hint">
       Check-in doldurma oranı düşükse ilk şüpheli e-posta kanalıdır, kod değil:
-      bağlantı görüşmeci sayfasından kopyalanıp başka bir kanaldan (ör. WhatsApp)
+      bağlantı birey sayfasından kopyalanıp başka bir kanaldan (ör. WhatsApp)
       denenebilir.
     </p>
   </div>

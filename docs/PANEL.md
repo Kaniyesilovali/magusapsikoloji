@@ -23,34 +23,34 @@ aksi hâlde `npm run build` onları `_site/panel/` içine kopyalar ve yayına ç
 
 ## Roller
 
-| Yetki | Süper Admin | Admin | Terapist | Görüşmeci |
+| Yetki | Süper Admin | Admin | Terapist | Birey |
 |---|:--:|:--:|:--:|:--:|
-| Kullanıcı oluştur/düzenle/sil | ✔ | ✔ (yalnız terapist + görüşmeci) | — | — |
-| Görüşmecinin panel hesabını aç/kapat | ✔ | ✔ | — | — |
+| Kullanıcı oluştur/düzenle/sil | ✔ | ✔ (yalnız terapist + birey) | — | — |
+| Bireyin panel hesabını aç/kapat | ✔ | ✔ | — | — |
 | Süper admin / admin hesaplarını yönet | ✔ | — | — | — |
-| Tüm görüşmeci kayıtları | ✔ | ✔ | kendi görüşmecileri | — |
-| Görüşmeci kaydı oluştur / terapist ata | ✔ | ✔ | ✔ | — |
-| Görüşmeci iletişim bilgisini düzelt | ✔ | ✔ | kendi görüşmecileri | — |
-| Görüşmeci kaydını kalıcı sil | ✔ | — | — | — |
+| Tüm birey kayıtları | ✔ | ✔ | kendi bireyleri | — |
+| Birey kaydı oluştur / terapist ata | ✔ | ✔ | ✔ | — |
+| Birey iletişim bilgisini düzelt | ✔ | ✔ | kendi bireyleri | — |
+| Birey kaydını kalıcı sil | ✔ | — | — | — |
 | Tüm randevular | ✔ | ✔ | kendi randevuları | kendi randevuları (salt okunur) |
 | Ödeme/borç durumu | ✔ | ✔ | kendi seanslarının ücreti | kendi seansları (salt okunur) |
 | Randevu oluştur/düzenle/iptal | ✔ | ✔ | kendi takvimine | — |
 | Çalışma saati ve izin tanımla | ✔ | ✔ | kendi müsaitliği | — |
 | Onam formunu düzenle | ✔ | ✔ | — | — |
 | **Seans notu okuma/yazma** | **—** | **—** | **yalnız kendi yazdığı** | — |
-| **Check-in eğrisi / bağlantı gönderme** | **—** | **—** | **kendi görüşmecileri** | — |
-| Check-in soruları, gönderim listesi, sorulan alanlar | ✔ | ✔ | kendi görüşmecileri | — |
+| **Check-in eğrisi / bağlantı gönderme** | **—** | **—** | **kendi bireyleri** | — |
+| Check-in soruları, gönderim listesi, sorulan alanlar | ✔ | ✔ | kendi bireyleri | — |
 | Sistem kayıtları (audit log) | ✔ | — | — | — |
 | Kendi profili | ✔ | ✔ | ✔ | ✔ |
 
-Terapistin "kendi görüşmecisi" iki yoldan tanımlıdır: birincil terapisti olduğu kişiler
+Terapistin "kendi bireyi" iki yoldan tanımlıdır: birincil terapisti olduğu kişiler
 ve fiilen randevusunu gördüğü kişiler. Kural tek yerde:
 [`panel/src/ClientScope.php`](../panel/src/ClientScope.php).
 
-Terapist kendi görüşmeci kaydını açar ve birincil terapist olarak kendini atar
+Terapist kendi birey kaydını açar ve birincil terapist olarak kendini atar
 (`client.create` + `client.assign_therapist`). Merkez tek kişilik çalıştığı için bilinçli
 bir karar: kaydı açanla seansı yapan aynı insan, kayıt açmayı yönetime bırakmak her yeni
-görüşmeci için hesap değiştirmek demekti. Sınır **görünürlükte** duruyor — terapist ancak
+birey için hesap değiştirmek demekti. Sınır **görünürlükte** duruyor — terapist ancak
 `ClientScope`'un gösterdiği bir kaydın atamasını değiştirebilir; görmediği bir kaydı
 devralamaz. **İkinci bir terapist çalışmaya başlarsa bu karar yeniden düşünülmeli:** o
 noktada devir, yönetimin onayından geçmeden yapılabiliyor olacak.
@@ -184,7 +184,7 @@ Eleventy dev sunucusu PHP yorumlamaz; panel her zaman ayrı portta çalışır.
 Zamanlama kararları tek yerde: [`panel/src/Scheduling.php`](../panel/src/Scheduling.php).
 
 **Engel (kayıt geçmez).** Aynı anda başka randevusu olan taraf. Kontrol hem terapist
-hem görüşmeci için yapılır — bir görüşmecinin aynı saatte iki farklı terapiste yazılması da
+hem birey için yapılır — bir bireyin aynı saatte iki farklı terapiste yazılması da
 gerçek bir çakışmadır ve yalnız terapist takvimine bakmak bunu kaçırırdı. İptal edilen
 ve "gelmedi" işaretli randevular saati serbest bırakır.
 
@@ -204,16 +204,16 @@ etkilendiği söylenir, kararı kullanıcı verir.
 ### Bildirimler
 
 Randevu oluşturma, güncelleme ve iptal ekranlarında **"E-posta ile bildir"** kutusu
-vardır (varsayılan açık). Bildirim görüşmeciye (e-posta adresi kayıtlıysa) ve randevunun
+vardır (varsayılan açık). Bildirim bireye (e-posta adresi kayıtlıysa) ve randevunun
 terapistine gider; işlemi yapan kişiye kendi eylemi bildirilmez.
 
 E-posta içeriği bilinçli olarak yalındır: tarih, saat, terapist, görüşme yeri. İdari
-not ve görüşmecinin diğer bilgileri gönderilmez — e-posta şifresiz bir kanaldır.
+not ve bireyin diğer bilgileri gönderilmez — e-posta şifresiz bir kanaldır.
 Gönderim başarısız olursa **kayıt geri alınmaz**, yalnız uyarı gösterilir.
 
 ### Hatırlatmalar (cron)
 
-Görüşmecilere, randevudan varsayılan olarak 24 saat önce hatırlatma e-postası gider.
+Bireylere, randevudan varsayılan olarak 24 saat önce hatırlatma e-postası gider.
 Gönderimi panel kendi kendine tetiklemez — cPanel cron'u
 [`panel/cron/reminders.php`](../panel/cron/reminders.php) betiğini çalıştırır:
 
@@ -227,7 +227,7 @@ Gönderim başarısız olursa alan boş bırakılır ve sonraki koşuda yeniden 
 randevu pencereden çıkınca kendiliğinden durur. Cron günlerce durmuş olsa bile **geçmiş
 randevular için uyarı gitmez** — sorgu yalnız gelecekteki randevuları alır.
 
-Hatırlatma yalnız görüşmeciye gider; terapist zaten kendi takvimine bakıyor ve her seans için
+Hatırlatma yalnız bireye gider; terapist zaten kendi takvimine bakıyor ve her seans için
 ikinci bir e-posta gürültü olurdu.
 
 Ayarlar `settings` tablosunda: `reminder_hours_before` (varsayılan 24) ve
@@ -239,53 +239,53 @@ kaç randevu olduğu **Sistem** ekranında görünür — kurulmamış bir cron'
 
 ---
 
-## Görüşmecinin panel hesabı
+## Bireyin panel hesabı
 
 [`ClientAccount`](../panel/src/ClientAccount.php) — `clients` kaydı ile `users` kaydı
 arasındaki bağı kuran/koparan tek yer.
 
-**Hesap kaydın parçasıdır, ayrı bir karar değil.** Görüşmeci kaydı oluşturulurken e-posta
-girilmişse hesap kendiliğinden açılır (rol: Görüşmeci, durum: davetli) ve şifre belirleme
+**Hesap kaydın parçasıdır, ayrı bir karar değil.** Birey kaydı oluşturulurken e-posta
+girilmişse hesap kendiliğinden açılır (rol: Birey, durum: davetli) ve şifre belirleme
 bağlantısı o adrese gider. Ön büro "hesap açayım mı" diye karar vermez, iki ekran
 arasında gidip gelmez.
 
 Önceki tasarımda formda bir **"Panel hesabı (isteğe bağlı)"** açılır listesi vardı ve
-seçenekleri dolduran tek yol, önce Kullanıcılar ekranından elle Görüşmeci rolünde bir hesap
+seçenekleri dolduran tek yol, önce Kullanıcılar ekranından elle Birey rolünde bir hesap
 açmaktı. Ekleme anında hiçbir seçenek görünmüyordu; alan "boş bırakılacak bir şey" gibi
-okunuyordu. Bu yüzden kaldırıldı: Kullanıcılar ekranından artık **Görüşmeci rolü
+okunuyordu. Bu yüzden kaldırıldı: Kullanıcılar ekranından artık **Birey rolü
 açılamaz** — orada açılan hesap hiçbir kayda bağlı olmadığı için giriş yapar ama hiçbir
 şey göremezdi.
 
-E-postası olmayan kayıt yine açılır (telefonla gelen görüşmeci kaybolmasın); nedeni
-söylenir ve hesap sonradan görüşmeci sayfasındaki **Panel erişimi** bölümünden tek
+E-postası olmayan kayıt yine açılır (telefonla gelen birey kaybolmasın); nedeni
+söylenir ve hesap sonradan birey sayfasındaki **Panel erişimi** bölümünden tek
 düğmeyle açılır. Aynı bölümde daveti yenileme ve erişimi kapatma/açma vardır.
 
 | Durum | Anlamı |
 |---|---|
 | Hesap yok | `clients.user_id IS NULL` |
 | Davet gönderildi | hesap açık, şifre henüz belirlenmedi (`invited`) |
-| Açık | `active` — görüşmeci randevu ve ödeme durumunu görüyor |
+| Açık | `active` — birey randevu ve ödeme durumunu görüyor |
 | Kapalı | `suspended` — hesap duruyor, giriş kapalı |
 
-Bağlı kayıt, görüşmeci kaydını takip eder:
+Bağlı kayıt, birey kaydını takip eder:
 
 - ad/e-posta düzeltilirse hesap da güncellenir — yoksa davet eski adrese giderdi;
 - kayıt **arşivlenirse** erişim kapanır, arşivden çıkarılırsa geri açılır;
 - kayıt **kalıcı silinirse** hesap da silinir — "kaydı sildik ama hâlâ giriş yapabiliyor"
   bir KVKK silme talebini karşılamış olmaz.
 
-Erişim kapatmak hesabı silmez; görüşmeci geri geldiğinde aynı hesap yeniden açılır.
-Hesap açma/kapatma yöneticide (`user.create`); terapist görüşmecinin iletişim bilgisini
+Erişim kapatmak hesabı silmez; birey geri geldiğinde aynı hesap yeniden açılır.
+Hesap açma/kapatma yöneticide (`user.create`); terapist bireyin iletişim bilgisini
 düzeltebilir ama kimin panele girebileceğine karar veremez.
 
 Davet e-postası yönetici davetinden ayrı bir metindir ([`Invites::sendToClient`](../panel/src/Invites.php)):
-görüşmeci panele çalışmaya değil, kendi randevu ve ödeme durumuna bakmaya geliyor.
-Bağlantı 48 saat geçerli ve tek kullanımlıktır; e-posta gitse de gitmese de görüşmeci
+birey panele çalışmaya değil, kendi randevu ve ödeme durumuna bakmaya geliyor.
+Bağlantı 48 saat geçerli ve tek kullanımlıktır; e-posta gitse de gitmese de birey
 sayfasında gösterilir, çünkü `mail()` başarısı teslimi garanti etmez.
 
 ---
 
-## Görüşmeci dosyası
+## Birey dosyası
 
 `/danisanlar/{id}/dosya` — [`CaseFileController`](../panel/src/Controllers/CaseFileController.php).
 
@@ -295,7 +295,7 @@ Terapist ikincisini her seans öncesi okumak ister ve bunun için on iki seans n
 tek açmak zorunda kalmamalıdır.
 
 Saklama kuralı seans notuyla aynı: yalnız şifreli, yalnız yazarına açık, içeriği audit
-kaydına asla yazılmaz. Kayıt **(görüşmeci, terapist) çifti başına tektir** — devir hâlinde
+kaydına asla yazılmaz. Kayıt **(birey, terapist) çifti başına tektir** — devir hâlinde
 devralan terapist öncekinin dosyasını açamaz, kendi formülasyonunu yazar.
 
 ---
@@ -371,23 +371,23 @@ sebebini gösterir — yarı şifreli, sessizce düz metne düşen bir davranı�
 `/check-in/{jeton}` — [`CheckinController`](../panel/src/Controllers/CheckinController.php),
 kuralların tamamı [`Checkins`](../panel/src/Checkins.php) içinde.
 
-Görüşmeci haftada bir üç soru dolduruyor (ruh hali, uyku, kaygı — 1–10) ve isteğe bağlı
-tek bir cümle yazabiliyor. Terapist görüşmeci sayfasında zaman içindeki eğriyi görüyor.
+Birey haftada bir üç soru dolduruyor (ruh hali, uyku, kaygı — 1–10) ve isteğe bağlı
+tek bir cümle yazabiliyor. Terapist birey sayfasında zaman içindeki eğriyi görüyor.
 Amaç iki seans arasındaki boşluğu ölçülebilir kılmak: o bilgi bugüne kadar yalnız
-görüşmecinin hatırladığı kadarıyla, seansın ilk on dakikasında alınabiliyordu.
+bireyin hatırladığı kadarıyla, seansın ilk on dakikasında alınabiliyordu.
 
 ### Giriş gerektirmez — bilinçli
 
 Form panelin **giriş istemeyen tek ekranıdır**. Yetki bağlantının kendisinde: tek
-kullanımlık, 10 gün geçerli, tek bir görüşmeciye ait 256 bitlik bir jeton. Düz jeton
+kullanımlık, 10 gün geçerli, tek bir bireye ait 256 bitlik bir jeton. Düz jeton
 veritabanında tutulmaz, yalnız `sha256` özeti (davet jetonlarındaki kural).
 
 Gerekçe: bu döngünün ölçtüğü tek şey **doldurma oranı**. Giriş duvarı o oranı yarıya
 böler — şifre hatırlamak zorunda kalan biri formu telefonda yarım dakikada doldurmaz.
-Görüşmecinin giriş yapabildiği portal ayrıca duruyor; bu döngü onun dışında çalışır.
+Bireyin giriş yapabildiği portal ayrıca duruyor; bu döngü onun dışında çalışır.
 
 Geçersiz, kullanılmış, süresi dolmuş ve arşivlenmiş kayda ait bağlantıların hepsi kibar
-ve kısa bir sayfa gösterir. Sayfa kimin bağlantısı olduğunu ele vermez; görüşmecinin adı
+ve kısa bir sayfa gösterir. Sayfa kimin bağlantısı olduğunu ele vermez; bireyin adı
 yalnız jeton geçerliyken görünür.
 
 ### Saklama
@@ -400,13 +400,13 @@ söylemez.
 
 ### Eğri
 
-Görüşmeci sayfasında, idari alanların **önünde**: terapist o sayfayı "iki seans arasında
+Birey sayfasında, idari alanların **önünde**: terapist o sayfayı "iki seans arasında
 ne oldu?" sorusuyla açıyor. Yetki `checkin.view.own` ile yalnız terapistte — `note.*` ile
-aynı gerekçe; yöneticide bilinçli olarak yok. Hangi görüşmecinin görülebildiği zaten
+aynı gerekçe; yöneticide bilinçli olarak yok. Hangi bireyin görülebildiği zaten
 `ClientScope` ile sınırlı. (Sorunun metni, haftalık gönderim listesi ve sorulan alanlar
 ayrı bir yetkidir ve yöneticide de vardır — aşağıya bakın.)
 
-Eğriyi göremeyen ama `checkin.manage` taşıyan kullanıcı görüşmeci sayfasında bunun
+Eğriyi göremeyen ama `checkin.manage` taşıyan kullanıcı birey sayfasında bunun
 yerine tek kartlık idari bir özet görür: haftalık gönderim anahtarı ve "sorulan alanlar"
 bağlantısı. Puan, cümle, şerit ve örüntü o kartta yok — kart ölçümü değil kapıyı
 gösteriyor.
@@ -427,9 +427,9 @@ Yetki `checkin.manage` ve bu, eğriyi okuma yetkisinden (`checkin.view.own`) ayr
 **cevap sağlık verisidir, soru değil.** Sorunun metni ile e-postanın kime çıktığı merkezin
 işleyişine dair kararlar, bu yüzden yöneticide de var. Ekranda hiçbir puan, hiçbir cümle
 görünmez — yalnız ad, adres ve gönderim durumu. Liste yine `ClientScope` ile sınırlı:
-terapist kendi görüşmecilerini, yönetici hepsini görür.
+terapist kendi bireylerini, yönetici hepsini görür.
 
-**Metinler.** Görüşmecinin gördüğü **her cümle** buradan düzenlenir: giriş paragrafı, üç
+**Metinler.** Bireyin gördüğü **her cümle** buradan düzenlenir: giriş paragrafı, üç
 sorunun metni, her ölçeğin panelde görünen adı ve iki ucunun adı ("1 · çok kötü →
 10 · çok iyi"), cümle alanının başlığı/örneği/açıklaması, halkanın sorusu ve altındaki
 açıklama, ✦ satırı, gönder düğmesi ve teşekkür sayfası. Kütük tek yerde
@@ -448,7 +448,7 @@ hangi ucun iyi olduğunu ayrıca yazar. Değişiklik yalnız bundan sonra üreti
 bağlantılarda görünür, geçmiş cevaplar aynı ölçekte kalır.
 
 Halkanın sorusu buradaki değer **varsayılandır**; tek bir dosyada değiştirmek için
-görüşmeci sayfası → "Sorulan alanlar".
+birey sayfası → "Sorulan alanlar".
 
 **Soruların kendisi de liste** (`checkin_scales`, bkz. `Scales`): kaç tane sorulacağı,
 sırası, hangi cümleyle ve hangi yönde. En fazla **6** açık soru — form her kaydırıcıda
@@ -469,7 +469,7 @@ haftalar boş kalır, **sıfır sayılmaz**.
 Örüntü cümlelerinin ikinci yarısı ("… ruh hali düşüyor") tek bir ölçekten gelir: ruh hali
 açıksa o, değilse yüksek değeri iyi olan ilk ölçek (`Scales::primaryKey`).
 
-**Gönderim listesi.** Her aktif görüşmeci için tek bir işaret (`clients.checkin_auto`,
+**Gönderim listesi.** Her aktif birey için tek bir işaret (`clients.checkin_auto`,
 varsayılan açık) ve durumunun açıklaması: *sırada, bu hafta doldu, bağlantı bekliyor,
 susuldu, başlamadı, e-posta yok, kapalı*. "Sırada" kararını ekran ikinci kez
 hesaplamıyor — cron ne gönderecekse onu gösteriyor (`Checkins::due()`), geri kalan
@@ -478,7 +478,7 @@ durumlar bunun açıklaması.
 İşaretin kapattığı tek şey **cron**: takibi kapatmaz, kaydı arşivlemez, geçmişi gizlemez
 ve terapistin elle gönderdiği bağlantı kapalıyken de çalışır. Öncesinde gönderimi
 durdurmanın tek yolu kaydı arşivlemekti; "bu dönem doldurmayalım" diyen bir aile için
-fazla ağır bir işlemdi. Aynı anahtar görüşmeci sayfasındaki check-in bölümünde de var —
+fazla ağır bir işlemdi. Aynı anahtar birey sayfasındaki check-in bölümünde de var —
 karar çoğunlukla eğriye bakarken veriliyor. Açma/kapama denetim kaydına yazılır
 (`checkin.auto_on` / `checkin.auto_off`).
 
@@ -502,9 +502,9 @@ cPanel → Cron Jobs → Pazartesi 09:00 (0 9 * * 1)
 /usr/local/bin/php /home/<kullanıcı>/public_html/panel/cron/checkins.php
 ```
 
-Kime gider: **döngüsü başlatılmış ve gönderimi açık** görüşmecilere. Kayıt olması yetmez,
-terapistin görüşmeci sayfasından bir kez "Check-in bağlantısı gönder" demesi gerekir.
-"Aktif tüm görüşmeciler" denseydi cron kurulduğu an merkezin bütün listesine e-posta
+Kime gider: **döngüsü başlatılmış ve gönderimi açık** bireylere. Kayıt olması yetmez,
+terapistin birey sayfasından bir kez "Check-in bağlantısı gönder" demesi gerekir.
+"Aktif tüm bireyler" denseydi cron kurulduğu an merkezin bütün listesine e-posta
 çıkardı; pilot üç-dört kişiyle yürüyor ve kime gittiğine terapist karar veriyor. İlk
 bağlantı döngüyü **başlatır**, `clients.checkin_auto` ise onu durdurup yeniden açar —
 ikisi ayrı sorular: "bu kişiyle check-in yapıyor muyuz" ve "bu dönem haftalık e-posta
@@ -512,7 +512,7 @@ ikisi ayrı sorular: "bu kişiyle check-in yapıyor muyuz" ve "bu dönem haftal�
 
 Kimin sırada olduğunu cron kendi hesaplamıyor: kural `Checkins::due()` içinde ve panelin
 gönderim listesi de aynı yerden okuyor. İki kopya olsaydı ekran "sırada" derken cron
-susabilir ve kimse fark etmezdi. Koşu özetinde kapalı görüşmeci sayısı da yazıyor —
+susabilir ve kimse fark etmezdi. Koşu özetinde kapalı birey sayısı da yazıyor —
 gönderimin azalması arıza mı, verilmiş bir karar mı, tek bakışta ayrılsın diye.
 
 Günde bir çalıştırılsa da güvenli: aynı hafta doldurmuş ya da son altı gün içinde
@@ -587,13 +587,28 @@ süresi, iptal, kayıt yasağı), gizlilik ve güvenilirlik (ve gizliliğin ihla
 edilebileceği iki koşul), kişisel bilgilerin kaydı (eski KVKK aydınlatma metninin
 karşılığı) ve gönüllülük.
 
-Görüşmeci kaydındaki `consent_version`, onamın hangi metne verildiğini gösterir; bu
+Birey kaydındaki `consent_version`, onamın hangi metne verildiğini gösterir; bu
 yüzden **metin değişince sürüm de değişmek zorundadır** ve panel sürümü yükseltmeden
 kaydetmeye izin vermez.
 
-Görüşmeci sayfasındaki **"Onam formunu yazdır"** bağlantısı, görüşmecinin adıyla
+Birey sayfasındaki **"Onam formunu yazdır"** bağlantısı, bireyin adıyla
 birlikte güncel metni açar; çıktının sonuna metnin söz verdiği **aile yakını bilgisi**
 kutusu ile danışan ve psikolog imza satırları eklenir.
+
+### İngilizce çıktı
+
+Formun bir de İngilizce karşılığı var — **yalnız çıktı için**. Çeviri
+`consent_text_en` anahtarında, ayrı bir sürüm numarası olmadan durur: aynı
+sürümün İngilizcesidir. Çıktının üstündeki **"English version"** bağlantısı
+(ya da adrese eklenen `?dil=en`) aynı kâğıdı İngilizce açar; kâğıdın başında
+hangi metnin çevirisi olduğu ve **anlaşmazlıkta Türkçe metnin geçerli olduğu**
+basılı gelir. Onam bağlantısı ve danışanın gördüğü sayfa Türkçe kalır.
+
+Panel çevirinin hangi sürüme yazıldığını `consent_text_en_version` ile takip
+eder ve yalnız çeviri gerçekten değiştiğinde ilerletir. Türkçe metin yükselip
+çeviri yerinde kalırsa hem onam ekranı hem de İngilizce çıktının üstü uyarır;
+çıktı engellenmez, ne bastığınızı bilerek basarsınız. Çeviri hiç
+kaydedilmemişse çıktı koddaki **taslak çeviriyi** basar ve bunu da söyler.
 
 > Önceki sürümlerde bu ekran "KVKK metni" adıyla `/kvkk` altındaydı ve süreç
 > anlaşması ayrı bir kâğıt olarak imzalanıyordu. İkisi 2.0 sürümünde tek forma indi:
@@ -649,8 +664,8 @@ Kurallar:
   açıyor — JS kapalıyken de hiç görünmez.
 - Klavye: `←` `→` adımlar, `Esc` kapatır; odak kart içinde tutulur.
 
-Menüdeki her ekranın ve görüşmeci kaydının kendi adımları var. **Formlar bilinçli olarak
-dışarıda** (randevu, görüşmeci, kullanıcı, seans notu, görüşmeci dosyası): orada tur
+Menüdeki her ekranın ve birey kaydının kendi adımları var. **Formlar bilinçli olarak
+dışarıda** (randevu, birey, kullanıcı, seans notu, birey dosyası): orada tur
 yarım kalmış bir işin üstünü örterdi ve alanların kendi etiketi ile ipucu zaten yanlarında
 duruyor.
 
@@ -700,7 +715,7 @@ Panel özel nitelikli kişisel veri (sağlık verisi) işler. Teknik tarafta kar
 Kurumun tamamlaması gerekenler:
 
 1. Kurumun kendi bilgileriyle doldurulmuş **onam formu** ve danışandan imza (kayıtta `clients.consent_at` + `consent_version`).
-2. **Saklama ve imha politikası**; görüşmeci kaydını anonimleştirme akışı (silme hakkı).
+2. **Saklama ve imha politikası**; birey kaydını anonimleştirme akışı (silme hakkı).
 3. Hosting sağlayıcısıyla **veri işleyen sözleşmesi**.
 4. **VERBİS** kayıt yükümlülüğünün kontrolü.
 
@@ -713,12 +728,12 @@ Kurumun tamamlaması gerekenler:
 | Faz | Kapsam | Durum |
 |---|---|---|
 | 1a | İskelet, kimlik doğrulama, roller, kullanıcı yönetimi, profil, audit log | ✅ tamam |
-| 1b | Görüşmeci kayıtları, terapist müsaitliği, randevu takvimi, çakışma kontrolü | ✅ tamam |
+| 1b | Birey kayıtları, terapist müsaitliği, randevu takvimi, çakışma kontrolü | ✅ tamam |
 | 1c | Şifreli seans notları, e-posta bildirimleri, KVKK metinleri | ✅ tamam |
 | 2a | Site verileri ve SSS içeriği (GitHub Contents API) | ✅ tamam |
 | 2b | Blog yazılarının panele taşınması, Sveltia'nın kaldırılması | ✗ yapılmayacak |
 | 3a | Seans ücreti ve tahsilat takibi | ✅ tamam |
-| 3b | Randevu hatırlatmaları, görüşmeci dosyası, bugün ekranı | ✅ tamam |
+| 3b | Randevu hatırlatmaları, birey dosyası, bugün ekranı | ✅ tamam |
 | 3c | Süper admin için TOTP 2FA, WhatsApp/SMS, raporlar | opsiyonel |
 
 ### Sveltia neden kalıyor
@@ -742,7 +757,7 @@ Bu yüzden iş bölümü şöyle bırakıldı:
 
 | | Yönetir |
 |---|---|
-| **Panel** | Klinik işleyiş (görüşmeci, randevu, seans notu) + operasyonel veri (iletişim, SSS, KVKK) |
+| **Panel** | Klinik işleyiş (birey, randevu, seans notu) + operasyonel veri (iletişim, SSS, KVKK) |
 | **Sveltia** | Blog yazıları ve yapısal sayfa içeriği |
 
 Statik sayfalar (`hakkimizda`, `index`) 120–380 satırlık Nunjucks gövdesine sahip; onlar
@@ -753,7 +768,7 @@ Faz 1b ve 1c şema değişikliği getirmedi — `clients`, `appointments`, `work
 arayüzlerdi. KVKK metni de mevcut `settings` tablosunda saklanır.
 
 Faz 1 kapsamı dışında bilerek bırakılanlar: randevu hatırlatma e-postaları (cron
-gerektirir), seans ücreti/tahsilat takibi, görüşmeci portalinden randevu talebi.
+gerektirir), seans ücreti/tahsilat takibi, birey portalinden randevu talebi.
 
 ---
 

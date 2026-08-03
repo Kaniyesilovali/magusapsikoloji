@@ -174,7 +174,7 @@ final class SystemController
             ),
             $this->job(
                 'Seanslar arası check-in',
-                'pazartesi 09:00 · yalnız döngüsü açık görüşmecilere',
+                'pazartesi 09:00 · yalnız döngüsü açık bireylere',
                 '0 9 * * 1',
                 'checkins.php',
                 $checkin['ready'] ? null : 'Veritabanı güncellemesi bekliyor.',

@@ -80,7 +80,7 @@ final class Scheduling
     /**
      * Aynı anda başka bir randevusu olan taraflar.
      *
-     * Hem terapist hem görüşmeci için bakılır: bir görüşmeci aynı saatte iki farklı
+     * Hem terapist hem birey için bakılır: bir birey aynı saatte iki farklı
      * terapiste yazılırsa bu da gerçek bir çakışmadır, yalnız terapist takvimine
      * bakmak bunu kaçırırdı.
      *

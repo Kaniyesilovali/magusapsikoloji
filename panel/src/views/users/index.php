@@ -16,7 +16,7 @@ $statusBadge = [
 <?php // Tur adımları 20'den başlar; 10–19 kenar çubuğunun (bkz. views/layout.php). ?>
 <header class="flex flex-wrap items-end justify-between gap-4 mb-6"
         data-tour="20" data-tour-title="Panele kim girebilir"
-        data-tour-text="Buradaki liste giriş yetkisi olan herkes: yöneticiler, terapistler ve panel hesabı açılmış görüşmeciler. Yeni bir hesap “davetli” olarak açılır — şifreyi kişinin kendisi belirler, panelde kimsenin şifresi görünmez.">
+        data-tour-text="Buradaki liste giriş yetkisi olan herkes: yöneticiler, terapistler ve panel hesabı açılmış bireyler. Yeni bir hesap “davetli” olarak açılır — şifreyi kişinin kendisi belirler, panelde kimsenin şifresi görünmez.">
   <div>
     <p class="eyebrow">Yönetim</p>
     <h1 class="page-title mt-2">Kullanıcılar</h1>

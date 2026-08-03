@@ -90,7 +90,7 @@ return [
         <path d="M2.4 10.7h5.3M11.2 10.7h2.4"/>
         <circle cx="9.45" cy="10.7" r="1.7"/>',
 
-    // Hesabın kendisi. "Görüşmeciler"in kişisi çerçevesiz duruyor; bu daire
+    // Hesabın kendisi. "Bireyler"in kişisi çerçevesiz duruyor; bu daire
     // içinde — biri listedeki bir insan, öbürü giriş yapmış olan sen.
     'profil' => '
         <circle cx="8" cy="8" r="6.1"/>

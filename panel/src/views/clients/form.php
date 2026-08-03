@@ -18,9 +18,9 @@ $consentChecked = errors() !== [] ? old('consent') !== '' : ($client['consent_at
 <header class="mb-6">
   <?php // Geri bağlantısı burada eyebrow'un yerini tutuyor: nereden gelindiğini o söylüyor. ?>
   <a href="<?= e(url($isNew ? '/danisanlar' : "/danisanlar/{$client['id']}")) ?>" class="btn-text btn-text-quiet">
-    ← <?= $isNew ? 'Görüşmeciler' : e($client['full_name']) ?>
+    ← <?= $isNew ? 'Bireyler' : e($client['full_name']) ?>
   </a>
-  <h1 class="page-title mt-2"><?= $isNew ? 'Yeni görüşmeci' : 'Görüşmeciyi düzenle' ?></h1>
+  <h1 class="page-title mt-2"><?= $isNew ? 'Yeni birey' : 'Bireyi düzenle' ?></h1>
 </header>
 
 <form method="post" action="<?= e($action) ?>" class="sheet">
@@ -67,7 +67,7 @@ $consentChecked = errors() !== [] ? old('consent') !== '' : ($client['consent_at
         <p class="field-error"><?= e($message) ?></p>
       <?php elseif ($isNew): ?>
         <p class="field-hint">
-          Randevu hatırlatmaları buraya gider. Ayrıca görüşmeci için bir panel hesabı açılır ve
+          Randevu hatırlatmaları buraya gider. Ayrıca birey için bir panel hesabı açılır ve
           şifresini belirleyeceği davet bağlantısı bu adrese gönderilir — böylece kendi
           randevularını ve ödeme durumunu görebilir.
         </p>
@@ -86,7 +86,7 @@ $consentChecked = errors() !== [] ? old('consent') !== '' : ($client['consent_at
         );
 
         // Atamasız kayıt yalnız tüm kayıtları görene bırakılabilir; kendi
-        // görüşmecilerini gören biri o kaydı bir daha açamaz (ClientScope).
+        // bireylerini gören biri o kaydı bir daha açamaz (ClientScope).
         //
         // "Seçilmedi" seçeneği yine de duruyor, ama devre dışı: kaldırılsaydı
         // tarayıcı listenin ilk terapistini seçer ve atamasız bir kaydı
@@ -109,7 +109,7 @@ $consentChecked = errors() !== [] ? old('consent') !== '' : ($client['consent_at
         <?php if ($message = error_for('primary_therapist_id')): ?>
           <p class="field-error"><?= e($message) ?></p>
         <?php else: ?>
-          <p class="field-hint">Görüşmecinin kaydı bu terapiste görünür olur.</p>
+          <p class="field-hint">Bireyin kaydı bu terapiste görünür olur.</p>
         <?php endif; ?>
       </div>
 
