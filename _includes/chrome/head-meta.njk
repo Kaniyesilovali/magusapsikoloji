@@ -64,8 +64,10 @@
 {%- if articleSchema %}
 <script type="application/ld+json">{{ articleSchema | jsonldArticle | safe }}</script>
 {%- endif %}
-{%- if faq %}
-<script type="application/ld+json">{{ faq | jsonldFaq | safe }}</script>
+{#- Sayfadaki tek FAQPage varlığı. İçerik sayfada görünür bölümde de basılır
+    (chrome/faq-accordion.njk) — Google görünmeyen SSS işaretlemesini kabul etmiyor. #}
+{%- if faqItems.length %}
+<script type="application/ld+json">{{ faqItems | jsonldFaq | safe }}</script>
 {%- endif %}
 {%- if faqSchemaFromData %}
 <script type="application/ld+json">{{ faqdata.pageCategories[lang] | flattenFaq | jsonldFaq | safe }}</script>

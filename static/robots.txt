@@ -1,6 +1,10 @@
 User-agent: *
 Allow: /
 Disallow: /panel/
-Disallow: /admin/
+
+# /admin/ (Sveltia CMS ekranı) bilerek engellenmiyor: sayfa zaten noindex
+# veriyor, ama robots.txt ile engellendiğinde Google bu etiketi okuyamıyor ve
+# adres indeksleme raporunda takılı kalıyordu. Taranmasına izin verilince
+# noindex görülür ve adres indeksten temiz düşer.
 
 Sitemap: https://magusapsikoloji.com/sitemap.xml

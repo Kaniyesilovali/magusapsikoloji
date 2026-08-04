@@ -14,6 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Sitemap <lastmod> her sayfanın son commit tarihinden üretilir;
+          # varsayılan sığ klon (depth 1) tüm dosyaları aynı güne damgalardı.
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:

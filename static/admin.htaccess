@@ -1,0 +1,9 @@
+# /admin/ dizinine özel — build sırasında admin/.htaccess olarak kopyalanır.
+#
+# CMS ekranı robots.txt ile engellenirken Google sayfadaki noindex etiketini
+# hiç okuyamıyordu; adres bu yüzden GSC'de "robots.txt tarafından engellendi"
+# satırında takılı kalıyordu. Artık taranmasına izin veriliyor ve indeksten
+# temiz düşmesi için noindex hem meta etiketiyle hem bu başlıkla veriliyor.
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+</IfModule>

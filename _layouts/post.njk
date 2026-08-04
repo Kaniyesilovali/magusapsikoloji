@@ -6,7 +6,7 @@ layout: base.njk
 {{ blocks | renderBlocks | safe }}
 {%- endif %}
 {{ content | safe }}
-{%- if faqTopic and faqdata.topics[faqTopic] %}
+{%- if faqItems.length %}
 {% include "chrome/faq-accordion.njk" %}
 {%- endif %}
 {%- if related and related.length %}

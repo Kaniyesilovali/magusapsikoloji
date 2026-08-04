@@ -1,5 +1,30 @@
+const { execSync } = require('child_process');
 const schemas = require('./scripts/schemas');
 const blocks = require('./scripts/render-blocks');
+
+// Sitemap <lastmod> için sayfa başına gerçek son değişiklik tarihi.
+// Kaynak git: dosyanın en son ne zaman değiştiğinin tek dürüst kaydı.
+// Tek `git log` çağrısı, yeni→eski sırada; bir yol ilk görüldüğünde en yenisidir.
+// Sığ klonda (fetch-depth: 1) harita eksik kalır — o zaman frontmatter tarihine düşeriz,
+// bu yüzden deploy iş akışı fetch-depth: 0 ile checkout yapar.
+const gitDates = (() => {
+  const map = new Map();
+  try {
+    const out = execSync('git log --pretty=format:%cI --name-only --no-renames -- content', {
+      encoding: 'utf8',
+      maxBuffer: 64 * 1024 * 1024,
+    });
+    let commitDate = null;
+    for (const line of out.split('\n')) {
+      if (!line) continue;
+      if (/^\d{4}-\d{2}-\d{2}T/.test(line)) commitDate = line.slice(0, 10);
+      else if (commitDate && !map.has(line)) map.set(line, commitDate);
+    }
+  } catch (e) {
+    // git yok ya da geçmiş erişilemez: frontmatter tarihleri kullanılır.
+  }
+  return map;
+})();
 
 module.exports = function (eleventyConfig) {
   // Statik dosyalar olduğu gibi kopyalanır
@@ -8,6 +33,8 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ 'static/robots.txt': 'robots.txt' });
   eleventyConfig.addPassthroughCopy({ 'static/.htaccess': '.htaccess' });
   eleventyConfig.addPassthroughCopy({ admin: 'admin' });
+  // CMS ekranına noindex başlığı — yalnız /admin/ dizinini etkiler.
+  eleventyConfig.addPassthroughCopy({ 'static/admin.htaccess': 'admin/.htaccess' });
   // PHP yönetim paneli: kaynak repoda durur, site ile aynı FTP hattından yayınlanır.
   // Sırlar panel/ dizininin dışındaki config dosyasında olduğu için buraya kopyalanmaz.
   eleventyConfig.addPassthroughCopy({ panel: 'panel' });
@@ -19,6 +46,17 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter('jsonldArticle', (o) => JSON.stringify(schemas.article(o)));
   eleventyConfig.addFilter('jsonldFaq', (items) => JSON.stringify(schemas.faqPage(items)));
   eleventyConfig.addFilter('flattenFaq', (categories) => categories.flatMap((c) => c.items));
+
+  // Sitemap <lastmod>: git tarihi ile yazarın beyan ettiği tarihten hangisi yeniyse o.
+  // Hiçbiri yoksa null döner ve sitemap o URL için lastmod yazmaz — uydurmaktansa boş bırakılır.
+  eleventyConfig.addFilter('lastmod', (page) => {
+    const rel = String(page.inputPath || '').replace(/^\.\//, '');
+    const dates = [gitDates.get(rel), page.data.dateModified, page.data.datePublished]
+      .filter(Boolean)
+      .map((d) => String(d).slice(0, 10))
+      .filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d));
+    return dates.length ? dates.sort().pop() : null;
+  });
 
   // Blog gövdesi: frontmatter'daki hero + bloklar → HTML (scripts/render-blocks.js)
   eleventyConfig.addFilter('renderHero', (hero, category, readingTime, url) =>

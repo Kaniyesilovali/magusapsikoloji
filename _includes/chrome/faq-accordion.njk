@@ -1,24 +1,20 @@
-{#- Blog/hizmet sayfalarına gömülen SSS bölümü.
+{#- Blog ve hizmet sayfalarına gömülen SSS bölümü.
+    Liste content.11tydata.js'teki `faqItems` ile üretilir: sayfaya özel `faq`
+    soruları + `faqTopic` başlığının ilk 4 sorusu, tekrarsız.
     Sorular ve cevaplar açık metin olarak render edilir (yapay zeka ve arama
-    motorları için okunabilir, schema.org mikrodata ile işaretli):
-    konunun ilk 4 sorusu (deterministik, SEO dostu). -#}
-{%- set faqItems = faqdata.topics[faqTopic][lang] %}
-{%- if faqItems %}
+    motorları için okunabilir). Schema tarafı head'deki tek FAQPage JSON-LD
+    bloğundan gelir — burada ayrıca mikroveri yazılmaz, yoksa aynı sayfada iki
+    FAQPage varlığı oluşur. -#}
+{%- if faqItems.length %}
     <section class="py-12 bg-warm-secondary" data-faq="1">
       <div class="max-w-3xl mx-auto px-5 lg:px-8">
         <h2 class="font-serif text-xl text-ink mb-6">{{ 'Frequently Asked Questions' if lang == 'en' else 'Sıkça Sorulan Sorular' }}</h2>
-        <div itemscope itemtype="https://schema.org/FAQPage">
 {%- for item in faqItems %}
-{%- if loop.index <= 4 %}
-          <article class="py-5 border-b border-warm-tertiary last:border-0" itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
-            <h3 class="font-semibold text-ink mb-2 text-sm leading-snug" itemprop="name">{{ item.q }}</h3>
-            <div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer">
-              <p class="text-sm text-ink-muted leading-relaxed" itemprop="text">{{ item.a }}</p>
-            </div>
-          </article>
-{%- endif %}
+        <article class="py-5 border-b border-warm-tertiary last:border-0">
+          <h3 class="font-semibold text-ink mb-2 text-sm leading-snug">{{ item.q }}</h3>
+          <p class="text-sm text-ink-muted leading-relaxed">{{ item.a }}</p>
+        </article>
 {%- endfor %}
-        </div>
       </div>
     </section>
 {%- endif %}

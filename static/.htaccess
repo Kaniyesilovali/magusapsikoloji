@@ -5,6 +5,15 @@ RewriteEngine On
 RewriteCond %{HTTP_HOST} ^www\.magusapsikoloji\.com [NC]
 RewriteRule ^(.*)$ https://magusapsikoloji.com/$1 [R=301,L]
 
+# --- Dizin sayfaları tek adreste: /yol/index.html → /yol/ (301) ---
+# Anasayfa, blog, hizmetler ve EN karşılıkları hem /yol/ hem /yol/index.html
+# adresinden 200 dönüyordu. Canonical doğru olsa da Google bunları ayrı URL
+# olarak tarayıp "alternatif sayfa" satırına yazıyor; 301 ile tek adres kalır.
+# THE_REQUEST kullanılıyor: DirectoryIndex'in dahili yeniden yazımını
+# yakalamadığı için sonsuz döngü oluşmaz.
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /(.*)index\.html(\?[^\ ]*)?\ HTTP [NC]
+RewriteRule ^ /%1 [R=301,L]
+
 # --- Taşınan eski URL'ler (301) ---
 # Meta-refresh yerine gerçek 301; link değerini korur.
 Redirect 301 /beyin-beden.html https://magusapsikoloji.com/blog/beyin-beden.html

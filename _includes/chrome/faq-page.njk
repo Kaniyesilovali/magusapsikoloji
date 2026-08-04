@@ -7,17 +7,18 @@
 {%- endfor %}
     </nav>
 
-    <div itemscope itemtype="https://schema.org/FAQPage">
+{#- Schema tarafı head'deki `faqSchemaFromData` JSON-LD bloğundan gelir; aynı
+    soruları bir de mikroveri ile işaretlemek sayfada iki FAQPage varlığı
+    oluşturuyordu. Görünür metin aynı, işaretleme tek. -#}
+    <div>
 {%- for cat in cats %}
       <section id="{{ cat.id }}" class="mb-14">
         <h2 class="font-serif text-lg text-ink mb-1 pb-3 border-b-2 border-primary/20">{{ cat.title }}</h2>
         <div>
 {%- for item in cat.items %}
-        <article class="py-6 border-b border-warm-secondary last:border-0" itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
-          <h3 class="font-semibold text-ink mb-2.5 leading-snug" itemprop="name">{{ item.q }}</h3>
-          <div itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer">
-            <p class="text-sm text-ink-muted leading-relaxed" itemprop="text">{{ item.a }}</p>
-          </div>
+        <article class="py-6 border-b border-warm-secondary last:border-0">
+          <h3 class="font-semibold text-ink mb-2.5 leading-snug">{{ item.q }}</h3>
+          <p class="text-sm text-ink-muted leading-relaxed">{{ item.a }}</p>
         </article>
 {%- endfor %}
         </div>
