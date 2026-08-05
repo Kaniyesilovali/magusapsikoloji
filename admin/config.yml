@@ -321,7 +321,6 @@ collections:
           - { label: "Depresyon", value: depresyon }
           - { label: "Panik Atak", value: panik-atak }
           - { label: "DEHB", value: dehb }
-          - { label: "EMDR Terapisi", value: emdr }
           - { label: "Terapiye Ne Zaman Gidilmeli", value: terapiye-ne-zaman }
           - { label: "Terapiye Başlamadan Önce", value: terapiye-baslamadan }
           - { label: "Psikolog mu Psikiyatrist mi", value: psikolog-psikiyatrist }
@@ -477,7 +476,6 @@ collections:
           - { label: "Depression", value: depression }
           - { label: "Panic Attack", value: panic-attack }
           - { label: "ADHD", value: adhd }
-          - { label: "EMDR Therapy", value: emdr }
           - { label: "When to Start Therapy", value: when-therapy }
           - { label: "Before Starting Therapy", value: before-therapy }
           - { label: "Psychologist vs Psychiatrist", value: psychologist-psychiatrist }
