@@ -236,7 +236,7 @@
         },
         {
           "q": "Terapiye gitmeye vaktim yok, ne yapabilirim?",
-          "a": "Online terapi bu sorunu büyük ölçüde çözmektedir: isteğe göre sabah, akşam veya hafta sonu seansları planlanabilir. 50 dakikalık bir seans ayda bile ciddi ilerleme sağlayabilir."
+          "a": "Online terapi bu sorunu büyük ölçüde çözmektedir: isteğe göre sabah, akşam veya hafta sonu seansları planlanabilir. 45 dakikalık bir seans ayda bile ciddi ilerleme sağlayabilir."
         },
         {
           "q": "Kaygı ders çalışmamı engelliyorsa ne yapmalıyım?",
@@ -1077,11 +1077,11 @@
         "items": [
           {
             "q": "İlk seansta ne olur?",
-            "a": "İlk seans bir \"tanışma görüşmesi\"dir. Psikolog sizi ve geliş nedeninizi anlamaya çalışır; siz de psikologu tanırsınız. Bu seansta herhangi bir şeyi paylaşmak zorunda değilsiniz — tempo tamamen size aittir."
+            "a": "Bu görüşmede psikoloğunuzla karşılıklı olarak birbirinizi tanır; psikoterapi süreci ile ilgili bilmeniz gerekenleri öğrenir, sizi terapiye getiren nedenleri, yaşadığınız güçlükleri, beklentilerinizi ve yaşam öykünüzün önemli noktalarını konuşuruz."
           },
           {
             "q": "Terapiye ihtiyacım olup olmadığını nasıl anlarım?",
-            "a": "Bir sorunun \"yeterince büyük\" olması gerekmez. Kendinizi bunalmış, mutsuz veya takılı hissediyorsanız; ilişkilerinizde tekrar eden sorunlar yaşıyorsanız; uyku, iştah veya motivasyonunuzda belirgin değişimler fark ettiyseniz terapi size yardımcı olabilir. Büyük bir kriz olmasa da kişisel gelişim için de terapi başlanabilir."
+            "a": "Bir sorunun \"yeterince büyük\" olması gerekmez. Kendinizi bunalmış, mutsuz veya takılı hissediyorsanız; ilişkilerinizde tekrar eden sorunlar yaşıyorsanız; uyku, iştah veya motivasyonunuzda belirgin değişimler fark ettiyseniz terapi size yardımcı olabilir. Büyük bir kriz olmasa da kişisel gelişim için de terapiye başlanabilir."
           },
           {
             "q": "Doğru psikologu nasıl seçerim?",
@@ -1113,11 +1113,11 @@
         "items": [
           {
             "q": "Online terapi yüz yüze kadar etkili mi?",
-            "a": "Araştırmalar, bireysel terapi için online seansların yüz yüze seanslarla karşılaştırılabilir etkinliğe sahip olduğunu göstermektedir. Özellikle BDT ve konuşma terapisi için online format oldukça verimlidir."
+            "a": "Araştırmalar, bireysel terapi için online seansların yüz yüze seanslarla karşılaştırılabilir etkinliğe sahip olduğunu göstermektedir."
           },
           {
             "q": "Online seans için hangi teknik gereksinimlere ihtiyacım var?",
-            "a": "Stabil bir internet bağlantısı, kamera ve mikrofonu olan bir cihaz yeterlidir. Güvenli ve gizli bir ortamda (sizi kimsenin göremeyeceği, duyamayacağı bir yer) olmanız önemlidir. Platform bilgisi randevu öncesinde paylaşılır."
+            "a": "Stabil bir internet bağlantısı, kamera ve mikrofonu olan bir cihaz yeterlidir. Güvenli ve gizli bir ortamda (yalnız olduğunuz ve birinin sizi duyamayacağı bir yer) olmanız önemlidir. Online görüşme platformu bilgisi randevu öncesinde paylaşılır."
           }
         ]
       },
@@ -1127,11 +1127,11 @@
         "items": [
           {
             "q": "Seanslarda söylediklerim gizli kalır mı?",
-            "a": "Evet. Psikolog-birey gizliliği mesleki etik kodların temelini oluşturur. Yasal istisnalar (kendinize veya başkasına zarar verme riski, çocuk istismarı bildirimi zorunluluğu gibi) dışında paylaşımlarınız tamamen gizlidir ve psikolog tarafından üçüncü kişilerle paylaşılmaz."
+            "a": "Evet. Psikoloğunuz için gizlilik, mesleki etik kodlarının temelini oluşturur. Yasal istisnalar (kendinize veya başkasına zarar verme riski, mahkeme bildirimi zorunluluğu gibi) dışında paylaşımlarınız tamamen gizlidir ve psikolog tarafından dikkatle muhafaza edilir."
           },
           {
             "q": "İngilizce seans mümkün mü?",
-            "a": "Evet. Ekibimiz hem Türkçe hem de İngilizce seans vermektedir. Expat bireylerimiz ve uluslararası öğrenciler için İngilizce seanslar mevcuttur."
+            "a": "Evet. Ekibimiz hem Türkçe hem de İngilizce seans vermektedir. KKTC'de yaşayan yabancı uyruklu bireyler ve uluslararası öğrenciler için İngilizce seanslar mevcuttur."
           }
         ]
       },
@@ -1145,7 +1145,7 @@
           },
           {
             "q": "Randevuyu nasıl iptal edebilirim?",
-            "a": "İptal veya erteleme talepleri için lütfen en az 24 saat öncesinden WhatsApp veya telefon yoluyla bildiriniz. Geç bildirim veya gelmeme durumlarında seans ücreti talep edilebilir."
+            "a": "İptal veya erteleme talepleri için lütfen en az 24 saat öncesinden WhatsApp veya telefon yoluyla bildiriniz. Geç bildirim veya gelmeme durumlarında da seans ücreti talep edilmektedir."
           }
         ]
       }
@@ -1157,7 +1157,7 @@
         "items": [
           {
             "q": "What happens in the first session?",
-            "a": "The first session is a \"getting to know you\" meeting. The psychologist listens to understand you and your reason for coming; you also get to know the psychologist. You don't need to share anything you're not ready to — the pace is entirely yours."
+            "a": "In this meeting you and your psychologist get to know one another. You learn what you need to know about the psychotherapy process, and together we talk through what brings you to therapy, the difficulties you are facing, your expectations, and the significant points in your life story."
           },
           {
             "q": "How do I know if I need therapy?",
@@ -1193,11 +1193,11 @@
         "items": [
           {
             "q": "Is online therapy as effective as in-person?",
-            "a": "Research shows online sessions for individual therapy are comparably effective to in-person sessions. The online format is particularly well-suited for CBT and talk therapy."
+            "a": "Research shows online sessions for individual therapy are comparably effective to in-person sessions."
           },
           {
             "q": "What technical requirements do I need for online sessions?",
-            "a": "A stable internet connection and a device with a camera and microphone are sufficient. It's important to be in a private, confidential environment where nobody can see or hear you. Platform details are shared before your appointment."
+            "a": "A stable internet connection and a device with a camera and microphone are sufficient. It's important to be somewhere private and secure — a place where you are alone and cannot be overheard. Details of the online session platform are shared before your appointment."
           }
         ]
       },
@@ -1207,11 +1207,11 @@
         "items": [
           {
             "q": "Will what I say in sessions remain confidential?",
-            "a": "Yes. Psychologist-client confidentiality is the cornerstone of professional ethics. Except for legal exceptions (such as risk of harm to yourself or others, mandatory reporting of child abuse), everything you share is completely confidential and will not be shared with any third party."
+            "a": "Yes. For your psychologist, confidentiality is the cornerstone of professional ethical codes. Except for legal exceptions (such as a risk of harm to yourself or another person, or disclosure required by court order), everything you share is entirely confidential and is carefully safeguarded by your psychologist."
           },
           {
             "q": "Are sessions available in English?",
-            "a": "Yes. Our team provides sessions in both Turkish and English. English-language sessions are available for expats and international students."
+            "a": "Yes. Our team provides sessions in both Turkish and English. English-language sessions are available for foreign nationals living in North Cyprus and for international students."
           }
         ]
       },
@@ -1225,7 +1225,7 @@
           },
           {
             "q": "How do I cancel an appointment?",
-            "a": "Please notify us at least 24 hours in advance via WhatsApp or phone for cancellations or rescheduling. A session fee may be charged for late notice or non-attendance."
+            "a": "Please notify us at least 24 hours in advance via WhatsApp or phone for cancellations or rescheduling. A session fee is charged for late notice or non-attendance."
           }
         ]
       }
