@@ -1,0 +1,75 @@
+---
+permalink: /llms.txt
+eleventyExcludeFromCollections: true
+layout: null
+---
+{#-
+  llms.txt — llmstxt.org biçimi. Elle yazılmaz: sayfa listesi her yayında
+  koleksiyonlardan yeniden üretilir, böylece panelden yeni bir yazı ya da
+  hizmet eklendiğinde dosya kendiliğinden güncellenir (bkz. sitemap.njk).
+  Başlık ve açıklamalar sayfaların kendi frontmatter'ından gelir — SERP'te
+  görünen metnin aynısı, ikinci bir doğruluk kaynağı oluşmaz.
+-#}
+{%- set legal = ['/gizlilik.html', '/kvkk.html', '/en/privacy.html', '/en/kvkk.html'] -%}
+# Mağusa Psikoloji Merkezi — Famagusta Psychology Centre
+
+> Gazimağusa'da (Kuzey Kıbrıs) lisanslı psikologlarla bireylere, çiftlere ve ailelere Türkçe ve İngilizce psikoterapi hizmeti veren psikoloji merkezi. Seanslar merkezde yüz yüze ya da online yapılır; her seans 45 dakika sürer ve genellikle haftada bir görüşülür.
+
+- Site iki dillidir: Türkçe sayfalar kökte, İngilizce eşleri `/en/` altındadır. Her sayfa hreflang ile eşine bağlıdır; içerik iki dilde de tam çeviridir.
+- Verilen hizmetler: bireysel terapi, çift ve aile terapisi, çocuk / ergen / genç yetişkin / yetişkin psikolojisi, öğrenci danışmanlığı ve online terapi. Kullanılan yaklaşımlar: bilişsel davranışçı terapi (BDT), kabul ve kararlılık terapisi (ACT), psikodinamik terapi, motivasyonel görüşme.
+- Merkezde EMDR uygulanmamaktadır. Blogdaki EMDR yazıları yalnızca bilgilendirme amaçlıdır, sunulan bir hizmeti tanımlamaz.
+- İletişim: info@magusapsikoloji.com — randevu ve adres bilgisi için {{ site.url }}/iletisim.html
+- Sık sorulan sorular sayfalarda görünür metin olarak durur ve schema.org FAQPage ile işaretlenir; hizmet ve yazı sayfalarında LocalBusiness / MedicalOrganization ve Article işaretlemesi bulunur.
+- Bu dosya her yayında otomatik üretilir. Son yayın: {{ buildDate }}
+
+## Kurum sayfaları (TR)
+{%- for p in collections.all | sort(false, false, 'url') %}
+{%- if p.data.lang == 'tr' and '/blog/' not in p.url and '/hizmetler/' not in p.url and p.url not in legal %}
+- [{{ p.data.title | safe }}]({{ site.url }}{{ p.url }}): {{ p.data.description | safe }}
+{%- endif %}
+{%- endfor %}
+{%- for p in collections.all %}
+{%- if p.data.lang == 'tr' and (p.url == '/hizmetler/' or p.url == '/blog/') %}
+- [{{ p.data.title | safe }}]({{ site.url }}{{ p.url }}): {{ p.data.description | safe }}
+{%- endif %}
+{%- endfor %}
+
+## Hizmetler (TR)
+{%- for p in collections.services_tr %}
+- [{{ p.data.title | safe }}]({{ site.url }}{{ p.url }}): {{ p.data.description | safe }}
+{%- endfor %}
+
+## Blog — bilgi merkezi (TR)
+{%- for p in collections.blog_tr %}
+- [{{ p.data.title | safe }}]({{ site.url }}{{ p.url }}): {{ p.data.description | safe }}
+{%- endfor %}
+
+## Main pages (EN)
+{%- for p in collections.all | sort(false, false, 'url') %}
+{%- if p.data.lang == 'en' and '/blog/' not in p.url and '/services/' not in p.url and p.url not in legal %}
+- [{{ p.data.title | safe }}]({{ site.url }}{{ p.url }}): {{ p.data.description | safe }}
+{%- endif %}
+{%- endfor %}
+{%- for p in collections.all %}
+{%- if p.data.lang == 'en' and (p.url == '/en/services/' or p.url == '/en/blog/') %}
+- [{{ p.data.title | safe }}]({{ site.url }}{{ p.url }}): {{ p.data.description | safe }}
+{%- endif %}
+{%- endfor %}
+
+## Services (EN)
+{%- for p in collections.services_en %}
+- [{{ p.data.title | safe }}]({{ site.url }}{{ p.url }}): {{ p.data.description | safe }}
+{%- endfor %}
+
+## Blog (EN)
+{%- for p in collections.blog_en %}
+- [{{ p.data.title | safe }}]({{ site.url }}{{ p.url }}): {{ p.data.description | safe }}
+{%- endfor %}
+
+## Optional
+{#- Yasal metinler: bağlam kısıtlıysa atlanabilir, merkezin hizmetlerini tanımlamaz. -#}
+{%- for p in collections.all %}
+{%- if p.url in legal %}
+- [{{ p.data.title | safe }}]({{ site.url }}{{ p.url }}): {{ p.data.description | safe }}
+{%- endif %}
+{%- endfor %}

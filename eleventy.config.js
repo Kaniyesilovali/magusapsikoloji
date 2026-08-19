@@ -39,6 +39,10 @@ module.exports = function (eleventyConfig) {
   // Sırlar panel/ dizininin dışındaki config dosyasında olduğu için buraya kopyalanmaz.
   eleventyConfig.addPassthroughCopy({ panel: 'panel' });
 
+  // llms.txt'nin "son yayın" satırı: dosya her derlemede yeniden üretildiği için
+  // tarih de derleme anından gelir — içerik dosyalarında ayrıca elle tutulmaz.
+  eleventyConfig.addGlobalData('buildDate', () => new Date().toISOString().slice(0, 10));
+
   eleventyConfig.setTemplateFormats(['html', 'md', 'njk']);
 
   // JSON-LD filtreleri — scripts/schemas.js tek kaynak
