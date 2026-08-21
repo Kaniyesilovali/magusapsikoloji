@@ -1,5 +1,5 @@
 <?php
-/** @var array|null $client @var array $terms */
+/** @var array|null $client @var string $signedOn */
 /** @var string $text @var string $version @var string $title @var string $lang */
 /** @var array|null $online @var bool $outdated @var bool $missing */
 /** @var bool $draftEn @var bool $staleEn @var string $versionEn */
@@ -24,38 +24,28 @@ $paper = $en
         'version'     => 'Text version',
         'origin'      => 'This is an English translation of the Turkish informed consent form, version '
                        . $version . '. In the event of any discrepancy, the Turkish text prevails.',
-        'terms'       => 'Session Terms',
-        'fee'         => 'Session fee',
-        'duration'    => 'Session length',
-        'frequency'   => 'Meeting frequency',
-        'minutes'     => 'minutes',
         'kin'         => 'Family Contact',
         'kinName'     => 'Name-Surname:',
         'kinRelation' => 'Relationship:',
         'kinPhone'    => 'Phone number:',
         'kinAddress'  => 'Address:',
-        'clientName'  => 'Client Name-Surname',
+        'clientName'  => 'Name-Surname',
         'date'        => 'Date',
-        'clientSign'  => 'Client signature',
+        'clientSign'  => 'Signature',
         'psySign'     => 'Psychologist signature',
     ]
     : [
         'subtitle'    => 'Bilgilendirilmiş onam formu',
         'version'     => 'Metin sürümü',
         'origin'      => '',
-        'terms'       => 'Seans Koşulları',
-        'fee'         => 'Seans ücreti',
-        'duration'    => 'Seans süresi',
-        'frequency'   => 'Görüşme sıklığı',
-        'minutes'     => 'dakika',
         'kin'         => 'Aile Yakını Bilgisi',
         'kinName'     => 'İsim-Soyisim:',
         'kinRelation' => 'Yakınlık:',
         'kinPhone'    => 'Telefon Numarası:',
         'kinAddress'  => 'Adres:',
-        'clientName'  => 'Danışan İsim-Soyisim',
+        'clientName'  => 'İsim-Soyisim',
         'date'        => 'Tarih',
-        'clientSign'  => 'Danışan imzası',
+        'clientSign'  => 'İmza',
         'psySign'     => 'Psikolog imzası',
     ];
 
@@ -106,8 +96,7 @@ $other = url(current_path() . ($en ? '' : '?dil=en'));
 <?php // Yazdırmadan önce doldurulacak yerleri bir kez söyleyen satır; kâğıda geçmez. ?>
 <p class="no-print max-w-3xl mx-auto mt-4 px-4 text-xs text-ink-muted">
   Aşağıdaki çizgili alanlar doldurulabilir: yazdıkça kâğıda geçer, hiçbir yere
-  kaydedilmez. Seans koşulları bu bireye göre değişirse burada düzeltin —
-  metnin kendisi herkeste aynı kalır.
+  kaydedilmez.
 </p>
 
 <?php
@@ -213,26 +202,6 @@ $other = url(current_path() . ($en ? '' : '?dil=en'));
   <article class="text-sm text-ink leading-relaxed whitespace-pre-wrap"><?= e($text) ?></article>
 
   <?php
-  // Seans koşulları: metnin dışında duran tek sayısal bölüm. İçeride olsalardı
-  // her ücret değişikliği metni — dolayısıyla sürümü — değiştirirdi ve o güne
-  // kadar imzalanmış formların bağlandığı sürüm anlamını yitirirdi.
-  // Değerler ConsentController::terms() ile geliyor: en son yazılmış ücret,
-  // terapistin varsayılan seans süresi. İkisi de burada düzeltilebilir.
-  ?>
-  <section class="mt-8 border border-ink/25 rounded-sm px-6 py-5 text-sm text-ink">
-    <p class="font-medium underline underline-offset-4 mb-5"><?= e($paper['terms']) ?></p>
-    <div class="grid grid-cols-3 gap-x-8 gap-y-2">
-      <label for="fee" class="text-ink-muted"><?= e($paper['fee']) ?></label>
-      <label for="minutes" class="text-ink-muted"><?= e($paper['duration']) ?></label>
-      <label for="frequency" class="text-ink-muted"><?= e($paper['frequency']) ?></label>
-
-      <input id="fee" type="text" class="fill num" value="<?= e($terms['fee']) ?>" autocomplete="off">
-      <input id="minutes" type="text" class="fill num" value="<?= e((string) $terms['minutes']) ?> <?= e($paper['minutes']) ?>" autocomplete="off">
-      <input id="frequency" type="text" class="fill" value="<?= e($terms['frequency']) ?>" autocomplete="off">
-    </div>
-  </section>
-
-  <?php
   // Aile yakını, metnin içinde söz verilen şeydir: "olağandışı bir durumda
   // ulaşabileceğimiz biri". Boş kutu olarak basılıyor, panelden doldurulmuyor —
   // bu bilgiyi danışan masada kendi eliyle yazar, kurum ondan önce bilmez.
@@ -262,7 +231,7 @@ $other = url(current_path() . ($en ? '' : '?dil=en'));
       <dt class="text-ink-muted self-center"><?= e($paper['date']) ?></dt>
       <dd>
         <label for="signedOn" class="sr-only"><?= e($paper['date']) ?></label>
-        <input id="signedOn" type="text" class="fill num" value="<?= e($terms['date']) ?>" autocomplete="off">
+        <input id="signedOn" type="text" class="fill num" value="<?= e($signedOn) ?>" autocomplete="off">
       </dd>
     </dl>
 

@@ -164,9 +164,8 @@ $openEn = $staleEn || error_for('consent_text_en') !== null;
   Kayıtlı bir bireyin çıktısı, kayıt sayfasının üstündeki
   <strong>"Onam formu"</strong> düğmesinden alınır; adı basılı gelir. Kaydı
   henüz açılmamış kişi için yukarıdaki <strong>"Boş form yazdır"</strong>
-  kullanılır. İki çıktıda da metnin sonuna seans koşulları, aile yakını bilgisi
-  kutusu ve imza satırları eklenir; seans ücreti, süresi ve sıklığı yazdırmadan
-  önce çıktının üstünde düzeltilebilir — bunun için metne dokunmak gerekmez.
+  kullanılır. İki çıktıda da metnin sonuna aile yakını bilgisi kutusu ve imza
+  satırları eklenir.
   İki çıktının da üstünde <strong>“English version”</strong> bağlantısı durur:
   aynı kâğıdın İngilizcesi, aynı sürüm numarasıyla.
 </p>

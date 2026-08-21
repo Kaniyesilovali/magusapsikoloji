@@ -8,9 +8,7 @@ use Panel\Auth;
 use Panel\ClientScope;
 use Panel\Consent;
 use Panel\Db;
-use Panel\Money;
 use Panel\Rbac;
-use Panel\Scheduling;
 use Panel\Schema;
 use Panel\Settings;
 use Panel\View;
@@ -182,7 +180,7 @@ final class ConsentController
             exit;
         }
 
-        $this->renderPrint($client, $actor, self::lang());
+        $this->renderPrint($client, self::lang());
     }
 
     /**
@@ -203,7 +201,7 @@ final class ConsentController
             exit;
         }
 
-        $this->renderPrint(null, $actor, self::lang());
+        $this->renderPrint(null, self::lang());
     }
 
     // ── Yardımcılar ─────────────────────────────────────────────
@@ -234,7 +232,7 @@ final class ConsentController
      * sürümün çevirisi yoksa numarayı yine de o sürüm gibi basmak, kâğıdı
      * olmadığı bir metnin çevirisi gibi gösterirdi.
      */
-    private function renderPrint(?array $client, array $actor, string $lang = 'tr'): void
+    private function renderPrint(?array $client, string $lang = 'tr'): void
     {
         $current = Consent::currentVersion();
         $online  = $client === null ? null : Consent::latestOnline((int) $client['id']);
@@ -268,7 +266,7 @@ final class ConsentController
         View::render('consent/print', [
             'title'    => 'Onam formu',
             'client'   => $client,
-            'terms'    => self::terms($client, $actor, $lang),
+            'signedOn' => self::signedOn($lang),
             'text'     => $text,
             'version'  => $version,
             'lang'     => $lang,
@@ -288,52 +286,20 @@ final class ConsentController
     }
 
     /**
-     * Kâğıdın üstünde kişiden kişiye değişen tek şey: tarih ve seans koşulları.
+     * Kâğıdın üstünde kişiden kişiye değişen tek şey: imza tarihi.
      *
-     * Bunlar metnin İÇİNE yazılmıyor. Metin sürümlüdür ve herkeste aynı olmak
-     * zorunda — birinin ücreti için metni değiştirmek, sürümü de değiştirmek
-     * ve o güne kadar imzalanmış bütün formları başka bir metne bağlamak
-     * demekti. Değişen sayılar bu yüzden ayrı bir kutuda, çıktının üstünde
-     * doldurulan alanlar olarak duruyor.
+     * Metnin İÇİNE yazılmıyor. Metin sürümlüdür ve herkeste aynı olmak zorunda;
+     * kâğıtta değişen şeyler bu yüzden çıktının üstünde doldurulan alanlar
+     * olarak duruyor. Buradaki değer yalnız başlangıç değeridir: düzeltilebilir
+     * ve hiçbir yere kaydedilmez — kâğıdın kaydı imzalı hâlidir.
      *
-     * Değerler yalnız başlangıç değeridir; kutunun içinde düzeltilebilir ve
-     * hiçbir yere kaydedilmez — kâğıdın kaydı imzalı hâlidir.
-     *
-     * @param  array<string,mixed>|null $client
-     * @param  string                   $lang 'tr' | 'en'
-     * @return array{fee:string, minutes:int, frequency:string, date:string}
+     * @param string $lang 'tr' | 'en'
      */
-    private static function terms(?array $client, array $actor, string $lang = 'tr'): array
+    private static function signedOn(string $lang = 'tr'): string
     {
-        // Ücret, o kişiye en son yazılmış seans ücreti: konuşulan rakam
-        // zaten odur, yeniden hatırlanması gerekmesin.
-        $fee = '';
-        if ($client !== null) {
-            $last = Db::value(
-                'SELECT fee FROM appointments
-                  WHERE client_id = ? AND fee IS NOT NULL
-               ORDER BY starts_at DESC LIMIT 1',
-                [(int) $client['id']]
-            );
-            if ($last !== null) {
-                $fee = Money::format((string) $last);
-            }
-        }
-
-        // Süre, kaydın birincil terapistinin varsayılanı; kayıt yoksa formu
-        // basan kişinin kendi varsayılanı (bkz. Scheduling::defaultDuration).
-        $therapistId = $client['primary_therapist_id'] ?? $actor['id'];
-
-        return [
-            'fee'       => $fee,
-            'minutes'   => Scheduling::defaultDuration($therapistId === null ? null : (int) $therapistId),
-            // Metnin kendisi "haftalık veya iki haftada bir" diyor; kâğıtta
-            // ikisinden hangisi olduğu yazılı olsun diye sık olanı öneriyoruz.
-            'frequency' => $lang === 'en' ? 'Weekly' : 'Haftada bir',
-            // İngilizce kâğıtta ay adı yazıyla: 03.08.2026'yı 3 Ağustos diye
-            // okuyan da var, 8 Mart diye okuyan da. İmza tarihi tek okunmalı.
-            'date'      => $lang === 'en' ? date('j F Y') : date('d.m.Y'),
-        ];
+        // İngilizce kâğıtta ay adı yazıyla: 03.08.2026'yı 3 Ağustos diye
+        // okuyan da var, 8 Mart diye okuyan da. İmza tarihi tek okunmalı.
+        return $lang === 'en' ? date('j F Y') : date('d.m.Y');
     }
 
     // ── Danışanın gördüğü sayfa (giriş gerektirmez) ─────────────
