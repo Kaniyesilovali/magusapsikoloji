@@ -3,6 +3,7 @@ use Panel\Csrf;
 /** @var string $text @var string $version @var bool $isDraft @var int $signed @var array $actor */
 /** @var int $online */
 /** @var string $textEn @var bool $isDraftEn @var bool $staleEn @var string $versionEn */
+/** @var string $publicUrl @var string $publicUrlEn */
 
 // Geri çevrilmiş bir gönderim varsa ekranda kayıttaki metin değil, kişinin
 // yazdığı metin durur (bkz. ConsentController::update).
@@ -57,11 +58,68 @@ $openEn = $staleEn || error_for('consent_text_en') !== null;
   </div>
 <?php endif; ?>
 
+<?php
+// ── Herkese açık adres ──────────────────────────────────────────────────
+// Metnin üçüncü çıkış kapısı. Ötekiler kişiye ait: kayıtlı bireyin çıktısı ve
+// bireye özel onam bağlantısı. Bu adres herkese aynı ve HİÇBİR KAYIT TUTMAZ —
+// randevu almadan önce "neyi imzalayacağım" diye soran kişiye verilecek cevap.
+//
+// Ayrı bir yayımlama adımı yok: sayfa metni her istekte veritabanından okuyor,
+// aşağıdaki Kaydet'e basıldığı an adres de değişiyor. Bu yüzden kutu formun
+// ÜSTÜNDE duruyor: metni düzenleyen kişi, düzenlediği şeyin herkese açık
+// olduğunu düzenlemeden önce görsün.
+?>
+<section class="sheet mb-6"
+         data-tour="21" data-tour-title="Herkese açık adres"
+         data-tour-text="Formun metni sitede de yayımlanıyor: /onam-formu. Adres herkese aynı, kayıt tutmaz ve onam almaz — randevu öncesi metni okumak isteyen kişiye verilir. Aşağıdaki Kaydet'e bastığınız an sayfa da güncellenir; ayrı bir yayımlama adımı yok.">
+  <div class="sheet-body">
+    <p class="text-sm text-ink">Formun sitedeki adresi</p>
+    <p class="text-sm text-ink-muted mt-1 mb-3">
+      <?php if ($isDraft): ?>
+        Metin henüz kaydedilmediği için sayfa <strong>yayımlanmıyor</strong>: adres
+        şu an "yayımlanmıyor" diyen kısa bir sayfa gösteriyor. Aşağıdaki metni
+        kaydettiğinizde kendiliğinden açılır.
+      <?php else: ?>
+        Aşağıdaki metni <strong>Kaydet</strong>'e bastığınız an bu sayfa da güncellenir;
+        ayrı bir yayımlama adımı yok.
+      <?php endif; ?>
+      Adres kayıt tutmaz ve onam almaz: kim okudu bilinmez, sayfada tik de yoktur.
+      Onamın kaydı için birey sayfasındaki <strong>"Onam bağlantısı gönder"</strong>
+      kullanılır.
+    </p>
+
+    <div class="flex gap-2">
+      <label for="publicConsentUrl" class="sr-only">Onam formunun herkese açık adresi</label>
+      <input id="publicConsentUrl" type="text" readonly value="<?= e($publicUrl) ?>"
+             class="field flex-1 min-w-0 text-xs font-mono text-ink-muted">
+      <button type="button" data-copy="#publicConsentUrl" class="btn btn-quiet shrink-0">Kopyala</button>
+      <a href="<?= e($publicUrl) ?>" target="_blank" rel="noopener"
+         class="btn btn-quiet shrink-0">Aç</a>
+    </div>
+
+    <?php
+    // İngilizce adres yalnız çeviri KAYDEDİLMİŞSE var: paneldeki taslak çeviri
+    // yayımlanmıyor (bkz. ConsentController::publicSheet). Kaydedilmemişken
+    // adresi vermek, açılmayan bir bağlantı paylaştırırdı.
+    ?>
+    <p class="field-hint mt-2">
+      <?php if ($isDraftEn): ?>
+        İngilizce sayfa yayımlanmıyor: çeviri panelde kaydedilmemiş. Aşağıdaki
+        <strong>İngilizce çeviri</strong> bölümünü doldurup kaydettiğinizde
+        <span class="font-mono"><?= e($publicUrlEn) ?></span> adresi de açılır.
+      <?php else: ?>
+        İngilizcesi: <a href="<?= e($publicUrlEn) ?>" target="_blank" rel="noopener"
+        class="underline font-mono"><?= e($publicUrlEn) ?></a>
+      <?php endif; ?>
+    </p>
+  </div>
+</section>
+
 <form method="post" action="<?= e(url('/onam-formu')) ?>" class="sheet">
   <?= Csrf::field() ?>
 
   <div class="sheet-body space-y-5">
-    <div data-tour="21" data-tour-title="Köşeli parantezler sizin"
+    <div data-tour="22" data-tour-title="Köşeli parantezler sizin"
          data-tour-text="Paneldeki metin bir taslaktır, hukuki tavsiye değil. Köşeli parantezli yerleri (saklama süresi, iletişim adresi) kurumun bilgileriyle doldurun ve metni bir hukukçuya onaylatın.">
       <label for="consent_text" class="field-label">Metin</label>
       <textarea id="consent_text" name="consent_text" rows="24" required
@@ -133,7 +191,7 @@ $openEn = $staleEn || error_for('consent_text_en') !== null;
     </details>
 
     <div class="grid sm:grid-cols-2 gap-4 items-start"
-         data-tour="22" data-tour-title="Sürüm geçmişe dönmez"
+         data-tour="23" data-tour-title="Sürüm geçmişe dönmez"
          data-tour-text="Her birey kaydı, onay verdiği sürümü ayrıca saklar. Metni değiştirdiyseniz sürümü de yükseltin; imzalanmış formlar eski sürüme bağlı kalır. Esaslı bir değişiklikte mevcut bireylerden yeniden onam gerekip gerekmediğini değerlendirin.">
       <div>
         <label for="consent_version" class="field-label">Sürüm</label>

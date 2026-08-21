@@ -38,6 +38,11 @@ module.exports = function (eleventyConfig) {
   // PHP yönetim paneli: kaynak repoda durur, site ile aynı FTP hattından yayınlanır.
   // Sırlar panel/ dizininin dışındaki config dosyasında olduğu için buraya kopyalanmaz.
   eleventyConfig.addPassthroughCopy({ panel: 'panel' });
+  // Herkese açık onam formu: site kökünde duran tek PHP dosyası. Metni panelin
+  // veritabanından okur — depoda ikinci bir kopya tutulmaz, yoksa panelde
+  // kaydedilen metin ile sitedeki kopya arasında bir derleme boyu fark açılırdı.
+  // Adres .htaccess'te uzantısız hâline bağlanıyor: /onam-formu, /en/consent-form.
+  eleventyConfig.addPassthroughCopy({ 'static/onam-formu.php': 'onam-formu.php' });
 
   // llms.txt'nin "son yayın" satırı: dosya her derlemede yeniden üretildiği için
   // tarih de derleme anından gelir — içerik dosyalarında ayrıca elle tutulmaz.

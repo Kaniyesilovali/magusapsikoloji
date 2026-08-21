@@ -84,6 +84,18 @@ if (PHP_SAPI === 'cli') {
 // ── Oturum ──────────────────────────────────────────────────────
 // Panel tek dizinde çalıştığı için çerez yolu /panel ile sınırlanır;
 // public siteye panel çerezi gönderilmez.
+//
+// Sitenin kökündeki herkese açık onam sayfası (bkz. static/onam-formu.php)
+// PANEL_STATELESS ile geliyor ve oturum HİÇ açılmıyor. Açılsaydı her ziyaret
+// bir oturum dosyası bırakırdı ve hiçbiri okunamazdı: çerezin yolu /panel,
+// sayfa ise kökte — tarayıcı çerezi geri göndermezdi. $_SESSION yine de var
+// olsun ki oturuma dokunan yardımcılar (flash, old, clear_input_state)
+// koşulsuz çalışsın; yazılan hiçbir şey istek bitince kalmaz — bu sayfanın
+// hatırlanacak bir hâli yok.
+if (defined('PANEL_STATELESS') && PANEL_STATELESS) {
+    $_SESSION = [];
+    return;
+}
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_name('MPSID');
     session_set_cookie_params([

@@ -28,8 +28,10 @@ use Panel\View;
  * verilmiş görünür ve kayıt ispat değerini kaybeder.
  *
  * Metnin, sürümün ve verilmiş onayların kendisi Consent sınıfında; burada
- * yalnız ekranlar var. Üç tanesi (publicForm, publicApprove, publicThanks)
- * GİRİŞ GEREKTİRMEZ: birey metni seanstan önce, evinde okuyor.
+ * yalnız ekranlar var. Dördü GİRİŞ GEREKTİRMEZ: publicForm, publicApprove ve
+ * publicThanks bireye özel jetonla açılıyor (metin seanstan önce, evde
+ * okunuyor); publicSheet ise jeton da istemiyor — sitenin kökündeki herkese
+ * açık `/onam-formu` adresi, hiçbir kayıt tutmadan yayımlanmış metni gösterir.
  */
 final class ConsentController
 {
@@ -49,6 +51,11 @@ final class ConsentController
             // bunu söylemezse İngilizce kâğıt sessizce yanlış basılır.
             'staleEn'   => Consent::translationStale(),
             'versionEn' => Consent::translatedVersion(),
+            // Herkese açık adres: aynı metnin, kayıt tutmayan hâli. Ekranda
+            // durmasaydı kimse varlığını bilmezdi — ve bilinmeyen bir adres,
+            // metin değiştiğinde kimsenin aklına gelmezdi (bkz. publicSheet).
+            'publicUrl'   => Consent::publicUrl(),
+            'publicUrlEn' => Consent::publicUrl('en'),
             'signed'  => (int) Db::value('SELECT COUNT(*) FROM clients WHERE consent_at IS NOT NULL'),
             // Tiki işaretleyip henüz seansta kapanmamış kayıtlar: metnin
             // okunduğu ama imzanın beklendiği aralık. Onam ekranının kendisi
@@ -202,6 +209,95 @@ final class ConsentController
         }
 
         $this->renderPrint(null, self::lang());
+    }
+
+    /**
+     * Herkese açık onam sayfası — sitenin kökündeki `/onam-formu`.
+     *
+     * Panelin giriş gerektirmeyen ekranlarından biri, ama ötekilerden bir
+     * farkla: jeton da taşımıyor. Yetki sorusu yok çünkü burada kişiye ait
+     * hiçbir şey yok — yayımlanmış metnin kendisi zaten herkesin okuması için.
+     *
+     * Neden var: metin bugüne kadar yalnız iki yoldan görülebiliyordu, bireye
+     * özel bağlantı ya da masaya konan kâğıt. Randevu almadan önce "neyi
+     * imzalayacağım" diye soran kişiye verilecek bir adres yoktu; soru
+     * telefonda cevaplanıyordu. Adres, panelin veritabanındaki metni doğrudan
+     * gösteriyor: onam ekranında Kaydet'e basıldığı an burası da değişir,
+     * ikinci bir yayımlama adımı yok. İki kopya olsaydı biri eskir ve sürüm
+     * numarası yanlış metnin üstünde dururdu.
+     *
+     * Burada HİÇBİR KAYIT TUTULMAZ ve tik yok: onamın kaydı, kimin ne zaman
+     * hangi metne onay verdiğini söyleyebilmesiyle değerli (bkz. Consent).
+     * Bu sayfa bunların hiçbirini bilmiyor, bilmemeli de — sayfanın kendisi
+     * de okuyana bunu söylüyor (bkz. views/consent/public.php).
+     */
+    public function publicSheet(): void
+    {
+        $lang = self::lang();
+
+        // Yalnız KAYDEDİLMİŞ metin yayımlanır. Paneldeki taslakta köşeli
+        // parantezli alanlar (saklama süresi, iletişim adresi) doldurulmamış
+        // olabilir; kurumun kendi metni sanılarak okunan yarım bir kâğıt,
+        // hiç olmayan kâğıttan kötüdür. Panel çıktısı taslağı basabiliyor —
+        // orada uyarıyı okuyan bir psikolog var, burada yok.
+        if (Consent::isDraft()) {
+            $this->unpublished();
+            return;
+        }
+
+        // Çevirisi kaydedilmemişse İngilizce adres yok sayılır: aynı gerekçe.
+        if ($lang === 'en' && Consent::isDraftEn()) {
+            header('Location: ' . Consent::publicUrl('tr'), true, 302);
+            exit;
+        }
+
+        // İngilizce sayfada basılan numara, ELDEKİ ÇEVİRİNİN ait olduğu
+        // sürümdür (aynı kural: renderPrint). Çeviri Türkçenin gerisinde
+        // kalmışsa sayfa bunu numarasıyla söyler; kâğıdın başındaki künye
+        // cümlesi de hangi metnin çevirisi olduğunu yazıyor.
+        $version = $lang === 'en' ? Consent::translatedVersion() : Consent::currentVersion();
+        $text    = $lang === 'en' ? Consent::currentTextEn()     : Consent::currentText();
+
+        // Sayfanın verdiği söz "panelde kaydettiğiniz an güncellenir".
+        // Araya giren bir önbellek (Cloudflare, tarayıcı) o sözü tutulamaz
+        // hâle getirirdi: eski metin, yeni sürüm numarasıyla okunurdu.
+        header('Cache-Control: no-cache, must-revalidate');
+
+        View::render('consent/public', [
+            'title'     => 'Onam formu',
+            'text'      => $text,
+            'version'   => $version,
+            'lang'      => $lang,
+            // Kâğıdın üstündeki ad ve tarih burada da doldurulabilir alan:
+            // evinde yazdıran kişi formu hazır getirebilsin.
+            'name'      => '',
+            'signedOn'  => self::signedOn($lang),
+            // Kimse tanınmadığı için çevrimiçi onay künyesi de yok.
+            'online'    => null,
+            'urlTr'     => Consent::publicUrl('tr'),
+            'urlEn'     => Consent::publicUrl('en'),
+            'hasEn'     => !Consent::isDraftEn(),
+            'effective' => Consent::versionDate($version),
+        ], '');
+    }
+
+    /**
+     * Metin henüz kaydedilmemişken herkese açık adres ne göstermeli.
+     *
+     * "Hata" değil: kurum metnini panele yazana kadar sayfanın yayımlayacağı
+     * bir içerik yok. 404 dönüyor ki adres, arama motorunda yayımlanmış bir
+     * sayfa gibi durmasın; sayfanın kendisi de kısa ve kibar (bkz.
+     * views/consent/public_closed.php).
+     */
+    private function unpublished(): void
+    {
+        http_response_code(404);
+        View::render('consent/public_closed', [
+            'title'   => 'Onam formu',
+            'heading' => 'Bu sayfa şu anda yayımlanmıyor',
+            'message' => 'Onam formunun metni henüz yayımlanmadı. Formu okumak isterseniz '
+                       . 'merkezimizle iletişime geçin; ilk görüşmeden önce size iletiriz.',
+        ], '');
     }
 
     // ── Yardımcılar ─────────────────────────────────────────────

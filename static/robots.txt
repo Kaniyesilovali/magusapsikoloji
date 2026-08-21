@@ -2,6 +2,11 @@ User-agent: *
 Allow: /
 Disallow: /panel/
 
+# Panel varlıkları (yalnız .css/.js) taranabilir: herkese açık onam sayfası
+# /onam-formu bu dosyaları kullanıyor. Engellendiğinde Google sayfayı stilsiz
+# görüyor ve "içerik okunamıyor" gerekçesiyle değerlendiriyordu.
+Allow: /panel/assets/
+
 # /admin/ (Sveltia CMS ekranı) bilerek engellenmiyor: sayfa zaten noindex
 # veriyor, ama robots.txt ile engellendiğinde Google bu etiketi okuyamıyor ve
 # adres indeksleme raporunda takılı kalıyordu. Taranmasına izin verilince

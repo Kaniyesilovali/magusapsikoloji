@@ -628,6 +628,44 @@ onayladı" sorusunun paydasıdır.
 > Akış **yalnız çevrimiçi olamaz.** İnternete girmeyen birey için kâğıt yolu — yüz yüze
 > okuma, açıklama, imza — hiç değişmeden duruyor. Bağlantı bir seçenek, önkoşul değil.
 
+### Herkese açık adres — `/onam-formu`
+
+Metnin üçüncü çıkış kapısı: **<https://magusapsikoloji.com/onam-formu>** (İngilizcesi
+`/en/consent-form`). Ötekiler kişiye aitti — kayıtlı bireyin çıktısı ve bireye özel
+onam bağlantısı; bu adres herkese aynı. Randevu almadan önce "neyi imzalayacağım"
+diye soran kişiye verilecek bir adres yoktu, soru telefonda cevaplanıyordu.
+
+Sayfa **hiçbir kayıt tutmaz** ve en altında tik yoktur: kim okudu bilinmez,
+bilinmemeli de. Onamın kaydı yine `/onam/{jeton}` bağlantısından alınır — sayfa
+okuyana bunu kendi üstünde söylüyor.
+
+**Ayrı bir yayımlama adımı yok.** Onam ekranında **Kaydet**'e basıldığı an sayfa da
+değişir: metin her istekte panelin veritabanından okunuyor. Siteye ikinci bir kopya
+çıkarılsaydı o kopya, derleme + FTP yayını bitene kadar eski metni gösterirdi — üstünde
+yeni sürüm numarasıyla, yani sürümün verdiği söz tutulmamış olurdu.
+
+Sayfayı basan dosya sitenin kökündeki [`onam-formu.php`](../static/onam-formu.php);
+panelin önyüklemesini oturum AÇMADAN çağırır (`PANEL_STATELESS` — çerezin yolu
+`/panel` olduğu için açılan oturum zaten hiç okunamaz, yalnız dosya bırakırdı).
+Uzantısız adres [`static/.htaccess`](../static/.htaccess) içindeki iki satırla
+bağlanıyor. Kâğıdın kendisi panel çıktısıyla **ortak parçadan** geliyor
+(`views/consent/_paper.php`): iki yerde iki farklı kâğıt basılırsa sürüm numarası
+neyin imzalandığını söylemez olur.
+
+Yalnız **kaydedilmiş** metin yayımlanır. Panel metni hiç kaydedilmemişse (koddaki
+taslak geçerliyse) adres 404 ile "bu sayfa şu anda yayımlanmıyor" der: köşeli
+parantezli alanları (`[saklama süresi]`, `[iletişim adresi]`) doldurulmamış bir kâğıt,
+kurumun kendi metni sanılarak okunurdu. Aynı kural çeviride de geçerli — çeviri
+kaydedilmemişse `/en/consent-form` Türkçe sayfaya döner. Panel çıktısı taslağı
+basabiliyor, çünkü orada uyarıyı okuyan bir psikolog var; burada yok.
+
+Yerelde denemek için (kökte `panel/` ile yan yana durması gerekiyor):
+
+```bash
+npm run build && php -S localhost:8080 -t _site
+# → http://localhost:8080/onam-formu.php
+```
+
 ### İngilizce çıktı
 
 Formun bir de İngilizce karşılığı var — **yalnız çıktı için**. Çeviri

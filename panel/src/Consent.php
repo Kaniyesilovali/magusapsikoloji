@@ -151,6 +151,49 @@ final class Consent
     }
 
     /**
+     * Sürümün yürürlük tarihi — arşive yazıldığı an.
+     *
+     * Herkese açık sayfanın altındaki tek künye satırı buradan geliyor:
+     * hukuki bir metnin okuyucusu "hangi sürüm" kadar "ne zamandan beri"
+     * sorusunu da soruyor. Arşiv kurulmadan önce kaydedilmiş bir sürümde
+     * karşılık yok; o zaman satır hiç basılmıyor — uydurulmuş bir tarih,
+     * eksik tarihten kötü.
+     */
+    public static function versionDate(string $version): ?string
+    {
+        if (!Schema::consentReady() || $version === '') {
+            return null;
+        }
+
+        $date = Db::value('SELECT created_at FROM consent_versions WHERE version = ? LIMIT 1', [$version]);
+
+        return $date === null ? null : (string) $date;
+    }
+
+    /**
+     * Herkese açık onam sayfasının adresi — /onam-formu (bkz. static/onam-formu.php).
+     *
+     * Bireye özel `/onam/{jeton}` bağlantısının aksine bu adres herkese
+     * aynı: kayıt tutmaz, kimseyi tanımaz, yalnız yayımlanmış metni gösterir.
+     * Randevu almadan önce "neyi imzalayacağım" diye soran kişiye verilen
+     * cevap bu; onamın kaydı yine bağlantıdan alınır.
+     *
+     * Site kökü `app.url`den türetiliyor: panel sitenin bir alt dizininde
+     * (…/panel), sayfa ise sitenin kökünde duruyor. İkinci bir ayar açmak,
+     * ikisinin ayrı ayrı yanlış girilebileceği ikinci bir yer olurdu.
+     */
+    public static function publicUrl(string $lang = 'tr'): string
+    {
+        $panel = rtrim((string) Config::get('app.url', ''), '/');
+        $parts = parse_url($panel);
+        $root  = isset($parts['scheme'], $parts['host'])
+            ? $parts['scheme'] . '://' . $parts['host'] . (isset($parts['port']) ? ':' . $parts['port'] : '')
+            : $panel;
+
+        return $root . ($lang === 'en' ? '/en/consent-form' : '/onam-formu');
+    }
+
+    /**
      * Sürümün metnini arşive yazar — kaydedildiği anda, bir kez.
      *
      * Aynı sürüme ikinci kez farklı bir metin yazılamaz: ConsentController
