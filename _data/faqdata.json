@@ -476,7 +476,7 @@
         },
         {
           "q": "What happens in a therapy session?",
-          "a": "Sessions are tailored to you, but typically explore emotions, thought patterns, relationships, past experiences, and future goals. Early sessions focus on assessment and building trust; the pace is always led by your comfort."
+          "a": "Sessions take shape around what you bring, but typically explore emotions, thought patterns, relationships, past experiences, and future goals. Early sessions focus on assessment and building trust; the pace is always led by your comfort."
         },
         {
           "q": "How many sessions will I need?",
@@ -613,7 +613,7 @@
       ],
       "tr": [
         {
-          "q": "Uluslararası öğrenci olarak ruh sağlığımda zorlanmam normal mi?",
+          "q": "Uluslararası öğrenci olarak zorlanmam normal mi?",
           "a": "Evet. Yeni bir ülkeye uyum, akademik baskı, dil engelleri ve aileden uzaklık önemli stres kaynaklarıdır. Bu bağlamda kaygı, ev özlemi ya da keyifsizlik yaşamak çok yaygındır."
         },
         {
@@ -1095,7 +1095,7 @@
         "items": [
           {
             "q": "Terapi kaç seans sürer?",
-            "a": "Süre bireye ve ele alınan konuya göre değişir. Kısa süreli BDT genellikle 8–16 seans arasında sürerken, daha derin psikodinamik çalışmalar uzun vadeli olabilir. İlk değerlendirme sonrası size özel bir plan sunulur."
+            "a": "Süre bireye ve ele alınan konuya göre değişir. Kısa süreli BDT genellikle 8–16 seans arasında sürerken, daha derin psikodinamik çalışmalar uzun vadeli olabilir. İlk görüşmenin ardından nasıl ilerleyeceğimizi birlikte konuşuruz."
           },
           {
             "q": "Seans sıklığı ne kadar olmalı?",
@@ -1175,7 +1175,7 @@
         "items": [
           {
             "q": "How many sessions will I need?",
-            "a": "Duration varies by person and issue. Short-term CBT typically runs 8–16 sessions, while deeper psychodynamic work may be longer term. After the initial assessment, your psychologist will present a personalised plan."
+            "a": "Duration varies by person and issue. Short-term CBT typically runs 8–16 sessions, while deeper psychodynamic work may be longer term. After the first meeting, we talk through how to go on from there together."
           },
           {
             "q": "How often should I attend sessions?",
