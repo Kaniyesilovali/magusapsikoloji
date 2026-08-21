@@ -44,7 +44,11 @@ layout: page.njk
         <div id="blogGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
 {%- for p in collections.blog_tr | indexSort %}
           <a href="{{ p.url }}" class="group bg-warm border border-warm-tertiary rounded-2xl overflow-hidden hover:shadow-lg transition-all">
+{%- if p.data.card.image %}
+            <img src="{{ p.data.card.image }}" alt="{{ p.data.card.imageAlt }}" width="800" height="450" loading="lazy" decoding="async" class="h-44 w-full object-cover">
+{%- else %}
             <div class="{{ p.data.card.gradientClass or 'h-44 bg-gradient-to-br from-primary/10 to-sage/15 flex items-center justify-center text-5xl' }}">{{ p.data.card.emoji }}</div>
+{%- endif %}
             <div class="p-5">
               <div class="flex items-center gap-2 mb-3">
                 <span class="{{ p.data.card.badgeClass or 'text-xs bg-primary/10 text-primary font-medium px-2.5 py-0.5 rounded-full' }}">{{ p.data.card.category or p.data.category }}</span>

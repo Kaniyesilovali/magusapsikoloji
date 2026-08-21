@@ -280,6 +280,8 @@ collections:
               - "Öğrenci Ruh Sağlığı"
               - "İlişkiler"
           - { name: readingTime, label: "Kart Okuma Süresi", widget: string, required: false, hint: "Boş bırakılırsa yukarıdaki Okuma Süresi kullanılır." }
+          - { name: image, label: "Kart Görseli", widget: image, required: false, hint: "Kartın üst kısmında görünen fotoğraf. Boş bırakılırsa aşağıdaki emoji ve renk geçişi gösterilir." }
+          - { name: imageAlt, label: "Kart Görseli Alt Metni", widget: string, required: false, hint: "Görseli göremeyenler için kısa açıklama. Görsel eklediyseniz doldurun." }
           - { name: emoji, label: "Emoji", widget: string, required: false, hint: "Kartın üst kısmında büyük görünen emoji. Örn: 🧠" }
           - name: gradientClass
             label: "Kart Arka Plan Rengi"
@@ -450,6 +452,8 @@ collections:
             hint: "Boş bırakılırsa yukarıdaki Kategori kullanılır."
             options: *category_options_en
           - { name: readingTime, label: "Kart Okuma Süresi", widget: string, required: false, hint: "Boş bırakılırsa yukarıdaki Okuma Süresi kullanılır." }
+          - { name: image, label: "Kart Görseli", widget: image, required: false, hint: "Kartın üst kısmında görünen fotoğraf. Boş bırakılırsa aşağıdaki emoji ve renk geçişi gösterilir." }
+          - { name: imageAlt, label: "Kart Görseli Alt Metni (İngilizce)", widget: string, required: false, hint: "Görseli göremeyenler için kısa açıklama. Görsel eklediyseniz doldurun." }
           - { name: emoji, label: "Emoji", widget: string, required: false, hint: "Kartın üst kısmında büyük görünen emoji. Örn: 🧠" }
           - name: gradientClass
             label: "Kart Arka Plan Rengi"
