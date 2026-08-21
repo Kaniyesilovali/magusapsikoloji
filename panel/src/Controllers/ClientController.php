@@ -297,7 +297,7 @@ final class ClientController
     // seansta imzayı alan da aynı kişiler.
 
     /**
-     * Onam bağlantısı üretir ve danışana yollar.
+     * Onam bağlantısı üretir ve bireye yollar.
      *
      * Telefonda randevu alınırken gönderiliyor: kişi metni seanstan önce,
      * evinde okuyor. Seansta okutmak iki türlü de kötüydü — ya süreden
@@ -538,7 +538,7 @@ final class ClientController
         // İşaretin kaldırılması eskiden consent_at ve consent_version'ı sessizce
         // NULL'lıyordu; verilmiş bir onamın izi yalnız denetim kaydında
         // kalıyordu. Artık kayıt silinmiyor, geri alındı olarak kapanıyor —
-        // verilmiş bir onam geri alınabilir ama verilmemiş sayılamaz. Danışan
+        // verilmiş bir onam geri alınabilir ama verilmemiş sayılamaz. Birey
         // metni çevrimiçi onaylamışsa kayıt o hâle geri düşüyor.
         $consentAt = $client['consent_at'];
         if ($input['consent'] && $consentAt === null) {

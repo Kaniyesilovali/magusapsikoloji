@@ -180,7 +180,7 @@ Sistem kayıtları, Sistem).
   üstte *Yazdır* düğmesi var.
 
   *Tamam sayılır:* Çıktı önizlemesinde bireyin adı, metin, **aile yakını bilgisi
-  kutusu** ve iki imza alanı (danışan, psikolog) var; panel menüsü çıktıda görünmüyor.
+  kutusu** ve iki imza alanı (birey, psikolog) var; panel menüsü çıktıda görünmüyor.
 
 - [ ] **13 · Randevu oluştur** — *Panel*
 

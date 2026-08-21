@@ -23,15 +23,15 @@ $openEn = $staleEn || error_for('consent_text_en') !== null;
 <?php // Tur adımları 20'den başlar; 10–19 kenar çubuğunun (bkz. views/layout.php). ?>
 <header class="mb-6"
         data-tour="20" data-tour-title="İmzalatılan metin"
-        data-tour-text="Danışana imzalatılan bilgilendirilmiş onam formunun kendisi: süreç, gizlilik, kişisel bilgilerin kaydı ve gönüllülük tek metinde. Çıktısı ya birey kaydından ya da buradaki “Boş form yazdır” düğmesinden alınır — ikincisi, kaydı henüz açılmamış kişi için.">
+        data-tour-text="Bireye imzalatılan bilgilendirilmiş onam formunun kendisi: süreç, gizlilik, kişisel bilgilerin kaydı ve gönüllülük tek metinde. Çıktısı ya birey kaydından ya da buradaki “Boş form yazdır” düğmesinden alınır — ikincisi, kaydı henüz açılmamış kişi için.">
   <p class="eyebrow">Merkez</p>
   <div class="flex flex-wrap items-start justify-between gap-3 mt-2">
     <div>
       <h1 class="page-title">Onam formu</h1>
       <p class="page-sub">
-        Danışana imzalatılan bilgilendirilmiş onam formu: süreç, gizlilik, kişisel
+        Bireye imzalatılan bilgilendirilmiş onam formu: süreç, gizlilik, kişisel
         bilgilerin kaydı ve gönüllülük tek metinde. Şu an
-        <span class="num"><?= $signed ?></span> danışan kaydında onam tamamlanmış.
+        <span class="num"><?= $signed ?></span> birey kaydında onam tamamlanmış.
         <?php // Metin evde okunup tiklendiği hâlde seansta henüz kapanmamış
               // kayıtlar. Bu aralığı gösteren başka bir ekran yok; burada
               // durmasaydı kimse bakmazdı ve kâğıt dosyaya hiç girmezdi. ?>
@@ -70,7 +70,7 @@ $openEn = $staleEn || error_for('consent_text_en') !== null;
 
     <?php
     // ── İngilizce çeviri ────────────────────────────────────────────────
-    // Yalnız ÇIKTI için: Türkçe okumayan danışanın masasına konan kâğıt.
+    // Yalnız ÇIKTI için: Türkçe okumayan bireyin masasına konan kâğıt.
     // Çevrimiçi onam bağlantısı ve panelin kendisi Türkçe kalıyor — çeviri
     // ayrı bir onam metni değil, aynı sürümün İngilizcesi. Bu yüzden kendi
     // sürüm numarası da yok; hangi sürümün çevirisi olduğunu panel kendisi
@@ -117,7 +117,7 @@ $openEn = $staleEn || error_for('consent_text_en') !== null;
           <p class="field-hint">
             Türkçe metni her değiştirdiğinizde bu çeviriyi de güncelleyin; panel
             aksi hâlde çıktının üstünde uyarır. Alanı tamamen boşaltırsanız
-            İngilizce çıktı paneldeki taslağa döner. Onam bağlantısı ve danışanın
+            İngilizce çıktı paneldeki taslağa döner. Onam bağlantısı ve bireyin
             gördüğü sayfa Türkçe kalır — imzalanan kâğıtta da hangi metnin
             çevirisi olduğu ve anlaşmazlıkta Türkçesinin geçerli olduğu yazılıdır.
           </p>
@@ -134,7 +134,7 @@ $openEn = $staleEn || error_for('consent_text_en') !== null;
 
     <div class="grid sm:grid-cols-2 gap-4 items-start"
          data-tour="22" data-tour-title="Sürüm geçmişe dönmez"
-         data-tour-text="Her danışan kaydı, onay verdiği sürümü ayrıca saklar. Metni değiştirdiyseniz sürümü de yükseltin; imzalanmış formlar eski sürüme bağlı kalır. Esaslı bir değişiklikte mevcut danışanlardan yeniden onam gerekip gerekmediğini değerlendirin.">
+         data-tour-text="Her birey kaydı, onay verdiği sürümü ayrıca saklar. Metni değiştirdiyseniz sürümü de yükseltin; imzalanmış formlar eski sürüme bağlı kalır. Esaslı bir değişiklikte mevcut bireylerden yeniden onam gerekip gerekmediğini değerlendirin.">
       <div>
         <label for="consent_version" class="field-label">Sürüm</label>
         <input type="text" id="consent_version" name="consent_version" required maxlength="20"
@@ -143,13 +143,13 @@ $openEn = $staleEn || error_for('consent_text_en') !== null;
           <p class="field-error"><?= e(error_for('consent_version')) ?></p>
         <?php endif; ?>
         <p class="field-hint">
-          Metni değiştirdiyseniz sürümü de yükseltin. Her danışan kaydı, onay verdiği
+          Metni değiştirdiyseniz sürümü de yükseltin. Her birey kaydı, onay verdiği
           sürümü ayrıca saklar.
         </p>
       </div>
       <div class="bg-warm rounded-md p-4 text-xs text-ink-muted leading-relaxed">
         Sürüm değişikliği geçmişe dönük çalışmaz: imzalanmış formlar eski sürüme bağlı
-        kalır. Metinde esaslı bir değişiklik yaptıysanız mevcut danışanlardan yeniden
+        kalır. Metinde esaslı bir değişiklik yaptıysanız mevcut bireylerden yeniden
         onam alınması gerekip gerekmediğini değerlendirin.
       </div>
     </div>

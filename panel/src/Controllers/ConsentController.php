@@ -14,22 +14,22 @@ use Panel\Settings;
 use Panel\View;
 
 /**
- * Onam formu — danışana imzalatılan tek metin.
+ * Onam formu — bireye imzalatılan tek metin.
  *
  * Kurumda iki ayrı kâğıt dolaşıyordu: psikoloğun süreç anlaşması (seans süresi,
- * iptal, gizlilik, gönüllülük) ve panelin KVKK aydınlatma metni. Danışan aynı
+ * iptal, gizlilik, gönüllülük) ve panelin KVKK aydınlatma metni. Birey aynı
  * masada iki kez imza atıyordu ve ikisi de aynı şeyi söylüyordu: "bu bilgiler
  * burada kalır". Tek forma indirildi; KVKK bölümleri, gizlilik başlığının
  * altına, aynı dille yazılmış bir alt bölüm olarak girdi.
  *
- * Metin veritabanında sürümlü tutulur; danışan kaydındaki `consent_version`
+ * Metin veritabanında sürümlü tutulur; birey kaydındaki `consent_version`
  * hangi metne onay verildiğini gösterir. Bu yüzden metin değişince sürüm de
  * değişmek ZORUNDA — aksi hâlde iki farklı metne aynı sürüm numarasıyla onam
  * verilmiş görünür ve kayıt ispat değerini kaybeder.
  *
  * Metnin, sürümün ve verilmiş onayların kendisi Consent sınıfında; burada
  * yalnız ekranlar var. Üç tanesi (publicForm, publicApprove, publicThanks)
- * GİRİŞ GEREKTİRMEZ: danışan metni seanstan önce, evinde okuyor.
+ * GİRİŞ GEREKTİRMEZ: birey metni seanstan önce, evinde okuyor.
  */
 final class ConsentController
 {
@@ -151,7 +151,7 @@ final class ConsentController
         flash('success', "Onam formu {$version} sürümü olarak kaydedildi."
             . ($translated ? ' İngilizce çeviri de kaydedildi.' : ''));
         if ($version !== $currentVersion) {
-            flash('warning', 'Yeni sürüm yalnız bundan sonra imzalanacak formlar için geçerlidir. Mevcut danışanlardan yeniden onam alınması gerekip gerekmediğini değerlendirin.');
+            flash('warning', 'Yeni sürüm yalnız bundan sonra imzalanacak formlar için geçerlidir. Mevcut bireylerden yeniden onam alınması gerekip gerekmediğini değerlendirin.');
         }
         // Metin yükseldi, çeviri yerinde kaldı: İngilizce çıktı artık başka bir
         // metni basıyor. Ekranın uyarısı kalıcı, bu satır o an söylenmiş hâli.
@@ -161,7 +161,7 @@ final class ConsentController
         redirect('/onam-formu');
     }
 
-    /** Danışana imzalatılacak yazdırılabilir form. */
+    /** Bireye imzalatılacak yazdırılabilir form. */
     public function printForm(int $clientId): void
     {
         $actor = Auth::requireLogin();
@@ -209,7 +209,7 @@ final class ConsentController
     /**
      * Çıktının dili — adres satırındaki ?dil=en.
      *
-     * Ayrı bir yol (route) değil, aynı kâğıdın öteki dili: hangi danışana hangi
+     * Ayrı bir yol (route) değil, aynı kâğıdın öteki dili: hangi bireye hangi
      * dilde çıktı verileceği kayda bağlı bir ayar değil, o masada verilen bir
      * karar. Tanınmayan her değer Türkçeye düşüyor.
      */
@@ -222,7 +222,7 @@ final class ConsentController
      * @param array<string,mixed>|null $client null = kaydı olmayan kişi için boş form
      * @param string                   $lang   'tr' | 'en' (bkz. lang())
      *
-     * Kâğıt, danışanın ONAYLADIĞI sürümü basar — güncel sürümü değil. Kişi
+     * Kâğıt, bireyin ONAYLADIĞI sürümü basar — güncel sürümü değil. Kişi
      * 2.0'ı okuyup tikledikten sonra metin panelde 2.1 olduysa, masaya 2.1
      * koymak okumadığı bir kâğıdı imzalatmak olurdu. Böyle bir durumda çıktının
      * üstünde ayrıca bir uyarı satırı duruyor (bkz. consent/print.php).
@@ -237,7 +237,7 @@ final class ConsentController
         $current = Consent::currentVersion();
         $online  = $client === null ? null : Consent::latestOnline((int) $client['id']);
 
-        // Basılması gereken sürüm: danışanın onayladığı, yoksa güncel olan.
+        // Basılması gereken sürüm: bireyin onayladığı, yoksa güncel olan.
         $version = $online === null ? $current : (string) $online['version'];
 
         if ($lang === 'en') {
@@ -302,7 +302,7 @@ final class ConsentController
         return $lang === 'en' ? date('j F Y') : date('d.m.Y');
     }
 
-    // ── Danışanın gördüğü sayfa (giriş gerektirmez) ─────────────
+    // ── Bireyin gördüğü sayfa (giriş gerektirmez) ─────────────
     //
     // Panelin giriş gerektirmeyen ikinci ekranı — birincisi check-in. Yetki
     // bağlantının kendisinde: tek kullanımlık, süreli, tek bir kişiye ait

@@ -581,7 +581,7 @@ kurulum yönergesi gösterir, panelin geri kalanı etkilenmez.
 
 ## Onam formu
 
-`/onam-formu` — danışana imzalatılan **bilgilendirilmiş onam formu** `settings`
+`/onam-formu` — bireye imzalatılan **bilgilendirilmiş onam formu** `settings`
 tablosunda sürümlü tutulur. Tek metinde dört bölüm var: psikoterapi süreci (seans
 süresi, iptal, kayıt yasağı), gizlilik ve güvenilirlik (ve gizliliğin ihlal
 edilebileceği iki koşul), kişisel bilgilerin kaydı (eski KVKK aydınlatma metninin
@@ -593,7 +593,7 @@ kaydetmeye izin vermez.
 
 Birey sayfasındaki **"Onam formunu yazdır"** bağlantısı, bireyin adıyla
 birlikte güncel metni açar; çıktının sonuna metnin söz verdiği **aile yakını bilgisi**
-kutusu ile danışan ve psikolog imza satırları eklenir.
+kutusu ile birey ve psikolog imza satırları eklenir.
 
 ### İngilizce çıktı
 
@@ -602,7 +602,7 @@ Formun bir de İngilizce karşılığı var — **yalnız çıktı için**. Çev
 sürümün İngilizcesidir. Çıktının üstündeki **"English version"** bağlantısı
 (ya da adrese eklenen `?dil=en`) aynı kâğıdı İngilizce açar; kâğıdın başında
 hangi metnin çevirisi olduğu ve **anlaşmazlıkta Türkçe metnin geçerli olduğu**
-basılı gelir. Onam bağlantısı ve danışanın gördüğü sayfa Türkçe kalır.
+basılı gelir. Onam bağlantısı ve bireyin gördüğü sayfa Türkçe kalır.
 
 Panel çevirinin hangi sürüme yazıldığını `consent_text_en_version` ile takip
 eder ve yalnız çeviri gerçekten değiştiğinde ilerletir. Türkçe metin yükselip
@@ -714,7 +714,7 @@ Panel özel nitelikli kişisel veri (sağlık verisi) işler. Teknik tarafta kar
 
 Kurumun tamamlaması gerekenler:
 
-1. Kurumun kendi bilgileriyle doldurulmuş **onam formu** ve danışandan imza (kayıtta `clients.consent_at` + `consent_version`).
+1. Kurumun kendi bilgileriyle doldurulmuş **onam formu** ve bireyden imza (kayıtta `clients.consent_at` + `consent_version`).
 2. **Saklama ve imha politikası**; birey kaydını anonimleştirme akışı (silme hakkı).
 3. Hosting sağlayıcısıyla **veri işleyen sözleşmesi**.
 4. **VERBİS** kayıt yükümlülüğünün kontrolü.

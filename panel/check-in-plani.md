@@ -1,13 +1,13 @@
 # Seanslar arası check-in — inşa planı
 
-Danışanın seanslar arasında haftada bir doldurduğu kısa bir check-in; terapist
-danışan sayfasında zaman içindeki eğriyi görür. Amaç: portalı ölü bir login
+Bireyin seanslar arasında haftada bir doldurduğu kısa bir check-in; terapist
+birey sayfasında zaman içindeki eğriyi görür. Amaç: portalı ölü bir login
 ekranı olmaktan çıkarıp tedaviyi görünür kılan bir araca çevirmek.
 
 ## Kritik mimari karar
 
 **Check-in formu login GEREKTİRMEZ.** Hatırlatmada tek kullanımlık token'lı bir
-link gider (`/check-in/{token}`); danışan tıklar, telefonda ~30 saniyede
+link gider (`/check-in/{token}`); birey tıklar, telefonda ~30 saniyede
 doldurur. Riskiest assumption doldurma oranıdır; login duvarı o oranı yarıya
 böler. Login'li portal zaten var, ama bu döngü onun dışında, tokenli çalışır.
 
@@ -43,7 +43,7 @@ PHQ-9 / GAD-7 gibi standart ölçekler ilk sürümde YOK — pilot tutarsa gelir
 - [x] `Schema::checkinsReady()` ile tablo varlığı doğrulanıyor
 - [ ] `/sistem/guncelle`'den migration'ı çalıştır ← **sunucuda yapılacak**
 
-### Faz 2 — Danışan formu (login'siz, tokenli) · ~1–2 gün
+### Faz 2 — Birey formu (login'siz, tokenli) · ~1–2 gün
 - [x] `index.php`'ye rotalar: `GET|POST /check-in/{token}` + `/check-in/tesekkurler`
       (`Router` artık `{token}`'ı string olarak geçiriyor; `{id}` yine int)
 - [x] `CheckinController` (yeni)
@@ -65,7 +65,7 @@ PHQ-9 / GAD-7 gibi standart ölçekler ilk sürümde YOK — pilot tutarsa gelir
 - [x] Haftalık job: jeton üretip `Notifications::checkinRequest` ile yolluyor
 - [x] Aynı hafta doldurmuşsa / son 6 günde bağlantı almışsa tekrar gitmiyor
 - [x] **Kime gider:** yalnız terapistin bir kez bağlantı gönderdiği bireylere.
-      "Aktif tüm danışanlar" olsaydı cron kurulduğu an bütün listeye e-posta çıkardı;
+      "Aktif tüm bireyler" olsaydı cron kurulduğu an bütün listeye e-posta çıkardı;
       pilot 3–4 kişiyle yürüyor.
 - [x] Israr etmiyor: son dolan check-in'den beri 3 bağlantı cevapsızsa cron susuyor
 - [ ] Cron'u cPanel'e ekle (`0 9 * * 1`) ← **sunucuda yapılacak**
@@ -125,7 +125,7 @@ göstermiyor, yalnız iki dil arasındaki dikişi gösteriyor.
 - [ ] `/sistem`'den 010'u uygula ← **sunucuda yapılacak**
 
 ### Faz 5 — Pilot · ~2–3 hafta (gerçek zaman, az kod)
-- [ ] 3–4 gerçek danışanda çalıştır (birey sayfasındaki düğme döngüyü başlatır)
+- [ ] 3–4 gerçek bireyde çalıştır (birey sayfasındaki düğme döngüyü başlatır)
 - [ ] Tek ölçülen sayı: doldurma oranı — **Sistem** ekranında gönderilen/doldurulan
       olarak duruyor
 - [ ] İzlenecek ikinci şey: kaydırıcılar 5'te başlıyor. Gelen kayıtların çoğu
@@ -137,7 +137,7 @@ göstermiyor, yalnız iki dil arasındaki dikişi gösteriyor.
 ### Faz 6 (koşullu) — PHQ-9 / GAD-7 katmanı · ~2–3 gün
 - [ ] Yalnız pilot tutarsa
 - [ ] Ölçek soruları + puanlama + bantlama, aynı `checkins` altyapısını genişleterek
-- [ ] Terapist bir danışana açar/kapatır
+- [ ] Terapist bir bireye açar/kapatır
 
 ---
 

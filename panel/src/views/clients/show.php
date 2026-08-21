@@ -105,7 +105,7 @@ $manualInvite = Invites::pending('client');
 // Üç hâl, üç ayrı cümle. Eskiden tek bir kırmızı şerit vardı ve "onam
 // işaretlenmemiş" diyordu; metni evinde okuyup onaylamış birinin kaydında da
 // aynı şeyi diyordu. Bu, terapiste yapılmış bir işi yapılmamış gibi gösterip
-// danışana ikinci kez okutmasına yol açardı — kaçınılmak istenen şeyin ta
+// bireye ikinci kez okutmasına yol açardı — kaçınılmak istenen şeyin ta
 // kendisi.
 //
 // Çevrimiçi onay KIRMIZI DEĞİL: kimse bir şeyi yanlış yapmadı, sıradaki adım
@@ -116,7 +116,7 @@ $manualInvite = Invites::pending('client');
     Bu kayıt için <strong>onam</strong> alınmamış. Seans verisi işlemeden önce
     onam formu okunmalı ve imzalanmalı.
     <?php if ($consentReady && $isActive): ?>
-      Danışan metni seanstan önce okusun isterseniz yukarıdan
+      Birey metni seanstan önce okusun isterseniz yukarıdan
       <strong>onam bağlantısı</strong> gönderebilirsiniz; internete girmeyen biri
       için formun çıktısını alıp yüz yüze okuyun.
     <?php endif; ?>
@@ -179,7 +179,7 @@ $manualInvite = Invites::pending('client');
       <p class="text-sm text-ink-muted mt-1 mb-3">
         <?= !empty($consentLink['sent'])
             ? 'E-posta gönderildi. Ulaşmazsa (spam filtresi, yanlış adres) bu bağlantıyı doğrudan iletebilirsiniz.'
-            : 'Bu bağlantıyı danışana kendiniz iletin — WhatsApp ya da mesajla.' ?>
+            : 'Bu bağlantıyı bireye kendiniz iletin — WhatsApp ya da mesajla.' ?>
         <?= Panel\Consent::TTL_DAYS ?> gün geçerli ve tek kullanımlık. Yalnızca kişinin kendisine verin.
       </p>
       <div class="flex gap-2">

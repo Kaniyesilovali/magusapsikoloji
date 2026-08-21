@@ -687,7 +687,7 @@ kimlik, aidiyet ve pratik erişim anlamına gelir — Batı literatüründeki
 uyum" alanı bu aileler için açılır. Formun kendisi de en az **TR/EN** olmalı;
 mevcut sitede TR/EN altyapısı zaten var.
 
-**Üniversite kenti.** Mağusa'da danışan profilinin önemli kısmı öğrenci —
+**Üniversite kenti.** Mağusa'da birey profilinin önemli kısmı öğrenci —
 ailesinden ve kültüründen uzakta, kısa süreli kalan, farklı bir ekolojisi olan
 bir grup. Onların haritasında Okul/Arkadaş değil **Barınma, Vize/oturum, Para,
 Memleket özlemi, Ev arkadaşı** var (§8). Bu, aynı motorun ikinci pazarı.

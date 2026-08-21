@@ -108,7 +108,7 @@ $router->get('/check-in/{token}',     [CheckinController::class, 'form']);
 $router->post('/check-in/{token}',    [CheckinController::class, 'submit']);
 
 // ── Onam formu (giriş gerektirmez) ──────────────────────────────
-// Danışan metni seanstan ÖNCE, evinde okuyup onaylıyor. Aynı jeton deseni:
+// Birey metni seanstan ÖNCE, evinde okuyup onaylıyor. Aynı jeton deseni:
 // tek kullanımlık, süreli, tek kişiye ait. Teşekkür sayfası yine ÖNCE.
 //
 // Yol `/onam/` — panel içi düzenleme ekranı `/onam-formu` ve o giriş

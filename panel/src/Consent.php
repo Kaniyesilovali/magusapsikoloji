@@ -7,7 +7,7 @@ namespace Panel;
  * Onam — metin, sürüm, bağlantı ve verilmiş onayların kaydı.
  *
  * Onam formu seansın İÇİNDE okutuluyordu ve bu iki türlü de kötüydü: metin
- * okunmuyordu ("süreden gidiyor" diye gerilen danışan sayfayı çeviriyordu) ya
+ * okunmuyordu ("süreden gidiyor" diye gerilen birey sayfayı çeviriyordu) ya
  * da seansın ilk on dakikası okumaya gidiyordu. Oysa onamın hukuki değeri
  * imzada değil, ANLAŞILMIŞ olmasında. Bu yüzden metin artık seanstan önce,
  * evde, kişinin kendi hızında okunuyor.
@@ -21,8 +21,8 @@ namespace Panel;
  *     kapatmaz. Kapanış seansta olur: ıslak imza ya da online görüşmede
  *     sözlü beyan. `clients.consent_at` yalnız kapanınca dolar — panelin
  *     bütün sayaçları ve rozetleri bu yüzden anlamını koruyor.
- *  3. Akış YALNIZ çevrimiçi olamaz. Yaşlı danışan var, interneti kullanmayan
- *     danışan var; onlarda kâğıt yolu (yüz yüze okuma, açıklama, imza) hiç
+ *  3. Akış YALNIZ çevrimiçi olamaz. Yaşlı birey var, interneti kullanmayan
+ *     birey var; onlarda kâğıt yolu (yüz yüze okuma, açıklama, imza) hiç
  *     değişmeden duruyor. Bağlantı bir seçenek, bir önkoşul değil.
  *
  * Sürüm, verilmiş onamın hangi metne ait olduğunu gösteren tek bağdır ve
@@ -30,7 +30,7 @@ namespace Panel;
  *
  * Metnin bir de İngilizcesi var — yalnız ÇIKTI için, aynı sürüm numarasıyla
  * (bkz. currentTextEn). Bağlantı ve panel Türkçe kalıyor: çeviri, Türkçe
- * okumayan danışanın masasına konan kâğıt, ayrı bir onam metni değil.
+ * okumayan bireyin masasına konan kâğıt, ayrı bir onam metni değil.
  */
 final class Consent
 {
@@ -45,7 +45,7 @@ final class Consent
     public const TTL_DAYS = 14;
 
     /** Hiç metin kaydedilmemiş kurumda geçerli sürüm (bkz. starterText). */
-    public const DEFAULT_VERSION = '2.1';
+    public const DEFAULT_VERSION = '2.2';
 
     // ── Metin ve sürüm ──────────────────────────────────────────
 
@@ -57,7 +57,7 @@ final class Consent
     /**
      * Formun İngilizce karşılığı — yalnız çıktı için.
      *
-     * Merkeze Türkçe okumayan danışan geliyor (KKTC'de öğrenci, yabancı
+     * Merkeze Türkçe okumayan birey geliyor (KKTC'de öğrenci, yabancı
      * uyruklu çalışan) ve masaya konan kâğıt onun okuyamadığı bir metin
      * olduğunda "bilgilendirilmiş" onam olmuyordu; kâğıdı çeviren psikolog
      * oluyordu. Çeviri paneldeki metnin YANINDA duruyor: aynı sürüm, iki dil.
@@ -316,7 +316,7 @@ final class Consent
     // ── Onayın kaydı ────────────────────────────────────────────
 
     /**
-     * Çevrimiçi onay: danışan metni okuyup en alttaki tiki işaretledi.
+     * Çevrimiçi onay: birey metni okuyup en alttaki tiki işaretledi.
      *
      * `clients.consent_at`'e DOKUNMAZ. Tik metnin okunduğunu gösterir, onamı
      * kapatmaz — kapanış seansta, ıslak imza ya da sözlü beyanla olur. Kayıtta
@@ -329,7 +329,7 @@ final class Consent
      * Sürüm DIŞARIDAN veriliyor ve bilerek `$request['version']` DEĞİL. İstek
      * satırındaki numara bağlantının ÜRETİLDİĞİ andaki sürüm; metin araya
      * girip düzenlenmiş olabilir ve kişi sayfada güncel metni okur. İkisi
-     * karıştırılırsa kayıt, danışanın hiç görmediği bir sürüme onam vermiş
+     * karıştırılırsa kayıt, bireyin hiç görmediği bir sürüme onam vermiş
      * gibi görünür — sonra da çıktı o sürümün metnini basıp imzalatır.
      * Denetleyici, sayfada gösterilen sürümü gizli alanla geri alıp güncelle
      * karşılaştırdıktan SONRA burayı çağırıyor.
@@ -355,7 +355,7 @@ final class Consent
     /**
      * Seansta kapanan onam: ıslak imza (paper) ya da sözlü beyan (verbal).
      *
-     * Sürüm, varsa danışanın çevrimiçi onayladığı sürüm — güncel sürüm değil.
+     * Sürüm, varsa bireyin çevrimiçi onayladığı sürüm — güncel sürüm değil.
      * Kişi 2.0'ı okuyup onayladıysa ve metin arada 2.1 olduysa, imzaladığı şey
      * hâlâ 2.0'dır; çıktı da o sürümü basıyor (bkz. ConsentController::printForm).
      *
@@ -401,7 +401,7 @@ final class Consent
      * ama verilmemiş sayılamaz.
      *
      * Çevrimiçi kayda dokunulmuyor: durum kendiliğinden "Çevrimiçi onaylandı"
-     * hâline geri düşüyor — danışan metni okumuştu, o hâlâ doğru.
+     * hâline geri düşüyor — birey metni okumuştu, o hâlâ doğru.
      */
     public static function revoke(int $clientId, int $actorId): void
     {
@@ -453,7 +453,7 @@ final class Consent
                 'key'    => 'cevrimici',
                 'label'  => 'Çevrimiçi onaylandı',
                 'tone'   => 'neutral',
-                'detail' => 'Danışan metnin ' . (string) $online['version'] . ' sürümünü '
+                'detail' => 'Birey metnin ' . (string) $online['version'] . ' sürümünü '
                     . dt((string) $online['approved_at']) . ' tarihinde okuyup onayladı. '
                     . 'Seansta ıslak imza ya da sözlü onam bekleniyor.',
             ];
@@ -467,7 +467,7 @@ final class Consent
         ];
     }
 
-    /** @return array<string,mixed>|null Danışanın en son çevrimiçi onayı. */
+    /** @return array<string,mixed>|null Bireyin en son çevrimiçi onayı. */
     public static function latestOnline(int $clientId): ?array
     {
         if (!Schema::consentReady()) {
@@ -483,7 +483,7 @@ final class Consent
     }
 
     /**
-     * Danışanın onay verdiği sürüm — çıktının hangi metni basacağını belirler.
+     * Bireyin onay verdiği sürüm — çıktının hangi metni basacağını belirler.
      *
      * Çevrimiçi onay varsa onun sürümü: kişi okuduğu metni imzalamalı. Yoksa
      * null döner ve çağıran güncel sürümü kullanır (kâğıt yolu — metin zaten
@@ -546,12 +546,12 @@ final class Consent
      * "taslak" olarak işaretlenir.
      *
      * Başlık burada yok: kâğıdın üstüne kurum adıyla birlikte çıktı sayfası
-     * basıyor (consent/print.php). Metin, doğrudan danışana hitapla başlıyor.
+     * basıyor (consent/print.php). Metin, doğrudan bireye hitapla başlıyor.
      *
      * Kayıt yasağı maddesi 2.1'de ayrıldı: yasak SEANSIN kaydı için duruyor,
      * onamın kendisinin sözlü beyanı ondan ayrı. Bu cümle olmadan, online
-     * danışandan onamının kaydını istemek kâğıdın verdiği sözle çelişiyordu.
-     * Metin 011 numaralı göçle birebir aynı; ikisi birlikte değişir.
+     * bireyden onamının kaydını istemek kâğıdın verdiği sözle çelişiyordu.
+     * Metin 012 numaralı göçle birebir aynı; ikisi birlikte değişir.
      */
     public static function starterText(): string
     {
@@ -565,7 +565,7 @@ final class Consent
         - Seans süresi ortalama 45-50 dakikadır.
         - Seanslara düzenli ve zamanında katılım, sağlıklı bir psikoterapötik
           ilişki kurabilmek için önemli ve gereklidir.
-        - Seansa danışan tarafından geç kalınması durumunda, yalnızca geriye kalan
+        - Seansa birey tarafından geç kalınması durumunda, yalnızca geriye kalan
           süre kadar görüşme yapılabilecektir. Eğer gecikme psikolog kaynaklıysa,
           psikolog süreyi tamamlamakla yükümlüdür.
         - Seans ücreti, seans öncesinde ödenmektedir.
@@ -585,23 +585,23 @@ final class Consent
 
         GİZLİLİK VE GÜVENİLİRLİK İLKESİ
 
-        - Psikolog ve danışan arasında konuşulan her şey gizlidir ve üçüncü
+        - Psikolog ve birey arasında konuşulan her şey gizlidir ve üçüncü
           kişilerle paylaşılmaz.
         - Psikolog, seans notları da dahil olmak üzere, psikoterapi süreci boyunca
-          tutacağı raporları ve danışanın kişisel bilgilerini, kimsenin
+          tutacağı raporları ve bireyin kişisel bilgilerini, kimsenin
           ulaşamayacağı şekilde saklamak ve muhafaza etmekle yükümlüdür. Bu kural,
           psikoterapötik süreç sona erdikten sonra da geçerlidir.
         - Gizlilik ilkesinin, psikolog tarafından ihlal edilebileceği sadece 2 koşul
           mevcuttur:
-          - Bu koşulların en önemlisi; danışanın kendine ve/veya bir başkasına zarar
+          - Bu koşulların en önemlisi; bireyin kendine ve/veya bir başkasına zarar
             verme riski görülmesidir. Bu gibi durumlarda, psikolog gerekli mercilere
-            bilgi vermek ve/veya danışanın bir aile yakınıyla iletişime geçmek
+            bilgi vermek ve/veya bireyin bir aile yakınıyla iletişime geçmek
             durumundadır.
           - Diğer bir koşul ise herhangi bir hukuki süreçte, mahkeme kararıyla
             psikologdan bilgi istenilmesi durumudur. Bu durumda da psikolog yasal
             olarak, mahkeme kararını uygulamaya geçirmek zorundadır.
         - Psikoterapötik süreç içinde gerçekleşebilecek herhangi bir olağandışı
-          durumda danışanı koruyabilmek ve erken müdahaleyi sağlayabilmek için bir
+          durumda bireyi koruyabilmek ve erken müdahaleyi sağlayabilmek için bir
           aile yakını bilgisi almak gereklidir.
 
         KİŞİSEL BİLGİLERİNİZİN KAYDI
@@ -627,9 +627,9 @@ final class Consent
         GÖNÜLLÜLÜK İLKESİ
 
         - Psikoterapi sürecine başlamak ve sürecin devamlılığını sağlamak için
-          danışanın gönüllülüğü çok önemlidir. Danışanın kendi isteğiyle ve hiçbir
+          bireyin gönüllülüğü çok önemlidir. Bireyin kendi isteğiyle ve hiçbir
           zorlama altında olmadan psikolojik destek istediğinden emin olunmalıdır.
-        - Danışan, istediği zaman görüşmeleri sonlandırma hakkına sahiptir.
+        - Birey, istediği zaman görüşmeleri sonlandırma hakkına sahiptir.
         - Psikoterapötik sürecinize son vermek istemeniz, yeniden başlamaya ihtiyaç
           duyduğunuzda bir engel oluşturmaz. İstediğiniz zaman yeniden randevu
           alabilir ve sürecinize geri dönebilirsiniz.
@@ -690,24 +690,24 @@ final class Consent
 
         CONFIDENTIALITY AND TRUST
 
-        - Everything discussed between the psychologist and the client is
+        - Everything discussed between the psychologist and the individual is
           confidential and is not shared with third parties.
         - The psychologist is obliged to keep and store all records kept
           throughout the psychotherapy process, including session notes, as well
-          as the client's personal information, in a manner inaccessible to
+          as the individual's personal information, in a manner inaccessible to
           anyone else. This rule also applies after the psychotherapeutic
           process has ended.
         - There are only 2 conditions under which the psychologist may breach
           confidentiality:
-          - The most important of these is a perceived risk of the client
+          - The most important of these is a perceived risk of the individual
             harming themselves and/or another person. In such cases the
             psychologist has to inform the relevant authorities and/or contact a
-            family member of the client.
+            family member of the individual.
           - The other condition is a request for information from the
             psychologist by court order in the course of legal proceedings. In
             this case the psychologist is legally obliged to comply with the
             court's decision.
-        - In order to protect the client and enable early intervention in any
+        - In order to protect the individual and enable early intervention in any
           unusual situation that may arise during the psychotherapeutic process,
           the contact details of a family member are required.
 
@@ -736,11 +736,11 @@ final class Consent
 
         THE PRINCIPLE OF VOLUNTARINESS
 
-        - The client's willingness is essential both for beginning psychotherapy
+        - The individual's willingness is essential both for beginning psychotherapy
           and for the continuity of the process. It must be certain that the
-          client is seeking psychological support of their own accord and free
+          individual is seeking psychological support of their own accord and free
           of any coercion.
-        - The client has the right to end the meetings at any time.
+        - The individual has the right to end the meetings at any time.
         - Choosing to end your psychotherapeutic process is no obstacle should
           you need to begin again. You may book a new appointment at any time
           and return to your process.

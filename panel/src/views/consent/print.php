@@ -13,7 +13,7 @@
 $name = $client === null ? '' : (string) $client['full_name'];
 
 // Dil YALNIZ kâğıdı değiştiriyor. Üstteki şerit ve uyarılar Türkçe kalıyor:
-// onlar danışanın değil, formu basan psikoloğun okuduğu yer. Çeviri ayrı bir
+// onlar bireyin değil, formu basan psikoloğun okuduğu yer. Çeviri ayrı bir
 // onam metni değil, aynı sürümün İngilizcesi — kâğıdın başında bunu söyleyen
 // bir cümle basılıyor (bkz. Consent::currentTextEn).
 $en = $lang === 'en';
@@ -100,13 +100,13 @@ $other = url(current_path() . ($en ? '' : '?dil=en'));
 </p>
 
 <?php
-// Metin, güncel sürüm DEĞİL, danışanın onayladığı sürüm olabilir. Bunu yalnız
+// Metin, güncel sürüm DEĞİL, bireyin onayladığı sürüm olabilir. Bunu yalnız
 // ekranda söylüyoruz: kâğıda geçen sürüm numarası zaten başlıkta duruyor ve
 // masadaki kişiyi ilgilendiren şey okuduğu metnin önüne konmuş olması.
 ?>
 <?php if (!empty($outdated)): ?>
   <p class="no-print max-w-3xl mx-auto mt-2 px-4 text-xs text-ink-muted">
-    <strong>Dikkat:</strong> bu çıktı danışanın çevrimiçi onayladığı
+    <strong>Dikkat:</strong> bu çıktı bireyin çevrimiçi onayladığı
     <span class="num"><?= e($version) ?></span> sürümünü basıyor, panelde kayıtlı
     güncel metni değil. Kişi okumadığı bir kâğıdı imzalamasın diye böyle.
     Güncel metne geçirmek isterseniz önce yeni bağlantı gönderip yeniden
@@ -115,7 +115,7 @@ $other = url(current_path() . ($en ? '' : '?dil=en'));
 <?php endif; ?>
 <?php if (!empty($missing) && !$en): ?>
   <p class="no-print max-w-3xl mx-auto mt-2 px-4 text-xs text-ink-muted">
-    <strong>Dikkat:</strong> danışanın onayladığı sürümün metni arşivde
+    <strong>Dikkat:</strong> bireyin onayladığı sürümün metni arşivde
     bulunamadı (onay, sürüm arşivi kurulmadan önce alınmış olabilir). Kâğıt
     güncel metni basıyor — imzalatmadan önce iki metnin aynı olduğundan emin olun.
   </p>
@@ -123,7 +123,7 @@ $other = url(current_path() . ($en ? '' : '?dil=en'));
 <?php // Aynı eksik, İngilizce tarafta: o sürümün çevirisi hiç yazılmamış olabilir. ?>
 <?php if (!empty($missing) && $en): ?>
   <p class="no-print max-w-3xl mx-auto mt-2 px-4 text-xs text-ink-muted">
-    <strong>Dikkat:</strong> danışanın onayladığı sürümün İngilizce çevirisi yok.
+    <strong>Dikkat:</strong> bireyin onayladığı sürümün İngilizce çevirisi yok.
     Kâğıt eldeki çeviriyi (<span class="num"><?= e($version) ?></span> sürümü)
     basıyor — imzalatmadan önce Türkçe formla karşılaştırın ya da Türkçe formu
     kullanın.
@@ -204,7 +204,7 @@ $other = url(current_path() . ($en ? '' : '?dil=en'));
   <?php
   // Aile yakını, metnin içinde söz verilen şeydir: "olağandışı bir durumda
   // ulaşabileceğimiz biri". Boş kutu olarak basılıyor, panelden doldurulmuyor —
-  // bu bilgiyi danışan masada kendi eliyle yazar, kurum ondan önce bilmez.
+  // bu bilgiyi birey masada kendi eliyle yazar, kurum ondan önce bilmez.
   ?>
   <section class="mt-8 border border-ink/25 rounded-sm px-6 py-5 text-sm text-ink">
     <p class="font-medium underline underline-offset-4 mb-5"><?= e($paper['kin']) ?></p>

@@ -2,7 +2,7 @@
 use Panel\Csrf;
 /** @var string $token @var string $firstName @var string $text @var string $version */
 
-// Danışanın seanstan ÖNCE, evinde okuduğu onam formu.
+// Bireyin seanstan ÖNCE, evinde okuduğu onam formu.
 //
 // Bu sayfanın varlık sebebi tek bir gözlem: form seansın içinde okutulduğunda
 // okunmuyor. "Süreden gidiyor" diye gerilen kişi sayfayı çeviriyor, imza
