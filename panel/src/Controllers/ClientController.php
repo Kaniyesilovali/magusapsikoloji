@@ -199,7 +199,7 @@ final class ClientController
             'consent'         => Consent::status($client),
             'consentHistory'  => Consent::history($id),
             'consentPending'  => Consent::pendingRequest($id),
-            'consentLink'     => Consent::pendingLink(),
+            'consentLink'     => Consent::pendingLink($id),
             'consentReady'    => Schema::consentReady(),
             'actor'           => $actor,
         ]);
@@ -333,7 +333,7 @@ final class ClientController
         $sent  = $client['email'] !== null
             && Notifications::consentRequest($client, Consent::link($token));
 
-        Consent::share((string) $client['full_name'], $token, $sent);
+        Consent::share($id, (string) $client['full_name'], $token, $sent);
         if ($sent) {
             Consent::markSent($token);
         }
@@ -352,6 +352,24 @@ final class ClientController
         } else {
             flash('success', 'Onam bağlantısı ' . $client['email'] . ' adresine gönderildi.');
         }
+
+        redirect("/danisanlar/{$id}");
+    }
+
+    /**
+     * Bağlantı kutusunu kapatır.
+     *
+     * Bağlantıyı İPTAL ETMEZ — yalnız ekrandan kaldırır. İptal etmek isteyen
+     * "yenile" der; o zaman yeni bir jeton üretilir ve eskisinin süresi o anda
+     * dolar (bkz. Consent::createRequest). Buradaki düğme, iletilmiş bir
+     * bağlantının kutusunu kapatmak için: iş bitti, ekran temizlensin.
+     */
+    public function forgetConsentLink(int $id): void
+    {
+        $actor = Auth::requirePermission('client.update');
+        $this->find($id, $actor);
+
+        Consent::forgetLink();
 
         redirect("/danisanlar/{$id}");
     }

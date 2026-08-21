@@ -234,28 +234,97 @@ final class Consent
     }
 
     /**
-     * Üretilen bağlantıyı bir sonraki sayfada göstermek üzere saklar.
+     * Üretilen bağlantıyı, kaydın sayfasında gösterilmek üzere saklar.
      *
      * E-posta gitmiş olsa bile: telefonda randevu alan kişiye bağlantı çoğu
      * zaman WhatsApp'tan gidiyor ve panelde SMS/WhatsApp gönderimi yok.
      * Kopyalanabilir kutu bu akışın ASIL yolu, yedeği değil.
+     *
+     * Jeton oturumda duruyor, veritabanında DEĞİL: kayıtta yalnız sha256 özeti
+     * var ve orada kalmalı (bkz. 011_onam_kaydi.sql) — yedeği eline geçen biri
+     * kimsenin adına onam veremesin. Bunun bedeli, bağlantının yalnız onu
+     * üreten oturumda geri gösterilebilmesi; karşılığında bağlantıyı taşıyan
+     * jeton, panele giriş yapmış kişinin oturumundan öteye geçmiyor.
      */
-    public static function share(string $name, string $token, bool $sent): void
+    public static function share(int $clientId, string $name, string $token, bool $sent): void
     {
         $_SESSION['_consent_link'] = [
-            'name' => $name,
-            'url'  => self::link($token),
-            'sent' => $sent,
+            'client' => $clientId,
+            'name'   => $name,
+            'token'  => $token,
+            'sent'   => $sent,
         ];
     }
 
-    /** Saklanan bağlantıyı bir kez okur ve siler. */
-    public static function pendingLink(): ?array
+    /**
+     * Saklanan bağlantı — o kaydın sayfası açık kaldığı sürece.
+     *
+     * Eskiden bir kez okunup siliniyordu: sayfayı yenilemek ya da sekme
+     * değiştirip geri dönmek bağlantıyı götürüyordu ve geri getirmenin yolu
+     * yoktu (elde yalnız özet var). Kalan tek çare yenilemekti, o da az önce
+     * gönderilmiş bağlantıyı iptal ediyordu — kişiye giden adres ölü kalıyordu.
+     * Kutu artık duruyor; kapatmak bir el hareketi (bkz. forgetLink).
+     *
+     * Bağlantı işini bitirdiğinde kendiliğinden düşüyor: onaylanmış, süresi
+     * dolmuş ya da yenilenmiş bir jeton için kutu gösterilmez.
+     *
+     * @return array{name:string, url:string, sent:bool}|null
+     */
+    public static function pendingLink(int $clientId): ?array
     {
-        $link = $_SESSION['_consent_link'] ?? null;
-        unset($_SESSION['_consent_link']);
+        if (!Schema::consentReady()) {
+            return null;
+        }
 
-        return $link;
+        $link = $_SESSION['_consent_link'] ?? null;
+
+        // Başka bir kaydın bağlantısı: silinmiyor, yalnız gösterilmiyor.
+        // Terapist iki kayıt arasında gidip geliyor olabilir.
+        if (!is_array($link) || (int) ($link['client'] ?? 0) !== $clientId) {
+            return null;
+        }
+        if (self::state(self::request((string) $link['token'])) !== 'ok') {
+            self::forgetLink();
+            return null;
+        }
+
+        return [
+            'name' => (string) $link['name'],
+            'url'  => self::link((string) $link['token']),
+            'sent' => (bool) $link['sent'],
+        ];
+    }
+
+    /** Kutuyu kapatır — bağlantı geçerliliğini yitirmez, yalnız ekrandan kalkar. */
+    public static function forgetLink(): void
+    {
+        unset($_SESSION['_consent_link']);
+    }
+
+    /**
+     * Bağlantı elden iletilirken mesaj kutusuna yazılan metin.
+     *
+     * E-posta şablonuyla (bkz. Notifications::consentRequest) aynı üç şeyi
+     * söylüyor ama kısa: ne olduğu, neden seanstan önce gönderildiği, ne kadar
+     * geçerli olduğu. Mesajlaşma kutusunda uzun metin okunmuyor ve okunmayan
+     * bir açıklama, çıplak bir bağlantıdan iyi değil — "bu da ne" diye bakılan
+     * bir adres tıklanmıyor.
+     */
+    public static function message(string $firstName, string $url): string
+    {
+        return ($firstName !== '' ? "Merhaba {$firstName}," : 'Merhaba,')
+            . " ilk seansımızdan önce okumanız için onam formu:\n\n"
+            . $url . "\n\n"
+            . 'Seansların işleyişi, gizlilik ve haklarınız yazıyor; sayfanın sonunda bir onay kutusu var. '
+            . 'Bağlantı ' . self::TTL_DAYS . ' gün geçerli, size özel ve tek kullanımlık — paylaşmayın.';
+    }
+
+    /** Hitap için ilk ad; boş isimde boş döner. */
+    public static function firstName(string $fullName): string
+    {
+        $parts = preg_split('/\s+/', trim($fullName)) ?: [];
+
+        return (string) ($parts[0] ?? '');
     }
 
     /**

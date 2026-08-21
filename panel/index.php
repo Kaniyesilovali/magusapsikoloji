@@ -161,6 +161,8 @@ $router->post('/danisanlar/{id}/alanlar', [CheckinController::class, 'saveDomain
 $router->get('/danisanlar/{id}/onam',     [ConsentController::class, 'printForm']);
 // Onam bağlantısını üreten el hareketi: telefonda randevu alan kişiye gider.
 $router->post('/danisanlar/{id}/onam-baglantisi', [ClientController::class, 'sendConsentLink']);
+// Bağlantı iletildi, kutu kapansın: jetona dokunmaz, yalnız ekrandan kaldırır.
+$router->post('/danisanlar/{id}/onam-baglantisi/kapat', [ClientController::class, 'forgetConsentLink']);
 // Seansta kapanan onam — ıslak imza ya da online görüşmede sözlü beyan.
 $router->post('/danisanlar/{id}/onam/imza',  [ClientController::class, 'markConsentSigned']);
 $router->post('/danisanlar/{id}/onam/sozlu', [ClientController::class, 'markConsentVerbal']);

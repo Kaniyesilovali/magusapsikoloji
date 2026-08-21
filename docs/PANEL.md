@@ -595,6 +595,39 @@ Birey sayfasındaki **"Onam formunu yazdır"** bağlantısı, bireyin adıyla
 birlikte güncel metni açar; çıktının sonuna metnin söz verdiği **aile yakını bilgisi**
 kutusu ile birey ve psikolog imza satırları eklenir.
 
+### Onam bağlantısı
+
+Metin seansın **içinde** okutulduğunda okunmuyordu: süreden gittiğini düşünen kişi
+sayfayı çeviriyor, imzayı atıyor ve neyi kabul ettiğini bilmiyordu. Bu yüzden birey
+sayfasındaki **"Onam bağlantısı gönder"** düğmesi, metni seanstan önce eve gönderir.
+Bağlantı `/onam/{jeton}` — panelin giriş istemeyen ikinci ekranı (birincisi check-in):
+tek kullanımlık, tek kişiye ait, 256 bitlik bir jeton, **14 gün** geçerli.
+
+Sayfanın sonundaki tik **kısmi onamdır**: metnin okunduğunu gösterir, onamı kapatmaz.
+Kapanış seansta olur — ıslak imza ya da online görüşmede sözlü beyan. `clients.consent_at`
+yalnız kapanınca dolar, panelin bütün sayaçları bu yüzden anlamını korur.
+
+**Bağlantı nasıl iletilir.** Kayıtta e-posta varsa panel iletiyi kendisi yollar. Asıl
+kanal ise WhatsApp ve panelde WhatsApp gönderimi yok: bağlantı üretildiğinde birey
+sayfasında bir kutu açılır ve aynı adresi üç yoldan verir — **WhatsApp'tan gönder**
+(kayıttaki numarayla sohbeti hazır metinle açar; gönder düğmesine insan basar),
+**e-posta taslağı** ve **kopyala**. Hazır metin `Consent::message()` içindedir: çıplak
+bir bağlantı "bu da ne" diye bakılıp tıklanmıyor.
+
+Kutu, iş bitene kadar durur — sayfa yenilense de. Kapatan düğme (**"İletildi, kutuyu
+kapat"**) bağlantıyı **iptal etmez**, yalnız ekrandan kaldırır; onaylanan, süresi dolan
+ya da yenilenen bir bağlantının kutusu kendiliğinden düşer. Adres yalnız onu üreten
+oturumda gösterilebilir: kayıtta jetonun **sha256 özeti** durur, kendisi değil — veritabanı
+yedeği eline geçen biri kimsenin adına onam veremesin. Ertesi gün aynı adres istenirse tek
+yol **yenilemektir** ve o an eskisi geçersiz olur; künyedeki satır bunu söyler.
+
+Doldurulmamış bir bağlantı yenilenirken **silinmez, süresi doldurulur** (check-in'deki
+gerekçenin aynısı): gönderilmiş ama cevapsız kalmış satır, "kaç kişiye gitti, kaçı
+onayladı" sorusunun paydasıdır.
+
+> Akış **yalnız çevrimiçi olamaz.** İnternete girmeyen birey için kâğıt yolu — yüz yüze
+> okuma, açıklama, imza — hiç değişmeden duruyor. Bağlantı bir seçenek, önkoşul değil.
+
 ### İngilizce çıktı
 
 Formun bir de İngilizce karşılığı var — **yalnız çıktı için**. Çeviri

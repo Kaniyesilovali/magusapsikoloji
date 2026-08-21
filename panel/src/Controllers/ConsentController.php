@@ -387,7 +387,7 @@ final class ConsentController
         View::render('consent/link', [
             'title'     => 'Onam formu',
             'token'     => $token,
-            'firstName' => $this->firstName((string) $request['full_name']),
+            'firstName' => Consent::firstName((string) $request['full_name']),
             'text'      => Consent::currentText(),
             'version'   => Consent::currentVersion(),
             // Uzun bir hukuki metin telefon genişliğindeki kolonda okunmuyor;
@@ -435,11 +435,5 @@ final class ConsentController
             'heading' => $title,
             'message' => $message,
         ], 'checkin_layout');
-    }
-
-    private function firstName(string $fullName): string
-    {
-        $parts = preg_split('/\s+/', trim($fullName)) ?: [];
-        return (string) ($parts[0] ?? '');
     }
 }

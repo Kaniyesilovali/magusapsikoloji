@@ -50,6 +50,53 @@ function is_https(): bool
         || (($_SERVER['SERVER_PORT'] ?? '') === '443');
 }
 
+/**
+ * WhatsApp'ta hazır metinle sohbet açan adres.
+ *
+ * Panelden WhatsApp GÖNDERİLMİYOR ve gönderilmeyecek: kurumun işletme hesabı
+ * yok, kişisel numaradan otomatik gönderim de WhatsApp kurallarına aykırı.
+ * Buradaki bağlantı gönderim değil, kopyala-yapıştır zincirini kısaltan bir
+ * kestirme — sohbeti açar, metni kutuya yazar; gönder düğmesine yine insan
+ * basar ve son hâli okur.
+ *
+ * Numara okunamıyorsa (kayıtta telefon yok ya da yazım tanınmıyor) numarasız
+ * adres dönüyor: WhatsApp o zaman kişiyi seçtiriyor. Metin yine hazır geliyor,
+ * çünkü asıl kaybolan şey numara değil, eksik yapıştırılan bağlantı.
+ */
+function wa_url(?string $phone, string $text): string
+{
+    return 'https://wa.me/' . wa_number($phone) . '?text=' . rawurlencode($text);
+}
+
+/**
+ * Kayıttaki telefonu WhatsApp'ın istediği biçime çevirir: yalnız rakamlar,
+ * başta ülke kodu, + ya da 0 yok.
+ *
+ * Varsayılan ülke kodu 90. KKTC'de cep numaraları Türkiye kodlu (0533…) ve
+ * sabit hatlar da +90 392 — yerel yazımın karşılığı bu. Güneyden ya da yurt
+ * dışından bir numara kayıtta zaten + veya 00 ile yazılıdır (kayıt formu bu
+ * karakterlere izin veriyor, bkz. ClientController::input) ve o yazıma
+ * dokunulmuyor.
+ *
+ * Tanınmayan numarada boş dönüyor: yanlış numaraya açılmış bir sohbet,
+ * açılmamış sohbetten kötüdür — onam bağlantısı başkasına gider.
+ */
+function wa_number(?string $phone): string
+{
+    $digits = preg_replace('/\D+/', '', (string) $phone) ?? '';
+
+    if (str_starts_with($digits, '00')) {
+        $digits = substr($digits, 2);
+    } elseif (str_starts_with($digits, '0')) {
+        $digits = '90' . substr($digits, 1);
+    } elseif (strlen($digits) <= 10) {
+        // Ülke kodu da sıfır da yazılmamış (533 123 45 67 gibi): yerel numara.
+        $digits = '90' . $digits;
+    }
+
+    return strlen($digits) >= 11 && strlen($digits) <= 15 ? $digits : '';
+}
+
 function redirect(string $path): never
 {
     header('Location: ' . url($path), true, 302);

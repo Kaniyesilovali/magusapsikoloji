@@ -171,8 +171,20 @@ $manualInvite = Invites::pending('client');
 <?php endif; ?>
 
 <?php if (!empty($consentLink)): ?>
-  <?php // Bağlantı e-posta gitmiş olsa bile gösteriliyor: bu akışın asıl kanalı
-        // WhatsApp ve panelde WhatsApp gönderimi yok (bkz. Consent::share). ?>
+  <?php
+  // Bağlantı e-posta gitmiş olsa bile gösteriliyor: bu akışın asıl kanalı
+  // WhatsApp ve panelde WhatsApp gönderimi yok (bkz. Consent::share).
+  //
+  // Kutuda üç yol var ve üçü de aynı adresi taşıyor. Sıralama, kurumda
+  // gerçekten olan sıra: numara kayıtlıysa WhatsApp tek tık, e-posta adresi
+  // varsa posta programı, ikisi de olmazsa kopyala. Hazır metin hepsinde aynı
+  // (bkz. Consent::message) — çıplak bir bağlantı "bu da ne" diye bakılıp
+  // tıklanmıyor, bağlantının yanına ne olduğu yazılmalı.
+  $consentText = Panel\Consent::message(
+      Panel\Consent::firstName((string) $client['full_name']),
+      $consentLink['url']
+  );
+  ?>
   <section class="sheet mb-4">
     <div class="sheet-body">
       <p class="text-sm text-ink"><?= e($consentLink['name']) ?> için onam formu bağlantısı</p>
@@ -182,11 +194,37 @@ $manualInvite = Invites::pending('client');
             : 'Bu bağlantıyı bireye kendiniz iletin — WhatsApp ya da mesajla.' ?>
         <?= Panel\Consent::TTL_DAYS ?> gün geçerli ve tek kullanımlık. Yalnızca kişinin kendisine verin.
       </p>
+
+      <?php // Gönderim değil, kestirme: sohbet hazır metinle açılıyor, gönder
+            // düğmesine terapist basıyor ve son hâli okuyor. ?>
+      <div class="flex flex-wrap gap-2 mb-3">
+        <a href="<?= e(wa_url($client['phone'] ?? null, $consentText)) ?>"
+           target="_blank" rel="noopener" class="btn btn-primary">
+          WhatsApp'tan gönder
+        </a>
+        <?php if (($client['email'] ?? '') !== ''): ?>
+          <a href="mailto:<?= e((string) $client['email']) ?>?subject=<?= e(rawurlencode('Onam formu — Mağusa Psikoloji')) ?>&amp;body=<?= e(rawurlencode($consentText)) ?>"
+             class="btn btn-quiet">E-posta taslağı aç</a>
+        <?php endif; ?>
+        <?php // Kutuyu kapatmak bağlantıyı iptal ETMEZ; iptal "yenile" düğmesinin işi. ?>
+        <form method="post" action="<?= e(url("/danisanlar/{$client['id']}/onam-baglantisi/kapat")) ?>" class="inline">
+          <?= Csrf::field() ?>
+          <button class="btn btn-quiet">İletildi, kutuyu kapat</button>
+        </form>
+      </div>
+
+      <?php if (wa_number($client['phone'] ?? null) === ''): ?>
+        <p class="field-hint mb-3">
+          Kayıtta kullanılabilir bir telefon numarası yok; WhatsApp kişiyi
+          size seçtirir. Metin ve bağlantı hazır gelir.
+        </p>
+      <?php endif; ?>
+
       <div class="flex gap-2">
         <label for="consentLinkUrl" class="sr-only">Onam formu bağlantısı</label>
         <input id="consentLinkUrl" type="text" readonly value="<?= e($consentLink['url']) ?>"
                class="field flex-1 min-w-0 text-xs font-mono text-ink-muted">
-        <button type="button" data-copy="#consentLinkUrl" class="btn btn-primary shrink-0">Kopyala</button>
+        <button type="button" data-copy="#consentLinkUrl" class="btn btn-quiet shrink-0">Kopyala</button>
       </div>
     </div>
   </section>
@@ -344,6 +382,14 @@ $manualInvite = Invites::pending('client');
               <p class="text-xs text-ink-light mt-2">
                 Bağlantı gönderildi, henüz onaylanmadı
                 (<span class="num"><?= e(dt((string) $consentPending['expires_at'], 'd.m.Y')) ?></span> tarihine kadar geçerli).
+                <?php // Adres yalnız üretildiği oturumda gösterilebiliyor: kayıtta
+                      // jetonun özeti duruyor, kendisi değil (bkz. Consent::share).
+                      // Ekranda kutu yoksa bunu söylemek gerekiyor — yoksa "az önce
+                      // vardı" diye aranan bir şey aranıyor. ?>
+                <?php if (empty($consentLink)): ?>
+                  Adresi yeniden görmek için <strong>yenilemek</strong> gerekir; o an
+                  yeni bir bağlantı üretilir ve iletilmiş olan geçersiz olur.
+                <?php endif; ?>
               </p>
             <?php endif; ?>
           </dd>
