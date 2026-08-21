@@ -1,7 +1,12 @@
 # Blog kart görselleri — kaynaklar
 
-Tüm görseller [Unsplash](https://unsplash.com) üzerinden, [Unsplash License](https://unsplash.com/license)
-kapsamında alınmıştır: ticari kullanım dahil ücretsiz, izin ve atıf zorunluluğu yok.
+Kartlarda fotoğraf yerine, her yazının konusuna karşılık gelen soyut görseller kullanılıyor:
+düğüm (aile), suya düşen damlanın halkaları (anksiyete), kağıttan katlanmış dalga (panik atak),
+sisin ardındaki ağaç sırası (depresyon), kor gibi yanan yüzey (tükenmişlik) gibi.
+Palet sitenin sıcak bej / adaçayı / kiremit tonlarıyla uyumlu tutuldu.
+
+Tümü [Unsplash](https://unsplash.com) üzerinden, [Unsplash License](https://unsplash.com/license)
+kapsamında alındı: ticari kullanım dahil ücretsiz, izin ve atıf zorunluluğu yok.
 Atıf zorunlu olmasa da kaynak kaydı burada tutulur.
 
 Dosyalar `https://images.unsplash.com/<id>?w=800&h=450&fit=crop&fm=jpg&q=72` adresinden indirildi;
@@ -9,23 +14,23 @@ kart oranına (16:9) kırpılmış, ~800×450 px JPEG olarak repoda durur. TR ve
 
 | Dosya | Unsplash foto kimliği |
 | --- | --- |
-| aile-terapisi-magussa.jpg | photo-1577896849786-738ed6c78bd3 |
-| anksiyete-nedir.jpg | photo-1602677416338-c4c916ad5590 |
-| beyin-beden.jpg | photo-1506126613408-eca07ce68773 |
-| cift-terapisi-gazimagussa.jpg | photo-1575388104683-e076ee9ccaa0 |
-| dehb-belirtileri-cocuk.jpg | photo-1637195141546-2469a5312504 |
-| depresyon-nedir.jpg | photo-1536349788264-1b816db3cc13 |
-| kaygi-bozuklugu-nedir.jpg | photo-1522075782449-e45a34f1ddfb |
-| kuzey-kibris-online-terapi.jpg | photo-1616587226960-4a03badbe8bf |
-| kuzey-kibris-psikolog-bulma.jpg | photo-1573497491208-6b1acb260507 |
-| kuzey-kibris-psikolojik-destek.jpg | photo-1604881991720-f91add269bed |
-| magusa-uluslararasi-ogrenciler-ruh-sagligi.jpg | photo-1543269865-cbf427effbad |
-| okul-fobisi-cocuk.jpg | photo-1730937012608-1b77e4574a59 |
-| online-terapi-etkili-mi.jpg | photo-1648737119422-2680a7e39089 |
-| panik-atak-belirtileri.jpg | photo-1518708909080-704599b19972 |
-| psikolog-mu-psikiyatrist-mi.jpg | photo-1576091160550-2173dba999ef |
-| sinav-kaygisiyla-bas-etme.jpg | photo-1598981457915-aea220950616 |
-| terapiye-baslamadan-once.jpg | photo-1637689113621-73951984fcc1 |
-| terapiye-ne-zaman-gidilmeli.jpg | photo-1518562180175-34a163b1a9a6 |
-| tukenmislik-sendromu.jpg | photo-1639300505533-9921527d6a50 |
-| universite-ogrencileri-psikolojik-destek.jpg | photo-1576495199011-eb94736d05d6 |
+| aile-terapisi-magussa.jpg | photo-1545304110-0b149ce44157 |
+| anksiyete-nedir.jpg | photo-1512138664757-360e0aad5132 |
+| beyin-beden.jpg | photo-1714682597753-a646ba506cee |
+| cift-terapisi-gazimagussa.jpg | photo-1604782206219-3b9576575203 |
+| dehb-belirtileri-cocuk.jpg | photo-1591011094220-0d66c676a6f7 |
+| depresyon-nedir.jpg | photo-1519120944692-1a8d8cfc107f |
+| kaygi-bozuklugu-nedir.jpg | photo-1511198922712-e31c72f8fcd4 |
+| kuzey-kibris-online-terapi.jpg | photo-1621352015075-f5febf3dd690 |
+| kuzey-kibris-psikolog-bulma.jpg | photo-1786521875230-406eca1e2b73 |
+| kuzey-kibris-psikolojik-destek.jpg | photo-1664037109833-5230a4640662 |
+| magusa-uluslararasi-ogrenciler-ruh-sagligi.jpg | photo-1699465301322-362016624dd7 |
+| okul-fobisi-cocuk.jpg | photo-1529047033375-f402d3da24ca |
+| online-terapi-etkili-mi.jpg | photo-1675251171768-5d49233cc410 |
+| panik-atak-belirtileri.jpg | photo-1645521112600-f71c22478ebb |
+| psikolog-mu-psikiyatrist-mi.jpg | photo-1689443111287-5c2e129ec756 |
+| sinav-kaygisiyla-bas-etme.jpg | photo-1524351543168-8e38787614e9 |
+| terapiye-baslamadan-once.jpg | photo-1603484477859-abe6a73f9366 |
+| terapiye-ne-zaman-gidilmeli.jpg | photo-1602911310167-1b82343f6264 |
+| tukenmislik-sendromu.jpg | photo-1536401490150-689044db7e6e |
+| universite-ogrencileri-psikolojik-destek.jpg | photo-1646600950096-0489e2a461cc |
