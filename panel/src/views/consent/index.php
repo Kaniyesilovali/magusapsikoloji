@@ -15,7 +15,21 @@ $version = old('consent_version', $version);
 // satırlık ikinci bir metin, asıl metnin altındaki sürüm alanını görünmez
 // yapıyordu. Eskimiş ya da geri çevrilmiş bir çeviride açık başlıyor —
 // düzeltilecek şeyin bir tık arkasında durması onu unutturur.
-$openEn = $staleEn || error_for('consent_text_en') !== null;
+//
+// Hiç kaydedilmemiş çeviri de açık başlıyor: alan zaten paneldeki taslakla
+// dolu geliyor ve tek yapılacak şey onu okuyup Kaydet'e basmak. Formun sitedeki
+// İngilizce adresi de buna bağlı (bkz. ConsentController::publicSheet); kapalı
+// bir <details> arkasında "çeviriyi kaydedin" demek, kaydedilmeyecek demekti.
+$openEn = $staleEn || $isDraftEn || error_for('consent_text_en') !== null;
+
+// ── Doldurulmamış köşeli parantezler ────────────────────────────────────
+// Taslak metin kurumun doldurması gereken iki alanla geliyor: saklama süresi
+// ve başvuru adresi. Kaydedilmiş olmaları onları doldurulmuş yapmıyor ve
+// panel bugüne kadar yalnız "hiç kaydedilmemiş" hâli uyarıyordu — oysa
+// yarım bırakılmış bir metin de imzalanıyor, artık sitede de yayımlanıyor.
+// Metin alanının kendisinde arıyoruz: ekranda ne yazıyorsa o basılacak.
+$blanks   = preg_match_all('/\[[^\]\n]{2,40}\]/u', $text, $found) ? array_values(array_unique($found[0])) : [];
+$blanksEn = preg_match_all('/\[[^\]\n]{2,40}\]/u', $textEn, $foundEn) ? array_values(array_unique($foundEn[0])) : [];
 ?>
 
 <?php // Metin alanı geniş olmalı ama sayfa sütununun tamamı kadar değil. ?>
@@ -55,6 +69,28 @@ $openEn = $staleEn || error_for('consent_text_en') !== null;
     Köşeli parantezli alanları kurumun bilgileriyle doldurun ve metni
     <strong>bir hukukçuya onaylatın</strong>. Panel hukuki tavsiye vermez; buradaki
     taslak yalnız başlangıç noktasıdır.
+  </div>
+<?php endif; ?>
+
+<?php
+// Kaydedilmiş ama yarım bırakılmış metin. Taslak uyarısından ayrı duruyor:
+// orada "henüz kaydetmediniz" deniyor, burada kaydedilmiş bir metinde
+// doldurulmamış alan olduğu. Metin masaya konuyor ve artık sitede de
+// okunuyor — "[saklama süresi]" diye.
+?>
+<?php if ($blanks !== [] || $blanksEn !== []): ?>
+  <div class="note note-stop mb-6">
+    <strong>Metinde doldurulmamış alan var.</strong>
+    <?php if ($blanks !== []): ?>
+      Türkçe metinde <?= e(implode(', ', $blanks)) ?> olduğu gibi duruyor.
+    <?php endif; ?>
+    <?php if ($blanksEn !== []): ?>
+      İngilizce metinde <?= e(implode(', ', $blanksEn)) ?> olduğu gibi duruyor.
+    <?php endif; ?>
+    Bu ifadeler imzalanan kâğıda ve
+    <a href="<?= e($publicUrl) ?>" target="_blank" rel="noopener" class="underline">sitedeki sayfaya</a>
+    yazıldıkları gibi basılır. Kurumun saklama süresini ve KVKK başvuru adresini
+    yazıp kaydedin; metin değiştiği için sürüm de yükselecek.
   </div>
 <?php endif; ?>
 
@@ -104,9 +140,10 @@ $openEn = $staleEn || error_for('consent_text_en') !== null;
     ?>
     <p class="field-hint mt-2">
       <?php if ($isDraftEn): ?>
-        İngilizce sayfa yayımlanmıyor: çeviri panelde kaydedilmemiş. Aşağıdaki
-        <strong>İngilizce çeviri</strong> bölümünü doldurup kaydettiğinizde
-        <span class="font-mono"><?= e($publicUrlEn) ?></span> adresi de açılır.
+        İngilizce sayfa henüz yayımlanmıyor: çeviri panelde kaydedilmemiş.
+        Aşağıdaki <strong>İngilizce çeviri</strong> alanı paneldeki taslakla dolu
+        gelir — okuyup <strong>Kaydet</strong>'e basmanız yeterli;
+        <span class="font-mono"><?= e($publicUrlEn) ?></span> o an açılır.
       <?php else: ?>
         İngilizcesi: <a href="<?= e($publicUrlEn) ?>" target="_blank" rel="noopener"
         class="underline font-mono"><?= e($publicUrlEn) ?></a>

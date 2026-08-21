@@ -689,6 +689,13 @@ kaydedilmemişse çıktı koddaki **taslak çeviriyi** basar ve bunu da söyler.
 > eskisini `consent_text_onam_oncesi` anahtarına kopyalar; kurumun elle girdiği
 > unvan/süre/adres bilgileri kaybolmaz.
 
+Onam ekranı, metinde kalan **köşeli parantezli alanları** (`[saklama süresi]`,
+`[iletişim adresi]`) ayrıca uyarır. Bugüne kadar yalnız "hiç kaydedilmemiş" hâl
+uyarılıyordu; oysa kaydedilmiş ama yarım bırakılmış bir metin de imzalanıyor ve
+artık sitede de yayımlanıyor — okuyan kişi "[saklama süresi]" görüyor. Çeviri hiç
+kaydedilmemişse İngilizce bölüm de **açık** başlar: alan taslakla dolu gelir,
+okuyup Kaydet'e basmak hem çıktıyı hem sitedeki `/en/consent-form` adresini açar.
+
 > Paneldeki başlangıç metni bir **taslaktır**, hukuki tavsiye değildir. Köşeli
 > parantezli alanlar kurumun bilgileriyle doldurulmalı ve metin bir hukukçuya
 > onaylatılmalıdır.
