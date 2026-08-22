@@ -23,6 +23,10 @@ faq:
     a: Tüm aile üyeleri ya da sorunla doğrudan ilgili kişiler katılabilir. Psikolog başlangıçta kimlerin katılacağını birlikte değerlendirir.
   - q: Aile terapisi ne zaman faydalıdır?
     a: Aile içi çatışmalar, iletişim kopukluğu, ebeveyn-çocuk gerilimleri, kayıp/yas süreçleri veya büyük yaşam değişikliklerinde aile terapisi etkili bir destek sağlar.
+  - q: Aile terapisinde psikolog taraf tutar mı?
+    a: Hayır. Aynı olay her aile üyesinin anlatımında farklı görünür ve hepsi geçerlidir. Psikoloğun görevi kimin haklı olduğuna karar vermek değil, odadaki her sesin duyulabileceği bir alan açmaktır.
+  - q: Aile üyelerinden biri terapiye gelmek istemiyorsa ne olur?
+    a: Gelmek istemeyen kişiyi ikna etmeye çalışmıyoruz. Gelen üyelerle çalışmaya başlamak da aile içindeki döngüde bir şeyi değiştirir; ilerleyen görüşmelerde diğer üyeler katılmak isteyebilir.
 rawSchemas:
   - '{"@context":"https://schema.org","@type":["LocalBusiness","MedicalOrganization"],"@id":"https://magusapsikoloji.com/#organization","name":"Mağusa Psikoloji Merkezi","alternateName":"Famagusta Psychology Centre","url":"https://magusapsikoloji.com","logo":"https://magusapsikoloji.com/assets/images/logo.png","image":"https://magusapsikoloji.com/assets/images/og-image.jpg","email":"info@magusapsikoloji.com","address":{"@type":"PostalAddress","addressLocality":"Gazimağusa","addressRegion":"Kuzey Kıbrıs","addressCountry":"CY"},"areaServed":{"@type":"City","name":"Gazimağusa"},"medicalSpecialty":"Psychology","availableService":{"@type":"MedicalTherapy","name":"Aile Terapisi","url":"https://magusapsikoloji.com/hizmetler/aile-terapisi.html"},"inLanguage":["tr","en"]}'
 cta:
@@ -50,7 +54,7 @@ card:
         <div class="grid lg:grid-cols-2 gap-14 items-center">
           <div>
             <h1 class="font-serif text-4xl lg:text-5xl text-ink leading-tight mb-5">Aile Terapisi</h1>
-            <p class="text-ink-muted text-lg leading-relaxed mb-8">Aileler, bireylerden oluşan ancak kendi dinamikleri olan bir sistemdir. Aile terapisi, bu sistemi anlayarak bütün aile için daha sağlıklı bir düzen oluşturmayı hedefler.</p>
+            <p class="text-ink-muted text-lg leading-relaxed mb-8">Aileler, bireylerden oluşan ancak kendi dinamikleri olan bir sistemdir. Aile terapisi, bu sistemi anlayarak ailenin bütünü için daha taşınabilir bir düzen kurmayı amaçlar. Gazimağusa'daki merkezimizde ailelerle birlikte çalışıyoruz.</p>
             <a href="https://wa.me/905XXXXXXXXX?text=Merhaba,%20aile%20terapisi%20hakkında%20bilgi%20almak%20istiyorum." target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white font-medium px-6 py-3.5 rounded-full transition-colors shadow-md">
               Randevu alın
             </a>
@@ -63,7 +67,7 @@ card:
               <li class="flex items-start gap-3 text-sm text-ink-muted"><svg class="w-4 h-4 text-primary shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"></path></svg>Yas ve kayıp yaşayan aileler</li>
               <li class="flex items-start gap-3 text-sm text-ink-muted"><svg class="w-4 h-4 text-primary shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"></path></svg>Hastalık, sakatlık gibi büyük yaşam değişiklikleri</li>
               <li class="flex items-start gap-3 text-sm text-ink-muted"><svg class="w-4 h-4 text-primary shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"></path></svg>Nesiller arası iletişim sorunları</li>
-              <li class="flex items-start gap-3 text-sm text-ink-muted"><svg class="w-4 h-4 text-primary shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"></path></svg>Bir aile üyesinin psikolojik sorunu tüm aileyi etkiliyor</li>
+              <li class="flex items-start gap-3 text-sm text-ink-muted"><svg class="w-4 h-4 text-primary shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"></path></svg>Bir aile üyesinin zorlandığı dönemin tüm aileyi etkilemesi</li>
             </ul>
           </div>
         </div>
@@ -73,11 +77,75 @@ card:
     <section class="py-16 bg-white">
       <div class="max-w-4xl mx-auto px-5 lg:px-8">
         <h2 class="font-serif text-3xl text-ink mb-6">Sistem bakış açısı</h2>
-        <p class="text-ink-muted leading-relaxed mb-8">Aile terapisinde "hasta" birey değil, ilişki sistemidir. Bir aile üyesinin davrandığı şekil, diğerlerinin davranışıyla ilişkilidir. Bu örüntüleri görmek ve değiştirmek için tüm aileyle çalışıyoruz.</p>
+        <p class="text-ink-muted leading-relaxed mb-4">Aile terapisinde odak tek bir birey değil, ilişki sistemidir. Bir aile üyesinin davranışı, diğerlerinin davranışıyla birlikte anlam kazanır.</p>
+        <p class="text-ink-muted leading-relaxed mb-4">Sabahları okula gitmek istemeyen bir çocuk düşünün. Bunu yalnızca çocuğun kaygısı olarak ele alırsanız, o sabahların evde nasıl geçtiğini gözden kaçırırsınız: kimin sesini yükselttiğini, kimin araya girdiğini, tartışmanın çocuk hazırlanmaya başladığında nasıl durduğunu. Okul reddi bazen evdeki gerilimi bir yerde tutan işlevi görür.</p>
+        <p class="text-ink-muted leading-relaxed mb-8">Bu bakış kimseyi suçlamaz. Tam tersine, &ldquo;bunu kim başlattı&rdquo; sorusunu bırakıp &ldquo;bu döngü nasıl dönüyor&rdquo; sorusuna geçmeyi sağlar. İkinci soruya herkes bir cevap verebilir; ilkine kimse veremez.</p>
         <div class="bg-primary/5 rounded-2xl p-8 border border-primary/15">
           <blockquote class="font-serif text-xl text-ink leading-relaxed italic">
             "Ailenin en küçüğünün sorunu, bazen sistemin sesi olabilir."
           </blockquote>
         </div>
+      </div>
+    </section>
+
+    <section class="py-16 bg-warm">
+      <div class="max-w-4xl mx-auto px-5 lg:px-8">
+        <h2 class="font-serif text-3xl text-ink mb-8">Bir aile seansı nasıl geçiyor?</h2>
+        <div class="space-y-6">
+          <div class="flex gap-5">
+            <div class="flex-shrink-0"><div class="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center font-semibold text-lg">1</div></div>
+            <div class="bg-white rounded-2xl p-6 border border-warm-tertiary flex-1">
+              <h3 class="font-semibold text-ink mb-2">Kimlerin katılacağını birlikte belirliyoruz</h3>
+              <p class="text-sm text-ink-muted leading-relaxed">Bazen tüm aile, bazen yalnız ebeveynler, bazen bir ebeveyn ve bir çocuk. Herkesin her seansta odada olması gerekmez. İlk görüşmede kimlerin katılmasının yararlı olacağını birlikte değerlendiriyoruz.</p>
+            </div>
+          </div>
+          <div class="flex gap-5">
+            <div class="flex-shrink-0"><div class="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center font-semibold text-lg">2</div></div>
+            <div class="bg-white rounded-2xl p-6 border border-warm-tertiary flex-1">
+              <h3 class="font-semibold text-ink mb-2">Herkesin anlatısına yer açıyoruz</h3>
+              <p class="text-sm text-ink-muted leading-relaxed">Aynı olay her üyenin anlatımında farklı görünür ve hepsi geçerlidir. Psikolog taraf tutmaz; kimin haklı olduğuna karar vermek işimiz değil. Görevimiz, odadaki her sesin duyulabileceği bir alan kurmak.</p>
+            </div>
+          </div>
+          <div class="flex gap-5">
+            <div class="flex-shrink-0"><div class="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center font-semibold text-lg">3</div></div>
+            <div class="bg-white rounded-2xl p-6 border border-warm-tertiary flex-1">
+              <h3 class="font-semibold text-ink mb-2">Tekrar eden örüntü üzerine çalışıyoruz</h3>
+              <p class="text-sm text-ink-muted leading-relaxed">Tartışma hangi cümleyle başlıyor, kim geri çekiliyor, kim araya giriyor, konu nasıl kapanıyor. Bu sıra görünür hale geldiğinde her üye kendi payını nerede değiştirebileceğini fark eder. Değişim çoğu zaman buradan başlar.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 bg-white">
+      <div class="max-w-4xl mx-auto px-5 lg:px-8">
+        <h2 class="font-serif text-3xl text-ink mb-8">Ailelerin sık sorduğu iki şey</h2>
+        <div class="grid md:grid-cols-2 gap-5">
+          <div class="bg-warm rounded-2xl p-6 border border-warm-tertiary">
+            <h3 class="font-serif text-lg text-ink mb-3">&ldquo;Bir kişi gelmek istemiyor&rdquo;</h3>
+            <p class="text-sm text-ink-muted leading-relaxed">Bu çok sık oluyor. İsteksizlik genellikle korkudan gelir: suçlanacağını düşünmek ya da bunun işe yaramayacağına inanmak. Gelmek istemeyen kişiyi ikna etmeye çalışmıyoruz. Gelen üyelerle çalışmaya başlamak da döngüde bir şeyi değiştirir; ilerleyen haftalarda diğerleri katılmak isteyebilir.</p>
+          </div>
+          <div class="bg-warm rounded-2xl p-6 border border-warm-tertiary">
+            <h3 class="font-serif text-lg text-ink mb-3">&ldquo;Ayrı görüştüğümüzde söylediklerim aktarılır mı?&rdquo;</h3>
+            <p class="text-sm text-ink-muted leading-relaxed">Aile terapisinde zaman zaman üyelerle ayrı görüşmeler de yapılır. Bu görüşmelerde paylaşılanların aileyle nasıl ele alınacağını baştan konuşuyoruz. Merkezimizde görüşmeler ve kişisel bilgileriniz gizlilik ilkeleri doğrultusunda korunur.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 bg-warm">
+      <div class="max-w-4xl mx-auto px-5 lg:px-8">
+        <h2 class="font-serif text-3xl text-ink mb-6">Nesiller yan yana yaşarken</h2>
+        <p class="text-ink-muted leading-relaxed mb-4">Kıbrıs'ta aileler çoğu zaman birbirine yakın yaşar. Büyükanne ve büyükbaba günlük bakımın içindedir, akrabalar aynı sokakta oturur, bir kararı aile büyüklerine danışmadan almak zor olabilir. Bu yakınlık taşıyıcı bir destektir; aynı zamanda sınırların bulanıklaştığı bir alandır.</p>
+        <p class="text-ink-muted leading-relaxed mb-4">Genç bir çift kendi düzenini kurmaya çalışırken iki ailenin beklentisini de taşır. Ebeveynler çocuklarını kendi büyüdükleri kurallarla yetiştirmek isterken, çocuklar bambaşka bir kuşağın içinde büyür. Çatışma, çoğu zaman kötü niyetten değil, aynı anda geçerli olmaya çalışan iki farklı doğrudan çıkar.</p>
+        <p class="text-ink-muted leading-relaxed">Bu görüşmelerde amaç kimseyi ailesinden uzaklaştırmak değil. İlişkiyi koparmadan nerede sınır kurulabileceğine, kimin hangi kararda söz sahibi olduğuna ve beklentilerin nasıl konuşulabileceğine birlikte bakıyoruz.</p>
+      </div>
+    </section>
+
+    <section class="py-16 bg-white">
+      <div class="max-w-4xl mx-auto px-5 lg:px-8">
+        <h2 class="font-serif text-3xl text-ink mb-6">Aile terapisi mi, başka bir yol mu?</h2>
+        <p class="text-ink-muted leading-relaxed mb-4">Zorlanma bir ilişkinin içinde dönüyorsa aile terapisi uygun bir başlangıçtır. Ama her durum aile odasında ele alınmak zorunda değil. Sorun ağırlıklı olarak eşler arasındaysa çift görüşmeleri, tek bir kişinin taşıdığı bir yük söz konusuysa <a href="/hizmetler/bireysel-terapi.html" class="text-primary hover:underline">bireysel terapi</a> daha yerinde olabilir.</p>
+        <p class="text-ink-muted leading-relaxed">Çocuğunuzun yaşına göre <a href="/hizmetler/cocuk-psikolojisi.html" class="text-primary hover:underline">çocuk psikolojisi</a> ya da <a href="/hizmetler/ergen-psikolojisi.html" class="text-primary hover:underline">ergen psikolojisi</a> görüşmeleri aile çalışmasıyla birlikte yürütülebilir. Aynı şehirde olmayan aile üyeleri için <a href="/hizmetler/online-terapi.html" class="text-primary hover:underline">online seans</a> bir seçenek. Hangi yolun sizin durumunuza uyduğunu ilk görüşmede birlikte değerlendiriyoruz.</p>
       </div>
     </section>
