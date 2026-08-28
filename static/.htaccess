@@ -27,6 +27,10 @@ RewriteRule ^en/consent-form/?$ /onam-formu.php?dil=en [L]
 Redirect 301 /beyin-beden.html https://magusapsikoloji.com/blog/beyin-beden.html
 Redirect 301 /blog/dau-ogrencileri-psikolojik-destek.html https://magusapsikoloji.com/blog/universite-ogrencileri-psikolojik-destek.html
 
+# Çocuk psikoloğu yazısı, hizmet sayfasıyla aynı kelimede yarışmasın diye
+# /blog/cocuk-psikologu-magusa.html adresine taşındı (2026-08-28).
+Redirect 301 /blog/cocuk-psikologu.html https://magusapsikoloji.com/blog/cocuk-psikologu-magusa.html
+
 # --- Kaldırılan hizmet: Kaygı Terapisi (2026-08-03) ---
 # Sayfa yayından kalktı; adresler indekste ve dış bağlantılarda duruyor.
 # Hizmet listesine yönlendiriliyor: konu olarak en yakın karşılık orada.
