@@ -2,7 +2,7 @@
 
 **İz:** retrofit (yayında, sıralaması olan site)
 **Başlangıç:** 2026-09-02
-**Son güncelleme:** 2026-09-06
+**Son güncelleme:** 2026-09-07
 **Mevcut faz:** 5 — Mevcut Metni AEO Formatına Getirme
 **Öncelik:** dengeli
 
@@ -48,12 +48,18 @@ otorite işi yapılamaz.
 ardından öncelik listesi 4. madde (Gazimağusa şehir sayfası — adres bekleniyor).
 
 **Faz 5 ilerlemesi:**
-- ✅ **1. Nöropsikolojik değerlendirme hizmet sayfası TR+EN** — yayına hazır (henüz push edilmedi).
+> **YAYINDA** — commit `eff671b`, deploy 2026-09-07 doğrulandı. Canlı ölçüm (28 hizmet
+> sayfası): 2+ sorgu-H2 %100 · ideal pasaj %96 · tablo %36 · ort. 660 kelime · ort. 4,6 SSS.
+> Sitemap 92 → 94 URL. Yeni sayfalarda canonical self + hreflang tr/en/x-default +
+> BreadcrumbList/FAQPage/LocalBusiness şeması doğrulandı.
+> URL yazım hatası düzeltmesi (O6) de yayında: eski adresler 301 veriyor.
+
+- ✅ **1. Nöropsikolojik değerlendirme hizmet sayfası TR+EN** — YAYINDA.
   `content/tr/hizmetler/noropsikolojik-degerlendirme.njk` · `content/en/services/neuropsychological-assessment.njk`
   Sonuç: 8 H2 (5'i sorgu biçimli), 2 tablo, 1 numaralı liste, FAQPage şeması, 40 kelimelik
   açılış pasajı. TR 745 kelime / EN 1002 kelime — eski hizmet sayfaları 270/336'ydı.
   Site 92 → 94 URL. `npm run check` 0 hata 0 uyarı.
-- ✅ **2. 22 hizmet sayfasının AEO yapısı** — 10 TR + 10 EN hizmet sayfası + 2 dizin sayfası.
+- ✅ **2. 22 hizmet sayfasının AEO yapısı** — YAYINDA. 10 TR + 10 EN hizmet sayfası + 2 dizin sayfası.
   Toplu sonuç (28 hizmet sayfası): 2+ sorgu-H2 **%15 → %100** · ideal pasaj **%38 → %96** ·
   tablo **~%7 → %36** · liste %93 · ortalama kelime **351 → 660**. SSS 3 → 5 (yeni sayfada 6).
 - ⏸ Y2 (isimli yazar) engelli — psikologlar eğitim bilgilerini toparlıyor
