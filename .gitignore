@@ -9,3 +9,6 @@ magusa-panel-config/
 panel/config.php
 mail.log
 
+
+# Rakip ham HTML taramaları — denetim izi için yerelde tutulur, depoya girmez
+competitor-profiles/raw/
