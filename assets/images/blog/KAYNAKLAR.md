@@ -20,6 +20,7 @@ kart oranına (16:9) kırpılmış, ~800×450 px JPEG olarak repoda durur. TR ve
 | cocuk-psikologu.jpg | Ahşap bir masanın üzerinde duran, çocuk elinden çıkma renkli kalem çizimi | photo-1696527018053-3343b9853505 |
 | dehb-belirtileri-cocuk.jpg | Yerde her yöne dağılmış rengarenk oyuncak yığını | photo-1673757519832-6103ac740be3 |
 | depresyon-nedir.jpg | Perdeleri çekili loş bir odada duran koltuk | photo-1744559244044-e23c914de361 |
+| ebeveyn-danismanligi-magusa.jpg | Pencereden ışık alan sade bir odada duran küçük bir çocuk yatağı | photo-1771862956412-6ce9a725eb22 |
 | kaygi-bozuklugu-nedir.jpg | Birbirine dolanmış renkli kablo yumağı | photo-1761507321147-c21f673f9f6d |
 | kuzey-kibris-online-terapi.jpg | Çalışma masasında ekranın yanında duran kulaklık | photo-1533379007656-3a10925da2e2 |
 | kuzey-kibris-psikolog-bulma.jpg | Pencere kenarında, yanında sehpası olan tek bir koltuk | photo-1619596662481-085e45d69762 |
@@ -31,6 +32,7 @@ kart oranına (16:9) kırpılmış, ~800×450 px JPEG olarak repoda durur. TR ve
 | panik-atak-belirtileri.jpg | Kalp ritmini gösteren, inip çıkan çizgili bir kayıt çıktısı | photo-1560306990-18fa759c8713 |
 | psikolog-mu-psikiyatrist-mi.jpg | Açık bir defterin üzerinde duran küçük bir ilaç şişesi | photo-1550160769-fba1011934fb |
 | sinav-kaygisiyla-bas-etme.jpg | Optik cevap kâğıdının üzerinde duran kurşun kalem | photo-1606326608690-4e0281b1e588 |
+| terapi-dili-turkce-ingilizce.jpg | Açık duran iki dilli bir sözlüğün sayfası | photo-1451226428352-cf66bf8a0317 |
 | terapiye-baslamadan-once.jpg | Ahşap masada kahve fincanının yanında duran defter ve kalem | photo-1637689113621-73951984fcc1 |
 | terapiye-ne-zaman-gidilmeli.jpg | Üzerinde kalem duran, açık bir aylık ajanda | photo-1529651737248-dad5e287768e |
 | tukenmislik-sendromu.jpg | Aralarında ucu yanmış olanların da bulunduğu kibrit çöpü yığını | photo-1594508329976-4484d3cff278 |
