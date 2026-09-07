@@ -1,3 +1,5 @@
+const gitDates = require('../scripts/git-dates');
+
 /**
  * translationKey → TR/EN eş sayfa eşleşmesi.
  * hreflang etiketleri, nav dil düğmesi ve sitemap alternates buradan üretilir.
@@ -7,6 +9,12 @@
  */
 module.exports = {
   eleventyComputed: {
+    // Sayfada görünen "Son güncelleme" tarihi ve Article.dateModified.
+    // Kaynak sitemap <lastmod> ile aynı: scripts/git-dates.js. Tarih şemada
+    // olup sayfada görünmediğinde Google "yapılandırılmış veri görünür içeriği
+    // yansıtmalı" ilkesiyle çelişiyordu; artık ikisi tek yerden besleniyor.
+    lastUpdated: (data) =>
+      gitDates.resolve(data.page && data.page.inputPath, data.dateModified, data.datePublished),
     counterpartUrl: (data) => {
       if (!data.translationKey || !data.collections || !data.collections.all) return null;
       const other = data.lang === 'tr' ? 'en' : 'tr';

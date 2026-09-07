@@ -62,7 +62,7 @@
 <script type="application/ld+json">{{ breadcrumb | jsonldBreadcrumb | safe }}</script>
 {%- endif %}
 {%- if articleSchema %}
-<script type="application/ld+json">{{ articleSchema | jsonldArticle | safe }}</script>
+<script type="application/ld+json">{{ articleSchema | jsonldArticle(lastUpdated, card.image | absUrl) | safe }}</script>
 {%- endif %}
 {#- Sayfadaki tek FAQPage varlığı. İçerik sayfada görünür bölümde de basılır
     (chrome/faq-accordion.njk) — Google görünmeyen SSS işaretlemesini kabul etmiyor. #}

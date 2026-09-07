@@ -2,29 +2,7 @@ const { execSync } = require('child_process');
 const schemas = require('./scripts/schemas');
 const blocks = require('./scripts/render-blocks');
 
-// Sitemap <lastmod> için sayfa başına gerçek son değişiklik tarihi.
-// Kaynak git: dosyanın en son ne zaman değiştiğinin tek dürüst kaydı.
-// Tek `git log` çağrısı, yeni→eski sırada; bir yol ilk görüldüğünde en yenisidir.
-// Sığ klonda (fetch-depth: 1) harita eksik kalır — o zaman frontmatter tarihine düşeriz,
-// bu yüzden deploy iş akışı fetch-depth: 0 ile checkout yapar.
-const gitDates = (() => {
-  const map = new Map();
-  try {
-    const out = execSync('git log --pretty=format:%cI --name-only --no-renames -- content', {
-      encoding: 'utf8',
-      maxBuffer: 64 * 1024 * 1024,
-    });
-    let commitDate = null;
-    for (const line of out.split('\n')) {
-      if (!line) continue;
-      if (/^\d{4}-\d{2}-\d{2}T/.test(line)) commitDate = line.slice(0, 10);
-      else if (commitDate && !map.has(line)) map.set(line, commitDate);
-    }
-  } catch (e) {
-    // git yok ya da geçmiş erişilemez: frontmatter tarihleri kullanılır.
-  }
-  return map;
-})();
+const gitDates = require('./scripts/git-dates');
 
 module.exports = function (eleventyConfig) {
   // Statik dosyalar olduğu gibi kopyalanır
@@ -52,20 +30,37 @@ module.exports = function (eleventyConfig) {
 
   // JSON-LD filtreleri — scripts/schemas.js tek kaynak
   eleventyConfig.addFilter('jsonldBreadcrumb', (items) => JSON.stringify(schemas.breadcrumb(items)));
-  eleventyConfig.addFilter('jsonldArticle', (o) => JSON.stringify(schemas.article(o)));
+  // Article.dateModified ve .image render anında geçersiz kılınır:
+  // tarih git'ten (scripts/git-dates.js), görsel sayfanın kendi kart görselinden.
+  // Frontmatter'daki dateModified elle güncellenmiyordu ve image tüm yazılarda
+  // og-image.jpg'yi gösteriyordu — o dosya sunucuda 404.
+  eleventyConfig.addFilter('jsonldArticle', (o, dateModified, image) =>
+    JSON.stringify(schemas.article({
+      ...o,
+      dateModified: dateModified || o.dateModified,
+      image: image || o.image,
+    })));
+  // Göreli yolu mutlak URL'ye çevirir; şema alanları tam adres ister.
+  // 2026-09-07 → "7 Eylül 2026" / "7 September 2026"
+  eleventyConfig.addFilter('trDate', (iso, lang) => {
+    if (!iso) return '';
+    const [y, m, d] = String(iso).split('-').map(Number);
+    const aylar = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const name = (lang === 'en' ? months : aylar)[m - 1];
+    return `${d} ${name} ${y}`;
+  });
+
+  eleventyConfig.addFilter('absUrl', (u) =>
+    !u ? null : (/^https?:\/\//.test(u) ? u : 'https://magusapsikoloji.com' + u));
+
   eleventyConfig.addFilter('jsonldFaq', (items) => JSON.stringify(schemas.faqPage(items)));
   eleventyConfig.addFilter('flattenFaq', (categories) => categories.flatMap((c) => c.items));
 
   // Sitemap <lastmod>: git tarihi ile yazarın beyan ettiği tarihten hangisi yeniyse o.
   // Hiçbiri yoksa null döner ve sitemap o URL için lastmod yazmaz — uydurmaktansa boş bırakılır.
-  eleventyConfig.addFilter('lastmod', (page) => {
-    const rel = String(page.inputPath || '').replace(/^\.\//, '');
-    const dates = [gitDates.get(rel), page.data.dateModified, page.data.datePublished]
-      .filter(Boolean)
-      .map((d) => String(d).slice(0, 10))
-      .filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d));
-    return dates.length ? dates.sort().pop() : null;
-  });
+  eleventyConfig.addFilter('lastmod', (page) =>
+    gitDates.resolve(page.inputPath, page.data.dateModified, page.data.datePublished));
 
   // Blog gövdesi: frontmatter'daki hero + bloklar → HTML (scripts/render-blocks.js)
   eleventyConfig.addFilter('renderHero', (hero, category, readingTime, url) =>

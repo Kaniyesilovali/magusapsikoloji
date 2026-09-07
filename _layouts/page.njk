@@ -2,6 +2,14 @@
 layout: base.njk
 ---
 {{ content | safe }}
+{%- if lastUpdated %}
+    <div class="max-w-3xl mx-auto px-5 lg:px-8 pb-10">
+      <p class="text-xs text-ink-light border-t border-warm-tertiary pt-5">
+        {{ 'Last updated' if lang == 'en' else 'Son güncelleme' }}:
+        <time datetime="{{ lastUpdated }}">{{ lastUpdated | trDate(lang) }}</time>
+      </p>
+    </div>
+{%- endif %}
 {%- if faqItems.length %}
 {% include "chrome/faq-accordion.njk" %}
 {%- endif %}
