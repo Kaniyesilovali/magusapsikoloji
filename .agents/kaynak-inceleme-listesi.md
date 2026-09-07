@@ -44,27 +44,136 @@ WHO'nun 10–19 yaş için verdiği rakam budur, ama kaynak bağlantısı henüz
 
 ---
 
-## B · Kaynak aranacak, sonra psikolog onayına gelecek
+## B · ARAŞTIRILDI — psikolog kararı bekliyor
 
-Bu iddiaların ya atfı belirsiz ("Araştırmalar…") ya da sayı var kaynak yok. Her biri için
-kaynak arayacağım; **bulamadıklarımı uydurmayacağım, yumuşatma önereceğim.** Yumuşatma
-önerileri sizin yazdığınız cümleleri zayıflattığı için mutlaka onayınıza gelecek.
+Yedi maddenin kaynağı arandı. **Dördünde gerçek sorun çıktı.** Her biri için önerilen cümle
+yazıldı; hiçbiri henüz uygulanmadı.
 
-| # | Sayfa | İddia | Ne gerekiyor |
-|---|---|---|---|
-| B1 | `/blog/sinav-kaygisiyla-bas-etme` | "Üniversite öğrencilerinin yaklaşık **%25-40**'ı klinik düzeyde sınav kaygısı yaşar" | Kaynak yok. Aralık geniş — hangi çalışma? |
-| B2 | `/blog/sinav-kaygisiyla-bas-etme` | "Aralıklı tekrar kalıcı öğrenmeyi **üç kata kadar** artırır (Ebbinghaus, 1885; güncellenmiş meta-analizler)" | Ebbinghaus 1885 unutma eğrisidir, "üç kat" iddiasını desteklemez. Güncel bir aralıklı tekrar meta-analizi gerekiyor ya da iddia yumuşatılmalı |
-| B3 | `/blog/sinav-kaygisiyla-bas-etme` | "**Stanford araştırmaları**, kaygıyı 'heyecan' olarak yeniden etiketlemenin performansı artırdığını…" | Muhtemelen Alison Wood Brooks (Harvard), Stanford değil. **Kurum yanlış olabilir** |
-| B4 | `/blog/panik-atak-belirtileri` | "Dünya nüfusunun yaklaşık **%11**'i… en az bir panik atak yaşar. Panik bozukluğu yetişkinlerin **%2–3**'ünü etkiler, kadınlarda iki kat sık. (APA, 2022)" | APA atfı var, bağlantı yok. Hangi APA yayını? |
-| B5 | `/blog/anksiyete-nedir` | "Dünya genelinde yaklaşık **4 kişiden 1'i** yaşamının bir döneminde anksiyete bozukluğuyla karşılaşır" | Kaynak yok |
-| B6 | `/blog/depresyon-nedir` | "Annelerin yaklaşık **%10-15**'ini etkiler" (doğum sonrası depresyon) | Kaynak yok |
-| B7 | `/blog/depresyon-nedir` | "Dünya Sağlık Örgütü'ne göre dünya genelinde yaklaşık…" | WHO atfı var, bağlantı ve güncel rakam gerekiyor |
-| B8 | `/blog/okul-fobisi-cocuk` | "Okul çağındaki çocukların yaklaşık **%1-5**'inde görülür" | Kaynak yok |
-| B9 | `/blog/magusa-uluslararasi-ogrenciler-ruh-sagligi` | "**2023 tarihli bir meta-analiz**, yaklaşık her 3 uluslararası öğrenciden 1'inin…" | Hangi meta-analiz? Ad ve bağlantı yok |
-| B10 | `/blog/cift-terapisi-gazimagusa` | "Araştırmalar, çiftlerin profesyonel yardım almayı ortalama **altı yıl** ertelediğini…" | Gottman'a atfedilir ama kaynağı sık yanlış gösterilir. **Doğrulanmalı** |
-| B11 | `/blog/dehb-belirtileri-cocuk` | "Araştırmalar, **ebeveyn eğitiminin çocuğa yönelik terapiyle benzer etkinlikte** olduğunu…" | Güçlü klinik iddia, kaynak yok |
-| B12 | `/blog/psikolog-mu-psikiyatrist-mi` | "'Kombine tedavi' orta-ağır depresyon ve kaygıda **araştırmalar tarafından güçlü biçimde desteklenmektedir**" | Kaynak yok |
-| B13 | `/hizmetler/online-terapi`, `/sss.html`, `/blog/kuzey-kibris-online-terapi`, `/blog/terapi-dili-turkce-ingilizce` | "Araştırmalar, online seansların yüz yüze ile benzer sonuç verdiğini…" (4 sayfada tekrar) | A1/A2'ye bağlanabilir — aynı kaynaklar |
+---
+
+### B3 · Kurum YANLIŞ — `/blog/sinav-kaygisiyla-bas-etme`
+
+**Mevcut:** "**Stanford araştırmaları**, kaygıyı 'heyecan' olarak yeniden etiketlemenin bile
+performansı artırdığını gösteriyor."
+
+**Bulgu:** Çalışma Alison Wood Brooks'a ait, **Harvard Business School**.
+*Journal of Experimental Psychology: General* 143(3):1144–1158 (2014). Karaoke, topluluk
+önünde konuşma ve matematik performansı deneyleri. Bulgu doğru — kurum yanlış.
+
+**Önerilen:** "Harvard'dan Alison Wood Brooks'un çalışması ([Brooks,
+2014](https://doi.org/10.1037/a0035325)), kaygıyı 'heyecan' olarak yeniden etiketlemenin —
+sesli olarak 'heyecanlıyım' demek kadar basit bir müdahalenin bile — performansı artırdığını
+gösteriyor."
+
+---
+
+### B2 · Kaynak yanlış + rakam desteklenmiyor — `/blog/sinav-kaygisiyla-bas-etme`
+
+**Mevcut:** "…aralıklı olarak tekrar etmek kalıcı öğrenmeyi **üç kata kadar** artırır.
+(**Ebbinghaus, 1885**; güncellenmiş meta-analizler)"
+
+**İki ayrı sorun:**
+1. Ebbinghaus (1885) **unutma eğrisi** çalışmasıdır; aralıklı tekrarın üstünlüğünü ölçmez.
+2. **"Üç kata kadar" hiçbir veriyle desteklenmiyor.** Alandaki meta-analiz aralıklı geri
+   getirme pratiği için **g = 0,74** etki büyüklüğü veriyor (Latimier ve ark., 2021,
+   *Educational Psychology Review*). Etki büyüklüğü "üç kat" demek değildir.
+
+**Önerilen:** "…aralıklı olarak tekrar etmek, aynı süreyi tek seferde harcamaktan belirgin
+biçimde daha kalıcı öğrenme sağlıyor ([Latimier ve ark.,
+2021](https://doi.org/10.1007/s10648-020-09572-8))." — *"üç kata kadar" ifadesi çıkarılıyor.*
+
+---
+
+### B10 · Rakam hakemli kaynağa bağlanamıyor ve çelişkili — `/blog/cift-terapisi-gazimagusa`
+
+**Mevcut:** "Araştırmalar, çiftlerin profesyonel yardım almayı ortalama **altı yıl**
+ertelediğini gösteriyor."
+
+**Bulgu:** "Altı yıl" Gottman Institute'un yaydığı bir rakam ama **belirli bir hakemli
+yayına bağlanamıyor** — klinik gözlem olarak tekrarlanıyor. Ayrıca daha yeni bir çalışma
+bu rakama itiraz ediyor ve **2,5 yıl** buluyor.
+
+**Önerilen:** "Çiftlerin, sorun başladıktan sonra yardım aramayı çoğu zaman yıllarca
+ertelediği klinik olarak sık gözlenen bir örüntü. Ne kadar beklendiğine dair rakamlar
+çalışmadan çalışmaya değişiyor." — *sayı verilmiyor.*
+
+**Psikolog kararı:** Rakamı tamamen kaldırmak mı, yoksa "Gottman Institute'a göre" diye
+açıkça atfedip klinik gözlem olduğunu belirtmek mi?
+
+---
+
+### B11 · İddia fazla geniş, daraltılmalı — `/blog/dehb-belirtileri-cocuk`
+
+**Mevcut:** "Araştırmalar, **ebeveyn eğitiminin çocuğa yönelik terapiyle benzer etkinlikte**
+olduğunu gösteriyor."
+
+**Bulgu:** Kısmen doğru ama olduğu gibi fazla geniş.
+- **Kaygıda:** ebeveyn-odaklı BDT ile çocuk katılımlı BDT arasında etkinlik farkı bulunmamış
+  — ama ebeveyn-odaklı grubun **kabul edilebilirliği belirgin biçimde daha düşük**
+  ([meta-analiz](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7802251/)).
+- **DEHB'de:** davranışsal ebeveyn eğitimi kendi başına kanıta dayalı bir müdahale ve
+  etkileri uzun vadede sürüyor — ama çerçeve "çocuk terapisine eşdeğer" değil, "kendi başına
+  etkili" biçiminde.
+
+**Önerilen:** "Davranışsal ebeveyn eğitimi, DEHB'de kendi başına kanıta dayalı bir
+müdahaledir ve etkileri uzun vadede sürer. Kaygı tablolarında ebeveyn odaklı çalışmanın
+çocuk katılımlı çalışmayla benzer sonuç verdiğini gösteren araştırmalar da var."
+
+**Psikolog kararı:** DEHB yazısında kaygı verisine atıf yapmak yerinde mi?
+
+---
+
+### B4 · Büyük ölçüde destekleniyor — `/blog/panik-atak-belirtileri`
+
+**Mevcut:** "Dünya nüfusunun yaklaşık **%11**'i… en az bir panik atak yaşar. Panik bozukluğu
+yetişkinlerin yaklaşık **%2–3**'ünü etkiler ve kadınlarda iki kat daha sık görülür. (APA, 2022)"
+
+**Bulgu:** Üç rakam da alandaki verilerle uyumlu. Panik atak yaşam boyu yaygınlığı
+kaynağa göre **%11–13,2** aralığında (WHO Dünya Ruh Sağlığı anketleri %13,2 veriyor); panik
+bozukluğu 12 aylık %2–3 ✓; kadın:erkek ≈ 2:1 ✓.
+
+**Öneri:** Rakamlar kalsın, atıf netleşsin — "(APA, 2022)" yerine bağlantılı kaynak.
+**Psikolog kararı:** %11 mi %13,2 mi kullanılsın, hangi kaynak tercih edilir?
+
+---
+
+### B5 / B7 · Güncel WHO rakamı gerekiyor — `/blog/anksiyete-nedir`, `/blog/depresyon-nedir`
+
+**Mevcut:** "Dünya genelinde yaklaşık **4 kişiden 1'i** yaşamının bir döneminde anksiyete
+bozukluğuyla karşılaşır" · "Dünya Sağlık Örgütü'ne göre dünya genelinde yaklaşık…"
+
+**Bulgu — WHO 2025 verisi:** Dünyada **1 milyardan fazla** kişi psikolojik bir tabloyla
+yaşıyor; 2021'de **her 7 kişiden 1'i** (1,1 milyar). Anksiyete bozuklukları **359 milyon**
+kişi (2021), bunun 72 milyonu çocuk ve ergen.
+
+**Dikkat:** "4 kişiden 1'i" *yaşam boyu* yaygınlıktır, WHO'nun verdiği rakamlar *nokta*
+yaygınlıktır. İkisi karıştırılırsa hata olur. Yaşam boyu anksiyete için alandaki standart
+atıf Bandelow & Michaelis (2015), yaklaşık **%33,7** — yani "3 kişiden 1'i", site "4 kişiden
+1'i" diyor (daha muhafazakâr).
+
+**Psikolog kararı:** Yaşam boyu mu nokta yaygınlık mı verilecek? Hangi rakam?
+
+---
+
+### B13 · Kolay — 4 sayfada tekrar eden online terapi iddiası
+
+`/hizmetler/online-terapi` · `/sss.html` · `/blog/kuzey-kibris-online-terapi` ·
+`/blog/terapi-dili-turkce-ingilizce` — hepsinde "Araştırmalar, online seansların yüz yüze ile
+benzer sonuç verdiğini…" deniyor. **A1 ve A2'deki doğrulanmış kaynaklara bağlanabilir.**
+Ek araştırma gerekmiyor.
+
+---
+
+## B · HENÜZ ARAŞTIRILMADI (6 madde)
+
+| # | Sayfa | İddia |
+|---|---|---|
+| B1 | `/blog/sinav-kaygisiyla-bas-etme` | "Üniversite öğrencilerinin yaklaşık %25-40'ı klinik düzeyde sınav kaygısı yaşar" |
+| B6 | `/blog/depresyon-nedir` | "Annelerin yaklaşık %10-15'ini etkiler" (doğum sonrası depresyon) |
+| B8 | `/blog/okul-fobisi-cocuk` | "Okul çağındaki çocukların yaklaşık %1-5'inde görülür" |
+| B9 | `/blog/magusa-uluslararasi-ogrenciler-ruh-sagligi` | "2023 tarihli bir meta-analiz, her 3 uluslararası öğrenciden 1'i…" |
+| B12 | `/blog/psikolog-mu-psikiyatrist-mi` | "Kombine tedavi… araştırmalar tarafından güçlü biçimde desteklenmektedir" |
+| — | `/blog/cocuk-psikologu-magusa` | "WHO… 10-19 yaş her yedi gençten biri" (bağlantı eksik) |
 
 ---
 
