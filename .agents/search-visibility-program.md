@@ -2,7 +2,7 @@
 
 **İz:** retrofit (yayında, sıralaması olan site)
 **Başlangıç:** 2026-09-02
-**Son güncelleme:** 2026-09-07
+**Son güncelleme:** 2026-09-07 (Faz 5 ilerleme)
 **Mevcut faz:** 5 — Mevcut Metni AEO Formatına Getirme
 **Öncelik:** dengeli
 
@@ -76,6 +76,18 @@ ardından öncelik listesi 4. madde (Gazimağusa şehir sayfası — adres bekle
   **Posta kodu YOK** — verilmedi, uydurulmadı. GBP'de varsa şemaya eklenecek.
   **GBP notu:** `kgmid=/g/11nvs6qzw7` — zaten bir Google kaydı var, sıfırdan açılmayacak;
   mevcut kayıt sahiplenilip tamamlanacak. Google onay duvarı nedeniyle içeriği okunamıyor.
+- ✅ **3. Çift terapisi hizmet sayfası TR+EN** — YAYINDA (commit `b331e05`).
+  Blog "ne zaman başlanmalı"yı tutuyor, sayfa ticari yarısını aldı. Kart sırası 7'ye alındı.
+- ✅ **6. PDRAM ayrımı** — YAYINDA (commit `e6d02c5`). 8 sayfa/99: 2 hizmet sayfası,
+  4 blog yazısı, 2 şehir sayfası. Kullanıcı kararına uygun, site geneline yayılmadı.
+- ✅ **Y3 görünür tarih** — YAYINDA (commit `560a6c1`). **96/98 sayfa.**
+  Git tarihi `scripts/git-dates.js`'e taşındı; sitemap `lastmod` ile sayfadaki görünür tarih
+  tek kaynaktan besleniyor. **Yan bulgu:** `dateModified` frontmatter'da elle yazılıyordu ve
+  neredeyse tüm yazılarda `datePublished` ile aynıydı — artık 42 yazıda gerçekten sonraki tarih.
+  Tarihsiz 2 sayfa çift terapisi sayfaları (git geçmişi yoktu; uydurulmadı, commit sonrası gelecek).
+- ✅ **Y5 Article.image** — YAYINDA. **46 → 0.** Faz 1'de "en hızlı kazanım" diye işaretlenip
+  atlanmıştı. Şema artık sayfanın kendi kart görselini alıyor. Ayrıca Article şemasını
+  `rawSchemas`'ta tutan 2 yazı `articleSchema`'ya çevrildi.
 - ⏸ 5/7. Kurumsal hizmetler — sözleşme modeli, seans kotası, atölye başlıkları teyit bekliyor
 
 **Faz 5 iş listesi (puana göre):**
