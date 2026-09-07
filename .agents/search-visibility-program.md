@@ -63,10 +63,19 @@ ardından öncelik listesi 4. madde (Gazimağusa şehir sayfası — adres bekle
   Toplu sonuç (28 hizmet sayfası): 2+ sorgu-H2 **%15 → %100** · ideal pasaj **%38 → %96** ·
   tablo **~%7 → %36** · liste %93 · ortalama kelime **351 → 660**. SSS 3 → 5 (yeni sayfada 6).
 - ⏸ Y2 (isimli yazar) engelli — psikologlar eğitim bilgilerini toparlıyor
-- ⏸ 4. Gazimağusa şehir sayfası — **gerçek adres bekleniyor.** Kullanıcı Google paylaşım
-  bağlantısı verdi; Google onay duvarı nedeniyle adres çıkarılamadı. **Metin olarak gerekiyor.**
-  Bulgu: `kgmid=/g/11nvs6qzw7` — **zaten bir Google kaydı var**, GBP sıfırdan açılmayacak,
-  mevcut kayıt sahiplenilip tamamlanacak.
+- ✅ **4. Gazimağusa şehir sayfası TR+EN** — YAYINDA (commit `ab8803d`, deploy doğrulandı).
+  `/gazimagusa-psikolog.html` (610 kelime) · `/en/psychologist-in-famagusta.html` (836 kelime).
+  Her ikisi 5 H2 (4'ü soru), 1 tablo, 6 SSS. PDRAM ayrımı bu sayfada da var.
+  **Şehir sayfası ÇOĞALTILMAYACAK** — yalnız Gazimağusa.
+- ✅ **Adres tüm siteye uygulandı** (2026-09-07). Kullanıcı adresi metin olarak verdi:
+  *Eşref Bitlis Caddesi, Sancak Plaza, Kat 5 Daire 2, Gazimağusa.*
+  `_data/contact.json` tek kaynak; iletişim + KVKK + gizlilik sayfaları (TR/EN) oradan besleniyor.
+  **36 sayfanın `LocalBusiness` şemasına `streetAddress` eklendi** (önceden yalnız locality vardı).
+  İki dilde birebir aynı sokak dizesi — GBP ile NAP tutarlılığı için.
+  İletişim sayfasındaki görünür `[Sokak / Bina bilgisi eklenecek]` placeholder'ı kapandı.
+  **Posta kodu YOK** — verilmedi, uydurulmadı. GBP'de varsa şemaya eklenecek.
+  **GBP notu:** `kgmid=/g/11nvs6qzw7` — zaten bir Google kaydı var, sıfırdan açılmayacak;
+  mevcut kayıt sahiplenilip tamamlanacak. Google onay duvarı nedeniyle içeriği okunamıyor.
 - ⏸ 5/7. Kurumsal hizmetler — sözleşme modeli, seans kotası, atölye başlıkları teyit bekliyor
 
 **Faz 5 iş listesi (puana göre):**
