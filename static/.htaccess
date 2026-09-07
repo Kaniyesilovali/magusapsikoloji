@@ -36,3 +36,9 @@ Redirect 301 /blog/cocuk-psikologu.html https://magusapsikoloji.com/blog/cocuk-p
 # Hizmet listesine yönlendiriliyor: konu olarak en yakın karşılık orada.
 Redirect 301 /hizmetler/kaygi-terapisi.html https://magusapsikoloji.com/hizmetler/
 Redirect 301 /en/services/anxiety-therapy.html https://magusapsikoloji.com/en/services/
+
+# --- URL yazım hatası düzeltmesi: "magussa" → "magusa" (2026-09-06) ---
+# İki blog adresi Gazimağusa'yı çift s ile yazıyordu. Hedeflenen kelimenin
+# kendisi yanlış yazıldığı için düzeltildi; eski adresler indekste.
+Redirect 301 /blog/aile-terapisi-magussa.html https://magusapsikoloji.com/blog/aile-terapisi-magusa.html
+Redirect 301 /blog/cift-terapisi-gazimagussa.html https://magusapsikoloji.com/blog/cift-terapisi-gazimagusa.html

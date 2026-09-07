@@ -13,10 +13,10 @@ kart oranına (16:9) kırpılmış, ~800×450 px JPEG olarak repoda durur. TR ve
 
 | Dosya | Konu bağlantısı | Unsplash foto kimliği |
 | --- | --- | --- |
-| aile-terapisi-magussa.jpg | Etrafında sandalyeler dizili yuvarlak ahşap bir masa | photo-1706380469091-3bd9b7865b71 |
+| aile-terapisi-magusa.jpg | Etrafında sandalyeler dizili yuvarlak ahşap bir masa | photo-1706380469091-3bd9b7865b71 |
 | anksiyete-nedir.jpg | Yatak başındaki komodinde duran çalar saat | photo-1499933374294-4584851497cc |
 | beyin-beden.jpg | İnsan beyninin kesitini gösteren anatomik model | photo-1559757148-5c350d0d3c56 |
-| cift-terapisi-gazimagussa.jpg | Yan yana duran iki koltuk | photo-1554142246-fb0df4132bb1 |
+| cift-terapisi-gazimagusa.jpg | Yan yana duran iki koltuk | photo-1554142246-fb0df4132bb1 |
 | cocuk-psikologu.jpg | Ahşap bir masanın üzerinde duran, çocuk elinden çıkma renkli kalem çizimi | photo-1696527018053-3343b9853505 |
 | dehb-belirtileri-cocuk.jpg | Yerde her yöne dağılmış rengarenk oyuncak yığını | photo-1673757519832-6103ac740be3 |
 | depresyon-nedir.jpg | Perdeleri çekili loş bir odada duran koltuk | photo-1744559244044-e23c914de361 |
