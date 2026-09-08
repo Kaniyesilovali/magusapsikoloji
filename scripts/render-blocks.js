@@ -208,4 +208,4 @@ function renderHero(hero, opts = {}) {
   );
 }
 
-module.exports = { renderBlocks, renderHero, renderers };
+module.exports = { renderBlocks, renderHero, renderers, inline };

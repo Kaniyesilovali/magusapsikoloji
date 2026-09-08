@@ -12,7 +12,7 @@
 {%- for item in faqItems %}
         <article class="py-5 border-b border-warm-tertiary last:border-0">
           <h3 class="font-semibold text-ink mb-2 text-sm leading-snug">{{ item.q }}</h3>
-          <p class="text-sm text-ink-muted leading-relaxed">{{ item.a }}</p>
+          <p class="text-sm text-ink-muted leading-relaxed">{{ item.a | mdInline | safe }}</p>
         </article>
 {%- endfor %}
       </div>

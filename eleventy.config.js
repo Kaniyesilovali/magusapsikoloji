@@ -54,7 +54,12 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter('absUrl', (u) =>
     !u ? null : (/^https?:\/\//.test(u) ? u : 'https://magusapsikoloji.com' + u));
 
-  eleventyConfig.addFilter('jsonldFaq', (items) => JSON.stringify(schemas.faqPage(items)));
+  // SSS cevaplarında satır içi markdown (kaynak bağlantıları) render edilir.
+  // Görünür bölüm ile FAQPage şeması aynı metni taşımalı — Google bunu şart koşuyor —
+  // bu yüzden ikisi de aynı filtreden geçer. Google FAQ cevabında <a> etiketine izin verir.
+  eleventyConfig.addFilter('mdInline', (s) => blocks.inline(s));
+  eleventyConfig.addFilter('jsonldFaq', (items) => JSON.stringify(schemas.faqPage(
+    items.map((it) => ({ ...it, a: blocks.inline(it.a) })))));
   eleventyConfig.addFilter('flattenFaq', (categories) => categories.flatMap((c) => c.items));
 
   // Sitemap <lastmod>: git tarihi ile yazarın beyan ettiği tarihten hangisi yeniyse o.
