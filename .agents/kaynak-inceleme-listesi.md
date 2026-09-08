@@ -2,7 +2,23 @@
 
 **Tarih:** 2026-09-07 · **Program:** Faz 5 · Y1 (kaynak/atıf ekleme)
 **Ne için:** Sitedeki her sayısal ve araştırma iddiasının arkasına doğrulanabilir bir kaynak
-koymak. Hiçbir değişiklik psikolog onayı olmadan yayına gitmez.
+koymak.
+
+> ## Durum — 2026-09-08
+>
+> **Uygulandı (olgusal hata düzeltmesi, klinik yorum değil):** B2, B3, B10 + doğrulanmış
+> kaynak bağlantıları (A1 Carlbring, A2 Fernandez, A3 Polanczyk) + B13'teki tekrar eden
+> online terapi iddiaları. Yayına gitti.
+>
+> **Uygulama sırasında bulunan ek sorun:** `/hizmetler/online-terapi` sayfasında
+> **"(APA, 2023)"** atfı vardı. Doğrulanamadı — APA bu konuda meta-analiz yayımlamıyor.
+> Doğrulanmış Carlbring 2018 kaynağıyla değiştirildi.
+>
+> **Hâlâ psikolog bekliyor:** B11 (klinik iddia) + dört karar sorusu + 6 araştırılmamış madde.
+>
+> **Not:** SSS cevapları `{{ item.a }}` ile basılıyor, markdown render edilmiyor.
+> Oralarda kaynak düz metin olarak yazıldı ("Carlbring ve arkadaşlarının 2018 meta-analizi"),
+> bağlantı verilemedi. Bağlantı istenirse `faq-accordion.njk` şablonu değişmeli.
 
 ## Neden bu iş
 
@@ -51,7 +67,7 @@ yazıldı; hiçbiri henüz uygulanmadı.
 
 ---
 
-### B3 · Kurum YANLIŞ — `/blog/sinav-kaygisiyla-bas-etme`
+### B3 · ✅ UYGULANDI — kurum yanlıştı — `/blog/sinav-kaygisiyla-bas-etme`
 
 **Mevcut:** "**Stanford araştırmaları**, kaygıyı 'heyecan' olarak yeniden etiketlemenin bile
 performansı artırdığını gösteriyor."
@@ -67,7 +83,7 @@ gösteriyor."
 
 ---
 
-### B2 · Kaynak yanlış + rakam desteklenmiyor — `/blog/sinav-kaygisiyla-bas-etme`
+### B2 · ✅ UYGULANDI — kaynak yanlış + rakam desteklenmiyordu — `/blog/sinav-kaygisiyla-bas-etme`
 
 **Mevcut:** "…aralıklı olarak tekrar etmek kalıcı öğrenmeyi **üç kata kadar** artırır.
 (**Ebbinghaus, 1885**; güncellenmiş meta-analizler)"
@@ -84,7 +100,7 @@ biçimde daha kalıcı öğrenme sağlıyor ([Latimier ve ark.,
 
 ---
 
-### B10 · Rakam hakemli kaynağa bağlanamıyor ve çelişkili — `/blog/cift-terapisi-gazimagusa`
+### B10 · ✅ UYGULANDI — rakam kaldırıldı — `/blog/cift-terapisi-gazimagusa`
 
 **Mevcut:** "Araştırmalar, çiftlerin profesyonel yardım almayı ortalama **altı yıl**
 ertelediğini gösteriyor."
@@ -97,12 +113,12 @@ bu rakama itiraz ediyor ve **2,5 yıl** buluyor.
 ertelediği klinik olarak sık gözlenen bir örüntü. Ne kadar beklendiğine dair rakamlar
 çalışmadan çalışmaya değişiyor." — *sayı verilmiyor.*
 
-**Psikolog kararı:** Rakamı tamamen kaldırmak mı, yoksa "Gottman Institute'a göre" diye
-açıkça atfedip klinik gözlem olduğunu belirtmek mi?
+**Uygulandı:** Sayı tamamen kaldırıldı. Gerekçe: rakam verilince okuyucu hakemli bir bulgu
+sanıyor. Geri dönmek isterseniz "Gottman Institute'un klinik gözlemi" biçiminde atfedilebilir.
 
 ---
 
-### B11 · İddia fazla geniş, daraltılmalı — `/blog/dehb-belirtileri-cocuk`
+### B11 · ⏸ PSİKOLOG BEKLİYOR — iddia fazla geniş — `/blog/dehb-belirtileri-cocuk`
 
 **Mevcut:** "Araştırmalar, **ebeveyn eğitiminin çocuğa yönelik terapiyle benzer etkinlikte**
 olduğunu gösteriyor."
@@ -123,7 +139,7 @@ müdahaledir ve etkileri uzun vadede sürer. Kaygı tablolarında ebeveyn odakl�
 
 ---
 
-### B4 · Büyük ölçüde destekleniyor — `/blog/panik-atak-belirtileri`
+### B4 · ⏸ PSİKOLOG BEKLİYOR — rakam seçimi — `/blog/panik-atak-belirtileri`
 
 **Mevcut:** "Dünya nüfusunun yaklaşık **%11**'i… en az bir panik atak yaşar. Panik bozukluğu
 yetişkinlerin yaklaşık **%2–3**'ünü etkiler ve kadınlarda iki kat daha sık görülür. (APA, 2022)"
@@ -137,7 +153,7 @@ bozukluğu 12 aylık %2–3 ✓; kadın:erkek ≈ 2:1 ✓.
 
 ---
 
-### B5 / B7 · Güncel WHO rakamı gerekiyor — `/blog/anksiyete-nedir`, `/blog/depresyon-nedir`
+### B5 / B7 · ⏸ PSİKOLOG BEKLİYOR — yaşam boyu mu nokta yaygınlık mı — `/blog/anksiyete-nedir`, `/blog/depresyon-nedir`
 
 **Mevcut:** "Dünya genelinde yaklaşık **4 kişiden 1'i** yaşamının bir döneminde anksiyete
 bozukluğuyla karşılaşır" · "Dünya Sağlık Örgütü'ne göre dünya genelinde yaklaşık…"
@@ -155,7 +171,7 @@ atıf Bandelow & Michaelis (2015), yaklaşık **%33,7** — yani "3 kişiden 1'i
 
 ---
 
-### B13 · Kolay — 4 sayfada tekrar eden online terapi iddiası
+### B13 · ✅ UYGULANDI — 4 sayfadaki tekrar eden iddia
 
 `/hizmetler/online-terapi` · `/sss.html` · `/blog/kuzey-kibris-online-terapi` ·
 `/blog/terapi-dili-turkce-ingilizce` — hepsinde "Araştırmalar, online seansların yüz yüze ile
