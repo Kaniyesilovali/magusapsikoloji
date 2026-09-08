@@ -209,6 +209,45 @@ alıntılandı mı?** ve **onun yerine kim alıntılandı?**
 
 ---
 
+## 4b · Erişilebilirlik ön ölçümü (2026-09-08) — alıntı ölçümü DEĞİL
+
+**Ne ölçüldü:** 20 sorgunun her biri için sitede o soruya doğrudan yanıt veren bir sayfa
+var mı; o sayfada sorgu biçimli H2 / eşleşen SSS / çıkarılabilir pasaj bulunuyor mu.
+Alıntılanmanın **ön koşulu** budur, alıntının kendisi değil.
+
+**Neden:** Bölüm 4'teki asıl çizelge dört AI motorunda elle çalıştırma gerektiriyor ve bu
+ortamdan yapılamıyor. Arz tarafı ise ölçülebilir.
+
+**Sonuç (98 sayfa, yerel build):** 11 güçlü · 6 zayıf · 3 sinyalsiz.
+
+### ⚠ Yöntem uyarısı — bu rakamlar ALT SINIR
+
+Skorlayıcı, anahtar kelimelerin tek bir H2/SSS/pasajda **birlikte** geçmesini arıyor;
+kelimeler başlık ile gövdeye dağılınca kaçırıyor. Elle doğrulamada 3 sinyalsizden
+**ikisi yanlış negatif** çıktı:
+
+| Sorgu | Skorlayıcı | Gerçek |
+|---|---|---|
+| "İlk terapi seansında ne olur?" | sinyalsiz | `/blog/terapiye-baslamadan-once.html`'de **birebir aynı SSS var** |
+| "Child psychologist Famagusta" | sinyalsiz | Sayfa **başlığı** tam olarak bu; gövdede Famagusta 14 kez |
+| "KKTC'de terapi ücretleri ne kadar?" | sinyalsiz | ✅ **gerçek boşluk** |
+
+Sıralama, görünürlük ya da alıntılanma göstergesi olarak kullanılmamalı.
+
+### Tek gerçek içerik boşluğu: ücret
+
+Site ücret yayımlamıyor; `/terapi-sureci.html` yalnızca *"ücret bilgisi için WhatsApp veya
+e-posta ile iletişime geçin"* diyor. Bu, Müşteri Dili bölümündeki birebir sorulardan biri
+("Kuzey Kıbrıs'ta terapi ücretleri nasıl?") ve `ai-seo` becerisinin özellikle uyardığı durum:
+ücreti okunamayan siteyi AI aracıları karşılaştırmadan eleyip okunabilir rakibi öneriyor.
+
+**Karar gerekiyor (iş kararı, teknik değil):** ücret yayımlanacak mı, aralık mı verilecek,
+yoksa "neden yayımlamıyoruz" açıkça yazılıp bu soru bir SSS olarak mı karşılanacak?
+Üçüncüsü bile hiçbir şey yazmamaktan iyi — soruyu yanıtlar ve sayfa o sorgu için
+erişilebilir hale gelir.
+
+---
+
 ## 5. Rekabet manzarası (kısmi)
 
 Web araması ABD merkezli sonuç döndürdüğü için bu **Gazimağusa'dan görülecek sonuç
