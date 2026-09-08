@@ -136,6 +136,10 @@ Kaydedilmedi.
 
 ## Kararlar
 
+- 2026-09-08 — **Ücret içeriği kalıcı olarak kapsam dışı.** Kullanıcı: "ücretlerden
+  bahsetmiyoruz". Rakam, aralık ya da açıklama yazılmayacak. Kabul edilen sonuç:
+  "terapi ücretleri" sorgularında site erişilebilir olmayacak. Tekrar önerilmeyecek.
+
 - 2026-09-06 — **GBP KARARI DEĞİŞTİ: Google İşletme açılacak.** 7 yerel kelime kapsama
   geri girdi. Ayrıca Gazimağusa şehir sayfası da yapılacak — GBP harita kutusunu, şehir
   sayfası altındaki organik sonucu hedefliyor; birbirinin yerine geçmiyorlar. Faz 3'te

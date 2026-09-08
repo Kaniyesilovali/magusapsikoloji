@@ -241,10 +241,11 @@ e-posta ile iletişime geçin"* diyor. Bu, Müşteri Dili bölümündeki birebir
 ("Kuzey Kıbrıs'ta terapi ücretleri nasıl?") ve `ai-seo` becerisinin özellikle uyardığı durum:
 ücreti okunamayan siteyi AI aracıları karşılaştırmadan eleyip okunabilir rakibi öneriyor.
 
-**Karar gerekiyor (iş kararı, teknik değil):** ücret yayımlanacak mı, aralık mı verilecek,
-yoksa "neden yayımlamıyoruz" açıkça yazılıp bu soru bir SSS olarak mı karşılanacak?
-Üçüncüsü bile hiçbir şey yazmamaktan iyi — soruyu yanıtlar ve sayfa o sorgu için
-erişilebilir hale gelir.
+**KARAR VERİLDİ (2026-09-08, kullanıcı): ücretlerden bahsedilmiyor.** Ne rakam, ne aralık,
+ne de "neden yayımlamıyoruz" açıklaması. Konu kapalı; bu sorgu için içerik üretilmeyecek.
+
+**Kabul edilen sonuç:** "KKTC'de terapi ücretleri ne kadar?" sorgusunda site erişilebilir
+olmayacak. Bu bilinçli bir tercih, eksiklik değil — tekrar açılmasın.
 
 ---
 
