@@ -2,8 +2,8 @@
 
 **İz:** retrofit (yayında, sıralaması olan site)
 **Başlangıç:** 2026-09-02
-**Son güncelleme:** 2026-09-07 (Faz 5 ilerleme)
-**Mevcut faz:** 5 — Mevcut Metni AEO Formatına Getirme
+**Son güncelleme:** 2026-09-08
+**Mevcut faz:** 8 — AEO + GEO çekirdeği (kısmi; Y2 engelli)
 **Öncelik:** dengeli
 
 ## Kurulum
@@ -26,9 +26,9 @@
 | 2 | AI görünürlük temel ölçümü | ai-seo (yalnız Adım 1) | ✅ | `.agents/ai-gorunurluk-temel-2026-09.md` |
 | 3 | Rakip profilleri | competitor-profiling | ✅ | `competitor-profiles/` (5 profil + `_summary.md` + `dau-pdram.md`) |
 | 4 | İçerik boşluk analizi | content-strategy | ✅ | `.agents/icerik-stratejisi-2026-09.md` |
-| 5 | Mevcut metni AEO formatına getir | copy-editing | ▶ | |
-| 6 | Yapılandırılmış veri | schema | ☐ | |
-| 7 | Site mimarisi (yalnız gerekirse) | site-architecture | ☐ / n/a | |
+| 5 | Mevcut metni AEO formatına getir | copy-editing | ◐ | Y1 kısmi, Y2 engelli | |
+| 6 | Yapılandırılmış veri | schema | ✅ | `851fce5` — şemasız sayfa 6→0, sameAs 0→38, availableLanguage 2→38 |
+| 7 | Site mimarisi | site-architecture | **n/a** | Atlandı — Faz 1'deki tek yapısal boşluk O7 (çift terapisi) Faz 5'te kapandı |
 | 8 | AEO + GEO çekirdeği | ai-seo (tam) | ☐ | |
 | 9 | Site dışı otorite | directory-submissions, public-relations, community-marketing, social | ☐ | |
 | 10 | Ölçümleme | analytics | ☐ | |
@@ -39,67 +39,22 @@ Durum: ☐ bekliyor · ▶ sürüyor · ✅ bitti · ⏸ engellendi · n/a kapsa
 
 ## Mevcut Faz
 
-**Faz:** 5 — Mevcut Metni AEO Formatına Getirme (`copy-editing`) + eksik sayfaların açılması
-**Çıkış ölçütü:** Öncelik listesinin 1–9'u tamam; her dokunulan sayfada hem yapısal (sorgu-H2,
-40-60 kelimelik açılış, SSS bloğu) hem otorite (yazar, kaynak, tarih) katmanı uygulanmış.
-**Engelleyen:** Y2 için psikolog ad/unvan/lisans bilgisi. Yapısal iş bunsuz yapılabilir,
-otorite işi yapılamaz.
-**Sonraki adım:** Push (kullanıcı onayı verdi: "22 hizmet sayfasından sonra push edelim"),
-ardından öncelik listesi 4. madde (Gazimağusa şehir sayfası — adres bekleniyor).
+**Faz:** 8 — AEO + GEO çekirdeği (`ai-seo` tam). **Kısmi çalışılabilir.**
+**Engelleyen:** Y2 (isimli yazar). Faz 3'te ölçüldü: bu grupta isimsiz tek site biziz,
+alıntılanmayı en çok belirleyen madde bu. Y2 kapanmadan Faz 8'de anlamlı hareket beklenmemeli.
 
-**Faz 5 ilerlemesi:**
-> **YAYINDA** — commit `eff671b`, deploy 2026-09-07 doğrulandı. Canlı ölçüm (28 hizmet
-> sayfası): 2+ sorgu-H2 %100 · ideal pasaj %96 · tablo %36 · ort. 660 kelime · ort. 4,6 SSS.
-> Sitemap 92 → 94 URL. Yeni sayfalarda canonical self + hreflang tr/en/x-default +
-> BreadcrumbList/FAQPage/LocalBusiness şeması doğrulandı.
-> URL yazım hatası düzeltmesi (O6) de yayında: eski adresler 301 veriyor.
+**Faz 5 kalanları**
+- Y1: 3 hatalı atıf düzeltildi + 5 kaynak bağlandı (`f56483f`). Kalan: B11 + 4 karar sorusu
+  + 6 araştırılmamış iddia. Liste: `.agents/kaynak-inceleme-listesi.md`
+- Kurumsal danışmanlık + eğitim/atölye — kapsam teyidi bekliyor
+- K1: 98 sayfada kırık `wa.me` — telefon bekliyor
 
-- ✅ **1. Nöropsikolojik değerlendirme hizmet sayfası TR+EN** — YAYINDA.
-  `content/tr/hizmetler/noropsikolojik-degerlendirme.njk` · `content/en/services/neuropsychological-assessment.njk`
-  Sonuç: 8 H2 (5'i sorgu biçimli), 2 tablo, 1 numaralı liste, FAQPage şeması, 40 kelimelik
-  açılış pasajı. TR 745 kelime / EN 1002 kelime — eski hizmet sayfaları 270/336'ydı.
-  Site 92 → 94 URL. `npm run check` 0 hata 0 uyarı.
-- ✅ **2. 22 hizmet sayfasının AEO yapısı** — YAYINDA. 10 TR + 10 EN hizmet sayfası + 2 dizin sayfası.
-  Toplu sonuç (28 hizmet sayfası): 2+ sorgu-H2 **%15 → %100** · ideal pasaj **%38 → %96** ·
-  tablo **~%7 → %36** · liste %93 · ortalama kelime **351 → 660**. SSS 3 → 5 (yeni sayfada 6).
-- ⏸ Y2 (isimli yazar) engelli — psikologlar eğitim bilgilerini toparlıyor
-- ✅ **4. Gazimağusa şehir sayfası TR+EN** — YAYINDA (commit `ab8803d`, deploy doğrulandı).
-  `/gazimagusa-psikolog.html` (610 kelime) · `/en/psychologist-in-famagusta.html` (836 kelime).
-  Her ikisi 5 H2 (4'ü soru), 1 tablo, 6 SSS. PDRAM ayrımı bu sayfada da var.
-  **Şehir sayfası ÇOĞALTILMAYACAK** — yalnız Gazimağusa.
-- ✅ **Adres tüm siteye uygulandı** (2026-09-07). Kullanıcı adresi metin olarak verdi:
-  *Eşref Bitlis Caddesi, Sancak Plaza, Kat 5 Daire 2, Gazimağusa.*
-  `_data/contact.json` tek kaynak; iletişim + KVKK + gizlilik sayfaları (TR/EN) oradan besleniyor.
-  **36 sayfanın `LocalBusiness` şemasına `streetAddress` eklendi** (önceden yalnız locality vardı).
-  İki dilde birebir aynı sokak dizesi — GBP ile NAP tutarlılığı için.
-  İletişim sayfasındaki görünür `[Sokak / Bina bilgisi eklenecek]` placeholder'ı kapandı.
-  **Posta kodu YOK** — verilmedi, uydurulmadı. GBP'de varsa şemaya eklenecek.
-  **GBP notu:** `kgmid=/g/11nvs6qzw7` — zaten bir Google kaydı var, sıfırdan açılmayacak;
-  mevcut kayıt sahiplenilip tamamlanacak. Google onay duvarı nedeniyle içeriği okunamıyor.
-- ✅ **3. Çift terapisi hizmet sayfası TR+EN** — YAYINDA (commit `b331e05`).
-  Blog "ne zaman başlanmalı"yı tutuyor, sayfa ticari yarısını aldı. Kart sırası 7'ye alındı.
-- ✅ **6. PDRAM ayrımı** — YAYINDA (commit `e6d02c5`). 8 sayfa/99: 2 hizmet sayfası,
-  4 blog yazısı, 2 şehir sayfası. Kullanıcı kararına uygun, site geneline yayılmadı.
-- ✅ **Y3 görünür tarih** — YAYINDA (commit `560a6c1`). **96/98 sayfa.**
-  Git tarihi `scripts/git-dates.js`'e taşındı; sitemap `lastmod` ile sayfadaki görünür tarih
-  tek kaynaktan besleniyor. **Yan bulgu:** `dateModified` frontmatter'da elle yazılıyordu ve
-  neredeyse tüm yazılarda `datePublished` ile aynıydı — artık 42 yazıda gerçekten sonraki tarih.
-  Tarihsiz 2 sayfa çift terapisi sayfaları (git geçmişi yoktu; uydurulmadı, commit sonrası gelecek).
-- ✅ **Y5 Article.image** — YAYINDA. **46 → 0.** Faz 1'de "en hızlı kazanım" diye işaretlenip
-  atlanmıştı. Şema artık sayfanın kendi kart görselini alıyor. Ayrıca Article şemasını
-  `rawSchemas`'ta tutan 2 yazı `articleSchema`'ya çevrildi.
-- ⏸ 5/7. Kurumsal hizmetler — sözleşme modeli, seans kotası, atölye başlıkları teyit bekliyor
-
-**Faz 5 iş listesi (puana göre):**
-1. Nöropsikolojik değerlendirme hizmet sayfası TR+EN ⭐YENİ — 9.0
-2. 22 hizmet sayfasının AEO yapısı — 8.9
-3. Çift terapisi hizmet sayfası TR+EN ⭐YENİ — 8.8
-4. Gazimağusa şehir sayfası TR+EN ⭐YENİ — 8.6
-5. Çalışan destek programı hizmet sayfası TR+EN ⭐YENİ — 8.4
-6. Öğrenci danışmanlığına PDRAM ayrımı — 8.4
-7. Eğitim ve atölyeler hizmet sayfası TR+EN ⭐YENİ — 7.8
-8. Hizmet dizin sayfaları TR+EN — 7.7
-9. Online terapi üçlüsünde niyet ayrıştırma — 7.5
+**Faz 6 çıktısı (2026-09-08, yayında ve doğrulandı)**
+- Şemasız sayfa 6 → 0 (yasal sayfalar breadcrumb, beyin-beden Article)
+- `sameAs` 0 → 38 (Instagram + Facebook; varlık birleştirme)
+- `availableLanguage` 2 → 38 (iki dillilik artık makine-okunur)
+- SSS'lerde markdown render ediliyor; görünür bölüm ile FAQPage şeması aynı filtreden geçiyor
+- Hâlâ eksik: `telephone`, `geo`, `openingHours`, posta kodu. `priceRange` bilerek yok.
 
 ## Taşınanlar
 
