@@ -29,6 +29,7 @@ kart oranına (16:9) kırpılmış, ~800×450 px JPEG olarak repoda durur. TR ve
 | noropsikolojik-degerlendirme-magusa.jpg | Ahşap parçalardan oluşan, birbirine geçmiş küp bulmaca | photo-1589495374906-b7f5ca5de879 |
 | okul-fobisi-cocuk.jpg | Pencerelerden ışık alan boş bir sınıf ve sıralar | photo-1757193714692-44cdf07a5377 |
 | online-terapi-etkili-mi.jpg | Üst üste yığılmış kalın araştırma dosyaları | photo-1468779036391-52341f60b55d |
+| otizm-spektrum-bozuklugu-erken-belirtiler.jpg | Ahşap zeminde arka arkaya dizilmiş renkli oyuncak yelkenliler | photo-1560859251-d563a49c5e4a |
 | panik-atak-belirtileri.jpg | Kalp ritmini gösteren, inip çıkan çizgili bir kayıt çıktısı | photo-1560306990-18fa759c8713 |
 | psikolog-mu-psikiyatrist-mi.jpg | Açık bir defterin üzerinde duran küçük bir ilaç şişesi | photo-1550160769-fba1011934fb |
 | sinav-kaygisiyla-bas-etme.jpg | Optik cevap kâğıdının üzerinde duran kurşun kalem | photo-1606326608690-4e0281b1e588 |

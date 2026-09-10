@@ -206,6 +206,24 @@ yalnız doğru olduklarını teyit etmeniz yeterli.
 
 ---
 
+## D · Yeni yazı — otizm (2026-09-10) · psikolog teyidi bekliyor
+
+`/blog/otizm-spektrum-bozuklugu-erken-belirtiler.html` + `/en/blog/autism-spectrum-disorder-early-signs.html`
+(aynı içerik, iki dil — düzeltme ikisine birden uygulanır). **Sayısal iddia yok** — yaygınlık
+oranı bilerek yazılmadı, kaynak politikası gereği rakam girilmedi. Teyit istenen noktalar:
+
+- **Kapsam beyanı (en önemlisi):** Yazı "OSB tanısı çok disiplinli ekiple, çocuk
+  psikiyatristini kapsayarak konur" diyor; merkez için yalnız çocuk psikolojisi görüşmeleri,
+  gelişimsel sorularda nöropsikolojik değerlendirme ve aile terapisi anlatılıyor. **Otizm
+  değerlendirmesi/tanısı yapıldığı iddia edilmedi.** Merkez bu alanda bir hizmet veriyorsa
+  metin buna göre güncellenmeli (bkz. EMDR olayı).
+- Yaşa göre belirti listeleri (12 ay / 12–18 / 18–24 / 2–4 yaş) — genel gelişim basamakları.
+- 18. ve 24. ay kontrollerinde **M-CHAT-R** gibi tarama listelerinin kullanıldığı ifadesi.
+- "Beceri kaybı (gerileme) her yaşta gecikmeden değerlendirilmeli" ifadesi.
+- "İki dilli büyümek konuşmayı geciktirmez" ifadesi.
+
+---
+
 ## Nasıl ilerleyeceğiz
 
 1. **Şimdi:** B listesindeki 13 maddenin kaynağını arayacağım.
