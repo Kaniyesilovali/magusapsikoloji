@@ -9,5 +9,11 @@
   "addressUnit": "Kat 5, Daire 2",
   "addressUnitEn": "Floor 5, Flat 2",
   "addressLocality": "Gazimağusa",
-  "addressLocalityEn": "Famagusta"
+  "addressLocalityEn": "Famagusta",
+  "phoneE164": "",
+  "postalCode": "",
+  "latitude": "",
+  "longitude": "",
+  "googleBusinessUrl": "",
+  "openingHours": []
 }

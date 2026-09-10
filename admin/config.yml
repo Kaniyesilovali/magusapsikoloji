@@ -653,6 +653,41 @@ collections:
           - { name: copyrightYear, label: "© Yılı", widget: string, hint: "Sayfa altbilgisindeki telif yılı. Örn: 2026" }
           - { name: instagram, label: "Instagram", widget: string, hint: "Profil bağlantısının tamamı: https://instagram.com/…" }
           - { name: facebook, label: "Facebook", widget: string, hint: "Profil bağlantısının tamamı: https://facebook.com/…" }
+          - { name: addressStreet, label: "Adres — Cadde / Bina", widget: string, hint: "Örn: Eşref Bitlis Caddesi, Sancak Plaza" }
+          - { name: addressUnit, label: "Adres — Kat / Daire", widget: string, hint: "Örn: Kat 5, Daire 2" }
+          - { name: addressUnitEn, label: "Adres — Kat / Daire (İngilizce)", widget: string, hint: "Örn: Floor 5, Flat 2" }
+          - { name: addressLocality, label: "Şehir", widget: string, hint: "Örn: Gazimağusa" }
+          - { name: addressLocalityEn, label: "Şehir (İngilizce)", widget: string, hint: "Örn: Famagusta" }
+          # Aşağıdaki alanlar Google İşletme Profili'ndeki bilgilerle birebir aynı
+          # olmalı. Boş bırakılan alan sitede hiç yazılmaz; yanlış bilgi yerine
+          # eksik bilgi tercih edilir.
+          - { name: phoneE164, label: "Telefon (Google için, uluslararası)", widget: string, required: false, pattern: ['^(\+[0-9]{10,15})?$', "Başında + olacak, aralarında boşluk olmayacak. Örn: +903926301234"], hint: "Google İşletme Profili'ndeki numaranın aynısı. Örn: +903926301234" }
+          - { name: postalCode, label: "Posta Kodu", widget: string, required: false, hint: "Örn: 99450" }
+          - { name: latitude, label: "Konum — Enlem", widget: string, required: false, hint: "Google Haritalar'da işletmeye sağ tıklayınca çıkan ilk sayı. Örn: 35.1264" }
+          - { name: longitude, label: "Konum — Boylam", widget: string, required: false, hint: "Aynı yerdeki ikinci sayı. Örn: 33.9411" }
+          - { name: googleBusinessUrl, label: "Google İşletme Profili Bağlantısı", widget: string, required: false, hint: "Haritalar'da 'Paylaş' → 'Bağlantıyı kopyala'. Örn: https://maps.app.goo.gl/…" }
+          - name: openingHours
+            label: "Çalışma Saatleri"
+            widget: list
+            required: false
+            collapsed: true
+            summary: "{{fields.opens}}–{{fields.closes}}"
+            hint: "Aynı saatlerde açık olan günleri tek satırda toplayın. Hafta sonu kapalıysa o satırı hiç eklemeyin."
+            fields:
+              - name: days
+                label: "Günler"
+                widget: select
+                multiple: true
+                options:
+                  - { label: "Pazartesi", value: "Monday" }
+                  - { label: "Salı", value: "Tuesday" }
+                  - { label: "Çarşamba", value: "Wednesday" }
+                  - { label: "Perşembe", value: "Thursday" }
+                  - { label: "Cuma", value: "Friday" }
+                  - { label: "Cumartesi", value: "Saturday" }
+                  - { label: "Pazar", value: "Sunday" }
+              - { name: opens, label: "Açılış", widget: string, pattern: ['^[0-2][0-9]:[0-5][0-9]$', "SS:DD biçiminde yazın. Örn: 09:00"], hint: "Örn: 09:00" }
+              - { name: closes, label: "Kapanış", widget: string, pattern: ['^[0-2][0-9]:[0-5][0-9]$', "SS:DD biçiminde yazın. Örn: 18:00"], hint: "Örn: 18:00" }
       - name: faq_pages
         label: "SSS Sayfası"
         file: _data/faqdata.json

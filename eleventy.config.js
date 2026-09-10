@@ -62,6 +62,11 @@ module.exports = function (eleventyConfig) {
     items.map((it) => ({ ...it, a: blocks.inline(it.a) })))));
   eleventyConfig.addFilter('flattenFaq', (categories) => categories.flatMap((c) => c.items));
 
+  // Frontmatter'daki kuruluş şemasına telefon / konum / çalışma saatleri /
+  // Google İşletme Profili bağlantısı derleme anında eklenir (scripts/schemas.js).
+  // Veri _data/contact.json'da tek yerde durur; yer tutucu değerler basılmaz.
+  eleventyConfig.addFilter('orgEnrich', (raw, contact) => schemas.enrichRawSchema(raw, contact));
+
   // Sitemap <lastmod>: git tarihi ile yazarın beyan ettiği tarihten hangisi yeniyse o.
   // Hiçbiri yoksa null döner ve sitemap o URL için lastmod yazmaz — uydurmaktansa boş bırakılır.
   eleventyConfig.addFilter('lastmod', (page) =>

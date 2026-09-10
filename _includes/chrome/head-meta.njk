@@ -73,7 +73,7 @@
 <script type="application/ld+json">{{ faqdata.pageCategories[lang] | flattenFaq | jsonldFaq | safe }}</script>
 {%- endif %}
 {%- for s in rawSchemas %}
-<script type="application/ld+json">{{ s | safe }}</script>
+<script type="application/ld+json">{{ s | orgEnrich(contact) | safe }}</script>
 {%- endfor %}
 
 <link href="/dist/output.css" rel="stylesheet" />
