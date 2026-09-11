@@ -28,6 +28,9 @@ kart oranına (16:9) kırpılmış, ~800×450 px JPEG olarak repoda durur. TR ve
 | magusa-uluslararasi-ogrenciler-ruh-sagligi.jpg | Yolculuk için hazırlanmış, açık duran bir bavul | photo-1502301197179-65228ab57f78 |
 | noropsikolojik-degerlendirme-magusa.jpg | Ahşap parçalardan oluşan, birbirine geçmiş küp bulmaca | photo-1589495374906-b7f5ca5de879 |
 | okul-fobisi-cocuk.jpg | Pencerelerden ışık alan boş bir sınıf ve sıralar | photo-1757193714692-44cdf07a5377 |
+| cocuklarda-ofke-nobetleri.jpg | Ahşap masaya devrilmiş, dağılmış ahşap yapı blokları | photo-1784116740430-8a5ebc57cddf |
+| cocuklarda-kaygi-ayrilik-kaygisi.jpg | Bir çocuk sırt çantasının yanında duran renkli kalemler | photo-1726726192148-af52008ff663 |
+| ogrenme-guclugu-belirtileri.jpg | Boş çizgili defter sayfasında kalem, kalemtıraş ve talaşlar | photo-1441034281545-78296c3a6934 |
 | online-terapi-etkili-mi.jpg | Üst üste yığılmış kalın araştırma dosyaları | photo-1468779036391-52341f60b55d |
 | otizm-spektrum-bozuklugu-erken-belirtiler.jpg | Ahşap zeminde arka arkaya dizilmiş renkli oyuncak yelkenliler | photo-1560859251-d563a49c5e4a |
 | panik-atak-belirtileri.jpg | Kalp ritmini gösteren, inip çıkan çizgili bir kayıt çıktısı | photo-1560306990-18fa759c8713 |
@@ -38,14 +41,3 @@ kart oranına (16:9) kırpılmış, ~800×450 px JPEG olarak repoda durur. TR ve
 | terapiye-ne-zaman-gidilmeli.jpg | Üzerinde kalem duran, açık bir aylık ajanda | photo-1529651737248-dad5e287768e |
 | tukenmislik-sendromu.jpg | Aralarında ucu yanmış olanların da bulunduğu kibrit çöpü yığını | photo-1594508329976-4484d3cff278 |
 | universite-ogrencileri-psikolojik-destek.jpg | Kütüphanede kitaplarla dolu raflar | photo-1613899209236-ea0496f96180 |
-
-## Bekleyen kart görselleri (2026-09-11)
-
-Aşağıdaki üç yazı (ve İngilizce eşleri) görselsiz yayımlandı; kartlarda gradyan yedeği görünüyor.
-Aynı çizgide (kişi yok, konuyu ele veren bir nesne) birer görsel eklenmeli:
-
-| Dosya (eklenecek) | Yazı | Önerilen konu |
-| --- | --- | --- |
-| cocuklarda-ofke-nobetleri.jpg | Çocuklarda öfke nöbetleri | Yere devrilmiş tek bir oyuncak ya da dağılmış boya kalemleri |
-| cocuklarda-kaygi-ayrilik-kaygisi.jpg | Çocuklarda kaygı ve ayrılık kaygısı | Okul kapısında bırakılmış küçük bir sırt çantası |
-| ogrenme-guclugu-belirtileri.jpg | Çocuklarda öğrenme güçlüğü | Üzerinde silinmiş yazılar olan çizgili defter sayfası |
