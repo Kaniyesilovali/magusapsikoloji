@@ -38,3 +38,14 @@ kart oranına (16:9) kırpılmış, ~800×450 px JPEG olarak repoda durur. TR ve
 | terapiye-ne-zaman-gidilmeli.jpg | Üzerinde kalem duran, açık bir aylık ajanda | photo-1529651737248-dad5e287768e |
 | tukenmislik-sendromu.jpg | Aralarında ucu yanmış olanların da bulunduğu kibrit çöpü yığını | photo-1594508329976-4484d3cff278 |
 | universite-ogrencileri-psikolojik-destek.jpg | Kütüphanede kitaplarla dolu raflar | photo-1613899209236-ea0496f96180 |
+
+## Bekleyen kart görselleri (2026-09-11)
+
+Aşağıdaki üç yazı (ve İngilizce eşleri) görselsiz yayımlandı; kartlarda gradyan yedeği görünüyor.
+Aynı çizgide (kişi yok, konuyu ele veren bir nesne) birer görsel eklenmeli:
+
+| Dosya (eklenecek) | Yazı | Önerilen konu |
+| --- | --- | --- |
+| cocuklarda-ofke-nobetleri.jpg | Çocuklarda öfke nöbetleri | Yere devrilmiş tek bir oyuncak ya da dağılmış boya kalemleri |
+| cocuklarda-kaygi-ayrilik-kaygisi.jpg | Çocuklarda kaygı ve ayrılık kaygısı | Okul kapısında bırakılmış küçük bir sırt çantası |
+| ogrenme-guclugu-belirtileri.jpg | Çocuklarda öğrenme güçlüğü | Üzerinde silinmiş yazılar olan çizgili defter sayfası |

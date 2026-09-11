@@ -68,9 +68,20 @@ Fazlar arası girdiler.
 - Set değiştirilmez; iki haftada bir aynı sorgular ölçülür.
 - 7 sorgu GBP kararına bağlı (⚠ işaretli) — GBP açılırsa etkiyi ayırt etmek için sette tutuldu.
 
+**Ebeveyn segmenti kelime haritası** (2026-09-11) — `.agents/ebeveyn-kelime-haritasi-2026-09.md`
+- Ebeveyn aramasının 5 aşaması çıkarıldı. Bulgu: **Aşama 2-4'te güçlüyüz, Aşama 1'de (davranışı
+  tarif eden sorgular) neredeyse boştuk.** En büyük 3 boşluk kapatıldı: öfke nöbetleri,
+  çocuklarda kaygı/ayrılık kaygısı, öğrenme güçlüğü (TR+EN, 6 sayfa).
+- Kalan ilk 10 iş ve **teyit bekleyen bloklu kalemler** (test bataryası adları, KKTC özel eğitim
+  raporu süreci, ücret) aynı dosyada.
+
 **Faz 5'te bulunan iki yeni yerel rakip** (Faz 12 döngüsünde profillenecek)
 - Psikolog Onur Aydın — psikologonuraydin.com, Gazimağusa hizmet sayfası var
 - Sesin Psikolojik Danışmanlık ve Terapi Merkezi — 1 Mustafa Kemal Bulvarı, Gazimağusa
+- **Kıbrıs Çocuk – Ergen – Aile Psikoterapi Merkezi** — kibrisruhsagligi.com, Gönyeli/Yenikent.
+  Çocuk/ergen segmentini alan adıyla sahipleniyor; **iki isimli klinik psikolog yayında** (Y2
+  dezavantajı doğrulandı); zekâ ve dikkat testlerini açıkça ilan ediyor. İngilizcesi yok.
+  (2026-09-11'de bulundu)
 
 **Rakip profilleri** (Faz 3 → Faz 4/5/9) — ✅ **TAMAMLANDI**, `competitor-profiles/_summary.md`
 - **Y1 (kaynak atfı): 5 rakibin de sıfırı var → açık değil, FARK YARATMA fırsatı**
