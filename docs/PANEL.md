@@ -235,6 +235,13 @@ Ayarlar `settings` tablosunda: `reminder_hours_before` (varsayılan 24) ve
 kaç randevu olduğu **Sistem** ekranında görünür — kurulmamış bir cron'un tek belirtisi
 "hiç çalışmadı" satırıdır.
 
+**Boş koşular sessizdir.** cPanel, çıktısı olan her koşuyu "Cron E-posta" adresine yollar;
+betik de yalnız gönderim yaptığında ya da bir şey bozulduğunda yazar. Saatte bir koşan bir
+işin "0 aday" demesi haber değil, günde yirmi dört kez söylenince gerçek uyarı da o yığının
+içinde kaybolur. Sonuç her koşuda yine `settings`'e yazılır, yani **Sistem** ekranı sessiz
+geçen saatleri de gösterir: "hiç e-posta gelmiyor" cron'un durduğu anlamına gelmez, oradan
+bakılır.
+
 > Betik `cron/` dizinindedir ve `.htaccess` bu dizine web'den erişimi kapatır.
 
 ---
@@ -520,6 +527,9 @@ bağlantı almış kimseye ikinci ileti gitmez. **Israr etmez:** son dolan check
 üç bağlantı cevapsız kaldıysa o kişiye cron gönderimi durur — dördüncü hatırlatma oranı
 yükseltmiyor, kanalı değiştirmek gerekiyor. Terapistin elle gönderdiği bağlantı her zaman
 çalışır.
+
+Boş koşular burada da sessizdir: sırada kimse yoksa cron e-posta çıkarmaz, koşunun
+sonucu yalnız **Sistem** ekranında görünür (gerekçesi randevu hatırlatmalarıyla aynı).
 
 Bağlantı, e-posta gönderilmiş olsa bile ekranda gösterilir ve kopyalanabilir (davet
 bağlantılarındaki aynı gerekçe): oran düşükse ilk şüpheli kanaldır ve ikinci kanalı

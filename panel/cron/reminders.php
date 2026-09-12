@@ -11,7 +11,12 @@ declare(strict_types=1);
  * bırakılır ve sonraki koşuda yeniden denenir; deneme, randevu pencereden
  * çıkınca kendiliğinden durur — sonsuza kadar tekrar eden bir kuyruk oluşmaz.
  *
- * Çıktı cron tarafından e-posta ile gönderilir, bu yüzden özet tek ekrana sığar.
+ * Çıktısı olan her koşuyu cPanel "Cron E-posta" adresine yollar. Bu yüzden betik
+ * yalnız iş yaptığında ya da bir şey bozulduğunda yazar: gönderilecek randevu
+ * yoksa tek satır bile basmaz ve o saat için e-posta çıkmaz. Saatte bir koşan bir
+ * işin "0 aday" demesi haber değil; günde yirmi dört kez söylenince gerçek uyarı
+ * da o yığının içinde kaybolur. Her koşunun sonucu yine settings'e yazılır, panel
+ * → Sistem ekranı sessiz koşuları da gösterir.
  */
 
 if (PHP_SAPI !== 'cli') {
@@ -31,11 +36,15 @@ use Panel\Settings;
 $startedAt = date('Y-m-d H:i:s');
 
 if (!Schema::remindersReady()) {
-    exit("Hatırlatma alanı veritabanında yok. Panel → Sistem ekranından bekleyen güncellemeleri uygulayın.\n");
+    // Bu bir arıza: cron koşuyor ama hiçbir hatırlatma gidemiyor. Sessiz kalırsa
+    // kimse fark etmez, o yüzden STDERR'e yazıp sıfırdan farklı çıkıyoruz.
+    fwrite(STDERR, "Hatırlatma alanı veritabanında yok. Panel → Sistem ekranından bekleyen güncellemeleri uygulayın.\n");
+    exit(1);
 }
 
 if (Settings::get('reminders_enabled', '1') !== '1') {
-    echo "Hatırlatmalar kapalı (settings.reminders_enabled = 0). Hiçbir şey yapılmadı.\n";
+    // Kapalı olması verilmiş bir karardır, arıza değil — sessizce geçiyoruz.
+    // Panel → Sistem ekranı "kapalı" yazdığı için durum yine görünür.
     Settings::set('reminder_last_run', $startedAt);
     Settings::set('reminder_last_result', 'kapalı');
     exit(0);
@@ -86,7 +95,10 @@ $summary = sprintf(
 Settings::set('reminder_last_run', $startedAt);
 Settings::set('reminder_last_result', $summary);
 
-echo $summary . "\n";
+// Özet yalnız yapılacak bir iş çıktığında basılır; boş geçen saatler sessizdir.
+if ($sent > 0 || $failed > 0) {
+    echo $summary . "\n";
+}
 
 // Başarısızlık varsa cron'un dikkat çekmesi için sıfırdan farklı çıkılır.
 exit($failed > 0 ? 1 : 0);

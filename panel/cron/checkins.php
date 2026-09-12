@@ -28,7 +28,10 @@ declare(strict_types=1);
  * yükseltmiyor; kanalı değiştirmek gerekiyor (bkz. check-in-plani.md, Faz 5).
  * Terapistin elle gönderdiği bağlantı her zaman çalışır — durma yalnız cron için.
  *
- * Çıktı cron tarafından e-posta ile gönderilir, bu yüzden özet tek ekrana sığar.
+ * Çıktısı olan her koşuyu cPanel "Cron E-posta" adresine yollar. Bu yüzden betik
+ * yalnız iş yaptığında ya da bir şey bozulduğunda yazar: sırada kimse yoksa tek
+ * satır bile basmaz ve o hafta için e-posta çıkmaz. Her koşunun sonucu yine
+ * settings'e yazılır, panel → Sistem ekranı sessiz koşuları da gösterir.
  */
 
 if (PHP_SAPI !== 'cli') {
@@ -48,11 +51,15 @@ use Panel\Settings;
 $startedAt = date('Y-m-d H:i:s');
 
 if (!Schema::checkinsReady()) {
-    exit("Check-in tabloları veritabanında yok. Panel → Sistem ekranından bekleyen güncellemeleri uygulayın.\n");
+    // Bu bir arıza: cron koşuyor ama hiçbir bağlantı gidemiyor. Sessiz kalırsa
+    // kimse fark etmez, o yüzden STDERR'e yazıp sıfırdan farklı çıkıyoruz.
+    fwrite(STDERR, "Check-in tabloları veritabanında yok. Panel → Sistem ekranından bekleyen güncellemeleri uygulayın.\n");
+    exit(1);
 }
 
 if (Settings::get('checkins_enabled', '1') !== '1') {
-    echo "Check-in hatırlatmaları kapalı (settings.checkins_enabled = 0). Hiçbir şey yapılmadı.\n";
+    // Kapalı olması verilmiş bir karardır, arıza değil — sessizce geçiyoruz.
+    // Panel → Sistem ekranı "kapalı" yazdığı için durum yine görünür.
     Settings::set('checkin_last_run', $startedAt);
     Settings::set('checkin_last_result', 'kapalı');
     exit(0);
@@ -60,9 +67,10 @@ if (Settings::get('checkins_enabled', '1') !== '1') {
 
 $due = Checkins::due();
 
-// Kapalı olanlar sayılıyor ama listelenmiyor: özet cron e-postasında okunuyor ve
-// "3 gönderildi" satırının yanında "2 kapalı" görmek, gönderimin azalmasının
-// arıza mı yoksa verilmiş bir karar mı olduğunu tek bakışta söylüyor.
+// Kapalı olanlar sayılıyor ama listelenmiyor: "3 gönderildi" satırının yanında
+// "2 kapalı" görmek, gönderimin azalmasının arıza mı yoksa verilmiş bir karar mı
+// olduğunu tek bakışta söylüyor. Sayı özetin parçası, özet de hem panelin Sistem
+// ekranında hem de gönderim olan koşuların cron e-postasında okunuyor.
 $off = Schema::checkinDeliveryReady()
     ? (int) Db::value('SELECT COUNT(*) FROM clients WHERE status = \'active\' AND checkin_auto = 0')
     : 0;
@@ -91,7 +99,11 @@ $summary = sprintf('%d gönderildi, %d başarısız, %d aday', $sent, $failed, c
 Settings::set('checkin_last_run', $startedAt);
 Settings::set('checkin_last_result', $summary);
 
-echo $summary . "\n";
+// Özet yalnız yapılacak bir iş çıktığında basılır; kimsenin sırada olmadığı
+// haftalar sessizdir.
+if ($sent > 0 || $failed > 0) {
+    echo $summary . "\n";
+}
 
 // Başarısızlık varsa cron'un dikkat çekmesi için sıfırdan farklı çıkılır.
 exit($failed > 0 ? 1 : 0);

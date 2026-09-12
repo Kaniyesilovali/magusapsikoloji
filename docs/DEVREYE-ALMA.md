@@ -121,7 +121,11 @@ Sistem kayıtları, Sistem).
   sonuç satırı (“0 gönderildi, 0 başarısız…”) görünüyor.
 
   *Not:* Saatte bir çalışması güvenlidir — her randevu bir kez uyarılır, ikinci
-  e-posta gitmez. Check-in cron'u ilk pazartesiye kadar sessiz kalır; yalnız
+  e-posta gitmez. Yapacak iş çıkmayan koşular **hiç çıktı vermez**, dolayısıyla o
+  saat için size cron e-postası da gelmez; postanızın sessiz olması cron'un durduğu
+  anlamına gelmez, durumu Sistem ekranından okursunuz. E-posta yalnız gerçekten
+  gönderim yapıldığında ya da bir şey bozulduğunda gelir — böylece gelen her ileti
+  bakmaya değer. Check-in cron'u ilk pazartesiye kadar sessiz kalır; yalnız
   terapistin döngüyü başlattığı bireylere gider, kurulur kurulmaz kimseye
   toplu ileti çıkmaz.
 
