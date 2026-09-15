@@ -91,7 +91,7 @@ collections:
           - "Travma & İyileşme"
           - "Çocuk & Aile"
           - "Çocuk & Ergen"
-          - "Öğrenci Ruh Sağlığı"
+          - "Öğrenci"
           - "İlişkiler"
       - name: readingTime
         label: "Okuma Süresi"
@@ -277,7 +277,7 @@ collections:
               - "Travma & İyileşme"
               - "Çocuk & Aile"
               - "Çocuk & Ergen"
-              - "Öğrenci Ruh Sağlığı"
+              - "Öğrenci"
               - "İlişkiler"
           - { name: readingTime, label: "Kart Okuma Süresi", widget: string, required: false, hint: "Boş bırakılırsa yukarıdaki Okuma Süresi kullanılır." }
           - { name: image, label: "Kart Görseli", widget: image, required: false, hint: "Kartın üst kısmında görünen fotoğraf. Boş bırakılırsa aşağıdaki emoji ve renk geçişi gösterilir." }
@@ -426,7 +426,7 @@ collections:
           - "Anxiety & Burnout"
           - "Children & Family"
           - "Children & Adolescents"
-          - "Student Mental Health"
+          - "Students"
           - "Relationships"
       - name: readingTime
         label: "Okuma Süresi"
