@@ -1,6 +1,6 @@
 ---
 title: About Us | Famagusta Psychology Centre
-description: Famagusta Psychology Centre — licensed psychologists working in Turkish and English. Who we are and how we work.
+description: The psychologists at Famagusta Psychology Centre, Gökçe İnce and Yaprak Parlan Yeşilovalı — training, age groups worked with and therapy approaches.
 permalink: /en/about.html
 hreflangOverride:
   tr: https://magusapsikoloji.com/hakkimizda.html
@@ -14,7 +14,9 @@ breadcrumb:
   - name: About Us
     item: https://magusapsikoloji.com/en/about.html
 rawSchemas:
-  - '{"@context":"https://schema.org","@type":["LocalBusiness","MedicalOrganization"],"@id":"https://magusapsikoloji.com/#organization","name":"Famagusta Psychology Centre","alternateName":"Mağusa Psikoloji Merkezi","url":"https://magusapsikoloji.com","logo":"https://magusapsikoloji.com/assets/images/logo.png","image":"https://magusapsikoloji.com/assets/images/og-image.jpg","email":"info@magusapsikoloji.com","address":{"@type":"PostalAddress","streetAddress":"Eşref Bitlis Caddesi, Sancak Plaza, Kat 5 Daire 2","addressLocality":"Famagusta","addressRegion":"North Cyprus","addressCountry":"CY"},"areaServed":{"@type":"City","name":"Famagusta"},"medicalSpecialty":"Psychology","inLanguage":["en","tr"],"sameAs":["https://www.instagram.com/magusapsikoloji","https://www.facebook.com/magusapsikoloji/"],"availableLanguage":["English","Turkish"]}'
+  - '{"@context":"https://schema.org","@type":["LocalBusiness","MedicalOrganization"],"@id":"https://magusapsikoloji.com/#organization","name":"Famagusta Psychology Centre","alternateName":"Mağusa Psikoloji Merkezi","url":"https://magusapsikoloji.com","logo":"https://magusapsikoloji.com/assets/images/logo.png","image":"https://magusapsikoloji.com/assets/images/og-image.jpg","email":"info@magusapsikoloji.com","address":{"@type":"PostalAddress","streetAddress":"Eşref Bitlis Caddesi, Sancak Plaza, Kat 5 Daire 2","addressLocality":"Famagusta","addressRegion":"North Cyprus","addressCountry":"CY"},"areaServed":{"@type":"City","name":"Famagusta"},"medicalSpecialty":"Psychology","inLanguage":["en","tr"],"sameAs":["https://www.instagram.com/magusapsikoloji","https://www.facebook.com/magusapsikoloji/"],"employee":[{"@id":"https://magusapsikoloji.com/#gokce-ince"},{"@id":"https://magusapsikoloji.com/#yaprak-parlan-yesilovali"}],"availableLanguage":["English","Turkish"]}'
+  - '{"@context":"https://schema.org","@type":"Person","@id":"https://magusapsikoloji.com/#gokce-ince","name":"Gökçe İnce","givenName":"Gökçe","familyName":"İnce","jobTitle":"Clinical Psychologist","worksFor":{"@id":"https://magusapsikoloji.com/#organization"},"url":"https://magusapsikoloji.com/en/about.html#gokce-ince","alumniOf":[{"@type":"CollegeOrUniversity","name":"Eastern Mediterranean University"},{"@type":"CollegeOrUniversity","name":"Maltepe University"}],"knowsLanguage":["Turkish","English"],"knowsAbout":["Psychodynamic psychotherapy","Emerging adulthood","Adult psychology","Individual therapy"]}'
+  - '{"@context":"https://schema.org","@type":"Person","@id":"https://magusapsikoloji.com/#yaprak-parlan-yesilovali","name":"Yaprak Parlan Yeşilovalı","givenName":"Yaprak","familyName":"Parlan Yeşilovalı","jobTitle":"Psychologist, MSc","worksFor":{"@id":"https://magusapsikoloji.com/#organization"},"url":"https://magusapsikoloji.com/en/about.html#yaprak-parlan-yesilovali","alumniOf":[{"@type":"CollegeOrUniversity","name":"University of Brighton"},{"@type":"CollegeOrUniversity","name":"Eastern Mediterranean University"}],"knowsLanguage":["Turkish","English"],"knowsAbout":["Cognitive behavioural therapy","Child psychology","Adolescent psychology","Developmental psychology","Adult psychology"]}'
 layout: page.njk
 sitemap:
   changefreq: monthly
@@ -103,36 +105,59 @@ sitemap:
     </section>
 
     <!-- TEAM -->
-    <section class="py-12 bg-white">
+    <section id="team" class="py-12 bg-white">
       <div class="max-w-3xl mx-auto px-5 lg:px-8">
         <div class="mb-8">
           <span class="inline-block text-xs font-medium text-primary bg-primary/10 px-4 py-1.5 rounded-full mb-4">Our Team</span>
           <h2 class="font-serif text-2xl text-ink mb-2">Meet your psychologists</h2>
-          <p class="text-ink-muted text-sm">Expert, licensed and experienced psychologists.</p>
+          <p class="text-ink-muted text-sm">Sessions are held in Turkish and English, in person or online.</p>
         </div>
-        <div class="grid sm:grid-cols-2 gap-6">
-          <div class="bg-warm border border-warm-tertiary rounded-2xl overflow-hidden hover:shadow-lg transition-all">
-            <div class="h-52 bg-gradient-to-br from-primary/15 to-sage/20 flex items-center justify-center relative">
-              <div class="w-20 h-20 rounded-full bg-white/70 flex items-center justify-center text-4xl">👩‍⚕️</div>
-              <span class="absolute bottom-4 left-4 text-xs font-medium text-primary bg-white/80 px-3 py-1 rounded-full">CBT · Individual</span>
+
+        <div class="space-y-6">
+          <article id="gokce-ince" class="bg-warm border border-warm-tertiary rounded-2xl p-6 lg:p-8">
+            <div class="flex items-start gap-4 mb-5">
+              <div class="w-16 h-16 shrink-0 rounded-full bg-gradient-to-br from-primary/15 to-sage/20 flex items-center justify-center text-3xl">👩‍⚕️</div>
+              <div>
+                <h3 class="font-serif text-xl text-ink leading-tight">Gökçe İnce</h3>
+                <p class="text-sm text-primary mb-3">Clinical Psychologist</p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="text-[11px] font-medium text-ink-muted bg-white border border-warm-tertiary px-2.5 py-1 rounded-full">Psychodynamic psychotherapy</span>
+                  <span class="text-[11px] font-medium text-ink-muted bg-white border border-warm-tertiary px-2.5 py-1 rounded-full">Emerging adulthood</span>
+                  <span class="text-[11px] font-medium text-ink-muted bg-white border border-warm-tertiary px-2.5 py-1 rounded-full">Adults</span>
+                </div>
+              </div>
             </div>
-            <div class="p-5">
-              <h3 class="font-semibold text-ink mb-0.5">Clinical Psychologist</h3>
-              <p class="text-xs text-ink-muted mb-3">Clinical Psychologist</p>
-              <p class="text-xs text-ink-muted leading-relaxed">Works with anxiety, trauma and personality.</p>
+            <div class="space-y-3 text-sm text-ink-muted leading-relaxed">
+              <p>Completed an undergraduate degree in the Department of Psychology at Eastern Mediterranean University and a master's degree in the Clinical Psychology programme at Maltepe University. Clinical supervision is complete, and professional development continues through training and supervision in scientifically grounded psychotherapy approaches.</p>
+              <p>Has gained experience with different age groups and in different working environments. Worked for many years as a psychologist at the Eastern Mediterranean University Psychological Counselling, Guidance and Research Centre (EMU-PDRAM), and also provided therapy at Yaşam Hospital.</p>
+              <p>Works mainly with <strong class="font-semibold text-ink">emerging adulthood and with adults</strong>. In the therapy process, the aim is to accompany individuals as they come to understand the emotional, relational and psychological difficulties they meet in their lives, and as they explore more closely the bond they have with themselves, with their relationships and with their lives.</p>
+              <p>Draws primarily on the psychodynamic psychotherapy approach. The psychodynamic approach focuses on understanding a person's present emotional and relational difficulties together with their past experiences, inner world and the relational patterns formed over time. Alongside this, other psychotherapy approaches are drawn on as well, taking into account each individual's needs, life story and circumstances; the therapy process is structured around the person, allowing for eclectic work. Importance is placed on bringing scientific knowledge and clinical experience together within a safe, ethical and collaborative therapeutic relationship.</p>
+              <p>Works in Turkish and English, in person and online.</p>
             </div>
-          </div>
-          <div class="bg-warm border border-warm-tertiary rounded-2xl overflow-hidden hover:shadow-lg transition-all">
-            <div class="h-52 bg-gradient-to-br from-accent/10 to-warm-tertiary flex items-center justify-center relative">
-              <div class="w-20 h-20 rounded-full bg-white/70 flex items-center justify-center text-4xl">👩‍⚕️</div>
-              <span class="absolute bottom-4 left-4 text-xs font-medium text-accent bg-white/80 px-3 py-1 rounded-full">CBT · Couples · Family</span>
+          </article>
+
+          <article id="yaprak-parlan-yesilovali" class="bg-warm border border-warm-tertiary rounded-2xl p-6 lg:p-8">
+            <div class="flex items-start gap-4 mb-5">
+              <div class="w-16 h-16 shrink-0 rounded-full bg-gradient-to-br from-accent/10 to-warm-tertiary flex items-center justify-center text-3xl">👩‍⚕️</div>
+              <div>
+                <h3 class="font-serif text-xl text-ink leading-tight">Yaprak Parlan Yeşilovalı</h3>
+                <p class="text-sm text-primary mb-3">Psychologist, MSc</p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="text-[11px] font-medium text-ink-muted bg-white border border-warm-tertiary px-2.5 py-1 rounded-full">Cognitive behavioural therapy</span>
+                  <span class="text-[11px] font-medium text-ink-muted bg-white border border-warm-tertiary px-2.5 py-1 rounded-full">Children</span>
+                  <span class="text-[11px] font-medium text-ink-muted bg-white border border-warm-tertiary px-2.5 py-1 rounded-full">Adolescents</span>
+                  <span class="text-[11px] font-medium text-ink-muted bg-white border border-warm-tertiary px-2.5 py-1 rounded-full">Adults</span>
+                </div>
+              </div>
             </div>
-            <div class="p-5">
-              <h3 class="font-semibold text-ink mb-0.5">Clinical Psychologist</h3>
-              <p class="text-xs text-ink-muted mb-3">Clinical Psychologist</p>
-              <p class="text-xs text-ink-muted leading-relaxed">Works with couples and family therapy and cognitive behavioural therapy.</p>
+            <div class="space-y-3 text-sm text-ink-muted leading-relaxed">
+              <p>Completed undergraduate studies in Applied Psychology and Criminology at the University of Brighton in England and in Psychology at Eastern Mediterranean University, and a master's degree in Developmental Psychology at EMU. Completed Cognitive Behavioural Therapy training for adults at the Beck Institute, and for children and adolescents within a programme accredited by the Turkish Association for Cognitive and Behavioural Psychotherapies. Professional development continues through current training and supervision.</p>
+              <p>Works with <strong class="font-semibold text-ink">children, adolescents and adults</strong>, keeping in view the needs and life experiences particular to each developmental period.</p>
+              <p>Professional experience extends across academia, civil society and psychotherapy services. Worked as a lecturer in the EMU Department of Psychology and as a psychologist at the EMU Psychological Counselling, Guidance and Research Centre (EMU-PDRAM). Worked at SOS Children's Village with children who had lost parental care and with their caregivers, and developed and ran psychoeducation and counselling work with children, adolescents, young people, women and educators at various civil society organisations.</p>
+              <p>In the therapy process, importance is placed on understanding the difficulty a person is living with not only as a symptom or a problem, but within the whole of their life. Developmental characteristics, life story, relationships and social environment are considered together. Cognitive Behavioural Therapy (CBT) is the main approach drawn on, alongside other psychotherapy approaches according to the individual's needs. Therapy is approached as a safe and collaborative process in which the individual can express themselves as they are, and which opens space for thinking, understanding and change together.</p>
+              <p>Works in Turkish and English, in person and online.</p>
             </div>
-          </div>
+          </article>
         </div>
       </div>
     </section>
