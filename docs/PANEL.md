@@ -378,7 +378,7 @@ sebebini gösterir — yarı şifreli, sessizce düz metne düşen bir davranı�
 `/check-in/{jeton}` — [`CheckinController`](../panel/src/Controllers/CheckinController.php),
 kuralların tamamı [`Checkins`](../panel/src/Checkins.php) içinde.
 
-Birey haftada bir üç soru dolduruyor (ruh hali, uyku, kaygı — 1–10) ve isteğe bağlı
+Birey haftada bir üç soru dolduruyor (duygudurum, uyku, kaygı — 1–10) ve isteğe bağlı
 tek bir cümle yazabiliyor. Terapist birey sayfasında zaman içindeki eğriyi görüyor.
 Amaç iki seans arasındaki boşluğu ölçülebilir kılmak: o bilgi bugüne kadar yalnız
 bireyin hatırladığı kadarıyla, seansın ilk on dakikasında alınabiliyordu.
@@ -473,7 +473,7 @@ o satırı veri bitene kadar çizmeye devam eder — ölçmeyi bırakmak, ölçt
 değildir. Yeni eklenen ölçeğin eğrisi ilk cevabın geldiği haftadan başlar; geçmiş
 haftalar boş kalır, **sıfır sayılmaz**.
 
-Örüntü cümlelerinin ikinci yarısı ("… ruh hali düşüyor") tek bir ölçekten gelir: ruh hali
+Örüntü cümlelerinin ikinci yarısı ("… duygudurum düşüyor") tek bir ölçekten gelir: duygudurum
 açıksa o, değilse yüksek değeri iyi olan ilk ölçek (`Scales::primaryKey`).
 
 **Gönderim listesi.** Her aktif birey için tek bir işaret (`clients.checkin_auto`,

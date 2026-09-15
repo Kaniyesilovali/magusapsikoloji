@@ -6,14 +6,14 @@ namespace Panel;
 /**
  * Check-in'de sorulan ölçekler — kaç tane, hangi cümleyle, hangi yönde.
  *
- * Üç soru (ruh hali, uyku, kaygı) kodda sabitti ve metinleri düzenlenebilir
+ * Üç soru (duygudurum, uyku, kaygı) kodda sabitti ve metinleri düzenlenebilir
  * olduktan sonra bile sayısı öyle kaldı: dördüncüsünü eklemek göç istiyordu.
  * Merkezin "bu dönem iştahı da soralım" demesi bir yazılım sürümüne bağlı
  * kalmamalı; liste artık veri (bkz. 010_checkin_olcekleri.sql).
  *
  * İki kural yapıyı belirliyor:
  *
- *  1. YÖN veridir, süs değil. `direction` +1 ise yüksek değer iyidir (ruh hali,
+ *  1. YÖN veridir, süs değil. `direction` +1 ise yüksek değer iyidir (duygudurum,
  *     uyku), −1 ise kötüdür (kaygı). Uçların ADI serbestçe yazılır ama yön
  *     eğrinin nasıl okunacağını söylüyor; bu yüzden ayrı bir alan ve düzenleme
  *     ekranında açıkça soruluyor.
@@ -85,8 +85,8 @@ final class Scales
     /**
      * Örüntülerin karşılaştırdığı ölçek.
      *
-     * "Okul zorladığı haftalarda ruh hali düşüyor" cümlesinin ilk yarısı
-     * ekolojik şeritten, ikinci yarısı bu ölçekten geliyor. Ruh hali varsa o;
+     * "Okul zorladığı haftalarda duygudurum düşüyor" cümlesinin ilk yarısı
+     * ekolojik şeritten, ikinci yarısı bu ölçekten geliyor. Duygudurum varsa o;
      * yoksa yüksek değeri iyi olan ilk açık ölçek — kaygıyla kurulan aynı cümle
      * ters okunurdu.
      */

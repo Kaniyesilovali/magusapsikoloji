@@ -7,7 +7,7 @@ use Panel\Checkins;
 //
 // Eğrinin hemen altında ve AYNI haftaların üstünde duruyor: sütunlar eğrinin
 // noktalarıyla birebir aynı check-in'ler. Şeridin tek işi şu cümleyi hesap
-// yapmadan okutmak: "sınav haftalarında Okul satırı koyu, ruh hali bir hafta
+// yapmadan okutmak: "sınav haftalarında Okul satırı koyu, duygudurum bir hafta
 // sonra düşüyor."
 //
 // Tablo, SVG değil. Buradaki veri sürekli bir eğri değil üç değerli bir

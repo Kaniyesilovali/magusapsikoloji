@@ -122,7 +122,7 @@ Fazlar arası girdiler.
   **Y2** isimli yazar yok (46/46 Article author=Organization) · **Y3** görünür tarih yok ·
   **Y4** 4 marka görseli 404 · **Y5** Article.image 46/46 yazıda 404'ü gösteriyor.
 - Orta: **O1** 8 sayfa <300 kelime (hizmet sayfaları en zayıf) · **O2** 6 sayfada şema yok ·
-  **O3** "ruh" kelimesi 5 sayfada 16 kez (biri title+URL) · **O4** yeni içerik 2 iç bağlantı ·
+  **O3** ~~"ruh" kelimesi 5 sayfada 16 kez~~ (2026-09-15 kapatıldı, URL taşındı + 301) · **O4** yeni içerik 2 iç bağlantı ·
   **O5** yamyamlık (online terapi ×3, aile terapisi ×2) · **O6** 2 URL yazım hatası ·
   **O7** çift terapisi hizmet sayfası yok.
 - Düşük: HSTS yok, font preload yok, 5 description <110 kr.

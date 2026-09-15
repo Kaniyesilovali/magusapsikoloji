@@ -21,7 +21,7 @@ $anchors = $patterns['anchors'] ?? [];
       <div>
         <h2 class="sheet-title">Bakılacak yerler</h2>
         <p class="text-xs text-ink-light mt-1">
-          Check-in işaretleriyle ruh hali aynı haftalara denk geliyor mu — sayılmış,
+          Check-in işaretleriyle duygudurum aynı haftalara denk geliyor mu — sayılmış,
           hesaplanmamış. En fazla üç satır.
         </p>
       </div>
@@ -56,7 +56,7 @@ $anchors = $patterns['anchors'] ?? [];
             </span>
           </p>
         <?php endforeach; ?>
-        <p class="text-xs text-ink-light mt-2">Ruh hali puanları, haftalar sırayla.</p>
+        <p class="text-xs text-ink-light mt-2">Duygudurum puanları, haftalar sırayla.</p>
       </div>
     <?php endif; ?>
   </section>

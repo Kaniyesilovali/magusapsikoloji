@@ -13,7 +13,7 @@ böler. Login'li portal zaten var, ama bu döngü onun dışında, tokenli çal�
 
 ## İlk sürüm — sorular
 
-- Ruh hali (1–10 kaydırıcı)
+- Duygudurum (1–10 kaydırıcı)
 - Uyku (1–10)
 - Kaygı (1–10)
 - İsteğe bağlı tek cümle → KVKK'da hassas veri; `Crypto.php` ile şifreli saklanır
@@ -118,7 +118,7 @@ göstermiyor, yalnız iki dil arasındaki dikişi gösteriyor.
 - [x] Kapatılan/kaldırılan ölçeğin cevapları KALIR (`scale_key` yabancı anahtar
       değil); eğri o satırı veri bitene kadar çizer. Yeni ölçeğin eğrisi ilk
       cevaptan başlar, geçmiş haftalar sıfır sayılmaz.
-- [x] Örüntülerin karşılaştırdığı ölçek `Scales::primaryKey()` — ruh hali yoksa
+- [x] Örüntülerin karşılaştırdığı ölçek `Scales::primaryKey()` — duygudurum yoksa
       yüksek değeri iyi olan ilk ölçek; kaygıyla kurulan aynı cümle ters okunurdu.
 - [x] Göç uygulanmadan da çalışır: liste koddaki üç ölçekten kurulur, cevaplar
       eski sütunlara yazılır, ekran neyin eksik olduğunu söyler.

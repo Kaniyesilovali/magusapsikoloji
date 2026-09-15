@@ -145,7 +145,7 @@ müdahaledir ve etkileri uzun vadede sürer. Kaygı tablolarında ebeveyn odakl�
 yetişkinlerin yaklaşık **%2–3**'ünü etkiler ve kadınlarda iki kat daha sık görülür. (APA, 2022)"
 
 **Bulgu:** Üç rakam da alandaki verilerle uyumlu. Panik atak yaşam boyu yaygınlığı
-kaynağa göre **%11–13,2** aralığında (WHO Dünya Ruh Sağlığı anketleri %13,2 veriyor); panik
+kaynağa göre **%11–13,2** aralığında (WHO World Mental Health Surveys %13,2 veriyor); panik
 bozukluğu 12 aylık %2–3 ✓; kadın:erkek ≈ 2:1 ✓.
 
 **Öneri:** Rakamlar kalsın, atıf netleşsin — "(APA, 2022)" yerine bağlantılı kaynak.
@@ -187,7 +187,7 @@ Ek araştırma gerekmiyor.
 | B1 | `/blog/sinav-kaygisiyla-bas-etme` | "Üniversite öğrencilerinin yaklaşık %25-40'ı klinik düzeyde sınav kaygısı yaşar" |
 | B6 | `/blog/depresyon-nedir` | "Annelerin yaklaşık %10-15'ini etkiler" (doğum sonrası depresyon) |
 | B8 | `/blog/okul-fobisi-cocuk` | "Okul çağındaki çocukların yaklaşık %1-5'inde görülür" |
-| B9 | `/blog/magusa-uluslararasi-ogrenciler-ruh-sagligi` | "2023 tarihli bir meta-analiz, her 3 uluslararası öğrenciden 1'i…" |
+| B9 | `/blog/magusa-uluslararasi-ogrenciler-psikolojik-destek` | "2023 tarihli bir meta-analiz, her 3 uluslararası öğrenciden 1'i…" |
 | B12 | `/blog/psikolog-mu-psikiyatrist-mi` | "Kombine tedavi… araştırmalar tarafından güçlü biçimde desteklenmektedir" |
 | — | `/blog/cocuk-psikologu-magusa` | "WHO… 10-19 yaş her yedi gençten biri" (bağlantı eksik) |
 

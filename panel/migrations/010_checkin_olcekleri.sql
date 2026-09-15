@@ -1,7 +1,7 @@
 -- Check-in soruları: üç sabit sütun yerine düzenlenebilir bir ölçek listesi.
 -- Çalıştırma:  panel → Sistem → "Bekleyen güncellemeleri uygula"
 
--- Üç soru (ruh hali, uyku, kaygı) veritabanında üç ayrı sütundu. Metinleri
+-- Üç soru (duygudurum, uyku, kaygı) veritabanında üç ayrı sütundu. Metinleri
 -- düzenlenebilir oldu ama sayısı kodda kilitliydi: dördüncüsünü eklemek ya da
 -- birini kapatmak göç istiyordu. Merkezin "bu dönem iştahı da soralım" demesi
 -- bir yazılım sürümüne bağlı kalmamalı.
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS checkin_scales (
   question   VARCHAR(200)     NOT NULL,          -- bireye sorulan cümle
   low_label  VARCHAR(60)      NOT NULL,          -- 1 ucunun adı
   high_label VARCHAR(60)      NOT NULL,          -- 10 ucunun adı
-  -- Yön: +1 yüksek değer iyi (ruh hali, uyku), -1 yüksek değer kötü (kaygı).
+  -- Yön: +1 yüksek değer iyi (duygudurum, uyku), -1 yüksek değer kötü (kaygı).
   -- Eğri bunu okuyor; ucun ADI değişebilir ama yön veri modelinin kendisi.
   direction  TINYINT          NOT NULL DEFAULT 1,
   sort       TINYINT UNSIGNED NOT NULL DEFAULT 0,
@@ -48,8 +48,8 @@ CREATE TABLE IF NOT EXISTS checkin_scores (
 -- cümle. NULLIF: ayar satırı var ama boşsa da varsayılana düşsün.
 INSERT IGNORE INTO checkin_scales (scale_key, label, question, low_label, high_label, direction, sort, enabled, created_at)
 SELECT 'mood',
-       COALESCE(NULLIF((SELECT setting_value FROM settings WHERE setting_key = 'checkin_measure_mood_label'), ''), 'Ruh hali'),
-       COALESCE(NULLIF((SELECT setting_value FROM settings WHERE setting_key = 'checkin_question_mood'), ''), 'Bu hafta genel olarak ruh hâlin nasıldı?'),
+       COALESCE(NULLIF((SELECT setting_value FROM settings WHERE setting_key = 'checkin_measure_mood_label'), ''), 'Duygudurum'),
+       COALESCE(NULLIF((SELECT setting_value FROM settings WHERE setting_key = 'checkin_question_mood'), ''), 'Bu hafta kendini genel olarak nasıl hissettin?'),
        COALESCE(NULLIF((SELECT setting_value FROM settings WHERE setting_key = 'checkin_measure_mood_low'), ''), 'çok kötü'),
        COALESCE(NULLIF((SELECT setting_value FROM settings WHERE setting_key = 'checkin_measure_mood_high'), ''), 'çok iyi'),
        1, 0, 1, NOW()
@@ -85,7 +85,7 @@ INSERT IGNORE INTO checkin_scores (checkin_id, scale_key, value)
 
 -- Eski sütunlar DURUYOR ve üç varsayılan ölçek için yazılmaya devam ediyor:
 -- yedekten dönen ya da doğrudan SQL okuyan biri için `checkins` tablosu tek
--- başına hâlâ anlamlı. Ama artık NULL olabilirler — ruh hali ölçeği kapatılmış
+-- başına hâlâ anlamlı. Ama artık NULL olabilirler — duygudurum ölçeği kapatılmış
 -- bir merkezde o sütuna yazılacak bir sayı yok ve NOT NULL, olmayan bir cevabı
 -- sıfırla doldurmaya zorlardı.
 ALTER TABLE checkins

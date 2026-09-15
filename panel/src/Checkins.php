@@ -515,7 +515,7 @@ final class Checkins
 
     // ── Eğrinin geometrisi ──────────────────────────────────────
     //
-    // Üç ölçü tek eksene çakıştırılmıyor, üç ayrı satıra çiziliyor: ruh hali ve
+    // Üç ölçü tek eksene çakıştırılmıyor, üç ayrı satıra çiziliyor: duygudurum ve
     // uykuda yüksek iyidir, kaygıda yüksek kötüdür. Aynı kutuda üst üste çizilen
     // üç eğri, yükselen çizginin iyi mi kötü mü olduğunu okunmaz hâle getirir.
     // Ayrı satırlar aynı zaman eksenini ve aynı 1–10 ölçeğini paylaşır, bu yüzden
@@ -602,7 +602,7 @@ final class Checkins
 
     /** Eğri satırlarının başlıkları ve ölçek yönü — görünüm bunu tekrar yazmasın. */
     public const MEASURES = [
-        'mood'          => ['label' => 'Ruh hali', 'low' => 'çok kötü',  'high' => 'çok iyi'],
+        'mood'          => ['label' => 'Duygudurum', 'low' => 'çok kötü',  'high' => 'çok iyi'],
         'sleep_quality' => ['label' => 'Uyku',     'low' => 'çok kötü',  'high' => 'çok iyi'],
         'anxiety'       => ['label' => 'Kaygı',    'low' => 'hiç yok',   'high' => 'çok yoğun'],
     ];
@@ -723,7 +723,7 @@ final class Checkins
 
     /** Soruların varsayılan metni. Düzenlenmiş hâli için [questions]. */
     public const QUESTIONS = [
-        'mood'          => 'Bu hafta genel olarak ruh hâlin nasıldı?',
+        'mood'          => 'Bu hafta kendini genel olarak nasıl hissettin?',
         'sleep_quality' => 'Uykun nasıldı?',
         'anxiety'       => 'Kaygı düzeyin ne kadardı?',
     ];

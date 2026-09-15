@@ -42,3 +42,9 @@ Redirect 301 /en/services/anxiety-therapy.html https://magusapsikoloji.com/en/se
 # kendisi yanlış yazıldığı için düzeltildi; eski adresler indekste.
 Redirect 301 /blog/aile-terapisi-magussa.html https://magusapsikoloji.com/blog/aile-terapisi-magusa.html
 Redirect 301 /blog/cift-terapisi-gazimagussa.html https://magusapsikoloji.com/blog/cift-terapisi-gazimagusa.html
+
+# --- "ruh sağlığı" dil rehberi düzeltmesi (2026-09-15) ---
+# Dil rehberi "ruh" kelimesini yasaklıyor; kelime bu yazının URL'inde de
+# geçiyordu. Yazı /blog/magusa-uluslararasi-ogrenciler-psikolojik-destek.html
+# adresine taşındı, eski adres indekste ve iç bağlantılarda duruyordu.
+Redirect 301 /blog/magusa-uluslararasi-ogrenciler-ruh-sagligi.html https://magusapsikoloji.com/blog/magusa-uluslararasi-ogrenciler-psikolojik-destek.html

@@ -191,10 +191,17 @@ Psikologların dil rehberi "ruh" kelimesini tamamen yasaklıyor (ruh sağlığı
 | `/blog/sinav-kaygisiyla-bas-etme.html` | 2 |
 | `/blog/depresyon-nedir.html` | 1 ("Ruh hali") |
 
-URL'deki `ruh-sagligi` düzeltilirse 301 gerekir — Faz 5'te O6 ile birlikte değerlendirilmeli.
 Rehberin geri kalanı temiz: "danışan" hiç geçmiyor, pazarlama/aciliyet kalıplarının
 hiçbiri bulunmadı.
-**Öncelik:** 9
+
+**Kapatıldı (2026-09-15).** Site sahibi kelimenin hiçbir yerde geçmemesini istedi.
+Görünür metin `psikolojik destek` / `duygudurum` ile değiştirildi; blog kategori çipi
+"Öğrenci Ruh Sağlığı" → "Öğrenci" oldu (EN karşılığı "Students"). URL'de de geçtiği için
+yazı `/blog/magusa-uluslararasi-ogrenciler-psikolojik-destek.html` adresine taşındı —
+görsel adı, 6 iç bağlantı ve iki dilin hreflang'i güncellendi, eski adres
+`static/.htaccess` içinde 301. O6 beklenmedi; bu madde tek başına kapatıldı.
+İngilizce "mental health" bilinçli olarak korundu — yasak yalnızca Türkçe metin için.
+**Öncelik:** 9 — **tamam**
 
 ### O4 · Yeni içerik zayıf bağlanmış
 **Etki:** Orta · **Kanıt:** iç bağlantı grafiği

@@ -473,7 +473,7 @@ final class Ecosystem
      * Girdi olarak check-in geçmişini alıyor (Checkins::history) — böylece
      * şeridin sütunları eğrinin noktalarıyla birebir aynı haftalara düşüyor.
      * Ayrı bir sorguyla kendi haftalarını üretseydi iki görsel kayardı ve
-     * "sınav haftası okulda koyu, ruh hali bir hafta sonra düşük" cümlesi
+     * "sınav haftası okulda koyu, duygudurum bir hafta sonra düşük" cümlesi
      * gözle okunamaz olurdu; şeridin tek işi bu cümleyi okutmak.
      *
      * Yalnız **işaret almış** alanlar satır olur. Sekiz haftadır hiç

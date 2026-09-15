@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Panel;
 
 /**
- * Ekolojik işaretlerle ruh hali arasındaki tekrarları arar.
+ * Ekolojik işaretlerle duygudurum arasındaki tekrarları arar.
  *
  * Burada istatistik YOK. 8–12 haftalık, tek kişilik, haftalık ölçümde korelasyon
  * katsayısı ya da p değeri gürültüyü bilgi diye sunar. Onun yerine önceden
@@ -41,8 +41,8 @@ final class Patterns
      */
     public static function find(array $checkins, array $strip): array
     {
-        // Cümlenin ikinci yarısı ("… ruh hali düşüyor") tek bir ölçekten
-        // geliyor. Hangisi olduğuna Scales karar veriyor: ruh hali açıksa o,
+        // Cümlenin ikinci yarısı ("… duygudurum düşüyor") tek bir ölçekten
+        // geliyor. Hangisi olduğuna Scales karar veriyor: duygudurum açıksa o,
         // değilse yüksek değeri iyi olan ilk ölçek — kaygıyla kurulan aynı
         // cümle ters okunurdu.
         $primary = Scales::primaryKey();
@@ -101,7 +101,7 @@ final class Patterns
     // ── Kurallar ────────────────────────────────────────────────
 
     /**
-     * İşaretli haftaların ruh hali ortalamasıyla kalanlarınkini karşılaştırır.
+     * İşaretli haftaların duygudurum ortalamasıyla kalanlarınkini karşılaştırır.
      *
      * `$lagged` ise işaretin ETKİSİ değil, **ertesi haftası** ölçülür: son
      * haftadaki bir işaretin ertesi haftası olmadığı için o hafta düşer ve
@@ -147,7 +147,7 @@ final class Patterns
             return null;
         }
 
-        // Karşı rüzgârın ruh halini YÜKSELTTİĞİ ya da sırt rüzgârının
+        // Karşı rüzgârın duygudurumu YÜKSELTTİĞİ ya da sırt rüzgârının
         // düşürdüğü durum: sayı eşiği geçse de anlatılabilir bir şey değil,
         // gösterilmez. Ters yönlü bir tesadüfü cümleye çevirmek, kuralın
         // güvenilirliğini olduğundan yüksek gösterir.
@@ -165,7 +165,7 @@ final class Patterns
     }
 
     /**
-     * ✦ işaretinin çevresi: öncesindeki ve sonrasındaki üçer haftanın ruh hali.
+     * ✦ işaretinin çevresi: öncesindeki ve sonrasındaki üçer haftanın duygudurumu.
      *
      * Yorum yok, yalnız görüntü. Bu kural bir eşik uygulamıyor çünkü bir şey
      * iddia etmiyor — terapist bakar, kendi okur.
@@ -212,7 +212,7 @@ final class Patterns
 
         if ($lagged) {
             return sprintf(
-                '%s’in %s haftaları izleyen haftalarda ruh hali ortalaması %s; diğer haftalarda %s.',
+                '%s’in %s haftaları izleyen haftalarda duygudurum ortalaması %s; diğer haftalarda %s.',
                 $label,
                 $verb,
                 $marked,
@@ -221,7 +221,7 @@ final class Patterns
         }
 
         return sprintf(
-            '%s’in %s haftalarda ruh hali ortalaması %s; diğer haftalarda %s.',
+            '%s’in %s haftalarda duygudurum ortalaması %s; diğer haftalarda %s.',
             $label,
             $verb,
             $marked,

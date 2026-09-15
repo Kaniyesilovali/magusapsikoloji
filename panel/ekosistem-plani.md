@@ -109,11 +109,11 @@ verisini burada **görmez** (gerekçe §11).
 
 ### (b) Terapist — **ekolojik şerit** (asıl ürün)
 Satırlar alanlar, sütunlar haftalar, hücreler rüzgâr yönü. Üstüne mevcut
-`Checkins::curve()` ile çizilen ruh hali eğrisi bindirilir:
+`Checkins::curve()` ile çizilen duygudurum eğrisi bindirilir:
 
 ```
             H1  H2  H3  H4  H5  H6  H7  H8  H9  H10
-Ruh hali     6   7   6   4   3   5   7   8   6   4    ╮ mevcut SVG eğrisi
+Duygudurum     6   7   6   4   3   5   7   8   6   4    ╮ mevcut SVG eğrisi
 Okul         ·   ·   ↓   ↓   ↓   ·   ·   ·   ·   ↓
 Arkadaş      ↑   ↑   ·   ·   ↓   ·   ↑   ↑   ↑   ·
 Ev           ·   ·   ·   ↓   ↓   ·   ·   ·   ·   ·
@@ -126,7 +126,7 @@ Olay              ✦ nine hastalandı
 ```
 
 Bu şerit tek başına seansın ilk on dakikasını kazandırır. "Sınav haftaları
-Okul satırında koyu, ruh hali bir hafta sonra düşüyor" cümlesi bu tabloda
+Okul satırında koyu, duygudurum bir hafta sonra düşüyor" cümlesi bu tabloda
 **hesaplanmadan**, gözle okunur. Mevcut `_checkins.php` deseniyle, harici
 kütüphanesiz, inline SVG olarak çizilir.
 
@@ -284,7 +284,7 @@ döndüğü için (kaydeden ergenin kendisi) aynı ekranın varyantı değil.
 
 Sadece dört şey, üçü zaten var:
 
-1. Ruh hali, uyku, kaygı (mevcut, 1–10)
+1. Duygudurum, uyku, kaygı (mevcut, 1–10)
 2. Alanların rüzgâr yönü (yeni, dokunmalı, varsayılan sakin)
 3. İsteğe bağlı "bu hafta bir şey oldu" işareti
 4. İsteğe bağlı tek cümle (mevcut, şifreli)
@@ -308,13 +308,13 @@ gürültüyü bilgi diye sunar. Bu yüzden sistem *istatistik yapmaz*; **şeffaf
 Her kural aynı cümleyle biter: **"Bu bir bulgu değil, bakılacak bir yer."**
 
 ### Kural 1 — Eşzamanlılık
-Bir alan ≥3 haftada ↓ işaretliyse, o haftaların ruh hali ortalaması ile diğer
+Bir alan ≥3 haftada ↓ işaretliyse, o haftaların duygudurum ortalaması ile diğer
 haftaların ortalaması karşılaştırılır. Fark ≥1.5 puansa gösterilir.
-> "Okul'un zorladığı 4 haftada ruh hali ortalaması 4.2; diğer 6 haftada 6.8."
+> "Okul'un zorladığı 4 haftada duygudurum ortalaması 4.2; diğer 6 haftada 6.8."
 
 ### Kural 2 — Gecikmeli etki (lag-1)
-Aynı hesap, **bir sonraki** haftanın ruh haliyle.
-> "Uyku'nun zorladığı haftaları izleyen haftalarda ruh hali ortalama 1.9 puan düşük."
+Aynı hesap, **bir sonraki** haftanın duygudurumuyla.
+> "Uyku'nun zorladığı haftaları izleyen haftalarda duygudurum ortalama 1.9 puan düşük."
 
 ### Kural 3 — Koruyucu etken
 ↑ yönünde aynı hesap. **Bu kural en az stresör kuralı kadar öne çıkarılır** —
@@ -583,7 +583,7 @@ başarı göstergesi değil, bir tasarım hatasıdır.
 
 ## 14. Mevcut uygulamalardan farkı
 
-| | Yaygın ebeveynlik/çocuk ruh sağlığı uygulamaları | Bu |
+| | Yaygın ebeveynlik/çocuk psikolojik sağlık uygulamaları | Bu |
 |---|---|---|
 | Odak | Semptom sıklığı, davranış sayımı | **Bağlam** — semptomun etrafındaki dünya |
 | Kime ait | Uygulamaya; terapi varsa yanında durur | **Terapiye ait**; terapi dışında anlamı yok |
@@ -654,7 +654,7 @@ Somut ayrışmalar:
 - **Kurumsal**: yeni terapist geldiğinde, dosyada 6 aylık ekolojik şerit hazır
   duruyor. Devir maliyeti düşer.
 - **Dürüstlük**: "verinizi satmıyoruz, yapay zekâ tanı koymuyor, kriz izlemesi
-  yapmıyoruz" — bu şeffaflık, ruh sağlığı uygulamalarına güvensiz bir pazarda
+  yapmıyoruz" — bu şeffaflık, psikolojik sağlık uygulamalarına güvensiz bir pazarda
   başlı başına farklılaştırıcıdır.
 
 Dikkat: "dünyanın ilk/tek" iddiası kurulmamalı. Doğrulanamaz, meslek etiği
@@ -731,7 +731,7 @@ hiç dokunmaz.
 
 ### Klinik olarak zayıf olanlar
 
-- **Ebeveynin ↑/↓ işareti bir ölçüm değildir.** Ruh hâline, o günkü yorgunluğuna,
+- **Ebeveynin ↑/↓ işareti bir ölçüm değildir.** Duygudurumuna, o günkü yorgunluğuna,
   çocuğa dair anlatısına göre kayar. Buna "veri" muamelesi yapmak en büyük risk.
   Doğru çerçeve: *yapılandırılmış hatırlatıcı*, ölçüm değil. Şerit "gerçek"
   değil, "ebeveynin o hafta böyle gördüğü" demektir. Terapist görünümünde bu
@@ -829,7 +829,7 @@ bu ikisinin gerçek ailelerde çalıştığı kanıtlandıktan sonra.
 
 ### Faz 3 — Ekolojik şerit · ~1–1.5 gün
 - [ ] `clients/_ecosystem.php`, `_checkins.php` ile aynı inline SVG kuralı
-- [ ] Mevcut ruh hali eğrisi şeridin üstüne bindirilir
+- [ ] Mevcut duygudurum eğrisi şeridin üstüne bindirilir
 - [ ] Başlık altında sabit cümle: *"Bunlar ölçüm değil, ebeveynin o haftaki
       işaretidir."*
 - [ ] Terapistin alan setini açıp kapadığı küçük form

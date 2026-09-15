@@ -25,7 +25,7 @@ kart oranına (16:9) kırpılmış, ~800×450 px JPEG olarak repoda durur. TR ve
 | kuzey-kibris-online-terapi.jpg | Çalışma masasında ekranın yanında duran kulaklık | photo-1533379007656-3a10925da2e2 |
 | kuzey-kibris-psikolog-bulma.jpg | Pencere kenarında, yanında sehpası olan tek bir koltuk | photo-1619596662481-085e45d69762 |
 | kuzey-kibris-psikolojik-destek.jpg | Antik kalıntıların yanından denize doğru uzanan bir Kıbrıs sahil kasabası | photo-1759157261270-7c98d70fc36e |
-| magusa-uluslararasi-ogrenciler-ruh-sagligi.jpg | Yolculuk için hazırlanmış, açık duran bir bavul | photo-1502301197179-65228ab57f78 |
+| magusa-uluslararasi-ogrenciler-psikolojik-destek.jpg | Yolculuk için hazırlanmış, açık duran bir bavul | photo-1502301197179-65228ab57f78 |
 | noropsikolojik-degerlendirme-magusa.jpg | Ahşap parçalardan oluşan, birbirine geçmiş küp bulmaca | photo-1589495374906-b7f5ca5de879 |
 | okul-fobisi-cocuk.jpg | Pencerelerden ışık alan boş bir sınıf ve sıralar | photo-1757193714692-44cdf07a5377 |
 | cocuklarda-ofke-nobetleri.jpg | Ahşap masaya devrilmiş, dağılmış ahşap yapı blokları | photo-1784116740430-8a5ebc57cddf |
