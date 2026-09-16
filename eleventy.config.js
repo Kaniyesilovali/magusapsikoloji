@@ -73,8 +73,8 @@ module.exports = function (eleventyConfig) {
     gitDates.resolve(page.inputPath, page.data.dateModified, page.data.datePublished));
 
   // Blog gövdesi: frontmatter'daki hero + bloklar → HTML (scripts/render-blocks.js)
-  eleventyConfig.addFilter('renderHero', (hero, category, readingTime, url) =>
-    blocks.renderHero(hero, { category, readingTime, url }));
+  eleventyConfig.addFilter('renderHero', (hero, category, readingTime, url, updated, updatedLabel) =>
+    blocks.renderHero(hero, { category, readingTime, url, updated, updatedLabel }));
   eleventyConfig.addFilter('renderBlocks', (list) => blocks.renderBlocks(list));
 
   // Index kart sıralaması: cardOrder'sız yeni yazılar en üstte (yeni→eski),

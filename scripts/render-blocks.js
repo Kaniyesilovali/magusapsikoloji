@@ -185,8 +185,13 @@ function renderBlocks(blocks) {
 
 /**
  * Hero: kırıntı + kategori rozeti + başlık + giriş paragrafı.
- * opts: { category, readingTime, url } — sayfa frontmatter'ından gelir;
- * hero.kategori / hero.okumaSuresi doluysa onlar öncelikli (nadir farklar).
+ * opts: { category, readingTime, url, updated, updatedLabel } — sayfa
+ * frontmatter'ından gelir; hero.kategori / hero.okumaSuresi doluysa onlar
+ * öncelikli (nadir farklar).
+ *
+ * Güncelleme tarihi buradaki meta satırında duruyor: eskiden sayfanın en
+ * altında, kapanış CTA'sıyla footer arasında yetim bir şerit olarak
+ * basılıyordu. Yazının künyesinde hem göze hem tarayıcıya daha doğru yer.
  */
 function renderHero(hero, opts = {}) {
   if (!hero) return '';
@@ -195,14 +200,22 @@ function renderHero(hero, opts = {}) {
   const en = String(opts.url || '').startsWith('/en/');
   const blogRoot = en ? '/en/blog/' : '/blog/';
   const badge = hero.rozetSinifi || 'text-xs bg-primary/10 text-primary font-medium px-3 py-1 rounded-full';
+  const dot = `<span class="text-xs text-warm-tertiary" aria-hidden="true">·</span>\n`;
+  const updated = opts.updated
+    ? (readingTime ? dot : '') +
+      `<span class="text-xs text-ink-light">${en ? 'Last updated' : 'Son güncelleme'}: ` +
+      `<time datetime="${esc(opts.updated)}">${esc(opts.updatedLabel || opts.updated)}</time></span>\n`
+    : '';
   return (
     `<section class="pt-32 pb-12 bg-warm">\n<div class="max-w-3xl mx-auto px-5 lg:px-8">\n` +
     `<div class="flex items-center gap-2 text-xs text-ink-muted mb-6">\n` +
     `<a href="${blogRoot}" class="hover:text-primary transition-colors">Blog</a>\n` +
     `<span>/</span><span>${esc(category)}</span>\n</div>\n` +
-    `<div class="flex items-center gap-3 mb-5">\n` +
+    `<div class="flex flex-wrap items-center gap-x-3 gap-y-2 mb-5">\n` +
     `<span class="${esc(badge)}">${esc(category)}</span>\n` +
-    `<span class="text-xs text-ink-light">${esc(readingTime)}</span>\n</div>\n` +
+    `<span class="text-xs text-ink-light">${esc(readingTime)}</span>\n` +
+    updated +
+    `</div>\n` +
     `<h1 class="font-serif text-3xl lg:text-4xl text-ink leading-tight mb-5">${inline(hero.baslik)}</h1>\n` +
     `<p class="text-ink-muted text-lg leading-relaxed">${inline(hero.giris)}</p>\n</div>\n</section>`
   );
