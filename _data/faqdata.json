@@ -1067,6 +1067,46 @@
           "a": "Cognitive Behavioural Therapy (CBT) has the strongest evidence base for school refusal. The child works on anxious thoughts and a graded return to school, while parents work on the morning routine and on keeping their approach consistent."
         }
       ]
+    },
+    "travma": {
+      "tr": [
+        {
+          "q": "Travma terapisinde olayı yeniden yaşar mıyım?",
+          "a": "Amaç olayı yeniden yaşatmak değildir. Çalışma, bugün taşınabilecek bir tempoda ilerler ve zemin kurulmadan yaşantı üzerine geçilmez. Zorlandığınız her noktada durulabilir."
+        },
+        {
+          "q": "Aradan yıllar geçtiyse terapi işe yarar mı?",
+          "a": "Travma çalışması için bir zaman sınırı yoktur. Çocuklukta yaşanan bir şeyin izleriyle yetişkinlikte çalışmak sık karşılaşılan bir durumdur; geç kalınmış sayılmaz."
+        },
+        {
+          "q": "Travma sonrası belirtiler ne kadar sürerse destek almak gerekir?",
+          "a": "Zorlayıcı bir olayın ardından bir süre uyku bozulması, irkilme ya da uyuşma hissetmek olağandır. Belirtiler haftalarca sürüyor ve gündelik hayatı, uykuyu ya da ilişkileri belirlemeye başlıyorsa destek almak konuşulmaya değer hale gelir."
+        },
+        {
+          "q": "Travma için ilaç gerekir mi?",
+          "a": "Psikolog ilaç yazmaz. Bazı tablolarda hekim değerlendirmesi ayrıca konuşulur; bu karar bireye aittir ve terapi süreciyle birlikte yürütülebilir."
+        }
+      ]
+    },
+    "trauma": {
+      "en": [
+        {
+          "q": "Will I have to relive the event in trauma therapy?",
+          "a": "The aim is not to make you relive it. The work moves at a pace that can be carried today, and it does not move onto the experience before ground has been built. It can be paused at any point you find difficult."
+        },
+        {
+          "q": "Does therapy help if years have passed?",
+          "a": "There is no time limit for trauma work. Working in adulthood with the traces of something that happened in childhood is common, and it does not count as too late."
+        },
+        {
+          "q": "How long do symptoms have to last before getting support?",
+          "a": "After a difficult event it is ordinary to have disturbed sleep, to startle easily or to feel numb for a while. Support becomes worth discussing when the signs continue for weeks and start deciding how daily life, sleep or relationships go."
+        },
+        {
+          "q": "Is medication needed for trauma?",
+          "a": "A psychologist does not prescribe medication. In some presentations an assessment by a physician is discussed separately; that decision belongs to the individual and can run alongside therapy."
+        }
+      ]
     }
   },
   "pageCategories": {
