@@ -59,7 +59,7 @@ Her kayıt bir git commit'idir → yanlışlıkla bozulan bir şey `git revert` 
 
 ## Bilinen eksikler / yapılacaklar
 
-1. **Gerçek iletişim bilgileri**: `_data/contact.json` hâlâ placeholder (`9055555`, `+90 5XX…`). Gerçek numaralar girilince tüm site güncellenir.
+1. ~~**Gerçek iletişim bilgileri**~~: 2026-09-16'da girildi — `_data/contact.json` artık `+90 539 123 25 47` / `905391232547`.
 2. **Görseller**: `assets/images` boş; `og-image.jpg`, `logo.png`, `favicon.png`, `apple-touch-icon.png` sitede referanslı ama dosyalar yok (eski siteden beri 404).
 3. **Çevirisi olmayan sayfalar** (`npm run check` uyarı listeler): `blog/beyin-beden.html` (EN yok) ve 3 EN-only yazı (TR yok).
 4. **Markdown ile yeni içerik**: v1'de yeni yazılar HTML gövdeli. İleride `@tailwindcss/typography` + shortcode seti eklenerek saf Markdown yazarlığı açılabilir.

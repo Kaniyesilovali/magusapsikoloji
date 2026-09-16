@@ -342,15 +342,14 @@ Sistem kayıtları, Sistem).
 
 ## 8 · Test · Site içeriği
 
-- [ ] **30 · İletişim bilgilerini düzelt** — *Panel*
+- [x] **30 · İletişim bilgilerini düzelt** — ✅ 2026-09-16'da depoda yapıldı
 
-  **Site içeriği** → *İletişim bilgileri*. Şu an geçersiz değerler var:
-  `+90 5XX XXX XX XX` ve `9055555`. Gerçek numarayı yazıp *Kaydet ve yayınla*.
+  `_data/contact.json` artık `+90 539 123 25 47` / `905391232547` içeriyor ve blog
+  yazılarındaki sabit kodlu WhatsApp linkleri de (84 dosya) aynı numaraya çevrildi.
 
-  *Tamam sayılır:* 2–3 dakika sonra sitenin alt bilgisindeki numara güncellenmiş oluyor.
-
-  *Not:* Bu, sitedeki WhatsApp linklerinin **bir kısmını** düzeltir. Blog yazılarındaki
-  66 link ayrı dosyalarda; numarayı bana ilettiğinizde onları ben düzelteceğim.
+  Numara ileride değişirse: **Site içeriği** → *İletişim bilgileri* panelden
+  alt bilgiyi ve yüzen düğmeyi günceller; içerik dosyalarındaki derin linkler
+  ayrıca düzeltilmelidir.
 
 - [ ] **31 · Bir SSS cevabını düzenle** — *Panel*
 
@@ -418,7 +417,7 @@ Bunlar için adım atmanıza gerek yok; bilgiyi ilettiğinizde yapılacak.
 
 | Bekleyen | Ne olacak |
 |---|---|
-| **WhatsApp numarası** | 55 içerik dosyasındaki `905XXXXXXXXX` placeholder'ı tek commit'te düzeltilecek. Şu an sitedeki bütün WhatsApp düğmeleri çalışmıyor. |
+| ~~**WhatsApp numarası**~~ | ✅ 2026-09-16: 84 içerik dosyası + `_data/contact.json` gerçek numaraya (`905391232547`) çevrildi. |
 | **Logo dosyası** | `assets/images/` klasörü **tamamen boş**; `og-image.jpg`, `logo.png`, `favicon.png`, `apple-touch-icon.png` dördü de canlıda 404. Sonucu: siteyi WhatsApp'ta paylaşınca önizleme boş çıkıyor, schema'daki logo geçersiz. Logodan doğru boyutlar türetilecek. |
 
 Düzeltmelerden sonra `npm run check:live` ile canlı site yeniden taranabilir.

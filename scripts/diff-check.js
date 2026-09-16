@@ -30,8 +30,13 @@ const WHITELIST = {
   removedScripts: ['assets/js/faq.js'],
   // Bu sayfa-yollarında JSON-LD farkı raporlanır ama fail etmez (FAQ konsolidasyonu)
   jsonLdRelaxed: [],
-  // Metin karşılaştırmasında yok sayılacak eski placeholder kalıpları
-  textIgnorePatterns: [/\+90 5XX[X\s]*XXX XX XX/g, /905XXXXXXXXX/g, /9055555/g],
+  // Metin karşılaştırmasında yok sayılacak telefon kalıpları.
+  // Eski sitede placeholder, yeni sitede gerçek numara duruyor (2026-09-16);
+  // ikisi de aynı işarete indirgenmezse 84 sayfa boş yere farklı raporlanır.
+  textIgnorePatterns: [
+    /\+90 5XX[X\s]*XXX XX XX/g, /905XXXXXXXXX/g, /9055555/g,
+    /\+?90\s?539\s?123\s?25\s?47/g, /905391232547/g,
+  ],
   // Eski sitede zaten kırık olan, migrasyonda düzeltilen linkler
   fixedLinks: ['/en/blog/when-to-see-a-psychologist.html', '/en/blog/psychologist-vs-psychiatrist.html'],
 };

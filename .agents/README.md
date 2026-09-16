@@ -65,11 +65,11 @@ Bu programda üretilen her metin şunlara uyar:
 Faz 0-4 ✅ · Faz 5 ◐ (Y1 kısmi, Y2 engelli) · Faz 6 ✅ · Faz 7 n/a (atlandı) ·
 Faz 8-12 bekliyor.
 
-**Programı tıkayan dört bilgi — hepsi merkezden gelmeli:**
+**Programı tıkayan bilgiler — hepsi merkezden gelmeli:**
 
 | Bilgi | Neyi açar |
 |---|---|
-| Gerçek telefon numarası | 98 sayfada kırık WhatsApp bağlantısı (K1) — sitenin tek dönüşüm kanalı |
+| ~~Gerçek telefon numarası~~ | ✅ 2026-09-16: `+905391232547` girildi, K1 kapandı |
 | Psikolog ad, unvan, lisans | Y2 → Faz 8'in tamamı. Bu grupta isimsiz tek site biziz |
 | Marka görselleri (logo, og-image, favicon, apple-touch-icon) | Hâlâ 404; her paylaşımın önizlemesi boş |
 | Kurumsal hizmet kapsamı | Faz 5'in son iki maddesi |

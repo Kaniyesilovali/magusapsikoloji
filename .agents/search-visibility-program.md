@@ -47,7 +47,7 @@ alıntılanmayı en çok belirleyen madde bu. Y2 kapanmadan Faz 8'de anlamlı ha
 - Y1: 3 hatalı atıf düzeltildi + 5 kaynak bağlandı (`f56483f`). Kalan: B11 + 4 karar sorusu
   + 6 araştırılmamış iddia. Liste: `.agents/kaynak-inceleme-listesi.md`
 - Kurumsal danışmanlık + eğitim/atölye — kapsam teyidi bekliyor
-- K1: 98 sayfada kırık `wa.me` — telefon bekliyor
+- ~~K1: 98 sayfada kırık `wa.me`~~ — **çözüldü (2026-09-16):** gerçek numara `+905391232547` girildi
 
 **Faz 6 çıktısı (2026-09-08, yayında ve doğrulandı)**
 - Şemasız sayfa 6 → 0 (yasal sayfalar breadcrumb, beyin-beden Article)
@@ -117,7 +117,7 @@ Fazlar arası girdiler.
 **Faz 1 denetim özeti (2026-09-02, 92 URL canlı tarandı)**
 - Teknik temel sağlam: 92/92 200, self-canonical, **hreflang sıfır hata**, yetim/kırık link yok,
   TTFB 60-130ms, title/description tamamen kural içinde, tek H1, başlık atlaması yok.
-- Kritik: **K1** wa.me 92/92 sayfada kırık.
+- ~~Kritik: **K1** wa.me 92/92 sayfada kırık.~~ Çözüldü 2026-09-16.
 - Yüksek: **Y1** 88 içerik sayfasında sıfır dış atıf + kaynaksız istatistik iddiaları ·
   **Y2** isimli yazar yok (46/46 Article author=Organization) · **Y3** görünür tarih yok ·
   **Y4** 4 marka görseli 404 · **Y5** Article.image 46/46 yazıda 404'ü gösteriyor.
@@ -129,7 +129,7 @@ Fazlar arası girdiler.
 - Ölçülemedi: PSI kotası dolu → laboratuvar CWV skorları alınamadı (bileşenler tek tek iyi).
 
 **Bilinen açık teknik borç** (hafızadan devralındı, Faz 1'de doğrulandı)
-- `wa.me` numaraları 86 sayfada placeholder (`9055555` / `905XXXXXXXXX`) — ana dönüşüm kanalı kırık
+- ~~`wa.me` numaraları 86 sayfada placeholder~~ — 2026-09-16'da `905391232547` ile değiştirildi; 106/106 kamuya açık sayfada çalışıyor
 - ~~`assets/images/` boş~~ **DÜZELDİ kısmen:** 22 blog kart görseli repoda ve canlıda 200.
   Yalnız 4 marka dosyası hâlâ 404 (og-image, logo, favicon, apple-touch-icon).
 - ~~26 sayfa <300 kelime~~ **GÜNCEL ÖLÇÜM: 8 sayfa <300, 33 sayfa <500** (hizmet sayfaları 267-350)
@@ -170,7 +170,7 @@ Kaydedilmedi.
 
 ## Açık Maddeler
 
-- [ ] Gerçek WhatsApp/telefon numarası — kullanıcı
+- [x] Gerçek WhatsApp/telefon numarası — `+905391232547` (2026-09-16)
 - [ ] Marka görselleri (logo, og-image, favicon, apple-touch-icon) — kullanıcı
 - [ ] İsimli psikolog bilgileri (ad, unvan, lisans, uzmanlık) — kullanıcı/psikologlar
 - [ ] `.agents/product-marketing.md` "Açık Sorular" bölümündeki 10 madde — psikologlar

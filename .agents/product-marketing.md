@@ -220,7 +220,7 @@
 **Birincil iş hedefi:** Gazimağusa ve KKTC'de psikolojik destek arayan kişilerin, arama motorlarında ve AI yanıtlarında merkeze ulaşması; nitelikli randevu talebi artışı.
 
 **Dönüşüm eylemi:** WhatsApp mesajı (birincil) → e-posta → iletişim sayfası.
-**⚠️ ŞU AN KIRIK:** `wa.me` bağlantıları 86 sayfada placeholder (`9055555` / `905XXXXXXXXX`). Sitenin ana dönüşüm kanalı çalışmıyor. Bu düzeltilmeden trafik artışının dönüşüme çevrilmesi mümkün değil.
+**✅ ÇÖZÜLDÜ (2026-09-16):** `wa.me` bağlantıları gerçek numaraya (`905391232547`) bağlandı. Ana dönüşüm kanalı 106/106 kamuya açık sayfada çalışıyor.
 
 **Mevcut ölçümler:** GA4 `G-7ZCT7JXPGK` (Consent Mode v2 ile) canlı; Google Search Console bağlı. Faz 10'a kadar temel sayılar kaydedilmedi.
 
@@ -231,7 +231,7 @@
 Bunlar yanıtlanmadan ilgili içerik üretilmez.
 
 - [ ] **İsimli psikolog bilgileri** — ad, unvan, lisans, eğitim, uzmanlık alanları. (E-E-A-T ve GEO için en yüksek etkili tek madde.)
-- [ ] **Gerçek telefon / WhatsApp numarası**
+- [x] **Gerçek telefon / WhatsApp numarası** — `+90 539 123 25 47` (2026-09-16)
 - [ ] **Marka görselleri** — logo, og-image, favicon, apple-touch-icon
 - [ ] **Merkez adresi** (schema + yerel görünürlük; GBP ertelendi ama adres yine de gerekiyor)
 - [ ] Seans ücreti — sitede yayımlanacak mı, aralık verilecek mi?

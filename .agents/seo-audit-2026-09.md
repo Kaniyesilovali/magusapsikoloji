@@ -40,7 +40,7 @@ Hızlı kazanımlar: 5 ve 6 numaralı maddeler dosya yüklemesi + tek satır şa
 
 ## Kritik Bulgular
 
-### K1 · WhatsApp bağlantıları 92 sayfanın tamamında kırık
+### K1 · WhatsApp bağlantıları 92 sayfanın tamamında kırık — ✅ ÇÖZÜLDÜ (2026-09-16)
 **Etki:** Kritik (iş) · **Kanıt:** canlı tarama, 92/92 sayfa
 
 İki ayrı kırık kaynağı var:
@@ -54,7 +54,7 @@ Hızlı kazanımlar: 5 ve 6 numaralı maddeler dosya yüklemesi + tek satır şa
 hakkında bilgi almak istiyorum") — iyi tasarlanmış ama hepsi geçersiz numaraya gidiyor.
 
 **Düzeltme:** Gerçek numara verildiğinde `contact.json` panelden düzeltilir; 55 dosyadaki
-`905XXXXXXXXX` tek seferde toplu değiştirilir. **Kullanıcıdan numara bekleniyor.**
+`905XXXXXXXXX` tek seferde toplu değiştirilir. **2026-09-16'da yapıldı:** numara `905391232547`, 84 içerik dosyası + `_data/contact.json`.
 **Öncelik:** 1 — trafik artışının hiçbir anlamı yok, çünkü gelen kişi iletişime geçemiyor.
 
 ---
@@ -309,7 +309,7 @@ Bu maddeler doğrulandı ve **regresyon riski taşıyor**; sonraki fazlarda koru
 4. **D1** HSTS · **D2** font preload · **D3** 5 description'ı genişlet
 
 ### Aşama 2 — Kullanıcıdan bilgi/dosya bekliyor (engelleyici)
-5. **K1** Gerçek WhatsApp numarası → 92 sayfa + 55 dosya toplu düzeltme
+5. ~~**K1** Gerçek WhatsApp numarası → 92 sayfa + 55 dosya toplu düzeltme~~ ✅ 2026-09-16
 6. **Y4** 4 marka görseli (og-image, logo, favicon, apple-touch-icon)
 7. **Y2** İsimli psikolog bilgileri → Person şeması + yazar imzaları
 

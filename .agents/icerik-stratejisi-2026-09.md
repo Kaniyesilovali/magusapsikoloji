@@ -279,6 +279,6 @@ yapısal iş yapılabilir ama otorite işi yapılamaz.
 ## Açık maddeler
 
 - [ ] Psikolog ad/unvan/lisans bilgileri (Y2 engelleyici)
-- [ ] Gerçek adres ve telefon (şehir sayfası + GBP + K1 engelleyici)
+- [ ] Gerçek adres (şehir sayfası + GBP) — telefon 2026-09-16'da girildi, K1 kapandı
 - [ ] Kurumsal hizmetler: sözleşme modeli, seans kotası, atölye konu başlıkları — yazmadan önce teyit
 - [ ] 20 sorguluk AI ölçüm çizelgesi (Faz 2'den devreden)

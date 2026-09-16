@@ -175,8 +175,8 @@ Aşağıdaki sorgular **ticari niyeti en yüksek** olanlar ama içerik üretilem
 | çocuk psikoloğu ücreti | Ücret yayımlama kararı yok | Psikologlar |
 | yakınımdaki çocuk psikoloğu / harita sonuçları | GBP ertelendi (2026-09-02) | Kullanıcı |
 
-**Ayrıca:** ebeveyn segmentine gelen tüm trafiğin dönüşüm yolu `wa.me` — **98 sayfada kırık (K1).**
-Bu kelime çalışmasının getirisi telefon numarası gelene kadar ölçülemez.
+**Ayrıca:** ebeveyn segmentine gelen tüm trafiğin dönüşüm yolu `wa.me` — **2026-09-16'dan beri çalışıyor (K1 kapandı).**
+Bu kelime çalışmasının getirisi artık ölçülebilir.
 
 ---
 
