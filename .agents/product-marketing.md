@@ -21,7 +21,16 @@
 
 **Hizmet listesi (yayında):** Bireysel terapi · Çocuk psikolojisi · Ergen psikolojisi · Genç yetişkin psikolojisi · Yetişkin psikolojisi · Aile terapisi · BDT/CBT · ACT · Psikodinamik terapi · Motivasyonel görüşme · Online terapi · Öğrenci danışmanlığı · **Nöropsikolojik değerlendirme** (tüm yaş grupları, yazılı rapor)
 
-**VERİLMEYEN — içerikte iddia edilmez:** EMDR · bilgisayar temelli dikkat ölçümleri. Çift terapisi *yapılıyor* ama hizmet sayfası yok (yalnız blog yazısı var).
+**Travma odaklı çalışma** (kullanıcı teyidi 2026-09-16, hizmet sayfası yayına hazır):
+- **Yaş grupları:** çocuk, ergen, beliren yetişkinlik, yetişkin
+- **Yaklaşımlar:** travma odaklı BDT (TF-CBT) · psikodinamik psikoterapi · ACT ·
+  çocuklarda oyun ve sanat temelli çalışma
+- **Kapsanan tablolar:** çocukluk çağı travması · gelişimsel travma · TSSB (PTSD) ·
+  tek olaya bağlı travma (kaza, afet, ani kayıp, şiddet) · yas ve kayıp
+- **EMDR bu kapsamda da VERİLMİYOR** — travma sayfasında açıkça belirtildi
+- Sayfalar: `/hizmetler/travma-terapisi.html` + `/en/services/trauma-therapy.html`
+
+**VERİLMEYEN — içerikte iddia edilmez:** EMDR · bilgisayar temelli dikkat ölçümleri.
 
 ## Hedef Kitle
 

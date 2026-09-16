@@ -1,335 +1,645 @@
 # Teknik SEO Denetimi — magusapsikoloji.com
 
-**Tarih:** 2026-09-02 · **Kapsam:** canlı 92 URL (sitemap'in tamamı), Googlebot UA ile tarandı
-**Program fazı:** Arama Görünürlüğü Programı — Faz 1
-**Yöntem:** özel tarayıcı (`cheerio`) + canlı HTTP kontrolleri + `npm run check`
+**Son tarama:** 2026-09-16 · **Kapsam:** canlı 106 URL (sitemap'in tamamı), Googlebot UA
+**Önceki tarama:** 2026-09-02 (92 URL) — bulguları aşağıda kapandı/açık olarak taşındı
+**Program fazı:** Arama Görünürlüğü Programı — Faz 1 (yeniden denetim)
+**Yöntem:** özel tarayıcı (`cheerio`) + çok-UA canlı HTTP kontrolleri + `npm run check` + `npm run check:live`
+**GSC:** Performans raporu (Web, son 3 ay: 2026-07-06 → 2026-09-14) 2026-09-16'da alındı ve işlendi.
+Kapsam (Coverage) raporu **alınmadı** — indeksleme durumu hâlâ ölçülemedi.
 
-> **Şema tespiti notu:** `seo-audit` becerisi curl/web_fetch ile JSON-LD tespitinin güvenilmez
-> olduğunu belirtir — bu, şemayı istemci tarafı JS ile enjekte eden CMS'ler için geçerlidir.
-> Bu sitede JSON-LD Eleventy tarafından **sunucuda** basılıyor (`rawSchemas` frontmatter → head),
-> bu yüzden HTML'i ayrıştırarak tespit güvenilirdir ve öyle yapıldı: 92 sayfanın tamamındaki
-> `<script type="application/ld+json">` blokları JSON olarak parse edildi.
+> **Şema tespiti notu:** Bu sitede JSON-LD Eleventy tarafından **sunucuda** basılıyor
+> (`rawSchemas` frontmatter → head), bu yüzden HTML ayrıştırarak tespit güvenilirdir.
+> 106 sayfanın tamamındaki `<script type="application/ld+json">` blokları JSON olarak
+> parse edildi: 0 parse hatası, 291 şema düğümü.
 
 ---
 
 ## Yönetici Özeti
 
-**Genel sağlık: teknik olarak çok sağlam, otorite sinyalleri bakımından boş.**
+**Genel sağlık: on-page ve yapısal katman kusursuza yakın; bu taramanın iki yeni bulgusu
+tarama katmanında ve ikisi de dışarıdan gelen ayar değişikliği.**
 
-Sitenin teknik temeli bu ölçekte nadir görülecek kadar temiz. 92 URL'nin tamamı 200 dönüyor,
-canonical'ların hepsi kendine işaret ediyor, **hreflang kurulumunda tek bir hata yok** (self,
-karşılıklılık, x-default, sitemap-HTML tutarlılığı, kod geçerliliği — beşi de tam), yetim sayfa
-ve kırık iç bağlantı yok, TTFB 60-130 ms. Geçmiş denetimlerin açık maddeleri (uzun title'lar,
-eksik description, x-default tutarsızlığı, www kopyası) kapanmış.
+2026-09-02'den bu yana site 92'den 106 URL'e çıktı ve önceki denetimin açık maddelerinin
+çoğu kapandı: WhatsApp kanalı çalışıyor, şemasız sayfa kalmadı, görünür tarihler geldi,
+URL yazım hataları düzeldi. On-page tarafında **hiçbir** hata bulunamadı — 106/106 sayfada
+self-canonical, tek H1, başlık atlaması yok, title/description tamamen sınırlar içinde,
+hreflang beş kontrolün beşinde de sıfır hata, yetim sayfa ve kırık iç bağlantı yok.
 
-Sorun teknikte değil. **Site hiçbir şeye kaynak göstermiyor, hiçbir metnin yazarı yok ve ana
-dönüşüm kanalı çalışmıyor.**
+Sorun bu sefer sitenin kendisinde değil, **siteye kimin ulaşabildiğinde.**
 
 **En öncelikli 5 bulgu:**
 
-1. **WhatsApp bağlantısı 92/92 sayfada kırık** — sitenin tek dönüşüm kanalı ölü
-2. **88 içerik sayfasında sıfır dış kaynak atfı** — üstelik kaynaksız istatistik iddiaları var
-3. **İsimli yazar yok** — YMYL sağlık içeriğinde en ağır E-E-A-T eksiği
-4. **Görünür tarih yok** — tarihler yalnızca JSON-LD'de, sayfada değil
-5. **4 marka görseli 404** — 92 sayfanın og:image'i ve 46 yazının Article.image'i kırık
+1. **GPTBot ve ClaudeBot 403 alıyor** — Cloudflare engelliyor. 2026-09-02'de ikisi de 200'dü.
+   Bu bir gerileme ve tam da içinde bulunduğumuz Faz 8'in (AEO + GEO) dayanağını kesiyor.
+2. **Bingbot en önemli 6 sayfada 406 alıyor** — her iki ana sayfa, her iki blog dizini,
+   her iki hizmet dizini. Origin (cPanel ModSecurity) kaynaklı, Cloudflare değil.
+3. **56/56 yazıda yazar hâlâ `Organization`** — psikologlar artık sitede isimli ve `Person`
+   şeması var, ama hiçbir yazı onlara bağlanmıyor. Y2 yarı kapandı.
+4. **92 sayfanın tarihi bugüne çekildi** — telefon numarası toplu değişimi 84 içerik dosyasına
+   dokundu, `gitDates` bunu "güncellendi" saydı. İçerik değişmedi, tarih değişti.
+5. **Şehir sayfaları ana sayfayla aynı kelimeyi hedefliyor** — `/gazimagusa-psikolog.html`
+   ile `/` birebir aynı title'a sahip; her iki şehir sayfasının da yalnız 1 iç bağlantısı var.
 
-Hızlı kazanımlar: 5 ve 6 numaralı maddeler dosya yüklemesi + tek satır şablon değişikliği.
-2, 3, 4 birlikte Faz 8'in (GEO) tüm dayanağını oluşturuyor.
+**Hızlı kazanımlar:** 1 ve 2 numara kod değişikliği değil, panel ayarı — biri Cloudflare
+kontrol panelinde, diğeri cPanel/hosting tarafında. İkisi birlikte bir saatlik iş.
+
+**GSC verisi ne ekledi (son 3 ay: 46 tıklama, 1.449 gösterim):**
+
+- **Y7 doğrulandı** — `/gazimagusa-psikolog.html` 3 ayda **sıfır gösterim** almış; aynı
+  kelimeyi ana sayfa 8,66. sırada karşılıyor.
+- **Ölçülmüş en büyük talep bir hizmet boşluğunda (G1)** — İngilizce travma sorguları
+  165 gösterim, 0 tıklama, 40,9. sıra. Travma hizmet listesinde yok. **Kapsam kararı gerekiyor.**
+- **Site gösterim alıyor, tıklama alamıyor** — 46 tıklamanın %76'sı tek sayfadan (ana sayfa).
+  365 gösterimlik üç büyük küme 40-100. sıra bandında sıkışmış (G2).
+- Ada içi hedefleme **çalışıyor**: Kıbrıs'ta ortalama 8,77. sıra, 33 tıklama.
 
 ---
 
 ## Kritik Bulgular
 
-### K1 · WhatsApp bağlantıları 92 sayfanın tamamında kırık — ✅ ÇÖZÜLDÜ (2026-09-16)
-**Etki:** Kritik (iş) · **Kanıt:** canlı tarama, 92/92 sayfa
+### K2 · Cloudflare, GPTBot ve ClaudeBot'u engelliyor — **YENİ, GERİLEME**
+**Etki:** Kritik (AEO/GEO) · **Kanıt:** çok-UA canlı test, 2026-09-16
 
-İki ayrı kırık kaynağı var:
-
-| Kaynak | Değer | Yayılım |
+| Bot | 2026-09-02 | 2026-09-16 |
 |---|---|---|
-| `_data/contact.json` → footer + yüzen buton | `wa.me/9055555` | **92/92 sayfa** |
-| İçerik dosyalarında sabit kodlu derin bağlantılar | `wa.me/905XXXXXXXXX?text=...` | ~110 bağlantı, 55 dosya |
+| GPTBot | 200 | **403** |
+| ClaudeBot | 200 | **403** |
+| CCBot | 200 | **403** |
+| OAI-SearchBot | 200 | 200 |
+| PerplexityBot | 200 | 200 |
+| Google-Extended | 200 | 200 |
+| Googlebot | 200 | 200 |
 
-İkinci grup, konuya göre ön yazılmış mesajlar içeriyor ("Merhaba, nöropsikolojik değerlendirme
-hakkında bilgi almak istiyorum") — iyi tasarlanmış ama hepsi geçersiz numaraya gidiyor.
+Yanıt gövdesi `Your request was blocked.` (25 bayt), başlıkta `server: cloudflare`,
+`cf-ray` var ve `cf-cache-status` yok — engel Cloudflare kenarında, origin'e hiç gitmiyor.
+Bu, Cloudflare'ın **AI Crawl Control / "Block AI bots"** özelliğinin imzası.
 
-**Düzeltme:** Gerçek numara verildiğinde `contact.json` panelden düzeltilir; 55 dosyadaki
-`905XXXXXXXXX` tek seferde toplu değiştirilir. **2026-09-16'da yapıldı:** numara `905391232547`, 84 içerik dosyası + `_data/contact.json`.
-**Öncelik:** 1 — trafik artışının hiçbir anlamı yok, çünkü gelen kişi iletişime geçemiyor.
+Neden önemli: programın şu anki fazı (Faz 8) AI motorlarında alıntılanmak üzerine kurulu.
+GPTBot ve ClaudeBot eğitim/erişim tarayıcıları; ikisi de kapalıyken `llms.txt`, FAQPage
+şeması ve çıkarılabilirlik çalışmasının bu iki motorda karşılığı olmaz. Not: OAI-SearchBot
+(ChatGPT'nin arama tarayıcısı) ve PerplexityBot açık — yani zarar kısmi, ama Faz 2'de
+kilitlenen 20 sorgunun ölçümü bu ayar değişmeden anlamlı karşılaştırma vermez.
+
+**Düzeltme:** Cloudflare paneli → ilgili alan adı → **AI Crawl Control** (eski adıyla "Bot
+Fight Mode" altındaki AI bots ayarı). GPTBot, ClaudeBot ve CCBot için izin ver. Hangi
+tarayıcıya izin verileceği bir **içerik politikası kararı** — engel kasıtlıysa Faz 8'in
+kapsamı buna göre daraltılmalı, çünkü o durumda iki büyük motor kalıcı olarak dışarıda.
+**Öncelik:** 1
+
+---
+
+### K3 · Bingbot, en önemli 6 sayfada 406 alıyor — **YENİ**
+**Etki:** Kritik (Bing + Copilot indeksleme) · **Kanıt:** 106 URL × bingbot UA taraması
+
+Tam olarak **dizin biçimindeki** URL'ler etkileniyor; `.html` ile biten 100 URL sorunsuz:
+
+| URL | bingbot | Googlebot |
+|---|---|---|
+| `/` | **406** | 200 |
+| `/en/` | **406** | 200 |
+| `/blog/` | **406** | 200 |
+| `/en/blog/` | **406** | 200 |
+| `/hizmetler/` | **406** | 200 |
+| `/en/services/` | **406** | 200 |
+| diğer 100 URL | 200 | 200 |
+
+Aynı 406'yı **BingPreview** ve **YandexBot** da alıyor; DuckDuckBot, Googlebot, Facebook,
+Twitter, WhatsApp, LinkedIn, Slack normal 200 alıyor.
+
+Engel Cloudflare değil: yanıt `cf-cache-status: DYNAMIC` taşıyor, yani istek origin'e
+ulaşmış ve 406'yı **origin üretmiş**. 406 (Not Acceptable) + belirli UA + yalnız
+DirectoryIndex isteklerinde tetiklenmesi, cPanel'deki **ModSecurity** kural setinin
+klasik davranışı.
+
+Neden önemli: engellenen 6 URL sitenin en önemli 6 URL'i. Bing bu sayfaları hiç göremiyor.
+Bing indeksi Copilot'u da besliyor, yani bu bulgu Faz 8'i de ilgilendiriyor.
+
+**Düzeltme:** Hosting sağlayıcısına ModSecurity denetim kaydı (audit log) sordurulup
+tetikleyen kural kimliği bulunacak ve alan adı için istisnaya alınacak. Sağlayıcı
+erişimi yoksa cPanel → ModSecurity → alan adı için kapatma da çalışır ama geniş bir
+çözümdür. **Öncelik:** 1
 
 ---
 
 ## Yüksek Öncelikli Bulgular
 
-### Y1 · Sıfır dış kaynak atfı + kaynaksız istatistik iddiaları
-**Etki:** Yüksek (E-E-A-T + GEO) · **Kanıt:** 92 sayfada toplam 4 dış bağlantı; dördü de yasal sayfalarda (kvkk.gov.tr, edpb.europa.eu)
+### Y2 · Yazar hâlâ kurum — **YARI KAPANDI**
+**Etki:** Yüksek (E-E-A-T, GEO) · **Kanıt:** 56 yazının 56'sında `Article.author.@type = Organization`
 
-88 içerik sayfasının **hiçbirinde** tek bir kaynak gösterimi yok. Buna rağmen site kanıt
-iddiasında bulunuyor:
+Kapanan kısım: psikologlar artık sitede isimli. `/hakkimizda.html` ve `/en/about.html`
+sayfalarında iki `Person` düğümü var, `@id` ile kimliklendirilmiş
+(`#gokce-ince`, `#yaprak-parlan-yesilovali`), `LocalBusiness.employee` onlara bağlanıyor,
+`alumniOf` ve `knowsAbout` dolu. `llms.txt` de isimleri ve eğitimleri taşıyor.
 
-- `/blog/online-terapi-etkili-mi.html` — başlık: "Araştırmalar Ne Diyor?"; metin: "Meta-analizler, görüntülü terapinin depresyon, kaygı ve travmada yüz yüze seansla…" → **hangi meta-analiz, belirtilmiyor**
-- `/blog/sinav-kaygisiyla-bas-etme.html` — "5 Kanıta Dayalı Yol", "Araştırmalarla desteklenen 5 yöntem" → **atıf yok**
-- `/blog/depresyon-nedir.html` — "nüfusun %10-15'ini etkiler" → **kaynak yok**
+Kapanmayan kısım: **hiçbir yazı bu iki kişiye bağlanmıyor.** 56 yazının tamamında yazar
+hâlâ kurumun kendisi. Faz 3'te bu maddenin alıntılanmayı en çok belirleyen madde olduğu
+ölçülmüştü; varlık artık mevcut, yalnız yazılara bağlanmamış durumda.
 
-Bu iki yönden sorunlu:
+**Düzeltme:** İki adım, ikisi de mekanik:
+1. Her yazının frontmatter'ına yazar alanı; şemada `author` → `{"@id": "…/#gokce-ince"}`
+2. Yazı künyesinde görünür imza (tarih zaten künyeye taşınıyor — çalışma ağacındaki
+   değişiklik bunu yapıyor, aynı satıra yazar da eklenebilir)
 
-**E-E-A-T / YMYL:** Sağlık içeriğinde kaynaksız istatistik, Google'ın en sıkı değerlendirdiği
-kategoride güvenilirlik sinyalini düşürür.
-
-**GEO:** Princeton GEO çalışmasına göre (KDD 2024, Perplexity.ai üzerinde) üretken arama
-motorlarında görünürlüğü en çok artıran müdahaleler: **kaynak gösterme +%40, istatistik ekleme
-+%37, alıntı +%30, otoriter ton +%25, açıklık +%20.** Düşük otoriteli alan adları atıf
-eklemekten **+%115'e kadar** kazanıyor. Bu site tam olarak o profilde ve kaldıracın tamamını
-boşta bırakıyor.
-
-**Düzeltme:** Mevcut iddiaların arkasına gerçek kaynak koy (WHO, APA, Cochrane, NICE, TÜİK,
-ilgili meta-analizler). Yeni iddia eklemeden önce kaynağı bul. Psikologların onayı gerekir —
-klinik iddia uydurulmaz. **Faz 5 (`copy-editing`) ve Faz 8'in (`ai-seo`) ana işi budur.**
+Hangi yazının hangi psikologa ait olduğu **merkezden gelmeli** — Claude bunu atayamaz.
 **Öncelik:** 2
 
-### Y2 · İsimli yazar yok
-**Etki:** Yüksek (E-E-A-T + GEO) · **Kanıt:** 46 Article şemasının 46'sında `author` = Organization
+---
 
-Hiçbir yazının insan yazarı yok. `Hakkımızda` sayfasındaki iki ekip kartı da placeholder:
-başlık "Klinik Psikolog", alt başlık "Klinik Psikolog" — isim, unvan, lisans numarası,
-eğitim, uzmanlık yok.
+### Y4 · Beş marka görseli 404 — **AÇIK (değişmedi)**
+**Etki:** Yüksek · **Kanıt:** doğrudan HTTP kontrolü
 
-YMYL sağlık içeriğinde Google açıkça yazar yetkinliği arıyor; LLM'ler de isimli-yetkinlikli
-kaynağı daha çok alıntılıyor. **Bu programdaki en yüksek etkili tek madde.**
+`/assets/images/og-image.jpg` · `/assets/images/logo.png` · `/assets/images/favicon.png` ·
+`/assets/images/apple-touch-icon.png` · `/favicon.ico` — beşi de 404.
 
-**Düzeltme:** Psikologların ad/unvan/lisans/eğitim bilgileri → `Person` şeması, yazar
-sayfaları, her yazıda görünür imza, `Article.author` → Person.
-**Bu bilgi kullanıcıdan gelmeli — üretilemez.** **Öncelik:** 3
+Sonuçları: 106 sayfanın tamamında `og:image` kırık bir dosyayı gösteriyor (her paylaşımın
+önizlemesi boş), `LocalBusiness.image` ve `LocalBusiness.logo` 404'e işaret ediyor (Google
+için varlık doğrulama sinyali zayıflıyor), sekmede ikon yok.
 
-### Y3 · Görünür tarih yok
-**Etki:** Yüksek (AEO) · **Kanıt:** `<time>` etiketi 0; "Güncelleme/Son güncelleme" ifadesi 0; tarihler yalnızca JSON-LD içinde
+Şablon tarafı doğru kurulmuş — yalnız dosyalar eksik. **Kullanıcıdan dosya bekliyor.**
+**Öncelik:** 2
 
-`datePublished` ve `dateModified` şemada var ama sayfanın hiçbir yerinde görünmüyor.
-Google'ın "yapılandırılmış veri görünür içeriği yansıtmalı" ilkesiyle çelişiyor (aynı sorun
-2026-08-04'te FAQPage için çözülmüştü, tarihler atlanmış). AI motorları tazelik sinyali
-olarak görünür tarihe bakıyor.
+---
 
-Ek sorun: 46 yazının çoğunda `datePublished` = `dateModified`. Ağustos'ta güncellenen yazılarda
-bile değişmemiş.
+### Y6 · 92 sayfanın güncelleme tarihi gerçeği yansıtmıyor — ✅ **ÇÖZÜLDÜ (2026-09-16, `fb21b47`)**
+**Etki:** Yüksek (tazelik sinyali bütünlüğü) · **Kanıt:** sitemap + şema + görünür tarih sayımı
 
-**Düzeltme:** `post.njk`'ye görünür "Son güncelleme: GG.AA.YYYY" satırı; `dateModified`
-sitemap'teki gibi git son-commit tarihinden üretilsin. **Öncelik:** 4
+| Ölçüm | Değer |
+|---|---|
+| `lastmod` = 2026-09-16 olan sitemap URL'i | 92 / 106 |
+| `Article.dateModified` = 2026-09-16 olan yazı | 52 / 56 |
+| Görünür "16 Eylül 2026" taşıyan sayfa | 88 / 106 |
 
-### Y4 · Dört marka görseli 404 — 92 sayfanın og:image'i kırık
-**Etki:** Yüksek · **Kanıt:** canlı HEAD kontrolü
+Nedeni: `b58739e` numaralı commit telefon numarasını 84 içerik dosyasında toplu değiştirdi.
+`scripts/git-dates.js` `dateModified` değerini git commit tarihinden türetiyor, dolayısıyla
+tek satırlık bir numara değişimi bütün siteyi "bugün güncellendi" yaptı. Mayıs'ta yazılmış
+ve o günden beri içeriği değişmemiş yazılar da bugünün tarihini taşıyor.
 
-| Dosya | Durum | Sonuç |
+Bu bir Google cezası konusu değil, ama iki somut zararı var: (a) tazelik sinyali gerçeği
+yansıtmadığı için güvenilirliğini kaybediyor, (b) **gerçekten güncellenen yazı artık
+diğerlerinden ayırt edilemiyor** — bundan sonraki içerik çalışmasının etkisi ölçülemez hale
+geliyor. `datePublished` doğru kalmış (Mayıs–Eylül dağılımı korunuyor), zarar yalnız
+`dateModified` tarafında.
+
+**Düzeltme seçenekleri:**
+- `git-dates.js` içinde belirli commit'leri (ör. mesajında bir işaret taşıyanları) yok sayma
+- Anlamsal olarak değişmemiş içerikte `dateModified`'ı frontmatter'dan sabitleme
+- Bundan sonra toplu teknik değişiklikleri içerik commit'lerinden ayrı tutma
+
+**✅ Çözüldü (`fb21b47`):** `git-dates.js` artık commit mesajında `[lastmod skip]` taşıyan
+commit'leri yok sayıyor ve dosyanın bir önceki gerçek değişikliğine düşüyor. Telefon
+süpürmesi bu kural konmadan önce atıldığı için SHA'sı dosyada listelendi. Ayrıca iki git
+çağrısı `execFileSync`'e çevrildi (`--grep` deseni boşluk içerdiği için kabuk onu hatalı
+revizyon argümanına bölüyordu).
+
+**Doğrulanan sonuç:**
+
+| | Önce | Sonra |
 |---|---|---|
-| `/assets/images/og-image.jpg` | **404** | 92 sayfanın `og:image`'i + 46 yazının `Article.image`'i kırık |
-| `/assets/images/logo.png` | **404** | 32 sayfadaki LocalBusiness/MedicalOrganization şema `logo` alanı geçersiz |
-| `/assets/images/favicon.png` | **404** | Tarayıcı sekmesinde simge yok |
-| `/assets/images/apple-touch-icon.png` | **404** | iOS ana ekran simgesi yok |
+| Görünür tarihin dağıldığı gün sayısı | 4 | **7** |
+| Bugünün tarihini taşıyan sayfa | 88 | **4** |
+| En kalabalık tek gün | 88 sayfa | 37 sayfa (2026-09-08) |
 
-Pratik sonucu: WhatsApp ve Facebook'ta paylaşılan her bağlantının önizlemesi boş çıkıyor —
-ve WhatsApp bu sitenin birincil kanalı.
+Bugünü gösteren 4 sayfa doğru: ana sayfa ve hakkımızda (biyografi gerçekten bugün yazıldı)
+artı iki yeni travma sayfası.
 
-**İyi haber:** 22 blog kart görseli artık repoda ve canlıda çalışıyor (`assets/images/blog/`,
-800×450 JPEG, ~1.3 MB toplam, Unsplash lisanslı, kaynak kaydı `KAYNAKLAR.md`'de). Eski
-denetimdeki "klasör tamamen boş" tespiti artık geçerli değil — yalnız 4 marka dosyası eksik.
+**Öncelik:** — (kapandı)
 
-**Düzeltme:** Dört dosya kullanıcıdan gelmeli. **Öncelik:** 5
+---
 
-### Y5 · Article.image 46/46 yazıda 404 gösteriyor
-**Etki:** Yüksek · **Kanıt:** 46 Article şemasının tamamında `image` = `og-image.jpg` (404)
+### Y7 · Şehir sayfaları ana sayfayla aynı kelimeyi hedefliyor — **YENİ**
+**Etki:** Yüksek (yamyamlık) · **Kanıt:** title karşılaştırması + iç bağlantı sayımı
 
-Bu Y4'ten ayrı ve **kullanıcı beklemeden düzeltilebilir**: her yazının gerçek kart görseli
-zaten var ve çalışıyor, ama şema onu değil, olmayan dosyayı gösteriyor.
+2026-09-06 kararıyla açılan şehir sayfaları ana sayfalarla çakışıyor:
 
-**Düzeltme:** `Article.image` (ve tercihen `og:image`) sayfanın kendi `cardImage` alanına
-bağlansın, yoksa genel og-image'e düşsün. Tek şablon değişikliği.
-**Öncelik:** 6 — **en hızlı kazanım, bugün yapılabilir.**
+| | title | iç bağlantı |
+|---|---|---|
+| `/` | `Gazimağusa Psikolog \| Mağusa Psikoloji Merkezi` | çok |
+| `/gazimagusa-psikolog.html` | `Gazimağusa Psikolog \| Mağusa Psikoloji Merkezi` | **1** |
+| `/en/` | `Psychologist in Famagusta \| Psychology Centre — North Cyprus` | çok |
+| `/en/psychologist-in-famagusta.html` | `Psychologist in Famagusta \| Famagusta Psychology Centre` | **1** |
+
+Türkçe çiftin title'ı **birebir aynı** — sitedeki tek yinelenen title bu. İngilizce çift de
+aynı ana kelimeyi (`psychologist in famagusta`) hedefliyor.
+
+İki sorun üst üste biniyor: aynı sorgu için iki sayfa yarışıyor **ve** yarışan iki sayfanın
+her birinin yalnız bir iç bağlantısı var. Faz 3'te "şehir sayfaları GBP'siz organik sonuç
+alabiliyor" tespiti doğruydu, ama bunun için şehir sayfasının ana sayfadan **farklı** bir
+niyeti hedeflemesi ve iç bağlantıyla desteklenmesi gerekiyor.
+
+**GSC ile doğrulandı (2026-09-16):** `/gazimagusa-psikolog.html` son 3 ayda **hiç gösterim
+almamış** — sayfa listesinde yok. Aynı dönemde `gazimağusa psikolog` sorgusu 11 gösterim,
+ortalama 8,73. sıra almış; bu gösterimleri **ana sayfa** karşılıyor (`/` → 508 gösterim,
+35 tıklama, 8,66. sıra). İngilizce şehir sayfası da 3 ayda 1 gösterim almış.
+
+> **Uyarı:** şehir sayfaları 2026-09-06 civarında açıldı, yani veri penceresinin yalnız son
+> ~1 haftasını kapsıyorlar. "Sıfır gösterim" kesin bir başarısızlık kanıtı değil; ama ana
+> sayfanın aynı kelimede zaten 8,66. sırada oturduğu kesin. Şehir sayfası ana sayfayla aynı
+> title'ı taşıdığı sürece Google'ın ikisinden birini seçmesi için sebep yok.
+
+**Düzeltme:** Şehir sayfalarına ayrı niyet ver (ana sayfa = merkez tanıtımı, şehir sayfası =
+"Gazimağusa'da psikolog nasıl bulunur, nereye gidilir, ne beklenir" gibi yerel arayışa
+cevap), title'ları ayrıştır, hizmet ve blog sayfalarından iç bağlantı ver.
+**Öncelik:** 2
 
 ---
 
 ## Orta Öncelikli Bulgular
 
-### O1 · İnce içerik: 8 sayfa <300, 33 sayfa <500 kelime
-**Etki:** Orta · GSC'deki "Keşfedildi, dizine eklenmedi" satırının asıl sebebi
+### Y1 · Dış kaynak atfı — **KISMEN KAPANDI**
+44/56 yazıda hâlâ sıfır dış atıf var; 12 yazı artık kaynak gösteriyor (nhs.uk ×6,
+doi.org ×10, pubmed ×4). 2026-09-02'de bu sayı 0/56'ydı. Kaynak gösteren 12 yazının
+tamamı ebeveyn ve online terapi kümelerinde — yani en son çalışılan kümelerde.
+Kalan liste `.agents/kaynak-inceleme-listesi.md` içinde. **Öncelik:** 3
 
-En ince sayfalar (görünür gövde metni, nav/footer hariç):
+### O8 · `Person` şeması zayıf — **YENİ**
+İki psikoloğun `Person` düğümünde `sameAs` yok (0 bağlantı) ve `hasCredential` yok.
+`alumniOf` ve `knowsAbout` dolu, bu iyi. Varlık birleştirme için en güçlü sinyal
+`sameAs` — psikologların mesleki profilleri (varsa LinkedIn, dernek üyelik sayfası,
+üniversite sayfası) buraya bağlanmalı. Lisans bilgisi `hasCredential` ile işaretlenebilir.
+**Bilgi merkezden bekleniyor.** **Öncelik:** 3
 
-| Sayfa | Kelime |
+### O9 · `LocalBusiness` şemasında eksik alanlar
+`telephone`, `address`, `email`, `sameAs`, `availableLanguage`, `employee`, `areaServed`
+dolu ve doğru. Eksik olanlar: **`geo`** (enlem/boylam), **`openingHoursSpecification`**,
+**`hasMap`**, posta kodu. `priceRange` 2026-09-08 kararı gereği bilerek yok.
+`geo` ve `openingHours` yerel aramada doğrudan kullanılıyor; GBP açılışıyla birlikte
+yapılacak iş. **Öncelik:** 3
+
+### O1 · İçerik derinliği — **KISMEN İYİLEŞTİ**
+6 sayfa <300 kelime (önceki ölçümde 8), 12 sayfa 300-500 arası. Medyan 718 kelime.
+
+| Kelime | Sayfa |
 |---|---|
-| `/iletisim.html` | 131 |
-| `/en/contact.html` | 161 |
-| `/hizmetler/` | 257 |
-| `/blog/beyin-beden.html` | 259 |
-| `/hizmetler/online-terapi.html` | 267 |
-| `/hizmetler/bdt-terapisi.html` | 268 |
-| `/hizmetler/bireysel-terapi.html` | 270 |
-| `/hizmetler/cocuk-psikolojisi.html` | 291 |
+| 66 | `/iletisim.html` |
+| 81 | `/en/contact.html` |
+| 192 | `/blog/beyin-beden.html` |
+| 234 | `/terapi-sureci.html` |
+| 243 | `/felsefemiz.html` |
+| 250 | `/en/blog/brain-body-connection.html` |
 
-Hizmet sayfaları 267–350 aralığında kümelenmiş; blog yazıları 700–1.640. Yani **ticari niyeti
-en yüksek sayfalar sitenin en zayıf sayfaları.** İletişim sayfasının ince olması normaldir.
+İletişim sayfalarının kısalığı beklenen ve sorun değil. Asıl zayıf grup hâlâ **hizmet
+sayfaları**: 444-492 kelime bandında sıkışmış durumdalar ve Faz 2'de çıkarılabilirlik
+ölçümünde de en düşük skoru onlar almıştı (sorgu-H2 %15, ideal pasaj %38). **Öncelik:** 3
 
-**Düzeltme:** Faz 5'te hizmet sayfaları öncelikli genişletme. Klinik içerik psikolog onayı ister.
-**Öncelik:** 7
+### O4 · İçerik içi iç bağlantı seyrek
+22 sayfada ana içerik içinde 2 veya daha az iç bağlantı var. En dikkat çekeni: **`/sss.html`
+ve `/en/faq.html` sayfalarında sıfır.** SSS sayfaları en çok soru karşılayan sayfalar;
+oradan hizmet sayfalarına bağlantı hem kullanıcı hem tarama açısından en verimli bağlantı
+olurdu. **Öncelik:** 3
 
-### O2 · 6 sayfada hiç JSON-LD yok
-**Etki:** Orta · `/gizlilik.html`, `/kvkk.html`, `/en/privacy.html`, `/en/kvkk.html`,
-`/blog/beyin-beden.html`, `/en/blog/brain-body-connection.html`
+### O10 · Aynı SSS sorusu birden çok sayfada — **YENİ**
+446 FAQ girdisinin 400'ü benzersiz; 40 soru birden fazla sayfada tekrar ediyor.
+En çok tekrarlananlar ana sayfa, `/sss.html` ve `/blog/` arasında paylaşılıyor
+(ör. "Terapi kaç seans sürer?" 4 sayfada). FAQPage şemasının aynı soruyu birden çok
+URL'de iddia etmesi Google'ın hangi sayfayı seçeceğini belirsizleştirir.
+**Düzeltme:** Kanonik soru sahibi sayfayı belirle (SSS sayfası), diğerlerinde görünür
+metni bırak ama şemadan çıkar. **Öncelik:** 4
 
-Yasal sayfalarda en azından `BreadcrumbList` olmalı. `beyin-beden` bir blog yazısı olarak
-listeleniyor ama `Article` şeması almamış.
-**Öncelik:** 8 — Faz 6'da (`schema`) kapatılır.
+### O11 · `schema-markup.json` hâlâ canlıda — **AÇIK (değişmedi)**
+`https://magusapsikoloji.com/schema-markup.json` 200 dönüyor ve içinde placeholder veri
+servis ediliyor: `"streetAddress": "Adres Buraya"`, `"telephone": "+90-392-000-0000"`,
+`"postalCode": "00000"`, ayrıca 404 olan `/logo.png` ve `/images/klinik.jpg`.
 
-### O3 · Dil rehberi ihlali: "ruh" kelimesi 5 sayfada 16 kez
-**Etki:** Orta (marka) · **Kanıt:** görünür metin taraması, TR sayfalar
+İyi haber: **hiçbir sayfa bu dosyayı referans göstermiyor** (depoda ve build çıktısında
+tek referans yok), dolayısıyla etkisi sınırlı. Yine de herkese açık ve yanlış veri taşıyor.
+cPanel'den elle silinmeli — depodan zaten kaldırılmış. **Öncelik:** 4
 
-Psikologların dil rehberi "ruh" kelimesini tamamen yasaklıyor (ruh sağlığı → psikolojik sağlık).
-
-| Sayfa | Geçiş |
-|---|---|
-| `/blog/magusa-uluslararasi-ogrenciler-ruh-sagligi.html` | 6 — **title, H1 ve URL'de** |
-| `/blog/` (dizin, kart başlığından) | 4 |
-| `/blog/universite-ogrencileri-psikolojik-destek.html` | 3 |
-| `/blog/sinav-kaygisiyla-bas-etme.html` | 2 |
-| `/blog/depresyon-nedir.html` | 1 ("Ruh hali") |
-
-Rehberin geri kalanı temiz: "danışan" hiç geçmiyor, pazarlama/aciliyet kalıplarının
-hiçbiri bulunmadı.
-
-**Kapatıldı (2026-09-15).** Site sahibi kelimenin hiçbir yerde geçmemesini istedi.
-Görünür metin `psikolojik destek` / `duygudurum` ile değiştirildi; blog kategori çipi
-"Öğrenci Ruh Sağlığı" → "Öğrenci" oldu (EN karşılığı "Students"). URL'de de geçtiği için
-yazı `/blog/magusa-uluslararasi-ogrenciler-psikolojik-destek.html` adresine taşındı —
-görsel adı, 6 iç bağlantı ve iki dilin hreflang'i güncellendi, eski adres
-`static/.htaccess` içinde 301. O6 beklenmedi; bu madde tek başına kapatıldı.
-İngilizce "mental health" bilinçli olarak korundu — yasak yalnızca Türkçe metin için.
-**Öncelik:** 9 — **tamam**
-
-### O4 · Yeni içerik zayıf bağlanmış
-**Etki:** Orta · **Kanıt:** iç bağlantı grafiği
-
-En az gelen bağlantı alan sayfalar (footer'da olmayanlar):
-
-| Sayfa | Gelen bağlantı |
-|---|---|
-| `/hizmetler/motivasyonel-gorusme.html` | 2 |
-| `/blog/noropsikolojik-degerlendirme-magusa.html` | 2 |
-| `/blog/terapi-dili-turkce-ingilizce.html` | 2 |
-| (+ EN eşleri) | 2 |
-
-Karşılaştırma: footer'daki sayfalar 46, anasayfa 91 bağlantı alıyor. En yeni ve rekabeti en
-düşük içerik en az desteklenen içerik durumunda.
-**Öncelik:** 10
-
-### O5 · Anahtar kelime yamyamlığı riski
-**Etki:** Orta
-
-| Terim | Yarışan sayfalar |
-|---|---|
-| online terapi | `/hizmetler/online-terapi.html` + `/blog/kuzey-kibris-online-terapi.html` + `/blog/online-terapi-etkili-mi.html` |
-| aile terapisi | `/hizmetler/aile-terapisi.html` + `/blog/aile-terapisi-magussa.html` |
-
-`çocuk psikoloğu` çakışması 2026-08-28'de çözülmüş (blog `/blog/cocuk-psikologu-magusa.html`'e
-taşındı + 301). Aynı yöntem bu ikisine de uygulanabilir. Faz 4'te (`content-strategy`)
-ele alınacak.
-**Öncelik:** 11
-
-### O6 · İki URL'de yazım hatası — ÇÖZÜLDÜ (2026-09-06)
-**Etki:** Orta (düşük düzeltilebilirlik)
-
-- ~~`/blog/aile-terapisi-magussa.html`~~ → `/blog/aile-terapisi-magusa.html`
-- ~~`/blog/cift-terapisi-gazimagussa.html`~~ → `/blog/cift-terapisi-gazimagusa.html`
-
-Görsel dosya adları da düzeltildi. Eski adresler `static/.htaccess` içinde 301'lendi.
-Beklemeye alınmıştı (O3'teki `ruh-sagligi` ile toplu karar önerisi); site sahibi hatanın
-hedeflenen kelimenin kendisinde olduğunu belirtince ayrı düzeltildi. `ruh-sagligi` URL'i
-hâlâ açık — O3 kapsamında ele alınacak.
-
-### O7 · Çift terapisi hizmet sayfası yok
-**Etki:** Orta · Hizmet veriliyor, blog yazısı var, hizmet sayfası yok. Faz 5'te kapatılacak
-yapısal boşluk. **Öncelik:** 13
+### O12 · 5 description 110 karakterin altında
+`/en/services/family-therapy.html` (105) · `/en/services/online-therapy.html` (104) ·
+`/hizmetler/aile-terapisi.html` (102) · `/hizmetler/ogrenci-danismanlik.html` (104) ·
+`/hizmetler/yetiskin-psikolojisi.html` (109). Hepsi sınır içinde ama alan boş kalıyor.
+**Öncelik:** 4
 
 ---
 
-## Düşük Öncelikli Bulgular
+## Düşük Öncelikli
 
-| # | Bulgu | Not |
+- **HSTS başlığı yok** — `strict-transport-security` hiçbir yanıtta yok. http→https 301
+  çalışıyor, yani işlevsel sorun yok; HSTS ek güvenlik katmanı.
+- **HTML'de `cache-control` yok** — origin başlık göndermiyor, Cloudflare `DYNAMIC` ile
+  geçiyor. Statik bir sitede HTML için kısa süreli önbellek verilebilir.
+- **Font preload yok** — Inter ve Lora `@font-face` ile kendi sunucumuzdan geliyor (Google
+  Fonts'a bağımlılık yok, bu doğru kurulum), ama preload edilmiyor.
+- **`/favicon.ico` yok** — Y4'ün parçası.
+
+---
+
+## Kapanan Bulgular (2026-09-02 → 2026-09-16)
+
+| Kod | Bulgu | Durum |
 |---|---|---|
-| D1 | HSTS başlığı yok | Cloudflare'den tek tıkla açılır; güven sinyali |
-| D2 | Font preload yok | `inter-latin.woff2` (47 KB) CSS ayrıştıktan sonra isteniyor; LCP'ye küçük katkı |
-| D3 | 5 description <110 karakter | SERP alanı boşta |
-| D4 | `/assets/images/blog/KAYNAKLAR.md` canlıda erişilebilir | Zararsız (görsel kaynak kaydı), istenirse passthrough'dan çıkarılır |
-| D5 | `dateModified` = `datePublished` çoğu yazıda | Y3 ile birlikte çözülür |
+| K1 | WhatsApp bağlantıları 92/92 sayfada kırık | ✅ 220 bağlantı gerçek numarada |
+| Y3 | Görünür tarih yok | ✅ 102/106 sayfada görünür `<time>` |
+| O2 | 6 sayfada şema yok | ✅ 106/106 sayfada şema, 0 parse hatası |
+| O3 | "ruh" kelimesi 5 sayfada | ✅ URL taşındı + 301 |
+| O6 | 2 URL'de yazım hatası | ✅ düzeltildi + 301 |
+| O7 | Çift terapisi hizmet sayfası yok | ✅ `/hizmetler/cift-terapisi.html` yayında |
+| O5 | Yamyamlık (online terapi ×3, aile terapisi ×2) | ✅ niyet ayrışmış — bkz. not |
+| — | Uzun title'lar, eksik description | ✅ 106/106 sınırlar içinde |
+
+**O5 notu:** Online terapi üçlüsü artık niyet olarak ayrışmış durumda — `/hizmetler/online-terapi.html`
+(hizmet, 511 kelime), `/blog/online-terapi-etkili-mi.html` (kanıt/araştırma, 923),
+`/blog/kuzey-kibris-online-terapi.html` (yerel nasıl işler, 771). Kaygı ikilisi de
+(`anksiyete-nedir` / `kaygi-bozuklugu-nedir`) H2 düzeyinde ayrışmış: biri belirti tanıma,
+diğeri türler ve tedavi. Bu küme artık sorun değil. Yamyamlık yalnız Y7'de (şehir sayfaları).
 
 ---
 
-## Sağlam Olan — Dokunulmayacak
+## Değişmeyen Sağlam Temel
 
-Bu maddeler doğrulandı ve **regresyon riski taşıyor**; sonraki fazlarda korunmalı.
+106 URL üzerinde sıfır hata bulunan kontroller:
 
-**Taranabilirlik ve indeksleme**
-- 92/92 URL 200 (Googlebot UA)
-- 92/92 self-referencing canonical; çapraz canonical yok
-- `robots.txt` temiz; AI botlarının tamamı açık (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, CCBot, OAI-SearchBot → 200)
-- 404 doğru davranıyor; yetim sayfa yok; kırık iç bağlantı yok
-- `llms.txt` canlı · `npm run check` → 0 hata 0 uyarı
+| Kontrol | Sonuç |
+|---|---|
+| HTTP durumu | 106/106 → 200 |
+| Canonical | 106/106 self-canonical, eksik yok |
+| Hreflang | 0 hata (self-referans, karşılıklılık, x-default, kod geçerliliği, canonical uyumu) |
+| `noindex` | 0 sayfa |
+| H1 | 106/106 tek H1, başlık atlaması 0 |
+| Title | 0 eksik, 0 adet >60 karakter |
+| Description | 0 eksik, 0 adet >160 karakter |
+| Yetim sayfa | 0 |
+| Kırık iç bağlantı | 0 (`npm run check`: 0 hata, 0 uyarı) |
+| Görsel `alt` | 56/56 dolu |
+| Görsel `width`/`height` | 56/56 var (CLS riski yok) |
+| Görsel `loading` | 56/56 var |
+| `viewport` / `html lang` | 106/106 var |
+| Yönlendirmeler | http→https, www→apex, `/index.html`→`/` hepsi 301 |
+| `robots.txt` / `sitemap.xml` | doğru, tutarlı, sitemap 106 URL |
+| `llms.txt` | güncel, psikolog isimleri ve eğitimleri dahil |
 
-**Çok dilli (hreflang) — sıfır hata**
-- Self-referencing: 92/92 · Karşılıklılık: 92/92 · `x-default`: 92/92
-- Sitemap `<xhtml:link>` ile HTML `<link>` tam uyumlu (92/92)
-- Geçersiz dil kodu yok · hreflang hedeflerinin tamamı 200 ve canonical
-- `<html lang>` dengeli: 46 tr / 46 en · TR-EN içerik paritesi iyi (46 çiftin 42'si %25 içinde)
+---
 
-**Yönlendirmeler**
-`http→https` 301 · `www→apex` 301 · `/index.html→/` 301 · `/blog→/blog/` 301
+## Performans
 
-**On-page**
-- Title 33–60 karakter, **hiçbiri >60**, çift yok
-- Description 92/92 dolu, **hiçbiri >160**, çift yok
-- Sayfa başına tek H1 (92/92) · başlık hiyerarşisinde atlama yok (h2→h4 vb. sıfır)
+PSI kotası yine dolu (önceki denetimde de öyleydi) — **laboratuvar CWV skorları alınamadı.**
+Bileşenler doğrudan ölçüldü ve hepsi iyi durumda:
 
-**Hız ve Core Web Vitals bileşenleri**
-- TTFB 60–130 ms (Cloudflare edge, `cf-cache-status: HIT` statik varlıklarda)
-- HTML brotli sıkıştırmalı, 34–65 KB · CSS 8 KB gzip · JS 1 KB + GA4 async
-- Yerel subset font, `font-display: swap` (6/6 `@font-face`)
-- Blog kart görselleri `width`/`height`/`loading="lazy"`/`decoding="async"` ile — **CLS güvenli**
-- 44 görselin 44'ünde betimleyici alt metni
+| Ölçüm | Değer |
+|---|---|
+| TTFB (min/medyan/p90/maks) | 47 / 60 / 79 / 196 ms |
+| CSS (brotli) | 8 KB |
+| JS | 634 bayt, `</body>` öncesi, render engellemiyor |
+| Sıkıştırma | brotli (`content-encoding: br`) |
+| HTML boyutu (medyan/maks) | 43 KB / 68 KB |
+| Font | kendi sunucumuzda `@font-face`, dış istek yok |
+| Görsellerde boyut niteliği | 56/56 (düzen kayması riski yok) |
 
-> **Ölçülemedi:** PageSpeed Insights API günlük kotası dolu olduğu için laboratuvar CWV
-> skorları (LCP/INP/CLS) alınamadı. Yukarıdaki bileşenler tek tek ölçüldü ve hepsi iyi
-> aralıkta; yine de kesin skor için PSI'nin elle çalıştırılması önerilir.
-> CrUX saha verisi muhtemelen yetersiz trafik nedeniyle mevcut değil.
+Gerçek CWV skoru için PSI API anahtarı alınması ya da GSC'nin Core Web Vitals raporu gerekir.
+
+---
+
+## Ölçülemeyenler
+
+- **Laboratuvar CWV** — PSI günlük kota aşımı. API anahtarı kotayı açar.
+- **CrUX alan verisi** — PSI üzerinden alınamadı.
+- **İndeksleme kapsamı** — kaç URL indekslenmiş, hangileri hariç tutulmuş. **GSC Kapsam
+  (Coverage) raporu hâlâ alınmadı** — Performans raporu geldi, Kapsam gelmedi.
+  Bu, 106 URL'in kaçının fiilen indekste olduğunu bilmediğimiz anlamına geliyor.
+- **Bing indeks durumu** — K3'ün fiili zararı Bing Webmaster Tools ister.
+- **Sorgu × sayfa eşleşmesi** — alınan dışa aktarımlar sorgu ve sayfa boyutlarını **ayrı**
+  tablolar halinde veriyor. "Hangi sorgu hangi sayfaya gitti" ancak GSC arayüzünde sorgu
+  filtresi + sayfa kırılımı ile görülür. Aşağıdaki küme–sayfa eşleştirmeleri bu yüzden
+  **çıkarım**, doğrudan ölçüm değil.
+
+---
+
+## Search Console Verisi (2026-07-06 → 2026-09-14, Web)
+
+### Genel tablo
+
+| Ölçüm | Değer |
+|---|---|
+| Tıklama (3 ay) | **46** |
+| Gösterim (3 ay) | **1.449** |
+| Ortalama TO | %3,2 |
+| Ortalama sıra | ~28 |
+
+| Dönem | Tıklama | Gösterim | TO | Ort. sıra |
+|---|---|---|---|---|
+| 2026-07-06 → 07-31 | 11 | 358 | %3,07 | 23,3 |
+| 2026-08 | 21 | 666 | %3,15 | 34,7 |
+| 2026-09-01 → 09-14 | 14 | 425 | %3,29 | 28,2 |
+
+Eğilim yukarı: Eylül'ün ilk yarısı tek başına Temmuz'un tamamını geçmiş. Hacim hâlâ çok
+düşük, yani her yorum geniş hata payıyla okunmalı.
+
+### Tek sayfa her şeyi taşıyor
+
+`/` → **35 tıklama / 508 gösterim / 8,66. sıra** — sitenin 46 tıklamasının **%76'sı**.
+Ardından gelenler: `/en/blog/find-psychologist-north-cyprus.html` (4 tıklama, 10,2. sıra),
+`/en/` (2 tıklama, 7,38. sıra), `/hizmetler/cocuk-psikolojisi.html` (2 tıklama, 9,81. sıra).
+
+Geri kalan ~68 sayfa toplam 3 tıklama almış. Yani site **gösterim alıyor ama tıklama
+alamıyor** — 1.449 gösterimin 941'i ilk 4 sayfa dışındaki sayfalara ait ve neredeyse
+tamamı 40-100. sıra bandında.
+
+### Talep kümeleri — ölçülen gerçek arama
+
+| Küme | Gösterim | Tıklama | Ort. sıra | Sayfamız var mı? |
+|---|---|---|---|---|
+| **Travma / Kıbrıs (EN)** | **165** | 0 | 40,9 | ❌ **hizmet sayfası yok** |
+| **Panik atak** | **104** | 0 | 71,6 | ✅ var, 71,9. sırada |
+| **Psikolog mu psikiyatrist mi** | **96** | 0 | 74,8 | ✅ iki dilde var, 67-82. sırada |
+| Yerel marka/hizmet (mağusa/kktc psikolog) | 82 | **5** | **13,5** | ✅ ana sayfa |
+| Çocuk | 71 | 0 | 36,5 | ✅ hizmet + blog |
+| Terapiye ne zaman | 20 | 0 | 50,6 | ✅ iki dilde var |
+| Kaygı | 18 | 0 | 84,1 | ✅ iki yazı |
+| Depresyon | 17 | 0 | 75,8 | ✅ iki dilde var |
+| EMDR (**verilmiyor**) | 10 | 0 | 70,6 | ❌ bilerek yok |
+| Nöropsikolojik | 5 | 0 | 93,8 | ✅ hizmet sayfası var |
+
+**Okuma:** Tıklamayı getiren tek küme, hacmi en küçük olan yerel kümesi (82 gösterim →
+5 tıklama, 13,5. sıra). Büyük hacimli üç küme (travma, panik atak, psikolog-psikiyatrist —
+toplam **365 gösterim**) sıfır tıklama üretiyor çünkü hepsi 40-100. sıra bandında.
+
+### G1 · En büyük ölçülmüş talep bir hizmet boşluğunda — **YENİ, KARAR GEREKTİRİR**
+**Etki:** Yüksek (içerik stratejisi) · **Kanıt:** GSC sorgu kümesi, 165 gösterim
+
+Tek başına en büyük küme İngilizce travma sorguları:
+
+| Sorgu | Gösterim | Ort. sıra |
+|---|---|---|
+| childhood trauma treatment cyprus | 61 | 37,8 |
+| developmental trauma treatment cyprus | 34 | 38,6 |
+| mental health treatment cyprus | 16 | 44,6 |
+| emotional trauma treatment cyprus | 12 | 36,8 |
+| trauma and mental health treatment cyprus | 12 | 41,3 |
+| ptsd treatment cyprus | 12 | 54,0 |
+| psychological trauma treatment cyprus | 11 | 48,6 |
+| trauma treatment cyprus | 3 | 46,0 |
+
+Bu gösterimleri büyük olasılıkla `/en/blog/psychological-support-north-cyprus.html`
+karşılıyor (151 gösterim, 27. sıra, 1 tıklama) — yani konuya **doğrudan** cevap veren bir
+sayfa değil, genel bir destek yazısı.
+
+Sitede "travma" 35 sayfada geçiyor, ama hepsinde **başka bir konunun içinde** (aile
+terapisinde kuşaklararası örüntüler, çocuk psikolojisinde duygu düzenleme, nöropsikolojik
+değerlendirmede kafa travması). Ayrı bir travma hizmet sayfası yok ve **travma
+`product-marketing.md`'deki hizmet listesinde de yok.**
+
+### ✅ KAPSAM CEVAPLANDI (2026-09-16)
+
+**Travma odaklı çalışma veriliyor.** Yaş grupları: **çocuk, ergen, beliren yetişkinlik,
+yetişkin** (kullanıcı teyidi). Kural 1 engeli kalktı; `product-marketing.md` hizmet
+listesi güncellendi.
+
+Bu, sitenin **en yüksek kanıtlı içerik fırsatı**: talep ölçülmüş (165 gösterim), hizmet
+gerçekten veriliyor, ve konuya doğrudan cevap veren tek bir sayfa yok. Şu an bu gösterimleri
+genel bir destek yazısı 40,9. sıradan karşılıyor.
+
+**✅ UYGULANDI (2026-09-16).** TR + EN travma hizmet sayfası yazıldı:
+
+| | TR | EN |
+|---|---|---|
+| URL | `/hizmetler/travma-terapisi.html` | `/en/services/trauma-therapy.html` |
+| Kelime | 863 | 1.218 |
+| Title | 55 kr | 53 kr |
+| Description | 160 kr | 149 kr |
+| H2 | 9 | 9 |
+| Şema | Breadcrumb + FAQPage + LocalBusiness | aynı |
+| Görünür SSS | 9 soru | 9 soru |
+| İç bağlantı (giden) | 11 | 11 |
+| İç bağlantı (gelen) | 3 konusal | 3 konusal |
+
+Teyit edilen kapsam: **yaklaşımlar** travma odaklı BDT, psikodinamik, ACT, çocuklarda oyun
+ve sanat temelli çalışma; **tablolar** çocukluk çağı, gelişimsel, TSSB, tek olaya bağlı
+travma, yas ve kayıp; **yaş grupları** çocuk, ergen, beliren yetişkinlik, yetişkin.
+
+**EMDR'ye ayrı bir H2 ayrıldı** ("EMDR uyguluyor musunuz?" / "Do you offer EMDR?") ve
+verilmediği açıkça yazıldı. Gerekçe: travma denince en sık sorulan yöntem bu ve GSC'de
+ölçülmüş EMDR talebi var — belirsiz bırakmak yanlış beklenti üretirdi.
+
+H2'ler ölçülen sorgu kalıplarına göre kuruldu (`childhood trauma`, `developmental trauma`,
+`ptsd`, `trauma treatment cyprus`). Hiçbir istatistik iddiası kullanılmadı, dolayısıyla
+Y1 kapsamına yeni borç eklemiyor. Tanı koyma iddiası yok; tanı kararının hekime ait olduğu
+sayfada belirtildi.
+
+**Kalan:** psikolog onayı (klinik metin). Yayına çıktıktan sonra `childhood trauma treatment
+cyprus` kümesinin sırası izlenecek — mevcut taban 40,9.
+
+### G2 · İki güçlü sayfa var ama dipte duruyor — **YENİ**
+**Etki:** Orta-Yüksek · **Kanıt:** GSC sayfa + sorgu verisi
+
+| Sayfa | Gösterim | Sıra | Küme hacmi |
+|---|---|---|---|
+| `/blog/panik-atak-belirtileri.html` | 109 | **71,9** | 104 gösterim |
+| `/blog/psikolog-mu-psikiyatrist-mi.html` | 72 | **82,0** | 96 gösterim |
+| `/en/blog/psychologist-or-psychiatrist.html` | 61 | **67,0** | (aynı küme) |
+| `/en/services/child-psychology.html` | 108 | 37,5 | 71 gösterim |
+
+Bu sayfalar **zaten var ve talep de var** — sorun sıralama. 70-82. sıra, "sayfa 7-9"
+demek; hiçbir tıklama gelmez. Bunlar sıfırdan içerik üretmeyi değil, **mevcut sayfayı
+güçlendirmeyi** gerektiren dört sayfa:
+
+- `psikolog ilaç yazabilir mi` ailesi tek başına ~49 gösterim taşıyor (5 ayrı sorgu).
+  Bu, psikolog-psikiyatrist yazısının en net alt-niyeti ve yazıda ayrı bir H2 hak ediyor.
+- Panik atak yazısı 10 ayrı belirti sorgusu alıyor; hepsi "belirtileri nelerdir" kalıbında.
+- İkisi de Faz 5'in çıkarılabilirlik çalışmasından (sorgu-H2 eşleşmesi) doğrudan fayda görür.
+- İkisi de Y1 kapsamında — kaynak atfı yok.
+
+**Öncelik:** 3 — Faz 5/8 işiyle birebir örtüşüyor, ayrı iş değil.
+
+### G3 · Masaüstü ile mobil arasında 36 sıralık fark — **YENİ, İZLENECEK**
+
+| Cihaz | Tıklama | Gösterim | TO | Ort. sıra |
+|---|---|---|---|---|
+| Mobil | 32 | 641 | %4,99 | **10,8** |
+| Masaüstü | 12 | 776 | %1,55 | **46,8** |
+| Tablet | 2 | 32 | %6,25 | 7,3 |
+
+Masaüstü daha çok gösterim alıyor ama 36 sıra daha geride ve TO'su üçte bir.
+
+En olası açıklama **sorgu karması**: yerel niyetli aramalar (mobil ağırlıklı, "mağusa
+psikolog") ana sayfayı 8-13. sırada getiriyor; bilgi amaçlı uzun kuyruk (masaüstü ağırlıklı,
+travma/panik atak/psikiyatrist) 40-100. sırada. Yani bu, masaüstünde **teknik** bir sorun
+olduğu anlamına gelmiyor — teknik taramada mobil/masaüstü ayrımı yaratacak hiçbir bulgu yok
+(tek HTML, responsive, aynı içerik).
+
+Yine de G1 ve G2 çözülürse bu farkın kapanması beklenir. **Kapanmazsa** ayrıca bakılmalı.
+**Öncelik:** 4 — şimdilik yalnız izlenecek.
+
+### G4 · Zengin sonuç görünümü sıfır — **YENİ**
+Arama Görünümü (Search Appearance) dışa aktarımı **tamamen boş**. 87 sayfada FAQPage
+şeması olmasına rağmen kayıtlı tek bir zengin sonuç görünümü yok.
+
+Bu beklenen bir sonuç: Google, FAQ zengin sonuçlarını 2023 Ağustos'ta çok küçük bir
+devlet/sağlık sitesi grubu dışında **kaldırdı**. Yani FAQPage şeması artık SERP'te görsel
+kazanım getirmiyor. **Şema yine de değerli** — AI motorları ve pasaj çıkarımı için okunuyor,
+Faz 6'nın gerekçesi buydu. Ama "zengin sonuç geleceği" beklentisi varsa düzeltilmeli.
+**Aksiyon yok**, yalnız beklenti düzeltmesi.
+
+### Doğrulanan temizlikler
+
+GSC'de görünen bazı eski adresler kontrol edildi, hepsi doğru yanıt veriyor:
+
+| GSC'de görünen | Canlı durum |
+|---|---|
+| `/blog/emdr-terapi-nedir.html` (22 gösterim) | ✅ 404 — kaldırılmış, doğru |
+| `/en/blog/what-is-emdr-therapy.html` (5 gösterim) | ✅ 404 — kaldırılmış, doğru |
+| `/blog/aile-terapisi-magussa.html` (1 tıklama, 4,67. sıra) | ✅ 301 → `aile-terapisi-magusa.html` |
+| `/blog/magusa-uluslararasi-ogrenciler-ruh-sagligi.html` | ✅ 301 → `...-psikolojik-destek.html` |
+| `http://magusapsikoloji.com/en/our-approach.html` (3 gösterim) | ✅ 301 → https |
+| `https://www.magusapsikoloji.com/` (1 gösterim) | ✅ 301 → apex |
+
+EMDR sorguları (10 gösterim) hâlâ geliyor ama sayfalar kaldırıldığı için tıklama üretmiyor —
+**bu doğru davranış**, 2026-09-06 kararıyla uyumlu. Eski adreslerin GSC'de görünmesi
+normaldir; Google kaldırılan adresleri bir süre raporlamaya devam eder.
+
+### Coğrafya
+
+| Ülke | Tıklama | Gösterim | Ort. sıra |
+|---|---|---|---|
+| Kıbrıs | **33** | 580 | 8,77 |
+| Türkiye | 6 | 350 | 50,47 |
+| İngiltere | 0 | 212 | 43,03 |
+| ABD | 0 | 62 | 27,0 |
+
+> **Not:** GSC'nin ayrı bir KKTC ülke kodu yok; ada içi aramalar "Kıbrıs" altında
+> raporlanır. Yani 33 tıklamanın ezici çoğunluğu **hedef kitlemiz**. Yerel hedefleme
+> çalışıyor: Kıbrıs'ta ortalama 8,77. sıra, Türkiye'de 50,47.
+
+Türkiye'nin 350 gösterimi büyük olasılıkla jenerik bilgi sorguları (panik atak, depresyon
+nedir) — dönüşmesi beklenmez ve hedef de değil. İngiltere'nin 212 gösterimi ise İngilizce
+travma/psikiyatrist kümesi; **G1 kararı buna da dokunuyor.**
 
 ---
 
 ## Öncelikli Eylem Planı
 
-### Aşama 1 — Kullanıcı girdisi beklemeden yapılabilir (bu hafta)
-1. **Y5** `Article.image` → sayfanın gerçek kart görseline bağla (tek şablon değişikliği)
-2. **Y3** Görünür "Son güncelleme" tarihi + `dateModified`'ı git tarihinden üret
-3. **O2** 6 sayfaya eksik şemaları ekle
-4. **D1** HSTS · **D2** font preload · **D3** 5 description'ı genişlet
+**1 — Tarama engelleri (kod değil, panel ayarı; ~1 saat)**
+1. Cloudflare → AI Crawl Control → GPTBot, ClaudeBot, CCBot izinli hale getir **(K2)**
+2. Hosting → ModSecurity kuralını 6 dizin URL'i için istisnaya al **(K3)**
 
-### Aşama 2 — Kullanıcıdan bilgi/dosya bekliyor (engelleyici)
-5. ~~**K1** Gerçek WhatsApp numarası → 92 sayfa + 55 dosya toplu düzeltme~~ ✅ 2026-09-16
-6. **Y4** 4 marka görseli (og-image, logo, favicon, apple-touch-icon)
-7. **Y2** İsimli psikolog bilgileri → Person şeması + yazar imzaları
+**2 — Travma hizmet sayfası (G1) — kapsam ✅ onaylandı 2026-09-16**
+3. **Travma yaklaşımı + kapsanan tablolar** teyit edilecek → ardından TR+EN hizmet sayfası
+   yazılabilir. Ölçülmüş 165 gösterimlik talep, sitenin en yüksek kanıtlı içerik fırsatı.
+   Yaş grupları netleşti: çocuk, ergen, beliren yetişkinlik, yetişkin.
 
-### Aşama 3 — Faz 5'e devredilir (`copy-editing`)
-8. **Y1** Mevcut iddialara kaynak ekleme — *en yüksek GEO getirisi*
-9. **O1** Hizmet sayfalarını genişletme
-10. **O3** "ruh" kelimesinin temizlenmesi
-11. **O4** Yeni içeriğe iç bağlantı desteği
+**3 — Psikologlardan cevap bekleyen**
+4. Yazı–psikolog eşleştirmesi → `Article.author` + görünür imza **(Y2)**
+5. Psikologların `sameAs` bağlantıları ve lisans bilgisi **(O8)**
 
-### Aşama 4 — Diğer fazlara devredilir
-12. **O5** Yamyamlık → Faz 4 (`content-strategy`)
-13. **O6** URL yazım hataları → Faz 5, tek 301 kararı olarak
-14. **O7** Çift terapisi hizmet sayfası → Faz 5
+**4 — Kullanıcıdan dosya/erişim bekleyen**
+6. Marka görselleri (og-image, logo, favicon, apple-touch-icon) **(Y4)**
+7. GSC **Kapsam (Coverage)** dışa aktarımı — indeksleme durumu hâlâ ölçülemedi
+8. cPanel'den `schema-markup.json` sil **(O11)**
 
----
+**5 — Claude'un tek başına yapabileceği (onay sonrası)**
+9. ~~`dateModified` tazelik sinyalini onar **(Y6)**~~ ✅ yapıldı (`fb21b47`)
+10. Şehir sayfası title'larını ayrıştır + iç bağlantı ver **(Y7)**
+11. SSS sayfalarına iç bağlantı ekle **(O4)**
+12. Yinelenen FAQPage sorularını tek sahibe indir **(O10)**
+13. 5 kısa description'ı doldur **(O12)**
 
-## Faz 2'ye Taşınanlar
+**6 — İçerik işi (Faz 5/8 ile birleşiyor, ayrı iş değil)**
+14. **Panik atak + psikolog-psikiyatrist sayfalarını güçlendir (G2)** — talep ölçüldü
+    (200 gösterim), sayfalar var, sorun 67-82. sıra. `psikolog ilaç yazabilir mi`
+    alt-niyeti (~49 gösterim) ayrı H2 hak ediyor
+15. Hizmet sayfalarının derinliği ve çıkarılabilirliği **(O1)**
+16. Kalan 44 yazıya kaynak atfı — `.agents/kaynak-inceleme-listesi.md` **(Y1)**
+17. `geo` + `openingHoursSpecification` — GBP açılışıyla birlikte **(O9)**
 
-- **Y1, Y2, Y3 birlikte Faz 8'in (GEO) dayanağıdır.** Bunlar kapanmadan AI alıntılanma
-  oranında anlamlı bir artış beklenmemeli.
-- AI bot erişimi açık doğrulandı (2026-09-02) — Faz 8 Adım 1'de tekrar kontrol edilecek.
-- Teknik temel sağlam olduğu için Faz 7 (`site-architecture`) muhtemelen **atlanabilir**;
-  tek yapısal boşluk O7 (çift terapisi sayfası). Faz 4 sonunda karar verilecek.
+**İzlenecek, şimdilik aksiyon yok**
+- Masaüstü–mobil 36 sıralık fark **(G3)** — G1/G2 sonrası kapanmazsa ayrıca bakılacak
+- Zengin sonuç görünümü sıfır **(G4)** — beklenen; FAQPage şeması AEO için tutuluyor

@@ -2,7 +2,7 @@
 
 **İz:** retrofit (yayında, sıralaması olan site)
 **Başlangıç:** 2026-09-02
-**Son güncelleme:** 2026-09-08
+**Son güncelleme:** 2026-09-16
 **Mevcut faz:** 8 — AEO + GEO çekirdeği (kısmi; Y2 engelli)
 **Öncelik:** dengeli
 
@@ -15,14 +15,14 @@
 | Çok dilli | evet (tr, en — `translationKey` + hreflang) |
 | Yığın | Eleventy + Sveltia CMS, GitHub Actions → FTPS (cPanel), Cloudflare |
 | Kapasite | ~4-8 sa/hafta inceleme; metinleri Claude hazırlar, psikologlar onaylar; kod+deploy Claude |
-| AI bot erişimi | **AÇIK** — GPTBot, ClaudeBot, PerplexityBot, Google-Extended, CCBot, OAI-SearchBot, Googlebot hepsi 200 (2026-09-02 doğrulandı) |
+| AI bot erişimi | **KISMEN KAPALI** — 2026-09-16 yeniden denetimde GPTBot, ClaudeBot, CCBot **403** (Cloudflare engeli, gerileme). OAI-SearchBot, PerplexityBot, Google-Extended, Googlebot 200. Ayrıca bingbot 6 dizin URL'inde 406 (origin/ModSecurity) |
 
 ## Faz Durumu
 
 | # | Faz | Beceri | Durum | Çıktılar |
 |---|---|---|---|---|
 | 0 | Bağlam temeli | product-marketing | ✅ | `.agents/product-marketing.md` (v1) |
-| 1 | Teknik teşhis | seo-audit | ✅ | `.agents/seo-audit-2026-09.md` · [rapor sayfası](https://claude.ai/code/artifact/5db9f4b7-52d6-4b21-bade-a0bc3197c5bf) |
+| 1 | Teknik teşhis | seo-audit | ✅ (2026-09-16 yeniden tarandı) | `.agents/seo-audit-2026-09.md` (106 URL) · [eski rapor sayfası](https://claude.ai/code/artifact/5db9f4b7-52d6-4b21-bade-a0bc3197c5bf) |
 | 2 | AI görünürlük temel ölçümü | ai-seo (yalnız Adım 1) | ✅ | `.agents/ai-gorunurluk-temel-2026-09.md` |
 | 3 | Rakip profilleri | competitor-profiling | ✅ | `competitor-profiles/` (5 profil + `_summary.md` + `dau-pdram.md`) |
 | 4 | İçerik boşluk analizi | content-strategy | ✅ | `.agents/icerik-stratejisi-2026-09.md` |
@@ -90,7 +90,10 @@ Fazlar arası girdiler.
 - Bizde olup hiçbirinde olmayan: iki dillilik, hatasız hreflang, FAQPage şeması (73 sayfa), 92 sayfa kapsam
 - **Şehir sayfaları GBP'siz çalışıyor** — Noesis 7 bölge (Gazimağusa dahil), Mayıs 15 şehir×hizmet.
   2026-09-02 kapsam kararı kısmen düzeltildi: harita kutusu GBP ister, **altındaki organik
-  sonuçlar şehir sayfasıyla alınabiliyor.** Bizde tek şehir sayfası yok.
+  sonuçlar şehir sayfasıyla alınabiliyor.** ~~Bizde tek şehir sayfası yok.~~ **Güncel
+  (2026-09-16):** iki şehir sayfası açıldı (`/gazimagusa-psikolog.html`,
+  `/en/psychologist-in-famagusta.html`) ama ana sayfayla aynı kelimeyi hedefliyorlar ve
+  ikisinin de yalnız 1 iç bağlantısı var — bkz. **Y7**.
 - Pembe Köşk **yayında değil** (sertifika süresi dolmuş + hosting askıya alınmış) — 3 ay sonra bak
 - EMDR artık rekabet riski: vermiyoruz, yazılar yayında, iki rakip veriyor
 
@@ -113,6 +116,97 @@ Fazlar arası girdiler.
 - 10 kontrol, 92 sayfa. Sıfırdakiler: istatistik+kaynak 0%, isimli yazar 0%, görünür tarih 4%.
 - Blog AEO açısından hazır (sorgu-H2 %76, ideal pasaj %80); **hizmet sayfaları değil**
   (sorgu-H2 %15, ideal pasaj %38). Faz 5'in önceliği hizmet sayfaları.
+
+**GSC Performans temel ölçümü (2026-07-06 → 2026-09-14, 2026-09-16'da alındı)** — ✅ **KAYIT ALTINDA**
+
+Bu, programın "önce" fotoğrafının arama ayağı. Sonraki ölçümler buna karşı okunacak.
+
+| Ölçüm | Değer |
+|---|---|
+| Tıklama (3 ay) | 46 |
+| Gösterim (3 ay) | 1.449 |
+| Ort. TO | %3,2 |
+| Ort. sıra | ~28 |
+| Temmuz / Ağustos / Eylül(1-14) | 11 / 21 / 14 tıklama |
+
+- **Tıklamanın %76'sı tek sayfadan:** `/` → 35 tıklama, 508 gösterim, 8,66. sıra.
+  Diğer ~68 sayfa toplam 3 tıklama.
+- **Ada içi hedefleme çalışıyor:** Kıbrıs 33 tıklama / 8,77. sıra · Türkiye 6 / 50,47 ·
+  İngiltere 0 / 43,03. (GSC'de ayrı KKTC kodu yok, ada içi "Kıbrıs" altında raporlanıyor.)
+- **Mobil 10,8. sıra vs masaüstü 46,8. sıra** — büyük olasılıkla sorgu karması (yerel=mobil,
+  bilgi amaçlı uzun kuyruk=masaüstü), teknik bulgu yok. G1/G2 sonrası kapanmazsa bakılacak.
+
+**Ölçülen talep kümeleri** (büyükten küçüğe):
+
+| Küme | Gös. | Tık. | Ort. sıra | Durum |
+|---|---|---|---|---|
+| Travma / Kıbrıs (EN) | **165** | 0 | 40,9 | ❌ **hizmet sayfası yok — G1** |
+| Panik atak | 104 | 0 | 71,6 | ✅ sayfa var, dipte — G2 |
+| Psikolog mu psikiyatrist mi | 96 | 0 | 74,8 | ✅ sayfa var, dipte — G2 |
+| Yerel (mağusa/kktc psikolog) | 82 | **5** | **13,5** | ✅ tıklamayı getiren tek küme |
+| Çocuk | 71 | 0 | 36,5 | ✅ hizmet + blog |
+| EMDR (verilmiyor) | 10 | 0 | 70,6 | ✅ kapsam dışı, doğru davranış |
+
+**G1 — ✅ CEVAPLANDI (2026-09-16): travma odaklı çalışma VERİLİYOR.** Yaş grupları:
+**çocuk, ergen, beliren yetişkinlik, yetişkin** (kullanıcı teyidi). Böylece ölçülen en büyük
+talep (165 gösterim, `childhood trauma treatment cyprus` ve türevleri) artık gerçek bir
+hizmete karşılık geliyor ve kural 1 engeli kalktı. `product-marketing.md` hizmet listesi
+güncellendi.
+
+**✅ UYGULANDI (2026-09-16):** TR + EN travma hizmet sayfası yazıldı ve derlemede doğrulandı.
+`/hizmetler/travma-terapisi.html` (863 kelime) + `/en/services/trauma-therapy.html` (1.218
+kelime). Yaklaşımlar teyit edildi: travma odaklı BDT, psikodinamik, ACT, çocuklarda oyun ve
+sanat temelli çalışma. Kapsanan tablolar: çocukluk çağı, gelişimsel, TSSB, tek olaya bağlı
+travma, yas ve kayıp. **EMDR'nin verilmediği sayfada ayrı bir H2 ile açıkça yazıldı** —
+travma denince en çok sorulan yöntem olduğu ve ölçülen EMDR talebi bulunduğu için.
+
+Sayfalar hizmet indekslerine otomatik girdi (`cardOrder: 6.5` — 16 dosyayı yeniden
+numaralamamak için ondalık kullanıldı, Y6'yı kötüleştirmemek adına). Her birine 3 konusal
+iç bağlantı verildi (indeks + bireysel terapi + çocuk psikolojisi) — şehir sayfalarının
+düştüğü tek-bağlantı durumuna (Y7) düşmemesi için. Sitemap 106 → 108 URL, `npm run check`
+0 hata. **Psikolog onayı bekliyor** (klinik metin).
+
+**G2 — en ucuz kazanım:** Panik atak ve psikolog-psikiyatrist sayfaları **zaten var**,
+talep de var (200 gösterim), ama 67-82. sırada. Sıfırdan içerik değil, mevcut sayfayı
+güçlendirme işi — Faz 5/8'in çıkarılabilirlik çalışmasıyla birebir örtüşüyor.
+`psikolog ilaç yazabilir mi` alt-niyeti tek başına ~49 gösterim taşıyor, ayrı H2 hak ediyor.
+
+**Doğrulandı:** EMDR sayfaları 404, yazım hatası URL'leri 301, http/www 301 — hepsi doğru.
+Eski adreslerin GSC'de görünmesi normal.
+
+**Faz 1 YENİDEN denetim (2026-09-16, 106 URL canlı tarandı)** — tam rapor `.agents/seo-audit-2026-09.md`
+
+- **Kapandı:** K1 (wa.me), Y3 (görünür tarih, 102/106), O2 (şemasız sayfa 0), O3, O5 (niyet
+  ayrışmış), O6, O7. Title/description 106/106 sınır içinde. Hreflang yine **0 hata**.
+- **İki YENİ kritik — ikisi de panel ayarı, kod değil:**
+  - **K2 · Cloudflare GPTBot + ClaudeBot + CCBot'u 403'lüyor.** 2026-09-02'de üçü de 200'dü →
+    gerileme. Faz 8'in (şu anki faz) dayanağını kesiyor. OAI-SearchBot ve PerplexityBot açık.
+  - **K3 · bingbot/BingPreview/YandexBot 6 dizin URL'inde 406** (`/`, `/en/`, `/blog/`,
+    `/en/blog/`, `/hizmetler/`, `/en/services/`) — sitenin en önemli 6 sayfası. Origin
+    kaynaklı (cPanel ModSecurity), Cloudflare değil. `.html` biten 100 URL sorunsuz.
+- **İki YENİ yüksek:**
+  - **Y6 · Tazelik sinyali bozuldu → ✅ ÇÖZÜLDÜ aynı gün (`fb21b47`).** `b58739e` telefon
+    değişimi 52 dosyaya dokunmuş, `git-dates.js` bunu "güncellendi" saymıştı. Artık
+    `[lastmod skip]` işaretli commit'ler yok sayılıyor. Sonuç: bugünün tarihini taşıyan
+    sayfa 88 → **4**, tarihler 7 ayrı güne yayıldı.
+  - **Y7 · Şehir sayfası yamyamlığı.** `/gazimagusa-psikolog.html` ile `/` **birebir aynı
+    title**; EN çifti de aynı kelimeyi hedefliyor. Her iki şehir sayfasının da yalnız 1
+    iç bağlantısı var. 2026-09-06 kararının uygulaması eksik kalmış.
+- **Y2 yarı kapandı:** `Person` şeması iki psikolog için var (`#gokce-ince`,
+  `#yaprak-parlan-yesilovali`, `alumniOf` + `knowsAbout` dolu, `employee` bağlı), ama
+  **56/56 yazıda `author` hâlâ `Organization`.** Yazı–psikolog eşleştirmesi merkezden gelmeli.
+  Ayrıca `Person.sameAs` = 0, `hasCredential` yok.
+- **Y1 kısmen kapandı:** 12/56 yazı artık kaynak gösteriyor (nhs.uk, doi.org, pubmed);
+  2026-09-02'de 0/56'ydı. Kalan 44 yazı.
+- **Açık kalanlar:** Y4 (5 marka görseli 404, `/favicon.ico` dahil), O1 (6 sayfa <300 kelime,
+  hizmet sayfaları 444-492 bandında sıkışık), O4 (SSS sayfalarında **0** iç bağlantı),
+  O9 (`geo`, `openingHoursSpecification`, `hasMap` eksik), O11 (`schema-markup.json` hâlâ
+  canlıda ve placeholder veri servis ediyor — referanssız), O10 (40 FAQ sorusu birden çok
+  sayfada), O12 (5 description <110 karakter).
+- **Performans sağlam:** TTFB 47/60/79/196 ms, CSS 8 KB br, JS 634 B, brotli açık, fontlar
+  kendi sunucumuzda, 56/56 görselde `alt` + `width`/`height` + `loading`.
+- **Ölçülemedi:** PSI kotası yine dolu (lab CWV yok) · **GSC Kapsam (Coverage) raporu hâlâ
+  alınmadı** — indeksleme durumu bilinmiyor. Performans raporu geldi ve işlendi (aşağıda).
 
 **Faz 1 denetim özeti (2026-09-02, 92 URL canlı tarandı)**
 - Teknik temel sağlam: 92/92 200, self-canonical, **hreflang sıfır hata**, yetim/kırık link yok,
@@ -171,6 +265,12 @@ Kaydedilmedi.
 ## Açık Maddeler
 
 - [x] Gerçek WhatsApp/telefon numarası — `+905391232547` (2026-09-16)
+- [ ] **Cloudflare AI bot engelini aç** (GPTBot, ClaudeBot, CCBot) — kullanıcı · **K2, Faz 8'i tıkıyor**
+- [ ] **ModSecurity 406 istisnası** (6 dizin URL'i, bingbot) — kullanıcı/hosting · **K3**
+- [x] GSC **Performans** dışa aktarımı — alındı ve işlendi (2026-09-16)
+- [ ] GSC **Kapsam (Coverage)** dışa aktarımı — kullanıcı · indeksleme durumu hâlâ bilinmiyor
+- [ ] **Travma kapsam sorusu** — psikologlar · **G1, ölçülmüş en büyük talep buna bağlı**
+- [ ] Yazı–psikolog eşleştirmesi (hangi yazı kimin) — psikologlar · **Y2'nin kalan yarısı**
 - [ ] Marka görselleri (logo, og-image, favicon, apple-touch-icon) — kullanıcı
 - [ ] İsimli psikolog bilgileri (ad, unvan, lisans, uzmanlık) — kullanıcı/psikologlar
 - [ ] `.agents/product-marketing.md` "Açık Sorular" bölümündeki 10 madde — psikologlar
