@@ -217,7 +217,7 @@ card:
                 <circle class="ring-breath" cx="300" cy="113" r="57" fill="none" stroke="var(--color-primary)" stroke-width="1.5" opacity="0.22"></circle>
                 <circle class="node-circle" cx="300" cy="113" r="48" fill="var(--color-primary)"></circle>
                 <!-- Brain icon simplified -->
-                <text x="300" y="106" text-anchor="middle" font-size="22" fill="white" font-family="serif">💭</text>
+                <g transform="translate(288,83)" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{% iconBody "thought" %}</g>
                 <text x="300" y="128" text-anchor="middle" font-family="Lora, Georgia, serif" font-weight="600" font-size="14" fill="white">Thought</text>
               </g>
 
@@ -225,7 +225,7 @@ card:
               <g class="diagram-node" id="node-duygu" data-node="duygu" tabindex="0" role="button" aria-label="Emotion">
                 <circle class="ring-breath" cx="458" cy="390" r="57" fill="none" stroke="var(--color-accent)" stroke-width="1.5" opacity="0.22"></circle>
                 <circle class="node-circle" cx="458" cy="390" r="48" fill="var(--color-accent)"></circle>
-                <text x="458" y="383" text-anchor="middle" font-size="22" fill="white" font-family="serif">❤️</text>
+                <g transform="translate(446,360)" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{% iconBody "heart" %}</g>
                 <text x="458" y="405" text-anchor="middle" font-family="Lora, Georgia, serif" font-weight="600" font-size="14" fill="white">Emotion</text>
               </g>
 
@@ -233,7 +233,7 @@ card:
               <g class="diagram-node" id="node-davranis" data-node="davranis" tabindex="0" role="button" aria-label="Behaviour">
                 <circle class="ring-breath" cx="142" cy="390" r="57" fill="none" stroke="var(--color-ink-muted)" stroke-width="1.5" opacity="0.22"></circle>
                 <circle class="node-circle" cx="142" cy="390" r="48" fill="var(--color-ink-muted)"></circle>
-                <text x="142" y="383" text-anchor="middle" font-size="22" fill="white" font-family="serif">🏃</text>
+                <g transform="translate(130,360)" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{% iconBody "run" %}</g>
                 <text x="142" y="405" text-anchor="middle" font-family="Lora, Georgia, serif" font-weight="600" font-size="13" fill="white">Behaviour</text>
               </g>
 
@@ -242,7 +242,7 @@ card:
                 <circle class="ring-breath-b" cx="300" cy="287" r="42" fill="none" stroke="var(--color-ink-light)" stroke-width="1.5" opacity="0.18"></circle>
                 <circle class="node-circle" cx="300" cy="287" r="34" fill="none" stroke="var(--color-ink-light)" stroke-width="2" stroke-dasharray="5 4"></circle>
                 <circle cx="300" cy="287" r="27" fill="var(--color-warm-secondary)" opacity="0.96"></circle>
-                <text x="300" y="283" text-anchor="middle" font-size="16" fill="var(--color-ink-muted)" font-family="serif">🫁</text>
+                <g transform="translate(292,267) scale(0.667)" fill="none" stroke="var(--color-ink-muted)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">{% iconBody "lungs" %}</g>
                 <text x="300" y="300" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" font-weight="600" fill="var(--color-ink-muted)">Body</text>
               </g>
 
@@ -257,7 +257,7 @@ card:
             <!-- Default -->
             <div id="info-default" class="bg-white rounded-2xl p-7 border border-warm-tertiary">
               <div class="flex flex-col items-center text-center py-4 gap-4">
-                <div class="text-5xl">👆</div>
+                <div class="text-5xl">{% icon "tap", "w-12 h-12" %}</div>
                 <div>
                   <h3 class="font-serif text-xl text-ink mb-2">Tap a link</h3>
                   <p class="text-sm text-ink-muted leading-relaxed">
@@ -358,19 +358,19 @@ card:
         <div class="grid sm:grid-cols-3 gap-5" data-animate="">
 
           <div class="bg-white rounded-2xl p-7 text-center">
-            <div class="text-5xl mb-4">🛡️</div>
+            <div class="text-5xl mb-4">{% icon "shield", "w-12 h-12" %}</div>
             <h3 class="font-semibold text-ink mb-2">Your brain is protecting you</h3>
             <p class="text-sm text-ink-muted leading-relaxed">A racing heart, a knotted stomach — that is your brain saying "watch out!" A system that has worked for thousands of years.</p>
           </div>
 
           <div class="bg-white rounded-2xl p-7 text-center">
-            <div class="text-5xl mb-4">🌊</div>
+            <div class="text-5xl mb-4">{% icon "wave", "w-12 h-12" %}</div>
             <h3 class="font-semibold text-ink mb-2">Every emotion passes</h3>
             <p class="text-sm text-ink-muted leading-relaxed">No matter how intense, no feeling lasts forever. Like a wave — it rises and it falls.</p>
           </div>
 
           <div class="bg-white rounded-2xl p-7 text-center">
-            <div class="text-5xl mb-4">🔑</div>
+            <div class="text-5xl mb-4">{% icon "key", "w-12 h-12" %}</div>
             <h3 class="font-semibold text-ink mb-2">It can change</h3>
             <p class="text-sm text-ink-muted leading-relaxed">Noticing this loop is already a big step. In <a href="/en/services/individual-therapy.html" class="text-primary underline hover:no-underline">individual therapy</a> we can work on changing it together; for children and teenagers, see <a href="/en/services/child-psychology.html" class="text-primary underline hover:no-underline">child psychology</a>.</p>
           </div>

@@ -164,21 +164,3 @@ footer.bg-ink {
 footer .text-primary {
   color: var(--color-sage);
 }
-
-/* Emojiler paletin dışında kalan son renkli öğe; tek renkli bir kimlikte
-   sayfanın en gürültülü yeri oluyorlar. Mürekkep ailesine çekiliyorlar.
-   Seçiciler tek tek doğrulandı: hepsi yalnız emoji taşıyor ve zeminleri
-   ya saydam ya düşük opaklıkta tint — `filter` zemini de etkilediği için
-   dolu renkli çipler (`rounded-2xl bg-accent`) bilerek dışarıda.
-   Bu bir ara çözüm: kalıcı doğrusu sitede zaten kullanılan ince çizgi
-   ikonlarla değiştirmek. */
-.eb-em,
-.rounded-xl.text-lg.mb-3,
-.rounded-xl.text-lg.mb-4,
-.rounded-full.text-4xl,
-.text-2xl.mb-3,
-.text-5xl.mb-4,
-[class="text-5xl"],
-.h-40.text-5xl {
-  filter: grayscale(1) sepia(0.6) saturate(1.4) hue-rotate(-12deg) brightness(0.85);
-}

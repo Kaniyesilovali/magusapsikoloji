@@ -25,7 +25,7 @@ headExtra: |-
       }
       .eco-badge.eco-dimmed { opacity:0.15; }
       .eco-badge.eco-active { transform:translate(-50%,-50%) scale(1.13) !important; box-shadow:0 8px 22px color-mix(in srgb, var(--color-ink) 22%, transparent); }
-      .eb-em { font-size:0.85rem; line-height:1; }
+      .eb-em { display:inline-flex; line-height:0; }
       .badge-mikro { border-left:3px solid var(--color-primary); }
       .badge-mezo  { border-left:3px solid var(--color-primary-light); }
       .badge-ekzo  { border-left:3px solid var(--color-accent); }
@@ -117,16 +117,16 @@ sitemap:
               </div>
 
               <!-- MICROSYSTEM badges (r=112) -->
-              <div class="eco-badge badge-mikro" data-system="mikro" data-start-angle="15" data-radius="112" style="position:absolute;top:132px;left:269px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🧒</span><span>Child Therapy</span></div>
-              <div class="eco-badge badge-mikro" data-system="mikro" data-start-angle="105" data-radius="112" style="position:absolute;top:269px;left:348px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🧠</span><span>ADHD</span></div>
-              <div class="eco-badge badge-mikro" data-system="mikro" data-start-angle="195" data-radius="112" style="position:absolute;top:348px;left:211px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">✨</span><span>Self-Esteem</span></div>
-              <div class="eco-badge badge-mikro" data-system="mikro" data-start-angle="285" data-radius="112" style="position:absolute;top:211px;left:132px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">👨‍👩‍👧</span><span>Parent–Child</span></div>
+              <div class="eco-badge badge-mikro" data-system="mikro" data-start-angle="15" data-radius="112" style="position:absolute;top:132px;left:269px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">{% icon "child", "w-3.5 h-3.5" %}</span><span>Child Therapy</span></div>
+              <div class="eco-badge badge-mikro" data-system="mikro" data-start-angle="105" data-radius="112" style="position:absolute;top:269px;left:348px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">{% icon "brain", "w-3.5 h-3.5" %}</span><span>ADHD</span></div>
+              <div class="eco-badge badge-mikro" data-system="mikro" data-start-angle="195" data-radius="112" style="position:absolute;top:348px;left:211px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">{% icon "spark", "w-3.5 h-3.5" %}</span><span>Self-Esteem</span></div>
+              <div class="eco-badge badge-mikro" data-system="mikro" data-start-angle="285" data-radius="112" style="position:absolute;top:211px;left:132px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">{% icon "family", "w-3.5 h-3.5" %}</span><span>Parent–Child</span></div>
 
               <!-- MACROSYSTEM badges (r=179) -->
-              <div class="eco-badge badge-makro" data-system="makro" data-start-angle="68" data-radius="179" style="position:absolute;top:173px;left:406px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🌧️</span><span>Depression</span></div>
-              <div class="eco-badge badge-makro" data-system="makro" data-start-angle="152" data-radius="179" style="position:absolute;top:398px;left:324px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🧩</span><span>Personality</span></div>
-              <div class="eco-badge badge-makro" data-system="makro" data-start-angle="242" data-radius="179" style="position:absolute;top:324px;left:82px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">💥</span><span>Trauma</span></div>
-              <div class="eco-badge badge-makro" data-system="makro" data-start-angle="332" data-radius="179" style="position:absolute;top:82px;left:156px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">🔍</span><span>Identity</span></div>
+              <div class="eco-badge badge-makro" data-system="makro" data-start-angle="68" data-radius="179" style="position:absolute;top:173px;left:406px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">{% icon "rain", "w-3.5 h-3.5" %}</span><span>Depression</span></div>
+              <div class="eco-badge badge-makro" data-system="makro" data-start-angle="152" data-radius="179" style="position:absolute;top:398px;left:324px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">{% icon "puzzle", "w-3.5 h-3.5" %}</span><span>Personality</span></div>
+              <div class="eco-badge badge-makro" data-system="makro" data-start-angle="242" data-radius="179" style="position:absolute;top:324px;left:82px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">{% icon "burst", "w-3.5 h-3.5" %}</span><span>Trauma</span></div>
+              <div class="eco-badge badge-makro" data-system="makro" data-start-angle="332" data-radius="179" style="position:absolute;top:82px;left:156px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">{% icon "search", "w-3.5 h-3.5" %}</span><span>Identity</span></div>
 
 
             </div>
@@ -290,22 +290,22 @@ sitemap:
 
           <div class="grid sm:grid-cols-2 gap-4">
             <div class="bg-white rounded-2xl p-5 border border-warm-tertiary">
-              <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-lg mb-3">🔒</div>
+              <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-lg mb-3">{% icon "lock", "w-5 h-5" %}</div>
               <h3 class="font-semibold text-ink text-sm mb-1.5">Confidentiality</h3>
               <p class="text-xs text-ink-muted leading-relaxed">Your sessions and your personal information are protected in line with confidentiality principles.</p>
             </div>
             <div class="bg-white rounded-2xl p-5 border border-warm-tertiary">
-              <div class="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-lg mb-3">🌍</div>
+              <div class="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-lg mb-3">{% icon "globe", "w-5 h-5" %}</div>
               <h3 class="font-semibold text-ink text-sm mb-1.5">Turkish &amp; English</h3>
               <p class="text-xs text-ink-muted leading-relaxed">You can have your sessions in Turkish or in English.</p>
             </div>
             <div class="bg-white rounded-2xl p-5 border border-warm-tertiary">
-              <div class="w-10 h-10 rounded-xl bg-sage/30 flex items-center justify-center text-lg mb-3">📋</div>
+              <div class="w-10 h-10 rounded-xl bg-sage/30 flex items-center justify-center text-lg mb-3">{% icon "clipboard", "w-5 h-5" %}</div>
               <h3 class="font-semibold text-ink text-sm mb-1.5">Evidence-Based</h3>
               <p class="text-xs text-ink-muted leading-relaxed">We work with methods that have been researched, such as CBT and psychodynamic therapy.</p>
             </div>
             <div class="bg-white rounded-2xl p-5 border border-warm-tertiary">
-              <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-lg mb-3">🤝</div>
+              <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-lg mb-3">{% icon "people", "w-5 h-5" %}</div>
               <h3 class="font-semibold text-ink text-sm mb-1.5">Non-Judgmental Space</h3>
               <p class="text-xs text-ink-muted leading-relaxed">No reason for coming is too small. We welcome you exactly as you are.</p>
             </div>
@@ -326,7 +326,7 @@ sitemap:
         <div class="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
           <a href="/en/about.html#gokce-ince" class="block bg-warm border border-warm-tertiary rounded-2xl overflow-hidden hover:shadow-lg transition-all">
             <div class="h-52 bg-gradient-to-br from-primary/15 to-sage/20 flex items-center justify-center relative">
-              <div class="w-20 h-20 rounded-full bg-white/70 flex items-center justify-center text-4xl">👩‍⚕️</div>
+              <div class="w-20 h-20 rounded-full bg-white/70 flex items-center justify-center text-4xl">{% icon "person", "w-8 h-8" %}</div>
               <span class="absolute bottom-4 left-4 text-xs font-medium text-primary bg-white/80 px-3 py-1 rounded-full">Psychodynamic · Adults</span>
             </div>
             <div class="p-5">
@@ -338,7 +338,7 @@ sitemap:
 
           <a href="/en/about.html#yaprak-parlan-yesilovali" class="block bg-warm border border-warm-tertiary rounded-2xl overflow-hidden hover:shadow-lg transition-all">
             <div class="h-52 bg-gradient-to-br from-accent/10 to-warm-tertiary flex items-center justify-center relative">
-              <div class="w-20 h-20 rounded-full bg-white/70 flex items-center justify-center text-4xl">👩‍⚕️</div>
+              <div class="w-20 h-20 rounded-full bg-white/70 flex items-center justify-center text-4xl">{% icon "person", "w-8 h-8" %}</div>
               <span class="absolute bottom-4 left-4 text-xs font-medium text-accent bg-white/80 px-3 py-1 rounded-full">CBT · Children · Adolescents · Adults</span>
             </div>
             <div class="p-5">
@@ -374,7 +374,7 @@ sitemap:
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
           <a href="/en/blog/what-is-anxiety-disorder.html" class="group bg-white border border-warm-tertiary rounded-2xl overflow-hidden hover:shadow-lg transition-all">
-            <div class="h-40 bg-gradient-to-br from-primary/10 to-sage/15 flex items-center justify-center text-5xl">🌊</div>
+            <div class="h-40 bg-gradient-to-br from-primary/10 to-sage/15 flex items-center justify-center text-5xl">{% icon "wave", "w-12 h-12" %}</div>
             <div class="p-5">
               <div class="flex items-center gap-2 mb-3">
                 <span class="text-xs bg-primary/10 text-primary font-medium px-2.5 py-0.5 rounded-full">Anxiety &amp; Burnout</span>
@@ -386,7 +386,7 @@ sitemap:
           </a>
 
           <a href="/en/blog/when-to-go-to-therapy.html" class="group bg-white border border-warm-tertiary rounded-2xl overflow-hidden hover:shadow-lg transition-all">
-            <div class="h-40 bg-gradient-to-br from-sage/20 to-primary/8 flex items-center justify-center text-5xl">🌱</div>
+            <div class="h-40 bg-gradient-to-br from-sage/20 to-primary/8 flex items-center justify-center text-5xl">{% icon "sprout", "w-12 h-12" %}</div>
             <div class="p-5">
               <div class="flex items-center gap-2 mb-3">
                 <span class="text-xs bg-sage/20 text-primary font-medium px-2.5 py-0.5 rounded-full">Therapy Guide</span>
@@ -398,7 +398,7 @@ sitemap:
           </a>
 
           <a href="/en/blog/psychologist-or-psychiatrist.html" class="group bg-white border border-warm-tertiary rounded-2xl overflow-hidden hover:shadow-lg transition-all">
-            <div class="h-40 bg-gradient-to-br from-accent/8 to-sage/15 flex items-center justify-center text-5xl">🧠</div>
+            <div class="h-40 bg-gradient-to-br from-accent/8 to-sage/15 flex items-center justify-center text-5xl">{% icon "brain", "w-12 h-12" %}</div>
             <div class="p-5">
               <div class="flex items-center gap-2 mb-3">
                 <span class="text-xs bg-accent/10 text-accent font-medium px-2.5 py-0.5 rounded-full">Therapy Guide</span>

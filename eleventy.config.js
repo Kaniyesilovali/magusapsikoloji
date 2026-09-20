@@ -1,6 +1,7 @@
 const { execSync } = require('child_process');
 const schemas = require('./scripts/schemas');
 const blocks = require('./scripts/render-blocks');
+const icons = require('./scripts/icons');
 
 const gitDates = require('./scripts/git-dates');
 
@@ -41,6 +42,16 @@ module.exports = function (eleventyConfig) {
       return String(Date.now());
     }
   });
+
+  // Çizgi ikonlar — emoji yerine. Gövdeler scripts/icons.js'te tek kaynakta.
+  //   {% icon "lock" %}                 → w-5 h-5
+  //   {% icon "lock", "w-8 h-8" %}      → boyut çağrı yerinden
+  eleventyConfig.addShortcode('icon', (name, cls, strokeWidth) =>
+    icons.wrap(name, cls || 'w-5 h-5', strokeWidth || 2));
+
+  // SVG içine gömmek için yalnız gövde: sarmalayıcıyı çağıran <g> sağlar,
+  // böylece konum ve ölçek diyagramın kendi koordinatlarından verilir.
+  eleventyConfig.addShortcode('iconBody', (name) => icons.bodies[name]);
 
   eleventyConfig.setTemplateFormats(['html', 'md', 'njk']);
 
