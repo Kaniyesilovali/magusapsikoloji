@@ -145,7 +145,14 @@ Hangi yazının hangi psikologa ait olduğu **merkezden gelmeli** — Claude bun
 
 ---
 
-### Y4 · Beş marka görseli 404 — **AÇIK (değişmedi)**
+### Y4 · Beş marka görseli 404 — ✅ **ÇÖZÜLDÜ (2026-09-20, `5f6967b` + devamı)**
+Kullanıcı marka logosunu verdi; beş dosya da ondan üretildi. `logo.png` (800×295) yazı
+işaretinin kırpılmış hâli, `og-image.jpg` (1200×630) logo marka kreminde ortalanmış,
+favicon üçlüsü logodaki çiçek işaretinden. `/favicon.ico` köke passthrough ile taşınıyor.
+Şablon tarafına dokunulmadı — yollar zaten doğruydu, yalnız dosyalar yoktu.
+
+<details><summary>Özgün bulgu</summary>
+
 **Etki:** Yüksek · **Kanıt:** doğrudan HTTP kontrolü
 
 `/assets/images/og-image.jpg` · `/assets/images/logo.png` · `/assets/images/favicon.png` ·
@@ -157,6 +164,7 @@ için varlık doğrulama sinyali zayıflıyor), sekmede ikon yok.
 
 Şablon tarafı doğru kurulmuş — yalnız dosyalar eksik. **Kullanıcıdan dosya bekliyor.**
 **Öncelik:** 2
+</details>
 
 ---
 
@@ -625,7 +633,7 @@ travma/psikiyatrist kümesi; **G1 kararı buna da dokunuyor.**
 5. Psikologların `sameAs` bağlantıları ve lisans bilgisi **(O8)**
 
 **4 — Kullanıcıdan dosya/erişim bekleyen**
-6. Marka görselleri (og-image, logo, favicon, apple-touch-icon) **(Y4)**
+6. ~~Marka görselleri (og-image, logo, favicon, apple-touch-icon)~~ — **bitti 2026-09-20 (Y4)**
 7. GSC **Kapsam (Coverage)** dışa aktarımı — indeksleme durumu hâlâ ölçülemedi
 8. cPanel'den `schema-markup.json` sil **(O11)**
 

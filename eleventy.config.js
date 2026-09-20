@@ -9,6 +9,8 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy('assets');
   eleventyConfig.addPassthroughCopy('dist');
   eleventyConfig.addPassthroughCopy({ 'static/robots.txt': 'robots.txt' });
+  // Tarayıcılar /favicon.ico'yu kökten ister; assets/ altındakiler <link> ile bağlanıyor.
+  eleventyConfig.addPassthroughCopy({ 'static/favicon.ico': 'favicon.ico' });
   eleventyConfig.addPassthroughCopy({ 'static/.htaccess': '.htaccess' });
   eleventyConfig.addPassthroughCopy({ admin: 'admin' });
   // CMS ekranına noindex başlığı — yalnız /admin/ dizinini etkiler.
