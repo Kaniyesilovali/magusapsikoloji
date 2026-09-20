@@ -71,7 +71,7 @@ headExtra: |-
       /* ── Node highlight ── */
       .node-circle { transition: filter 0.3s ease, opacity 0.3s ease; }
       #main-diagram[data-highlight]:not([data-highlight=""]):not([data-highlight="all"]) .node-circle { opacity: 0.3; }
-      #main-diagram[data-highlight="dusunce"]  #node-dusunce  .node-circle { opacity: 1; filter: drop-shadow(0 0 12px rgba(74,124,111,0.65)); }
+      #main-diagram[data-highlight="dusunce"]  #node-dusunce  .node-circle { opacity: 1; filter: drop-shadow(0 0 12px color-mix(in srgb, var(--color-primary) 65%, transparent)); }
       #main-diagram[data-highlight="duygu"]    #node-duygu    .node-circle { opacity: 1; filter: drop-shadow(0 0 12px rgba(200,120,90,0.65)); }
       #main-diagram[data-highlight="davranis"] #node-davranis .node-circle { opacity: 1; filter: drop-shadow(0 0 12px rgba(90,107,98,0.65)); }
       #main-diagram[data-highlight="beden"]    #node-beden    .node-circle { opacity: 1; filter: drop-shadow(0 0 10px rgba(138,158,148,0.65)); }
@@ -92,7 +92,7 @@ headExtra: |-
         background: #D0CCC6; flex-shrink: 0;
         transition: background 0.25s, transform 0.25s;
       }
-      .sdot.on { background: #4A7C6F; transform: scale(1.45); }
+      .sdot.on { background: var(--color-primary); transform: scale(1.45); }
 
       /* ── Chain cards ── */
       .chain-card {
@@ -190,32 +190,32 @@ card:
           <div class="mx-auto w-full" style="max-width:500px;">
             <svg id="main-diagram" viewBox="0 0 600 580" width="100%" data-highlight="" style="display:block;" aria-label="Düşünce, Duygu, Davranış ve Beden bağlantı döngüsü">
               <defs>
-                <marker id="arw-g" markerWidth="9" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L9,4 z" fill="#4A7C6F" opacity="0.75"></path></marker>
-                <marker id="arw-t" markerWidth="9" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L9,4 z" fill="#C8785A" opacity="0.75"></path></marker>
-                <marker id="arw-m" markerWidth="9" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L9,4 z" fill="#8A9E94" opacity="0.75"></path></marker>
+                <marker id="arw-g" markerWidth="9" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L9,4 z" fill="var(--color-primary)" opacity="0.75"></path></marker>
+                <marker id="arw-t" markerWidth="9" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L9,4 z" fill="var(--color-accent)" opacity="0.75"></path></marker>
+                <marker id="arw-m" markerWidth="9" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L9,4 z" fill="var(--color-ink-light)" opacity="0.75"></path></marker>
               </defs>
 
               <!-- Connection lines: Beden center to nodes -->
               <g opacity="0.35">
-                <line x1="300" y1="252" x2="300" y2="160" stroke="#8A9E94" stroke-width="1.5" stroke-dasharray="4 6"></line>
-                <line x1="336" y1="312" x2="418" y2="363" stroke="#8A9E94" stroke-width="1.5" stroke-dasharray="4 6"></line>
-                <line x1="264" y1="312" x2="182" y2="363" stroke="#8A9E94" stroke-width="1.5" stroke-dasharray="4 6"></line>
+                <line x1="300" y1="252" x2="300" y2="160" stroke="var(--color-ink-light)" stroke-width="1.5" stroke-dasharray="4 6"></line>
+                <line x1="336" y1="312" x2="418" y2="363" stroke="var(--color-ink-light)" stroke-width="1.5" stroke-dasharray="4 6"></line>
+                <line x1="264" y1="312" x2="182" y2="363" stroke="var(--color-ink-light)" stroke-width="1.5" stroke-dasharray="4 6"></line>
               </g>
 
               <!-- Arrow tracks (static, low opacity, arrowheads) -->
-              <path d="M 332 152 C 458 196 494 306 448 358" fill="none" stroke="#4A7C6F" stroke-width="1.2" opacity="0.2" marker-end="url(#arw-g)"></path>
-              <path d="M 416 412 C 378 463 222 463 184 412" fill="none" stroke="#C8785A" stroke-width="1.2" opacity="0.2" marker-end="url(#arw-t)"></path>
-              <path d="M 152 358 C 106 306 142 196 268 152" fill="none" stroke="#8A9E94" stroke-width="1.2" opacity="0.2" marker-end="url(#arw-m)"></path>
+              <path d="M 332 152 C 458 196 494 306 448 358" fill="none" stroke="var(--color-primary)" stroke-width="1.2" opacity="0.2" marker-end="url(#arw-g)"></path>
+              <path d="M 416 412 C 378 463 222 463 184 412" fill="none" stroke="var(--color-accent)" stroke-width="1.2" opacity="0.2" marker-end="url(#arw-t)"></path>
+              <path d="M 152 358 C 106 306 142 196 268 152" fill="none" stroke="var(--color-ink-light)" stroke-width="1.2" opacity="0.2" marker-end="url(#arw-m)"></path>
 
               <!-- Animated flow dots -->
-              <path class="arrow-td" d="M 332 152 C 458 196 494 306 448 358" fill="none" stroke="#4A7C6F" stroke-width="3.5" stroke-dasharray="16 284" stroke-linecap="round" opacity="0.85"></path>
-              <path class="arrow-de" d="M 416 412 C 378 463 222 463 184 412" fill="none" stroke="#C8785A" stroke-width="3.5" stroke-dasharray="16 284" stroke-linecap="round" opacity="0.85"></path>
-              <path class="arrow-bt" d="M 152 358 C 106 306 142 196 268 152" fill="none" stroke="#8A9E94" stroke-width="3.5" stroke-dasharray="16 284" stroke-linecap="round" opacity="0.85"></path>
+              <path class="arrow-td" d="M 332 152 C 458 196 494 306 448 358" fill="none" stroke="var(--color-primary)" stroke-width="3.5" stroke-dasharray="16 284" stroke-linecap="round" opacity="0.85"></path>
+              <path class="arrow-de" d="M 416 412 C 378 463 222 463 184 412" fill="none" stroke="var(--color-accent)" stroke-width="3.5" stroke-dasharray="16 284" stroke-linecap="round" opacity="0.85"></path>
+              <path class="arrow-bt" d="M 152 358 C 106 306 142 196 268 152" fill="none" stroke="var(--color-ink-light)" stroke-width="3.5" stroke-dasharray="16 284" stroke-linecap="round" opacity="0.85"></path>
 
               <!-- DÜŞÜNCE -->
               <g class="diagram-node" id="node-dusunce" data-node="dusunce" tabindex="0" role="button" aria-label="Düşünce">
-                <circle class="ring-breath" cx="300" cy="113" r="57" fill="none" stroke="#4A7C6F" stroke-width="1.5" opacity="0.22"></circle>
-                <circle class="node-circle" cx="300" cy="113" r="48" fill="#4A7C6F"></circle>
+                <circle class="ring-breath" cx="300" cy="113" r="57" fill="none" stroke="var(--color-primary)" stroke-width="1.5" opacity="0.22"></circle>
+                <circle class="node-circle" cx="300" cy="113" r="48" fill="var(--color-primary)"></circle>
                 <!-- Brain icon simplified -->
                 <text x="300" y="106" text-anchor="middle" font-size="22" fill="white" font-family="serif">💭</text>
                 <text x="300" y="128" text-anchor="middle" font-family="Lora, Georgia, serif" font-weight="600" font-size="14" fill="white">Düşünce</text>
@@ -223,27 +223,27 @@ card:
 
               <!-- DUYGU -->
               <g class="diagram-node" id="node-duygu" data-node="duygu" tabindex="0" role="button" aria-label="Duygu">
-                <circle class="ring-breath" cx="458" cy="390" r="57" fill="none" stroke="#C8785A" stroke-width="1.5" opacity="0.22"></circle>
-                <circle class="node-circle" cx="458" cy="390" r="48" fill="#C8785A"></circle>
+                <circle class="ring-breath" cx="458" cy="390" r="57" fill="none" stroke="var(--color-accent)" stroke-width="1.5" opacity="0.22"></circle>
+                <circle class="node-circle" cx="458" cy="390" r="48" fill="var(--color-accent)"></circle>
                 <text x="458" y="383" text-anchor="middle" font-size="22" fill="white" font-family="serif">❤️</text>
                 <text x="458" y="405" text-anchor="middle" font-family="Lora, Georgia, serif" font-weight="600" font-size="14" fill="white">Duygu</text>
               </g>
 
               <!-- DAVRANIS -->
               <g class="diagram-node" id="node-davranis" data-node="davranis" tabindex="0" role="button" aria-label="Davranış">
-                <circle class="ring-breath" cx="142" cy="390" r="57" fill="none" stroke="#5A6B62" stroke-width="1.5" opacity="0.22"></circle>
-                <circle class="node-circle" cx="142" cy="390" r="48" fill="#5A6B62"></circle>
+                <circle class="ring-breath" cx="142" cy="390" r="57" fill="none" stroke="var(--color-ink-muted)" stroke-width="1.5" opacity="0.22"></circle>
+                <circle class="node-circle" cx="142" cy="390" r="48" fill="var(--color-ink-muted)"></circle>
                 <text x="142" y="383" text-anchor="middle" font-size="22" fill="white" font-family="serif">🏃</text>
                 <text x="142" y="405" text-anchor="middle" font-family="Lora, Georgia, serif" font-weight="600" font-size="13" fill="white">Davranış</text>
               </g>
 
               <!-- BEDEN (center) -->
               <g class="diagram-node" id="node-beden" data-node="beden" tabindex="0" role="button" aria-label="Beden">
-                <circle class="ring-breath-b" cx="300" cy="287" r="42" fill="none" stroke="#8A9E94" stroke-width="1.5" opacity="0.18"></circle>
-                <circle class="node-circle" cx="300" cy="287" r="34" fill="none" stroke="#8A9E94" stroke-width="2" stroke-dasharray="5 4"></circle>
-                <circle cx="300" cy="287" r="27" fill="#F0EDE8" opacity="0.96"></circle>
-                <text x="300" y="283" text-anchor="middle" font-size="16" fill="#5A6B62" font-family="serif">🫁</text>
-                <text x="300" y="300" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" font-weight="600" fill="#5A6B62">Beden</text>
+                <circle class="ring-breath-b" cx="300" cy="287" r="42" fill="none" stroke="var(--color-ink-light)" stroke-width="1.5" opacity="0.18"></circle>
+                <circle class="node-circle" cx="300" cy="287" r="34" fill="none" stroke="var(--color-ink-light)" stroke-width="2" stroke-dasharray="5 4"></circle>
+                <circle cx="300" cy="287" r="27" fill="var(--color-warm-secondary)" opacity="0.96"></circle>
+                <text x="300" y="283" text-anchor="middle" font-size="16" fill="var(--color-ink-muted)" font-family="serif">🫁</text>
+                <text x="300" y="300" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" font-weight="600" fill="var(--color-ink-muted)">Beden</text>
               </g>
 
             </svg>
@@ -321,7 +321,7 @@ card:
               <div class="flex items-start gap-4 mb-5">
                 <div id="step-icon" class="text-5xl shrink-0 mt-1"></div>
                 <div>
-                  <p id="step-label" class="text-xs font-semibold uppercase tracking-wider mb-2" style="color:#8A9E94;"></p>
+                  <p id="step-label" class="text-xs font-semibold uppercase tracking-wider mb-2" style="color:var(--color-ink-light);"></p>
                   <h3 id="step-headline" class="font-serif text-2xl lg:text-3xl text-ink leading-tight"></h3>
                 </div>
               </div>

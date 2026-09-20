@@ -53,30 +53,44 @@
 }
 
 @theme {
-  /* Ana renkler */
-  --color-primary:          #4A7C6F;
-  --color-primary-light:    #6B9E91;
-  --color-primary-dark:     #2F5C52;
-  --color-primary-hover:    #3D6B5F;
+  /* ── Palet: logodan ─────────────────────────────────────────────────
+     Logo iki renkli (kâğıt #F5EAD6, mürekkep #311813). Site de tek hue
+     ailesinde: ayrım renkle değil değerle yapılıyor.
+     Önceki adaçayı-yeşili/terrakota paleti 2026-09-20'de bırakıldı.
+     ------------------------------------------------------------------ */
 
-  /* Vurgu */
-  --color-accent:           #C8785A;
-  --color-accent-light:     #DFA08A;
-  --color-accent-dark:      #A85C42;
+  /* Eylem — buton dolgusu ve link, tek değer */
+  --color-primary:          #7F5A44;
+  --color-primary-light:    #A78468;
+  --color-primary-dark:     #63442F;
+  --color-primary-hover:    #63442F;
 
-  /* Zemin */
-  --color-warm:             #FAF8F5;
-  --color-warm-secondary:   #F0EDE8;
-  --color-warm-tertiary:    #E4DDD5;
+  /* Vurgu ayrı bir ses değil, aynı ailenin bir kademesi */
+  --color-accent:           #8E6349;
+  --color-accent-light:     #B8926F;
+  --color-accent-dark:      #63442F;
 
-  /* Adaçayı tonu */
-  --color-sage:             #8FAF9F;
-  --color-sage-light:       #B4CBBF;
+  /* Kâğıt — neredeyse nötr (R-B = +4); beje çalan kademeler ona yakın
+     tutuluyor, bej bir renk değil sıcaklık fısıltısı */
+  --color-warm:             #FAF8F6;
+  --color-warm-secondary:   #F3EEE4;
+  --color-warm-tertiary:    #E8E0D2;
 
-  /* Metin */
-  --color-ink:              #2C3830;
-  --color-ink-muted:        #5A6B62;
-  --color-ink-light:        #8A9E94;
+  /* Kalkan yüzeyler — beyaz değil, zeminin bir ton açığı */
+  --color-white:            #FFFDF9;
+
+  /* Kâğıdın koyu kademesi (eski `sage` yuvası) — düşük opaklıkta
+     degradelerde ve koyu zemin üstü ikonlarda */
+  --color-sage:             #C0A783;
+  --color-sage-light:       #DCCCAF;
+
+  /* Footer — sayfadaki tek koyu alan; mürekkebin yumuşatılmış hâli */
+  --color-footer:           #55402F;
+
+  /* Mürekkep */
+  --color-ink:              #2B1B13;
+  --color-ink-muted:        #67594E;
+  --color-ink-light:        #8E8072;
 
   /* Yazı tipleri */
   --font-sans: 'Inter', system-ui, sans-serif;
@@ -89,13 +103,13 @@ html {
 }
 
 body {
-  background-color: #FAF8F5;
-  color: #2C3830;
+  background-color: var(--color-warm);
+  color: var(--color-ink);
 }
 
 .nav-scrolled {
-  background: rgba(250,248,245,0.97) !important;
-  box-shadow: 0 1px 20px rgba(44,56,48,0.08);
+  background: color-mix(in srgb, var(--color-warm) 97%, transparent) !important;
+  box-shadow: 0 1px 20px color-mix(in srgb, var(--color-ink) 8%, transparent);
 }
 
 .service-card {
@@ -111,4 +125,60 @@ body {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+
+/* ── Yapısal renk kuralları ─────────────────────────────────────────────
+   Token'lar bazı yerlerde sınıf adıyla eşleşmiyor; onları burada
+   hedefliyoruz.
+   ------------------------------------------------------------------- */
+
+/* CTA bandı açık. Koyu bırakılınca footer'la birleşip tek dev bir kütle
+   oluyor; sayfa olduğundan koyu, footer olduğundan uzun görünüyor.
+   Vurgusunu renk bloğundan değil serif başlıktan ve butondan alıyor.
+   `--color-white` burada mürekkebe dönüyor: text-white ve bütün opaklık
+   kademeleri tek kuralla ters çevriliyor. */
+main section.bg-primary {
+  background-color: var(--color-warm-secondary);
+  --color-white: var(--color-ink);
+}
+
+/* Banttaki dolgulu hap `bg-white text-primary` taşıyor; ters çevrilince
+   koyuya düşerdi. Sayfadaki diğer butonlarla aynı kahveye alınıyor.
+   Seçici bilerek iki sınıfı birden istiyor: banttaki `bg-white ... text-ink`
+   çipleri dışarıda kalsın. */
+main section.bg-primary a.bg-white.text-primary {
+  background-color: var(--color-primary);
+  color: var(--color-warm);
+}
+main section.bg-primary a.bg-white.text-primary:hover {
+  background-color: var(--color-primary-hover);
+}
+
+/* Footer yumuşatılmış kahvede; sayfadaki tek koyu alan. */
+footer.bg-ink {
+  background-color: var(--color-footer);
+}
+
+/* İletişim ikonları eylem kahvesinde kalırsa koyu zeminde kayboluyor (1.1).
+   Kâğıdın koyu kademesine alındı: 4.2. */
+footer .text-primary {
+  color: var(--color-sage);
+}
+
+/* Emojiler paletin dışında kalan son renkli öğe; tek renkli bir kimlikte
+   sayfanın en gürültülü yeri oluyorlar. Mürekkep ailesine çekiliyorlar.
+   Seçiciler tek tek doğrulandı: hepsi yalnız emoji taşıyor ve zeminleri
+   ya saydam ya düşük opaklıkta tint — `filter` zemini de etkilediği için
+   dolu renkli çipler (`rounded-2xl bg-accent`) bilerek dışarıda.
+   Bu bir ara çözüm: kalıcı doğrusu sitede zaten kullanılan ince çizgi
+   ikonlarla değiştirmek. */
+.eb-em,
+.rounded-xl.text-lg.mb-3,
+.rounded-xl.text-lg.mb-4,
+.rounded-full.text-4xl,
+.text-2xl.mb-3,
+.text-5xl.mb-4,
+[class="text-5xl"],
+.h-40.text-5xl {
+  filter: grayscale(1) sepia(0.6) saturate(1.4) hue-rotate(-12deg) brightness(0.85);
 }

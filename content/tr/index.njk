@@ -17,19 +17,20 @@ headExtra: |-
       /* Eco Systems Badges */
       .eco-badge {
         display:inline-flex; align-items:center; gap:4px;
-        background:white; border:1px solid #E4DDD5; border-radius:20px;
-        padding:5px 10px 5px 8px; font-size:0.68rem; font-weight:600; color:#2C3830;
-        box-shadow:0 4px 14px rgba(44,56,48,0.1); white-space:nowrap;
+        background:var(--color-white); border:1px solid var(--color-warm-tertiary); border-radius:20px;
+        padding:5px 10px 5px 8px; font-size:0.68rem; font-weight:600; color:var(--color-ink);
+        box-shadow:0 4px 14px color-mix(in srgb, var(--color-ink) 10%, transparent); white-space:nowrap;
         transition:opacity 0.3s, transform 0.25s, box-shadow 0.25s;
         cursor:default; user-select:none;
       }
       .eco-badge.eco-dimmed { opacity:0.15; }
-      .eco-badge.eco-active { transform:translate(-50%,-50%) scale(1.13) !important; box-shadow:0 8px 22px rgba(44,56,48,0.22); }
+      .eco-badge.eco-active { transform:translate(-50%,-50%) scale(1.13) !important; box-shadow:0 8px 22px color-mix(in srgb, var(--color-ink) 22%, transparent); }
       .eb-em { font-size:0.85rem; line-height:1; }
-      .badge-mikro { border-left:3px solid #4A7C6F; }
-      .badge-mezo  { border-left:3px solid #6B9E91; }
-      .badge-ekzo  { border-left:3px solid #C8785A; }
-      .badge-makro { border-left:3px solid #2F5C52; }
+      /* Şerit rengi yakınlığı taşıyor: mikro en koyu, makro en açık. */
+      .badge-mikro { border-left:3px solid var(--color-primary-dark); }
+      .badge-mezo  { border-left:3px solid var(--color-primary); }
+      .badge-ekzo  { border-left:3px solid var(--color-accent); }
+      .badge-makro { border-left:3px solid var(--color-primary-light); }
       /* Clickable system buttons */
       .eco-btn {
         font-size:0.6rem; font-weight:700; padding:5px 11px;
@@ -37,7 +38,7 @@ headExtra: |-
         cursor:pointer; transition:background 0.25s, color 0.25s;
         letter-spacing:0.04em; line-height:1;
       }
-      .eco-btn.eco-btn-active { background-color:var(--btn-c); color:white !important; border-color:var(--btn-c); }
+      .eco-btn.eco-btn-active { background-color:var(--btn-c); color:var(--color-white) !important; border-color:var(--btn-c); }
     </style>
 rawSchemas:
   - '{"@context":"https://schema.org","@type":"MedicalOrganization","name":"Mağusa Psikoloji Merkezi","alternateName":"Famagusta Psychology Centre","url":"https://magusapsikoloji.com","logo":"https://magusapsikoloji.com/assets/images/logo.png","description":"Kuzey Kıbrıs Gazimağusa''da psikolojik danışmanlık ve terapi hizmetleri.","address":{"@type":"PostalAddress","streetAddress":"Eşref Bitlis Caddesi, Sancak Plaza, Kat 5 Daire 2","addressLocality":"Gazimağusa","addressRegion":"Kuzey Kıbrıs","addressCountry":"CY"},"medicalSpecialty":["Psychology"],"availableService":[{"@type":"MedicalTherapy","name":"Bireysel Terapi"},{"@type":"MedicalTherapy","name":"BDT Terapisi"},{"@type":"MedicalTherapy","name":"Çocuk Psikolojisi"},{"@type":"MedicalTherapy","name":"Online Terapi"}]}'
@@ -106,17 +107,17 @@ sitemap:
             <div id="eco-tr" class="eco-wrap" style="position:relative;width:480px;height:480px;">
 
               <!-- ── KRONOSISTEM: dış dönen dashed halka (20 sn) ── -->
-              <div style="position:absolute;inset:-6px;border-radius:50%;border:2px dashed rgba(74,124,111,0.45);animation:heroSpin 20s linear infinite;pointer-events:none;z-index:2;"></div>
+              <div style="position:absolute;inset:-6px;border-radius:50%;border:2px dashed color-mix(in srgb, var(--color-primary) 45%, transparent);animation:heroSpin 20s linear infinite;pointer-events:none;z-index:2;"></div>
 
               <!-- ── MAKROSİSTEM: 2. halka (inset:61 → r=179, 80 sn ters) ── -->
-              <div style="position:absolute;inset:61px;border-radius:50%;border:1.5px solid rgba(47,92,82,0.38);animation:heroSpinReverse 80s linear infinite;pointer-events:none;z-index:2;"></div>
+              <div style="position:absolute;inset:61px;border-radius:50%;border:1.5px solid color-mix(in srgb, var(--color-primary-dark) 38%, transparent);animation:heroSpinReverse 80s linear infinite;pointer-events:none;z-index:2;"></div>
 
               <!-- ── MİKROSİSTEM: iç halka (inset:128 → r=112, 50 sn düz) ── -->
-              <div style="position:absolute;inset:128px;border-radius:50%;border:1.5px solid rgba(74,124,111,0.65);animation:heroSpin 50s linear infinite;pointer-events:none;z-index:2;"></div>
+              <div style="position:absolute;inset:128px;border-radius:50%;border:1.5px solid color-mix(in srgb, var(--color-primary) 65%, transparent);animation:heroSpin 50s linear infinite;pointer-events:none;z-index:2;"></div>
 
               <!-- ── BİREY: merkez gradient daire ── -->
-              <div style="position:absolute;inset:195px;border-radius:50%;background:linear-gradient(145deg,#2F5C52 0%,#4A7C6F 55%,#8FAF9F 100%);box-shadow:0 16px 48px rgba(74,124,111,0.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;z-index:15;">
-                <svg style="width:46px;height:46px;color:rgba(255,255,255,0.9);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <div style="position:absolute;inset:195px;border-radius:50%;background:linear-gradient(145deg,var(--color-primary-dark) 0%,var(--color-primary) 55%,var(--color-sage) 100%);box-shadow:0 16px 48px color-mix(in srgb, var(--color-primary) 35%, transparent);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;z-index:15;">
+                <svg style="width:46px;height:46px;color:color-mix(in srgb, var(--color-white) 90%, transparent);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-1.03-4.47A3 3 0 0 1 4.5 8.5 3 3 0 0 1 7 6a2.5 2.5 0 0 1 2.5-4Z"></path>
                   <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 1.03-4.47A3 3 0 0 0 19.5 8.5 3 3 0 0 0 17 6a2.5 2.5 0 0 0-2.5-4Z"></path>
                 </svg>
