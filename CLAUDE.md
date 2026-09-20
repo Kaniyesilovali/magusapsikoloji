@@ -144,6 +144,85 @@ WHO rakamları `who.int` bilgi notlarından tek tek okunarak güncellendi:
 ("%11 mi %13,2 mi"). Rakam kaldırıldığı için o soru şimdilik konusuz kaldı; psikologlar
 doğrulanmış bir kaynak verirse geri eklenebilir.
 
+### İkinci geçiş — NICE ve Cochrane
+
+İlk geçiş yalnız WHO kullanmıştı. İkinci geçişte listedeki diğer kaynaklar tarandı ve
+**tedavi/etkililik** iddiaları da kaynaklandı:
+
+| Sayfa | Neydi | Ne oldu |
+|---|---|---|
+| `anksiyete-nedir` · `kaygi-bozuklugu-nedir` (+ EN) | "Kaygı bozuklukları için **en güçlü kanıta sahip** yöntem BDT'dir" | NICE'ın fiilen dediğine indirildi: CG113'te yaygın kaygı bozukluğu ve panik bozukluğu için **önerilen yüksek yoğunluklu psikoterapi** BDT |
+| `hizmetler/bdt-terapisi` / `services/cbt-therapy` | "**yüzlerce araştırmayla** desteklenmiş" · "supported by **hundreds of clinical trials**" | Sayı iddiası kaldırıldı; NICE CG113 + NG222 referansı kondu |
+| `kuzey-kibris-online-terapi` · `online-terapi-etkili-mi` (+ EN) | Yalnız liste dışı Carlbring/Fernandez'e dayanıyordu | **Cochrane** (Flodgren ve ark., 2015 — yedi çalışmada görüntülü ve yüz yüze terapi arasında fark yok) eklendi; liste içi bir dayanak kazandı |
+
+**Erişim notu:** APA ve NICE'ın CKS sayfaları bu makineden okunamıyor (bot duvarı, 403).
+APA'ya dayandırılacak bir iddia çıkarsa tarayıcıdan elle doğrulanmalı.
+
+## 4c · Hâlâ kaynaksız duran etkililik iddiaları
+
+Taramada çıkan ama bu turda **düzeltilmeyen** maddeler. Her birinin karşısında 26'lık
+listeden hangi kurumun karşılayabileceği yazılı:
+
+| Sayfa | İddia | Muhtemel kaynak |
+|---|---|---|
+| `okul-fobisi-cocuk` / `school-refusal-in-children` | "Okul reddinde **en güçlü kanıta sahip** yaklaşımdır" | AACAP (Facts for Families) · ESCAP |
+| `dehb-belirtileri-cocuk` / `what-is-adhd-symptoms-in-children` | Ebeveyn eğitimi "**first-line**, özellikle 6 yaş altı" | NICE NG87 · AACAP |
+| `hizmetler/act-terapisi` | "ACT'nin **en etkili olduğu** durumlar" | ACBS |
+| `universite-ogrencileri` · `magusa-uluslararasi-ogrenciler` (+ EN) | "Terapi **en erken** başlandığında en etkili sonucu verir" | Kaynak bulunamayabilir → yumuşatılmalı |
+| `depresyon-nedir` | "Orta-ağır depresyonda ilaç + terapi kombinasyonu **genellikle en etkili**" | NICE NG222 |
+
+§4c kapatıldı — aşağıdaki §4d'ye bakın.
+
+Ayrıca `kaynak-inceleme-listesi.md`'deki **B11** (DEHB'de ebeveyn eğitimi iddiası) ve
+**6 araştırılmamış madde** hâlâ açık.
+
+## 4d · 26 kaynağın tamamının değerlendirmesi — 2026-09-20
+
+Listedeki her kurum sitedeki mevcut içerikle tek tek karşılaştırıldı. Sonuç:
+
+### Fiilen kullanılanlar (3)
+
+| # | Kurum | Nerede |
+|---|---|---|
+| 1 | **WHO** | Anksiyete (470 mn / %5,8), depresyon (322 mn / %5,2), ergen yaygınlığı (7'de 1), ICD-11 tükenmişlik — 12 bağlantı |
+| 8 | **NICE** | CG113 (kaygı/panikte BDT), NG222 (ağır depresyonda BDT+ilaç birleşimi ilk sırada), NG87 (5 yaş altı DEHB'de ilk basamak ebeveyn eğitimi) — 5 bağlantı + SSS'lerde düz metin |
+| 9 | **Cochrane** | Flodgren ve ark. 2015 — görüntülü terapi ile yüz yüze terapi arasında fark yok; online terapi sayfalarının 4 yerinde |
+
+### Erişilemediği için kullanılamayanlar (2)
+
+| # | Kurum | Sorun |
+|---|---|---|
+| 1 | **APA** | Sayfalar bu makineden okunmuyor (200 dönüyor ama gövde boş — JS/bot duvarı). Panik atak rakamları bu yüzden geri getirilemedi |
+| 23 | **AACAP** | Bağlantı kurulamıyor (DNS çözülüyor, 80 ve 443 zaman aşımı). Okul reddi ve DEHB'de ebeveyn materyali için ilk aday; tarayıcıdan elle kontrol gerekiyor |
+
+### Şu an karşılayacak iddia bulunmayanlar (21)
+
+Bunlara zorla atıf iliştirilmedi — kaynak göstermek değil süs olurdu:
+
+- **EFPA, EACLIPT, EAP, TPD, ITC** (2-6) — meslek/etik/test standartları. Sitede bu
+  standartlara *uyulduğunu* söyleyen bir cümle yok; eklemek **§3'e aykırı olurdu**
+  (uyum/onay izlenimi). Nöropsikolojik değerlendirme sayfası testleri betimliyor ama
+  merkezin ITC standartlarına uyduğu iddiası teyitsiz — bu yüzden eklenmedi.
+- **SPR** (10) — psikoterapi süreç/sonuç araştırması. Karşılığı olacak cümle yok.
+- **Beck Institute, EABCT** (11-12) — BDT'nin kurumsal kaynağı. `hakkimizda`'da zaten
+  **gerçek** eğitim bilgisi olarak geçiyor (Yaprak Parlan Yeşilovalı); kaynak atfı olarak
+  ayrıca kullanılmadı.
+- **Schema Therapy Society, EFTA** (13, 15) — merkezde şema terapi ve sistemik aile
+  terapisi ayrı hizmet olarak tanıtılmıyor.
+- **ACBS** (14) — ACT hizmet sayfasındaki "en etkili olduğu durumlar" başlığı "sık
+  kullanıldığı durumlar" olarak düzeltildi; artık etkililik iddiası yok, atıf gerekmiyor.
+- **EFPP, IPA, Anna Freud, Tavistock** (16-19) — psikodinamik hizmet sayfası yaklaşımı
+  betimliyor, etkililik iddiası taşımıyor.
+- **ISTSS, ESTSS** (20-21) — travma sayfaları tarandı: **tek bir kanıt/etkililik iddiası
+  yok.** Travma içeriği derinleştirilirse ilk kaynak bunlar olacak.
+- **ESCAP, SRCD, WAIMH, Center on the Developing Child** (22, 24-26) — çocuk/gelişim
+  içeriği şu an yaygınlık (WHO) ve tedavi (NICE) üzerinden kaynaklı. Bağlanma, erken
+  çocukluk ve gelişim yazıları yazılırsa devreye girecekler.
+
+**Sonuç:** 26 kaynağın 3'ü kullanıldı, 2'si teknik olarak erişilemedi, 21'i mevcut
+içerikte karşılığı olmadığı için beklemede. Bu 21'i kullanmanın yolu yeni içerik yazmak —
+var olan cümlelere iliştirmek değil.
+
 ## 5 · Yıllık bakım
 
 Bağlantı listesi **yılda bir** kontrol edilir; kurum adları ve adresleri değişiyor
