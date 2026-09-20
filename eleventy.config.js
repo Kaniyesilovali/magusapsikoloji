@@ -28,6 +28,20 @@ module.exports = function (eleventyConfig) {
   // tarih de derleme anından gelir — içerik dosyalarında ayrıca elle tutulmaz.
   eleventyConfig.addGlobalData('buildDate', () => new Date().toISOString().slice(0, 10));
 
+  // CSS sürüm damgası. Cloudflare /dist/output.css'i 7 gün önbellekliyor
+  // (max-age=604800) ve HTML dinamik servis edildiği için deploy sonrası
+  // eski stil dosyası ziyaretçilere günlerce servis edilebiliyordu.
+  // İçerikten türetilen kısa özet her derlemede adresi değiştiriyor;
+  // stil değişmediyse adres de değişmiyor, önbellek boşa harcanmıyor.
+  eleventyConfig.addGlobalData('cssVersion', () => {
+    try {
+      const css = require('fs').readFileSync('./dist/output.css');
+      return require('crypto').createHash('md5').update(css).digest('hex').slice(0, 8);
+    } catch {
+      return String(Date.now());
+    }
+  });
+
   eleventyConfig.setTemplateFormats(['html', 'md', 'njk']);
 
   // JSON-LD filtreleri — scripts/schemas.js tek kaynak

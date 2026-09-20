@@ -76,7 +76,7 @@
 <script type="application/ld+json">{{ s | orgEnrich(contact) | safe }}</script>
 {%- endfor %}
 
-<link href="/dist/output.css" rel="stylesheet" />
+<link href="/dist/output.css?v={{ cssVersion }}" rel="stylesheet" />
 {%- if headExtra %}
 {{ headExtra | safe }}
 {%- endif %}
