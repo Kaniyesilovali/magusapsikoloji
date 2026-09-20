@@ -273,8 +273,15 @@ dolu ve doğru. Google İşletme Profili açıldı; `geo`, `openingHoursSpecific
 konumundan alındı (35.1314183, 33.9310237), bağlantı CID biçiminde
 (`maps.google.com/?cid=8380127482439713846`).
 
-Kapanmayan tek alan **posta kodu**: profilde yok, KKTC'de tutarlı kullanılmıyor,
-kullanıcı kararıyla boş bırakıldı. `priceRange` 2026-09-08 kararı gereği bilerek yok.
+Posta kodu da 2026-09-20'de eklendi (`99450`, kullanıcı teyidi) — yalnız şemada,
+sayfada görünmüyor: adres alanları SERP'te snippet üretmiyor, görünür karşılık şart değil
+ve Gazimağusa'da posta kodunun ziyaretçiye faydası yok.
+
+Geriye yalnız `priceRange` kalıyor ve o **kalıcı olarak boş**: 2026-09-08 ücret kararı.
+Zengin Sonuçlar testi bunu "çok önemli olmayan sorun" diye işaretlemeye devam edecek;
+öğe geçerli sayıldığı için sonuç doğurmuyor. `aggregateRating`/`review` de eklenmeyecek —
+kendi sitesine kendi yazdığı yorum işaretlemesi Google'ın kurallarına aykırı; o veri
+İşletme Profili'ndeki gerçek yorumlardan gelir.
 **Öncelik:** — (kapandı)
 
 ### O1 · İçerik derinliği — **KISMEN İYİLEŞTİ**

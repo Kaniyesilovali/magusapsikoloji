@@ -249,7 +249,8 @@ Kaydedilmedi.
   Cmt 10:00–18:00, Pazar kapalı) girildi; `geo` + `hasMap` +
   `openingHoursSpecification` 42 sayfada basılıyor. Saatler iletişim sayfalarında
   görünür kartta da var — görünür metin ile şema tek kaynaktan besleniyor.
-  **Posta kodu bilinçli olarak boş** (profilde yok, KKTC'de tutarsız). O9 kapandı.
+  Posta kodu (`99450`) aynı gün eklendi — yalnız şemada, sayfada görünmüyor. O9 kapandı;
+  geriye kalıcı olarak yalnız `priceRange` boş (ücret kararı).
 
 - 2026-09-08 — **Ücret içeriği kalıcı olarak kapsam dışı.** Kullanıcı: "ücretlerden
   bahsetmiyoruz". Rakam, aralık ya da açıklama yazılmayacak. Kabul edilen sonuç:
