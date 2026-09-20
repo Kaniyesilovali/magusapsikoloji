@@ -198,7 +198,7 @@ Ek araştırma gerekmiyor.
 Bunlar merkeze özgü çalışma biçimi beyanları, araştırma iddiası değil. Kaynak eklenmeyecek;
 yalnız doğru olduklarını teyit etmeniz yeterli.
 
-- "Seanslar 45 dakika, genellikle haftada bir"
+- "Seanslar 50 dakika, genellikle haftada bir ya da iki haftada bir"
 - "Belirli bir konuda genellikle 8–20 seans"
 - "Odaklı psikodinamik çalışmalar 16–30 seans"
 - "Kısa süreli BDT 8–16 seans"

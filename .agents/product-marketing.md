@@ -11,7 +11,7 @@
 
 **Tek cümle:** Gazimağusa'da lisanslı psikologlarla Türkçe ve İngilizce, yüz yüze ve online psikoterapi.
 
-**Ne yapıyor:** Mağusa Psikoloji Merkezi bireylerle, çiftlerle ve ailelerle çalışan küçük bir psikoloji merkezi. Seanslar 45 dakika; Türkçe ya da İngilizce, merkezde ya da güvenli video görüşmesiyle yürütülüyor. Tek bir kurama bağlı kalınmıyor; BDT, psikodinamik terapi, ACT, sistem terapisi ve mindfulness temelli yaklaşımlar konuya göre birlikte kullanılıyor.
+**Ne yapıyor:** Mağusa Psikoloji Merkezi bireylerle, çiftlerle ve ailelerle çalışan küçük bir psikoloji merkezi. Seanslar 50 dakika; Türkçe ya da İngilizce, merkezde ya da güvenli video görüşmesiyle yürütülüyor. Tek bir kurama bağlı kalınmıyor; BDT, psikodinamik terapi, ACT, sistem terapisi ve mindfulness temelli yaklaşımlar konuya göre birlikte kullanılıyor.
 
 **Ürün kategorisi (hangi rafta duruyoruz):** Yerel psikoloji/terapi merkezi. İnsanlar bizi "Gazimağusa psikolog", "Mağusa psikolog", "KKTC psikolog", "Kuzey Kıbrıs terapi merkezi", "online terapi Kıbrıs" diye ararken buluyor.
 
@@ -63,7 +63,7 @@ geçerli olan saat sınırı online için katı değil.
 | Segment | Neyi önemsiyor | Zorluğu | Verdiğimiz söz |
 |---|---|---|---|
 | Yetişkin birey | Gizlilik, yargılanmamak | "Yeterince büyük bir sorunum yok" hissi | Hiçbir geliş nedeni küçük değildir |
-| Üniversite öğrencisi (DAÜ) | Zaman, ücret, program uyumu | Ders yükü + sınav kaygısı, vakit bulamamak | 45 dk seans, online seçeneği |
+| Üniversite öğrencisi (DAÜ) | Zaman, ücret, program uyumu | Ders yükü + sınav kaygısı, vakit bulamamak | 50 dk seans, online seçeneği |
 | Uluslararası öğrenci | İngilizce hizmet, kültürel anlaşılma | Aileden uzak olmak, ev özlemi, vize belirsizliği | İngilizce seans; nereden geldiğiniz dikkate alınır |
 | Ebeveyn | Çocuğuna doğru şeyi yapmak | "Zorlamalı mıyım?" ikilemi | Çocuk + ebeveyn danışmanlığı birlikte |
 | Çift / aile | İlişkinin geleceği | Partnerin gelmek istememesi | İlişkiyi bütün içinde ele alma |
@@ -117,7 +117,7 @@ geçerli olan saat sınırı online için katı değil.
 | "Sorunum terapiye gidecek kadar büyük değil" | Bir sorunun "yeterince büyük" olması gerekmez. Bunalmış, mutsuz ya da takılı hissetmek yeterli bir nedendir. |
 | "Tanıdığım birine denk gelirim" | Küçük bir ada olduğunun farkındayız. Randevular buna dikkat edilerek düzenlenir; görüşmeler ve kişisel bilgiler gizlilik ilkeleri doğrultusunda korunur. |
 | "İlaç yazılacak diye korkuyorum" | Psikolog ilaç yazmaz. Gerekirse psikiyatrist değerlendirmesi ayrıca konuşulur; karar bireye aittir. |
-| "Terapiye vaktim yok" | Seanslar 45 dakika, online seçeneği var. |
+| "Terapiye vaktim yok" | Seanslar 50 dakika, online seçeneği var. |
 | "İngilizce anlatabilir miyim?" | Seanslar İngilizce yürütülebilir. |
 | "İlk psikolog bana uygun gelmezse?" | Uygun gelmemesi olağandır ve söylenebilir. |
 | "Ücret ne kadar?" | Sitede yayımlanmıyor; WhatsApp ya da e-posta ile iletiliyor. **Bu bir sürtünme noktası — bkz. Açık Sorular.** |
@@ -188,7 +188,7 @@ geçerli olan saat sınırı online için katı değil.
 | DAÜ / EMU | Doğu Akdeniz Üniversitesi — Gazimağusa |
 | KKTC | Kuzey Kıbrıs Türk Cumhuriyeti |
 | Nöropsikolojik değerlendirme | Dikkat, bellek, öğrenme ve bilişsel işlevlerin yapılandırılmış değerlendirmesi; yazılı raporla sonuçlanır |
-| Seans | 45 dakika, yüz yüze veya online |
+| Seans | 50 dakika, yüz yüze veya online |
 | Panel | `/panel` — birey kaydı, seans ve onam yönetimi (dahilî) |
 
 ## Marka Sesi
@@ -209,7 +209,7 @@ geçerli olan saat sınırı online için katı değil.
 **Doğrulanmış:**
 - Lisanslı psikologlar; düzenli süpervizyon ve eğitim
 - Türkçe ve İngilizce seans
-- 45 dakikalık seanslar, yüz yüze ve online
+- 50 dakikalık seanslar, yüz yüze ve online
 - Kanıta dayalı yöntemler: BDT, psikodinamik, ACT, sistem terapisi, mindfulness, motivasyonel görüşme
 - Nöropsikolojik değerlendirme: tüm yaş grupları (çocuk 0–12, ergen, yetişkin, ileri yaş); dört başvuru nedeni (DEHB/dikkat, öğrenme güçlüğü, zihinsel-gelişimsel değerlendirme, nörolojik tablolar); yazılı rapor + sözlü geri bildirim görüşmesi
 - Yaklaşık 50 bilgi yazısı (TR+EN) ve konu bazlı SSS kütüphanesi yayında
