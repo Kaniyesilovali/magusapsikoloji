@@ -50,8 +50,13 @@ Ayrıca `product-marketing.md` sonundaki **"Açık Sorular"** bölümünde 10 ma
 
 ## Değişmez kurallar
 
-Bu programda üretilen her metin şunlara uyar:
+Bu programda üretilen her metin şunlara uyar. **Tam metin depo kökündeki `CLAUDE.md`'de** —
+her oturumda otomatik yükleniyor, orası bağlayıcı kaynaktır.
 
+0. **Yalnız onaylı 26 kaynak kullanılır** (2026-09-20 kararı). Liste dışı hiçbir kaynağa —
+   blog, haber sitesi, liste dışı dergi makalesi dahil — dayanarak iddia yazılmaz. Kaynak
+   bulunamıyorsa iddia metne girmez. Liste ve atıf biçimi: `CLAUDE.md` § 1-2. Kamuya açık
+   hâli: `/kaynaklar.html` ve `/en/sources.html`.
 1. **Verilmeyen hizmet için içerik yazılmaz.** EMDR bu yüzden kalıcı olarak kapsam dışı.
    Kurumsal danışmanlık ancak kapsam teyit edildikten sonra yazılacak.
 2. **Klinik iddia uydurulmaz.** Kaynağı bulunamayan iddia ya kaynaklanır ya yumuşatılır.
