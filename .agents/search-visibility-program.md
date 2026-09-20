@@ -2,7 +2,7 @@
 
 **İz:** retrofit (yayında, sıralaması olan site)
 **Başlangıç:** 2026-09-02
-**Son güncelleme:** 2026-09-16
+**Son güncelleme:** 2026-09-20
 **Mevcut faz:** 8 — AEO + GEO çekirdeği (kısmi; Y2 engelli)
 **Öncelik:** dengeli
 
@@ -54,7 +54,8 @@ alıntılanmayı en çok belirleyen madde bu. Y2 kapanmadan Faz 8'de anlamlı ha
 - `sameAs` 0 → 38 (Instagram + Facebook; varlık birleştirme)
 - `availableLanguage` 2 → 38 (iki dillilik artık makine-okunur)
 - SSS'lerde markdown render ediliyor; görünür bölüm ile FAQPage şeması aynı filtreden geçiyor
-- Hâlâ eksik: `telephone`, `geo`, `openingHours`, posta kodu. `priceRange` bilerek yok.
+- ~~Hâlâ eksik: `telephone`, `geo`, `openingHours`, posta kodu.~~ **2026-09-20'de kapandı**
+  (GBP açıldı) — posta kodu dışında hepsi yayında. `priceRange` bilerek yok.
 
 ## Taşınanlar
 
@@ -66,7 +67,8 @@ Fazlar arası girdiler.
 **AI ölçüm sorgu seti** (Faz 0 → Faz 2 → Faz 8) — ✅ **KİLİTLİ**
 - 20 sorgu seçildi (12 TR + 8 EN), `.agents/ai-gorunurluk-temel-2026-09.md` bölüm 3.
 - Set değiştirilmez; iki haftada bir aynı sorgular ölçülür.
-- 7 sorgu GBP kararına bağlı (⚠ işaretli) — GBP açılırsa etkiyi ayırt etmek için sette tutuldu.
+- 7 sorgu GBP kararına bağlı (⚠ işaretli). **GBP 2026-09-20'de açıldı** — bir sonraki
+  ölçümde bu 7'deki hareket GBP etkisi olarak okunacak.
 
 **Ebeveyn segmenti kelime haritası** (2026-09-11) — `.agents/ebeveyn-kelime-haritasi-2026-09.md`
 - Ebeveyn aramasının 5 aşaması çıkarıldı. Bulgu: **Aşama 2-4'te güçlüyüz, Aşama 1'de (davranışı
@@ -240,6 +242,14 @@ Eski adreslerin GSC'de görünmesi normal.
 Kaydedilmedi.
 
 ## Kararlar
+
+- 2026-09-20 — **Google İşletme Profili AÇILDI ve siteye bağlandı.** Knowledge Graph'a
+  girdi (MID `/g/11nvs6qzw7`, CID `8380127482439713846`). `_data/contact.json`'a iğne
+  koordinatı, Haritalar bağlantısı ve çalışma saatleri (Pzt–Cum 09:00–18:00,
+  Cmt 10:00–18:00, Pazar kapalı) girildi; `geo` + `hasMap` +
+  `openingHoursSpecification` 42 sayfada basılıyor. Saatler iletişim sayfalarında
+  görünür kartta da var — görünür metin ile şema tek kaynaktan besleniyor.
+  **Posta kodu bilinçli olarak boş** (profilde yok, KKTC'de tutarsız). O9 kapandı.
 
 - 2026-09-08 — **Ücret içeriği kalıcı olarak kapsam dışı.** Kullanıcı: "ücretlerden
   bahsetmiyoruz". Rakam, aralık ya da açıklama yazılmayacak. Kabul edilen sonuç:

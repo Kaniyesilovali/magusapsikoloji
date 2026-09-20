@@ -258,12 +258,16 @@ Kalan liste `.agents/kaynak-inceleme-listesi.md` içinde. **Öncelik:** 3
 üniversite sayfası) buraya bağlanmalı. Lisans bilgisi `hasCredential` ile işaretlenebilir.
 **Bilgi merkezden bekleniyor.** **Öncelik:** 3
 
-### O9 · `LocalBusiness` şemasında eksik alanlar
+### O9 · `LocalBusiness` şemasında eksik alanlar — **KAPANDI (2026-09-20)**
 `telephone`, `address`, `email`, `sameAs`, `availableLanguage`, `employee`, `areaServed`
-dolu ve doğru. Eksik olanlar: **`geo`** (enlem/boylam), **`openingHoursSpecification`**,
-**`hasMap`**, posta kodu. `priceRange` 2026-09-08 kararı gereği bilerek yok.
-`geo` ve `openingHours` yerel aramada doğrudan kullanılıyor; GBP açılışıyla birlikte
-yapılacak iş. **Öncelik:** 3
+dolu ve doğru. Google İşletme Profili açıldı; `geo`, `openingHoursSpecification` ve
+`hasMap` profil verisiyle dolduruldu ve 42 sayfada basılıyor. Koordinat profilin iğne
+konumundan alındı (35.1314183, 33.9310237), bağlantı CID biçiminde
+(`maps.google.com/?cid=8380127482439713846`).
+
+Kapanmayan tek alan **posta kodu**: profilde yok, KKTC'de tutarlı kullanılmıyor,
+kullanıcı kararıyla boş bırakıldı. `priceRange` 2026-09-08 kararı gereği bilerek yok.
+**Öncelik:** — (kapandı)
 
 ### O1 · İçerik derinliği — **KISMEN İYİLEŞTİ**
 6 sayfa <300 kelime (önceki ölçümde 8), 12 sayfa 300-500 arası. Medyan 718 kelime.
@@ -638,7 +642,7 @@ travma/psikiyatrist kümesi; **G1 kararı buna da dokunuyor.**
     alt-niyeti (~49 gösterim) ayrı H2 hak ediyor
 15. Hizmet sayfalarının derinliği ve çıkarılabilirliği **(O1)**
 16. Kalan 44 yazıya kaynak atfı — `.agents/kaynak-inceleme-listesi.md` **(Y1)**
-17. `geo` + `openingHoursSpecification` — GBP açılışıyla birlikte **(O9)**
+17. ~~`geo` + `openingHoursSpecification`~~ — **bitti 2026-09-20 (O9)**
 
 **İzlenecek, şimdilik aksiyon yok**
 - Masaüstü–mobil 36 sıralık fark **(G3)** — G1/G2 sonrası kapanmazsa ayrıca bakılacak

@@ -19,6 +19,11 @@
 
 **İş modeli:** Seans başı ücret. **Ücretler sitede yayımlanmıyor** — "ücret bilgisi için WhatsApp veya e-posta ile iletişime geçin". Sigorta kapsamı SSS'de açık bırakılmış.
 
+**Çalışma saatleri** (Google İşletme Profili ile aynı, kullanıcı teyidi 2026-09-20):
+Pazartesi–Cuma 09:00–18:00 · Cumartesi 10:00–18:00 · Pazar kapalı.
+**Online seanslar bu saatlerin dışında da planlanabiliyor** — yüz yüze seanslar için
+geçerli olan saat sınırı online için katı değil.
+
 **Hizmet listesi (yayında):** Bireysel terapi · Çocuk psikolojisi · Ergen psikolojisi · Genç yetişkin psikolojisi · Yetişkin psikolojisi · Aile terapisi · BDT/CBT · ACT · Psikodinamik terapi · Motivasyonel görüşme · Online terapi · Öğrenci danışmanlığı · **Nöropsikolojik değerlendirme** (tüm yaş grupları, yazılı rapor)
 
 **Travma odaklı çalışma** (kullanıcı teyidi 2026-09-16, hizmet sayfası yayına hazır):

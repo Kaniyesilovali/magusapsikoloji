@@ -12,8 +12,27 @@
   "addressLocalityEn": "Famagusta",
   "phoneE164": "+905391232547",
   "postalCode": "",
-  "latitude": "",
-  "longitude": "",
-  "googleBusinessUrl": "",
-  "openingHours": []
+  "latitude": "35.1314183",
+  "longitude": "33.9310237",
+  "googleBusinessUrl": "https://maps.google.com/?cid=8380127482439713846",
+  "openingHours": [
+    {
+      "days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "opens": "09:00",
+      "closes": "18:00"
+    },
+    {
+      "days": [
+        "Saturday"
+      ],
+      "opens": "10:00",
+      "closes": "18:00"
+    }
+  ]
 }

@@ -67,6 +67,30 @@ module.exports = function (eleventyConfig) {
   // Veri _data/contact.json'da tek yerde durur; yer tutucu değerler basılmaz.
   eleventyConfig.addFilter('orgEnrich', (raw, contact) => schemas.enrichRawSchema(raw, contact));
 
+  // Aynı şemayı besleyen çalışma saatlerini sayfada görünür satırlara çevirir —
+  // görünür içerik ile yapılandırılmış veri tek kaynaktan gelsin diye.
+  // Kapalı günler `_data/contact.json`'da hiç yok; burada da uydurulmaz, basılmaz.
+  eleventyConfig.addFilter('hoursLines', (hours, lang) => {
+    if (!Array.isArray(hours) || !hours.length) return [];
+    const order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const names = {
+      tr: ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'],
+      en: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    };
+    const label = names[lang] || names.en;
+    return hours.map((h) => {
+      const idx = [].concat(h.days || []).map((d) => order.indexOf(d))
+        .filter((i) => i >= 0).sort((a, b) => a - b);
+      if (!idx.length) return null;
+      // Üç ve daha uzun kesintisiz dizi aralık olarak yazılır: "Pazartesi – Cuma"
+      const run = idx.every((v, i) => i === 0 || v === idx[i - 1] + 1);
+      const days = run && idx.length >= 3
+        ? label[idx[0]] + ' – ' + label[idx[idx.length - 1]]
+        : idx.map((i) => label[i]).join(', ');
+      return { days, time: h.opens + '–' + h.closes };
+    }).filter(Boolean);
+  });
+
   // Sitemap <lastmod>: git tarihi ile yazarın beyan ettiği tarihten hangisi yeniyse o.
   // Hiçbiri yoksa null döner ve sitemap o URL için lastmod yazmaz — uydurmaktansa boş bırakılır.
   eleventyConfig.addFilter('lastmod', (page) =>
