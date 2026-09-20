@@ -26,6 +26,26 @@ Bir iddianın arkasında bu 26 kurumdan birinin yayını yoksa:
 
 Adresler 2026-09-20'de tek tek doğrulandı.
 
+### Psikolog kararları — 2026-09-20 (bağlayıcı)
+
+Kaynak kuralının üstüne gelen, iddianın kendisini sınırlayan kararlar:
+
+1. **Yaygınlık rakamı verilmez.** Kaç kişi, yüzde kaç, "her X kişiden biri" — hiçbiri.
+   Kaynaklı olsa bile. WHO'ya niteliksel atıf yapılabilir ("en sık görülen psikolojik
+   güçlük"), sayı verilemez.
+2. **Hakemli dergi makalesi kaynak sayılmaz.** Yalnız 26 kurumun yayınları geçerli.
+3. **Bir yöntemin diğerinden üstün olduğu söylenmez.** "En güçlü kanıta sahip", "ilk
+   basamak", "altın standart", "yüzlerce araştırmayla desteklenmiş" — hepsi yasak.
+   NICE'ın öneri ifadeleri de dahil. Yöntem betimlenir, sıralanmaz.
+4. **Seans sayısı hiçbir yerde geçmez.** Süre bireyin ihtiyacına göre değişir. Seans
+   uzunluğu (50 dakika) ve sıklığı (haftada bir / iki haftada bir) yazılabilir.
+5. **Rapordan bahsedilmez.** Nöropsikolojik değerlendirme yazılı rapor üretmez; süreç
+   geri bildirim görüşmesiyle tamamlanır. Resmî/adli rapor hizmeti **yoktur**.
+6. **Otizm değerlendirme testi verilmiyor.** Tarama aracı adı (M-CHAT-R vb.) yazılmaz.
+7. **Sigortadan bahsedilmez.**
+8. **Ücret yayımlanmaz** (2026-09-08 kararı tekrar onaylandı).
+9. **Merkez kuruluş yılı: 2026.**
+
 ### Meslek örgütleri ve standartlar
 | # | Kurum | Adres |
 |---|---|---|
@@ -105,76 +125,27 @@ Merkez bu kurumların çoğunun üyesi değil. Hiçbir metin aksini ima etmez.
   (Beck Institute ve TPD onaylı BDT eğitimleri — Yaprak Parlan Yeşilovalı). Bu bir kaynak
   atfı değil, kişisel özgeçmiş bilgisidir ve teyitlidir.
 
-## 4 · Mevcut istisnalar — psikolog kararı bekliyor
+## 4 · Liste dışı atıflar — KAPANDI (2026-09-20)
 
-Kural yürürlüğe girmeden önce yayımlanmış, doğrulanmış **dört dergi atfı** canlıda. Hepsi
-`.agents/kaynak-inceleme-listesi.md`'de teyit edildi ama hiçbiri bu 26 kurumun yayını değil:
+Psikologlar hakemli dergi makalelerinin kaynak sayılmamasına karar verdi. Bunun üzerine
+**beş atfın tamamı** (Carlbring 2018, Fernandez 2021, Polanczyk 2015, Brooks 2014,
+Latimier 2021) ve dayandıkları iddialar siteden kaldırıldı. Online terapi sayfaları
+Cochrane'e (liste #9) dayanıyor; diğer iddialar yumuşatıldı ya da çıkarıldı.
 
-| Sayfa | Atıf | Durum |
-|---|---|---|
-| `/blog/online-terapi-etkili-mi` · `/blog/kuzey-kibris-online-terapi` · `/hizmetler/online-terapi` · `/blog/terapi-dili-turkce-ingilizce` | Carlbring ve ark. (2018), *Cognitive Behaviour Therapy* | Doğrulandı |
-| `/blog/online-terapi-etkili-mi` · `/blog/kuzey-kibris-online-terapi` · `/hizmetler/online-terapi` · `/blog/terapi-dili-turkce-ingilizce` | Fernandez ve ark. (2021) | Doğrulandı |
-| `/blog/cocuk-psikologu-magusa` | Polanczyk ve ark. (2015), *JCPP* | Doğrulandı |
-| `/blog/sinav-kaygisiyla-bas-etme` | Brooks (2014), *J Exp Psychol Gen* | Doğrulandı |
-| `/blog/sinav-kaygisiyla-bas-etme` | Latimier ve ark. (2021), *Educational Psychology Review* | **Hiç incelenmedi** |
+## 4b · Uygulama kaydı
 
-**Bunlara dokunulmadı.** Karar psikologlarındır: ya kural bu beşini kapsayacak şekilde
-gevşetilir, ya atıflar 26'lık listeden eşdeğer bir kaynakla değiştirilir, ya da iddialar
-kaldırılır. Karar verilene kadar **yeni metinlerde bu tarz dergi atfı kullanılmaz.**
+**2026-09-20 · birinci tur (WHO, NICE, Cochrane):** Mevcut iddialar tarandı, WHO rakamları
+düzeltildi, NICE ve Cochrane atıfları eklendi. Ayrıntı git geçmişinde: `9170901`, `313b862`.
 
-Latimier 2021 (aralıklı tekrarın tek gecede çalışmaya üstünlüğü) `kaynak-inceleme-listesi.md`'de
-hiç geçmiyor — yani ne doğrulandı ne de reddedildi. İncelenmesi gereken ilk madde bu.
+**2026-09-20 · ikinci tur (psikolog kararları):** Yukarıdaki 9 karar uygulandı. Kaldırılanlar:
+tüm yaygınlık rakamları (anksiyete, depresyon, panik, çocuk) · beş dergi atfı ve dayandıkları
+iddialar · "en güçlü kanıta sahip / ilk basamak / yüzlerce araştırma" ifadeleri · tüm seans
+sayıları (sayfalar + `_data/faqdata.json` + JSON-LD) · nöropsikolojik değerlendirmedeki yazılı
+rapor (başlık, açıklama, süreç adımı ve karşılaştırma tablosu dahil) · sigorta SSS'i (TR+EN) ·
+M-CHAT-R · "terapi en erken başlandığında en etkilidir".
 
-## 4b · Kurala göre düzeltilen içerikler — 2026-09-20
-
-Kural konduğu gün mevcut metinler tarandı ve **15 yerde** (TR + EN eşleri) düzeltme yapıldı.
-WHO rakamları `who.int` bilgi notlarından tek tek okunarak güncellendi:
-
-| Sayfa | Neydi | Ne oldu |
-|---|---|---|
-| `anksiyete-nedir` / `what-is-anxiety` | "4 kişiden 1'i yaşam boyu anksiyete bozukluğu (WHO)" | WHO'nun **"anksiyete bozukluğu olanların 1/4'ü tedavi alıyor"** cümlesi yaygınlık sanılmış. 470 milyon kişi / %5,8 (2023) ile değiştirildi |
-| `kaygi-bozuklugu-nedir` / `what-is-anxiety-disorder` | "284 milyon (WHO, 2019)" | 284 milyon WHO'nun değil, eski GBD rakamı. 470 milyon / %5,8 |
-| `depresyon-nedir` / `what-is-depression` | "280 milyon (WHO, 2023)" | Güncel WHO bilgi notu: 322 milyon, yetişkinlerin %5,2'si |
-| `panik-atak-belirtileri` / `panic-attack-symptoms` | "%11 panik atak · %2-3 panik bozukluğu · kadınlarda iki kat (APA, 2022)" | **"(APA, 2022)" doğrulanamadı.** Rakamlar kaldırıldı; WHO'nun verdiği anksiyete rakamı ve "kadınlar daha çok etkileniyor" ifadesiyle sınırlandı |
-| `magusa-uluslararasi-ogrenciler` / `mental-health-international-students` | "2023 tarihli bir meta-analiz: her 3 öğrenciden 1'i" | Adsız meta-analiz ve oran kaldırıldı; merkezin kendi gözlemine dayanan nitel anlatım |
-| `kuzey-kibris-online-terapi` · `online-terapi-etkili-mi` (+ EN) | "Çok sayıda araştırma ve meta-analiz doğruladı" | Sitenin fiilen atıf verdiği iki meta-analize (Carlbring, Fernandez) bağlandı — iddia kanıttan geniş duruyordu |
-| `cocuk-psikologu-magusa` · `tukenmislik-sendromu` (+ EN) | WHO adı geçiyor, bağlantı yok | WHO bilgi notu ve ICD-11 duyurusuna bağlandı |
-
-**Not:** "%11 panik atak" `kaynak-inceleme-listesi.md`'de zaten açık karar sorusuydu
-("%11 mi %13,2 mi"). Rakam kaldırıldığı için o soru şimdilik konusuz kaldı; psikologlar
-doğrulanmış bir kaynak verirse geri eklenebilir.
-
-### İkinci geçiş — NICE ve Cochrane
-
-İlk geçiş yalnız WHO kullanmıştı. İkinci geçişte listedeki diğer kaynaklar tarandı ve
-**tedavi/etkililik** iddiaları da kaynaklandı:
-
-| Sayfa | Neydi | Ne oldu |
-|---|---|---|
-| `anksiyete-nedir` · `kaygi-bozuklugu-nedir` (+ EN) | "Kaygı bozuklukları için **en güçlü kanıta sahip** yöntem BDT'dir" | NICE'ın fiilen dediğine indirildi: CG113'te yaygın kaygı bozukluğu ve panik bozukluğu için **önerilen yüksek yoğunluklu psikoterapi** BDT |
-| `hizmetler/bdt-terapisi` / `services/cbt-therapy` | "**yüzlerce araştırmayla** desteklenmiş" · "supported by **hundreds of clinical trials**" | Sayı iddiası kaldırıldı; NICE CG113 + NG222 referansı kondu |
-| `kuzey-kibris-online-terapi` · `online-terapi-etkili-mi` (+ EN) | Yalnız liste dışı Carlbring/Fernandez'e dayanıyordu | **Cochrane** (Flodgren ve ark., 2015 — yedi çalışmada görüntülü ve yüz yüze terapi arasında fark yok) eklendi; liste içi bir dayanak kazandı |
-
-**Erişim notu:** APA ve NICE'ın CKS sayfaları bu makineden okunamıyor (bot duvarı, 403).
-APA'ya dayandırılacak bir iddia çıkarsa tarayıcıdan elle doğrulanmalı.
-
-## 4c · Hâlâ kaynaksız duran etkililik iddiaları
-
-Taramada çıkan ama bu turda **düzeltilmeyen** maddeler. Her birinin karşısında 26'lık
-listeden hangi kurumun karşılayabileceği yazılı:
-
-| Sayfa | İddia | Muhtemel kaynak |
-|---|---|---|
-| `okul-fobisi-cocuk` / `school-refusal-in-children` | "Okul reddinde **en güçlü kanıta sahip** yaklaşımdır" | AACAP (Facts for Families) · ESCAP |
-| `dehb-belirtileri-cocuk` / `what-is-adhd-symptoms-in-children` | Ebeveyn eğitimi "**first-line**, özellikle 6 yaş altı" | NICE NG87 · AACAP |
-| `hizmetler/act-terapisi` | "ACT'nin **en etkili olduğu** durumlar" | ACBS |
-| `universite-ogrencileri` · `magusa-uluslararasi-ogrenciler` (+ EN) | "Terapi **en erken** başlandığında en etkili sonucu verir" | Kaynak bulunamayabilir → yumuşatılmalı |
-| `depresyon-nedir` | "Orta-ağır depresyonda ilaç + terapi kombinasyonu **genellikle en etkili**" | NICE NG222 |
-
-§4c kapatıldı — aşağıdaki §4d'ye bakın.
-
-Ayrıca `kaynak-inceleme-listesi.md`'deki **B11** (DEHB'de ebeveyn eğitimi iddiası) ve
-**6 araştırılmamış madde** hâlâ açık.
+Sitede kalan tek dış kaynak **Cochrane** (Flodgren ve ark., 2015 — online terapi sayfaları) ve
+**WHO**'ya niteliksel atıflar. NICE atıfları 3. karar gereği kaldırıldı.
 
 ## 4d · 26 kaynağın tamamının değerlendirmesi — 2026-09-20
 

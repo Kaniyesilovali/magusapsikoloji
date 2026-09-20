@@ -16,7 +16,7 @@
         },
         {
           "q": "Depresyon tedavisi ne kadar sürer?",
-          "a": "Kişiden kişiye değişir. Hafif depresyonda 8-16 seans terapi çoğu zaman yeterlidir. Kronik veya ağır vakalarda süreç daha uzun olabilir. Terapist sizinle birlikte ilerlemeyi düzenli olarak değerlendirir."
+          "a": "Bireyin ihtiyacına göre değişir; önceden bir seans sayısı vermiyoruz. Kronik ya da ağır tablolarda süreç daha uzun olabilir. Terapist sizinle birlikte ilerlemeyi düzenli olarak değerlendirir."
         },
         {
           "q": "Depresyon genetik midir?",
@@ -120,7 +120,7 @@
         },
         {
           "q": "Terapi kaç seans sürer?",
-          "a": "Hedeflerinize ve zorlukların yoğunluğuna bağlı olarak değişir. Belirli bir probleme odaklanan kısa süreli BDT 8-16 seans olabilirken, uzun vadeli hedeflerde süreç daha uzun devam edebilir. İlk birkaç seansta terapistinizle tahmini süre konuşulur."
+          "a": "Hedeflerinize ve zorlukların yoğunluğuna bağlı olarak değişir; önceden bir seans sayısı vermiyoruz. Belirli bir probleme odaklanan çalışmalar daha kısa sürebilirken, uzun vadeli hedeflerde süreç daha uzun devam edebilir. İlk görüşmelerde terapistinizle birlikte konuşulur."
         },
         {
           "q": "Her hafta terapiye gitmek zorunda mıyım?",
@@ -209,10 +209,6 @@
         {
           "q": "Psikoloji ile psikiyatri hangi konularda örtüşür?",
           "a": "Kaygı bozuklukları, depresyon, travma, uyum sorunları ve ilişki problemleri her iki uzmanlık alanında da ele alınabilir. Fark genellikle tedavi yönteminde ortaya çıkar: terapi mi, ilaç mı, yoksa ikisi birden mi?"
-        },
-        {
-          "q": "Psikolog seansları sigorta kapsar mı?",
-          "a": "Kuzey Kıbrıs'ta kapsam sigortaya göre değişir. Görüşme öncesinde sigorta şirketinizle iletişime geçmenizi öneririz. Bireysel ödeme planları hakkında da merkezimizle konuşabilirsiniz."
         }
       ]
     },
@@ -308,7 +304,7 @@
         },
         {
           "q": "Çift terapisi kaç seans sürer?",
-          "a": "Genellikle 10-20 seans arasında değişir; ancak sorunların yoğunluğuna ve çiftin hedeflerine bağlı olarak süre uzayabilir. Terapist süreç boyunca ilerlemeyi birlikte değerlendirir."
+          "a": "Çiftin ihtiyacına, sorunların yoğunluğuna ve hedeflere bağlı olarak değişir; önceden bir seans sayısı vermiyoruz. Terapist süreç boyunca ilerlemeyi birlikte değerlendirir."
         },
         {
           "q": "Online çift terapisi etkili olabilir mi?",
@@ -344,7 +340,7 @@
         },
         {
           "q": "Aile terapisi ne kadar sürer?",
-          "a": "Hedeflere bağlı olarak 8-20 seans arasında değişebilir. Kısa vadeli kriz müdahalelerinden uzun vadeli örüntü değişikliğine kadar geniş bir yelpazede uygulanabilir."
+          "a": "Ailenin ihtiyacına ve hedeflere bağlı olarak değişir; önceden bir seans sayısı vermiyoruz. Kısa vadeli kriz desteğinden uzun vadeli örüntü değişikliğine kadar geniş bir yelpazede uygulanabilir."
         },
         {
           "q": "Online aile terapisi mümkün mü?",
@@ -376,7 +372,7 @@
         },
         {
           "q": "How long does depression treatment take?",
-          "a": "It varies. Focused CBT for depression commonly runs 8–16 sessions. More complex or long-standing cases may take longer. Your therapist will regularly review progress with you and adjust the plan accordingly."
+          "a": "It varies with what the individual needs, and we do not put a number of sessions on it in advance. More complex or long-standing difficulties may take longer. Your therapist will regularly review progress with you and adjust the plan accordingly."
         },
         {
           "q": "Is depression genetic?",
@@ -416,7 +412,7 @@
         },
         {
           "q": "Is CBT genuinely effective for anxiety?",
-          "a": "CBT has the strongest evidence base among all therapies for anxiety disorders. It helps identify unhelpful thought patterns, reduce avoidance behaviours, and build lasting coping skills."
+          "a": "CBT is one of the approaches used most often with anxiety disorders. It helps identify unhelpful thought patterns, reduce avoidance behaviours, and build lasting coping skills."
         },
         {
           "q": "Can I recover from anxiety without medication?",
@@ -480,7 +476,7 @@
         },
         {
           "q": "How many sessions will I need?",
-          "a": "It depends on your goals and the complexity of the issues. Focused CBT may run 8–16 sessions; longer-term goals may require more. Your therapist will discuss a realistic timeframe after the first few sessions."
+          "a": "It depends on your goals and the complexity of the issues, and we do not put a number of sessions on it in advance. Your therapist will talk it through with you in the first conversations."
         },
         {
           "q": "Do I have to attend every week?",
@@ -569,10 +565,6 @@
         {
           "q": "Where do psychology and psychiatry overlap?",
           "a": "Anxiety, depression, trauma, adjustment difficulties, and relationship issues can be addressed by both specialists. The difference usually comes down to treatment modality: therapy, medication, or both."
-        },
-        {
-          "q": "Does insurance cover psychology sessions in North Cyprus?",
-          "a": "Coverage varies by insurer. We recommend contacting your insurance provider in advance. You are also welcome to discuss flexible payment options with our centre."
         }
       ]
     },
@@ -738,7 +730,7 @@
         },
         {
           "q": "How many sessions does couples therapy take?",
-          "a": "Typically 10–20 sessions, though this varies. Progress is reviewed regularly and the plan adjusted according to how the couple is developing."
+          "a": "It varies with what the couple needs and the goals you set; we do not put a number of sessions on it in advance. Progress is reviewed regularly and the plan adjusted as the work develops."
         },
         {
           "q": "Can couples therapy work online?",
@@ -774,7 +766,7 @@
         },
         {
           "q": "How long does family therapy last?",
-          "a": "Typically 8–20 sessions, depending on goals. Short-term crisis support and longer-term pattern change are both achievable within the family therapy framework."
+          "a": "It varies with what the family needs and the goals you set; we do not put a number of sessions on it in advance. Short-term crisis support and longer-term pattern change are both possible within the family therapy framework."
         },
         {
           "q": "Is online family therapy possible?",
@@ -876,7 +868,7 @@
         },
         {
           "q": "What if the first psychologist I see isn't the right fit?",
-          "a": "Therapeutic fit matters enormously. It is entirely normal—and advisable—to try another therapist if you do not feel comfortable or do not sense progress after 3–4 sessions."
+          "a": "Therapeutic fit matters enormously. It is entirely normal—and advisable—to try another therapist if you do not feel comfortable or do not sense progress after a while."
         },
         {
           "q": "Can I have an introductory call before committing to sessions?",
@@ -910,7 +902,7 @@
         },
         {
           "q": "Görüştüğüm ilk psikolog bana uygun değilse ne yapmalıyım?",
-          "a": "Terapötik uyum çok önemlidir. Kendinizi rahat hissetmiyorsanız ya da 3–4 seans sonunda ilerleme hissetmiyorsanız başka bir terapist denemek tamamen normaldir — hatta önerilir."
+          "a": "Terapötik uyum çok önemlidir. Kendinizi rahat hissetmiyorsanız ya da bir süre sonra ilerleme hissetmiyorsanız başka bir terapist denemek tamamen normaldir — hatta önerilir."
         },
         {
           "q": "Seanslara başlamadan önce tanışma görüşmesi yapabilir miyim?",
@@ -1042,7 +1034,7 @@
         },
         {
           "q": "Okul fobisinde hangi terapi yöntemi kullanılır?",
-          "a": "Bilişsel Davranışçı Terapi (BDT) okul reddinde en güçlü kanıta sahip yaklaşımdır. Çocukla kaygı veren düşünceler ve kademeli maruz bırakma çalışılırken, ebeveynlerle sabah rutini ve tutum tutarlılığı üzerine görüşmeler yürütülür."
+          "a": "Okul reddinde sık kullanılan yaklaşımlardan biri Bilişsel Davranışçı Terapi'dir (BDT). Çocukla kaygı veren düşünceler ve kademeli maruz bırakma çalışılırken, ebeveynlerle sabah rutini ve tutum tutarlılığı üzerine görüşmeler yürütülür."
         }
       ],
       "en": [
@@ -1064,7 +1056,7 @@
         },
         {
           "q": "Which therapy is used for school refusal?",
-          "a": "Cognitive Behavioural Therapy (CBT) has the strongest evidence base for school refusal. The child works on anxious thoughts and a graded return to school, while parents work on the morning routine and on keeping their approach consistent."
+          "a": "Cognitive Behavioural Therapy (CBT) is one of the approaches used most often with school refusal. The child works on anxious thoughts and a graded return to school, while parents work on the morning routine and on keeping their approach consistent."
         }
       ]
     },
@@ -1135,7 +1127,7 @@
         "items": [
           {
             "q": "Terapi kaç seans sürer?",
-            "a": "Süre bireye ve ele alınan konuya göre değişir. Kısa süreli BDT genellikle 8–16 seans arasında sürerken, daha derin psikodinamik çalışmalar uzun vadeli olabilir. İlk görüşmenin ardından nasıl ilerleyeceğimizi birlikte konuşuruz."
+            "a": "Süre bireyin ihtiyacına ve ele alınan konuya göre değişir; önceden bir sayı vermiyoruz. İlk görüşmenin ardından nasıl ilerleyeceğimizi birlikte konuşur, süreci düzenli aralıklarla yeniden değerlendiririz."
           },
           {
             "q": "Seans sıklığı ne kadar olmalı?",
@@ -1215,7 +1207,7 @@
         "items": [
           {
             "q": "How many sessions will I need?",
-            "a": "Duration varies by person and issue. Short-term CBT typically runs 8–16 sessions, while deeper psychodynamic work may be longer term. After the first meeting, we talk through how to go on from there together."
+            "a": "Duration varies with what the individual needs and the issue being worked on; we do not put a number on it in advance. After the first meeting, we talk through how to go on from there together, and review the process at regular intervals."
           },
           {
             "q": "How often should I attend sessions?",

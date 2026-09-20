@@ -244,16 +244,16 @@ geçerli olan saat sınırı online için katı değil.
 
 Bunlar yanıtlanmadan ilgili içerik üretilmez.
 
-- [ ] **İsimli psikolog bilgileri** — ad, unvan, lisans, eğitim, uzmanlık alanları. (E-E-A-T ve GEO için en yüksek etkili tek madde.)
+- [x] **İsimli psikolog bilgileri** — canlıda (Gökçe İnce, Yaprak Parlan Yeşilovalı)
 - [x] **Gerçek telefon / WhatsApp numarası** — `+90 539 123 25 47` (2026-09-16)
-- [ ] **Marka görselleri** — logo, og-image, favicon, apple-touch-icon
-- [ ] **Merkez adresi** (schema + yerel görünürlük; GBP ertelendi ama adres yine de gerekiyor)
-- [ ] Seans ücreti — sitede yayımlanacak mı, aralık verilecek mi?
-- [ ] Sigorta kapsamı — hangi durumda geçerli?
-- [ ] Nöropsikolojik değerlendirme: kullanılan test bataryası adları, rapor teslim süresi, ücret, **resmî/adli rapor düzenleniyor mu?**
-- [ ] Merkez kuruluş yılı
-- [ ] Çift terapisi hizmet sayfası açılacak mı?
-- [ ] EMDR blog yazıları tamamen kaldırılsın mı? (Hizmet verilmiyor, yazılar hâlâ yayında)
+- [x] **Marka görselleri** — logo, og-image, favicon, apple-touch-icon eklendi (2026-09-20)
+- [x] **Merkez adresi** — iletişim sayfasında ve schema'da yayında
+- [x] Seans ücreti — **yayımlanmayacak** (2026-09-20 kararı)
+- [x] Sigorta — **siteden kaldırıldı**, bahsedilmeyecek (2026-09-20 kararı)
+- [x] Nöropsikolojik değerlendirme — **rapor hizmeti yok** (2026-09-20). Yazılı rapor ifadeleri siteden kaldırıldı; süreç geri bildirim görüşmesiyle tamamlanıyor. Test bataryası adları hâlâ yazılmıyor.
+- [x] Merkez kuruluş yılı — **2026** (2026-09-20)
+- [x] Çift terapisi — sayfa mevcut
+- [x] EMDR yazıları — kaldırılmış, depoda yok
 
 ## Değişiklik Kaydı
 
