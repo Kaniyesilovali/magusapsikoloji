@@ -86,7 +86,10 @@ Adresler 2026-09-20'de tek tek doğrulandı.
   iddianın geçtiği belgeye.
 - Bağlantı **düz metin** olarak verilir. **Kurum logosu kullanılmaz** — çoğu kurum izinsiz
   kullanımı yasaklıyor, ayrıca logo dizisi onay izlenimi bırakıyor.
-- Dış bağlantılar `target="_blank" rel="noopener noreferrer"` ile açılır.
+- Elle yazılan HTML gövdede dış bağlantılar `target="_blank" rel="noopener noreferrer"`
+  ile açılır. Kart/`metin:` alanlarındaki markdown bağlantılara renderer bu öznitelikleri
+  **eklemiyor** — site genelinde böyle (mevcut DOI bağlantıları da öyle). Tek tek elle
+  düzeltilmez; istenirse markdown renderer'ında bir kez çözülür.
 - SSS cevapları `{{ item.a }}` ile basılıyor, **markdown render edilmiyor**: oralarda kaynak
   düz metinle yazılır ("NICE'in 2022 kılavuzuna göre"), bağlantı verilemez. Bağlantı şart
   olan bir iddia SSS'ye değil, sayfa gövdesine yazılır.
@@ -107,16 +110,39 @@ Merkez bu kurumların çoğunun üyesi değil. Hiçbir metin aksini ima etmez.
 Kural yürürlüğe girmeden önce yayımlanmış, doğrulanmış **dört dergi atfı** canlıda. Hepsi
 `.agents/kaynak-inceleme-listesi.md`'de teyit edildi ama hiçbiri bu 26 kurumun yayını değil:
 
-| Sayfa | Atıf |
-|---|---|
-| `/blog/online-terapi-etkili-mi` | Carlbring ve ark. (2018), *Cognitive Behaviour Therapy* |
-| `/blog/online-terapi-etkili-mi` | Fernandez ve ark. (2021) |
-| `/blog/cocuk-psikologu-magusa` | Polanczyk ve ark. (2015), *JCPP* |
-| `/blog/sinav-kaygisiyla-bas-etme` | Brooks (2014), *J Exp Psychol Gen* |
+| Sayfa | Atıf | Durum |
+|---|---|---|
+| `/blog/online-terapi-etkili-mi` · `/blog/kuzey-kibris-online-terapi` · `/hizmetler/online-terapi` · `/blog/terapi-dili-turkce-ingilizce` | Carlbring ve ark. (2018), *Cognitive Behaviour Therapy* | Doğrulandı |
+| `/blog/online-terapi-etkili-mi` · `/blog/kuzey-kibris-online-terapi` · `/hizmetler/online-terapi` · `/blog/terapi-dili-turkce-ingilizce` | Fernandez ve ark. (2021) | Doğrulandı |
+| `/blog/cocuk-psikologu-magusa` | Polanczyk ve ark. (2015), *JCPP* | Doğrulandı |
+| `/blog/sinav-kaygisiyla-bas-etme` | Brooks (2014), *J Exp Psychol Gen* | Doğrulandı |
+| `/blog/sinav-kaygisiyla-bas-etme` | Latimier ve ark. (2021), *Educational Psychology Review* | **Hiç incelenmedi** |
 
-**Bunlara dokunulmadı.** Karar psikologlarındır: ya kural bu dördü kapsayacak şekilde
+**Bunlara dokunulmadı.** Karar psikologlarındır: ya kural bu beşini kapsayacak şekilde
 gevşetilir, ya atıflar 26'lık listeden eşdeğer bir kaynakla değiştirilir, ya da iddialar
 kaldırılır. Karar verilene kadar **yeni metinlerde bu tarz dergi atfı kullanılmaz.**
+
+Latimier 2021 (aralıklı tekrarın tek gecede çalışmaya üstünlüğü) `kaynak-inceleme-listesi.md`'de
+hiç geçmiyor — yani ne doğrulandı ne de reddedildi. İncelenmesi gereken ilk madde bu.
+
+## 4b · Kurala göre düzeltilen içerikler — 2026-09-20
+
+Kural konduğu gün mevcut metinler tarandı ve **15 yerde** (TR + EN eşleri) düzeltme yapıldı.
+WHO rakamları `who.int` bilgi notlarından tek tek okunarak güncellendi:
+
+| Sayfa | Neydi | Ne oldu |
+|---|---|---|
+| `anksiyete-nedir` / `what-is-anxiety` | "4 kişiden 1'i yaşam boyu anksiyete bozukluğu (WHO)" | WHO'nun **"anksiyete bozukluğu olanların 1/4'ü tedavi alıyor"** cümlesi yaygınlık sanılmış. 470 milyon kişi / %5,8 (2023) ile değiştirildi |
+| `kaygi-bozuklugu-nedir` / `what-is-anxiety-disorder` | "284 milyon (WHO, 2019)" | 284 milyon WHO'nun değil, eski GBD rakamı. 470 milyon / %5,8 |
+| `depresyon-nedir` / `what-is-depression` | "280 milyon (WHO, 2023)" | Güncel WHO bilgi notu: 322 milyon, yetişkinlerin %5,2'si |
+| `panik-atak-belirtileri` / `panic-attack-symptoms` | "%11 panik atak · %2-3 panik bozukluğu · kadınlarda iki kat (APA, 2022)" | **"(APA, 2022)" doğrulanamadı.** Rakamlar kaldırıldı; WHO'nun verdiği anksiyete rakamı ve "kadınlar daha çok etkileniyor" ifadesiyle sınırlandı |
+| `magusa-uluslararasi-ogrenciler` / `mental-health-international-students` | "2023 tarihli bir meta-analiz: her 3 öğrenciden 1'i" | Adsız meta-analiz ve oran kaldırıldı; merkezin kendi gözlemine dayanan nitel anlatım |
+| `kuzey-kibris-online-terapi` · `online-terapi-etkili-mi` (+ EN) | "Çok sayıda araştırma ve meta-analiz doğruladı" | Sitenin fiilen atıf verdiği iki meta-analize (Carlbring, Fernandez) bağlandı — iddia kanıttan geniş duruyordu |
+| `cocuk-psikologu-magusa` · `tukenmislik-sendromu` (+ EN) | WHO adı geçiyor, bağlantı yok | WHO bilgi notu ve ICD-11 duyurusuna bağlandı |
+
+**Not:** "%11 panik atak" `kaynak-inceleme-listesi.md`'de zaten açık karar sorusuydu
+("%11 mi %13,2 mi"). Rakam kaldırıldığı için o soru şimdilik konusuz kaldı; psikologlar
+doğrulanmış bir kaynak verirse geri eklenebilir.
 
 ## 5 · Yıllık bakım
 
