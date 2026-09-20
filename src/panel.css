@@ -44,39 +44,41 @@
 }
 
 /* ── Palet ───────────────────────────────────────────────────────────────
-   Panel siteyle aynı yeşili paylaşır ama kendi zeminini kullanır: sitenin
-   sıcak kremi pazarlama içindir, panel saatlerce açık kalır. Bu yüzden zemin
-   soğuk mineral yeşil-gri — danışma odası duvarı.
+   Panel de sitenin logo paletinde: tek hue ailesi, değerle ayrışıyor.
+   Ama zemini sitenin kâğıdından bir tık derin — pazarlama sayfası birkaç
+   dakika açık kalır, panel saatlerce. Parlama düşük tutuluyor.
 
-   clay (accent) tek uyarı rengidir ve tek bir şey demektir: "insan kararı
-   gerekiyor" (ödenmedi, rıza eksik, iptal). Sarı/amber bilinçli olarak yok —
-   iki uyarı rengi dikkati böler.
+   accent tek uyarı rengidir ve tek bir şey der: "insan kararı gerekiyor"
+   (ödenmedi, rıza eksik, iptal). Paletteki tek ikinci hue bu ve süs değil,
+   durum işareti — kahvenin bir tonu yapılsaydı uyarı olduğu okunmazdı.
+   Sarı/amber bilinçli olarak yok: iki uyarı rengi dikkati böler.
 
    Değişken adları eskisiyle aynı bırakıldı, değerler değişti; böylece bütün
    ekranlar tek dosyadan tutarlı hâle geliyor.                              */
 @theme {
-  --color-primary:        #2F5C52;
-  --color-primary-light:  #7FA79A;
-  --color-primary-dark:   #1F4239;
-  --color-primary-hover:  #24483F;
-  --color-primary-soft:   #E3EBE6;
+  --color-primary:        #6B4A36;
+  --color-primary-light:  #A78468;
+  --color-primary-dark:   #4A3324;
+  --color-primary-hover:  #573C2B;
+  --color-primary-soft:   #EDE3D7;
 
-  --color-accent:         #9E5238;
-  --color-accent-dark:    #7E3F2B;
-  --color-accent-soft:    #F5E8E2;
+  --color-accent:         #A33B28;
+  --color-accent-dark:    #7C2B1C;
+  --color-accent-soft:    #F8E5DF;
 
-  --color-warm:           #F4F7F3;
-  --color-warm-secondary: #E9EDE9;
-  --color-warm-tertiary:  #D3DBD4;
+  /* warm = kart yüzeyi, warm-secondary = gövde zemini (body onu kullanır) */
+  --color-warm:           #FBF7F0;
+  --color-warm-secondary: #F3EDE2;
+  --color-warm-tertiary:  #DFD3C0;
 
-  --color-sage:           #86A493;
-  --color-sage-light:     #B4CBBF;
+  --color-sage:           #B6A084;
+  --color-sage-light:     #D6C7AF;
 
-  --color-ink:            #1B2620;
-  --color-ink-muted:      #556158;
-  --color-ink-light:      #6E7C74;
+  --color-ink:            #241A13;
+  --color-ink-muted:      #5E5043;
+  --color-ink-light:      #837565;
 
-  --color-chrome:         #16211C;
+  --color-chrome:         #2A1E16;
 
   --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
   --font-serif: 'Lora', Georgia, serif;
@@ -244,7 +246,7 @@ details > summary::-webkit-details-marker {
   .field:focus {
     outline: none;
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgb(47 92 82 / 0.14);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 14%, transparent);
   }
   .field-label {
     display: block;
@@ -306,7 +308,7 @@ details > summary::-webkit-details-marker {
   @media print {
     .fill {
       background: transparent;
-      border-bottom-color: rgb(27 38 32 / 0.4);
+      border-bottom-color: color-mix(in srgb, var(--color-ink) 40%, transparent);
     }
   }
 
@@ -527,7 +529,7 @@ details > summary::-webkit-details-marker {
     outline: none;
     border-color: var(--color-sage);
     background: rgb(255 255 255 / 0.12);
-    box-shadow: 0 0 0 3px rgb(134 164 147 / 0.25);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-sage) 25%, transparent);
   }
   /* Safari'nin eklediği temizleme düğmesi koyu zeminde görünmüyor. */
   .side-find input::-webkit-search-decoration,
@@ -1196,11 +1198,11 @@ details > summary::-webkit-details-marker {
   transition: border-color 0.15s;
 }
 .rail-slot:hover { border-color: var(--color-primary-light); }
-.rail-slot.is-confirmed { border-color: rgb(47 92 82 / 0.3); background: var(--color-primary-soft); }
+.rail-slot.is-confirmed { border-color: color-mix(in srgb, var(--color-primary) 30%, transparent); background: var(--color-primary-soft); }
 .rail-slot.is-done      { background: transparent; }
 .rail-slot.is-done .rail-name { color: var(--color-ink-muted); font-weight: 400; }
 /* Gelmedi: saat planlanmıştı ama seans olmadı — yeri durur, dolgusu durmaz. */
-.rail-slot.is-off       { background: transparent; border-style: dashed; border-color: rgb(158 82 56 / 0.55); }
+.rail-slot.is-off       { background: transparent; border-style: dashed; border-color: color-mix(in srgb, var(--color-accent) 55%, transparent); }
 .rail-slot.is-off .rail-name { color: var(--color-ink-muted); }
 .rail-time { font-size: 0.75rem; font-variant-numeric: tabular-nums; color: var(--color-ink-muted); white-space: nowrap; }
 /* Dar ekranda yan yana duran iki seansta saat aralığı iki satıra kırılıp altındaki
@@ -1371,7 +1373,7 @@ details > summary::-webkit-details-marker {
   padding: 0.2rem 0.4rem;
   border-radius: 6px;
   background: var(--color-primary-soft);
-  box-shadow: inset 0 0 0 1px rgb(47 92 82 / 0.18);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-primary) 18%, transparent);
 }
 .rail-band > span {
   font-size: 0.6875rem;
@@ -1389,7 +1391,7 @@ details > summary::-webkit-details-marker {
   padding: 0.2rem 0.4rem;
   border-radius: 6px;
   background: var(--color-accent-soft);
-  box-shadow: inset 0 0 0 1px rgb(158 82 56 / 0.35);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 35%, transparent);
   font-size: 0.6875rem;
   color: var(--color-accent-dark);
 }
@@ -1444,14 +1446,14 @@ details > summary::-webkit-details-marker {
   line-height: 1.45;
 }
 .cal-item:hover { border-color: var(--color-primary-light); }
-.cal-item.is-confirmed { background: var(--color-primary-soft); border-color: rgb(47 92 82 / 0.3); }
+.cal-item.is-confirmed { background: var(--color-primary-soft); border-color: color-mix(in srgb, var(--color-primary) 30%, transparent); }
 .cal-item.is-done      { background: transparent; color: var(--color-ink-muted); }
-.cal-item.is-off       { background: transparent; border-style: dashed; border-color: rgb(158 82 56 / 0.55); }
+.cal-item.is-off       { background: transparent; border-style: dashed; border-color: color-mix(in srgb, var(--color-accent) 55%, transparent); }
 .cal-item.is-cancelled { background: transparent; border-style: dashed; color: var(--color-ink-light); }
 .cal-item.is-cancelled .cal-item-name { text-decoration: line-through; }
 /* Müsaitlik ayında kutular bir olayı değil bir kuralı gösterir. */
-.cal-item.is-work    { background: var(--color-primary-soft); border-color: rgb(47 92 82 / 0.18); color: var(--color-primary-dark); }
-.cal-item.is-off-day { background: var(--color-accent-soft);  border-color: rgb(158 82 56 / 0.35); color: var(--color-accent-dark); }
+.cal-item.is-work    { background: var(--color-primary-soft); border-color: color-mix(in srgb, var(--color-primary) 18%, transparent); color: var(--color-primary-dark); }
+.cal-item.is-off-day { background: var(--color-accent-soft);  border-color: color-mix(in srgb, var(--color-accent) 35%, transparent); color: var(--color-accent-dark); }
 .cal-item-none { display: block; margin-top: 0.35rem; font-size: 0.75rem; color: var(--color-ink-light); }
 
 .cal-item-time { flex-shrink: 0; color: var(--color-ink-muted); }
@@ -1553,7 +1555,7 @@ details > summary::-webkit-details-marker {
   /* Tıklamayı perde alıyor; delik yalnız çizim. */
   pointer-events: none;
   box-shadow: 0 0 0 2px var(--color-sage-light),
-              0 0 0 100vmax rgb(27 38 32 / 0.55);
+              0 0 0 100vmax color-mix(in srgb, var(--color-ink) 55%, transparent);
   transition: top 0.2s ease, left 0.2s ease, width 0.2s ease, height 0.2s ease;
 }
 
@@ -1568,7 +1570,7 @@ details > summary::-webkit-details-marker {
   background: #fff;
   border: 1px solid var(--color-warm-tertiary);
   border-radius: 10px;
-  box-shadow: 0 10px 30px rgb(27 38 32 / 0.22);
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--color-ink) 22%, transparent);
 }
 .tour-count { margin-bottom: 0.4rem; }
 .tour-title {

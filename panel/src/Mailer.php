@@ -223,15 +223,15 @@ final class Mailer
     {
         $button = '';
         if ($buttonLabel !== null && $buttonUrl !== null) {
-            $button = '<p style="margin:24px 0"><a href="' . e($buttonUrl) . '" style="background:#4A7C6F;color:#fff;padding:12px 22px;border-radius:8px;text-decoration:none;display:inline-block;font-weight:600">' . e($buttonLabel) . '</a></p>'
-                . '<p style="font-size:13px;color:#5A6B62">Düğme çalışmazsa bu adresi tarayıcınıza yapıştırın:<br><span style="word-break:break-all">' . e($buttonUrl) . '</span></p>';
+            $button = '<p style="margin:24px 0"><a href="' . e($buttonUrl) . '" style="background:#6B4A36;color:#fff;padding:12px 22px;border-radius:8px;text-decoration:none;display:inline-block;font-weight:600">' . e($buttonLabel) . '</a></p>'
+                . '<p style="font-size:13px;color:#5E5043">Düğme çalışmazsa bu adresi tarayıcınıza yapıştırın:<br><span style="word-break:break-all">' . e($buttonUrl) . '</span></p>';
         }
 
-        return '<div style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#2C3830">'
+        return '<div style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#241A13">'
             . '<h1 style="font-size:20px;margin:0 0 12px">' . e($heading) . '</h1>'
             . '<p style="line-height:1.6;margin:0">' . nl2br(e($paragraph)) . '</p>'
             . $button
-            . ($footnote !== '' ? '<p style="font-size:13px;color:#8A9E94;border-top:1px solid #E4DDD5;padding-top:16px;margin-top:24px">' . e($footnote) . '</p>' : '')
+            . ($footnote !== '' ? '<p style="font-size:13px;color:#837565;border-top:1px solid #DFD3C0;padding-top:16px;margin-top:24px">' . e($footnote) . '</p>' : '')
             . '</div>';
     }
 }
