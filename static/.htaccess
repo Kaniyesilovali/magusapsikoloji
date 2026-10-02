@@ -37,11 +37,19 @@ Redirect 301 /blog/cocuk-psikologu.html https://magusapsikoloji.com/blog/cocuk-p
 Redirect 301 /hizmetler/kaygi-terapisi.html https://magusapsikoloji.com/hizmetler/
 Redirect 301 /en/services/anxiety-therapy.html https://magusapsikoloji.com/en/services/
 
+# --- Kaldırılan hizmet: Çift Terapisi (2026-10-02) ---
+# Merkezde çift terapisi verilmiyor; hizmet sayfası ve blog yazısı kaldırıldı.
+# Kaygı Terapisi'ndeki gibi hizmet ve blog listelerine yönlendiriliyor.
+Redirect 301 /hizmetler/cift-terapisi.html https://magusapsikoloji.com/hizmetler/
+Redirect 301 /en/services/couples-therapy.html https://magusapsikoloji.com/en/services/
+Redirect 301 /blog/cift-terapisi-gazimagusa.html https://magusapsikoloji.com/blog/
+Redirect 301 /en/blog/couples-therapy-famagusta.html https://magusapsikoloji.com/en/blog/
+
 # --- URL yazım hatası düzeltmesi: "magussa" → "magusa" (2026-09-06) ---
 # İki blog adresi Gazimağusa'yı çift s ile yazıyordu. Hedeflenen kelimenin
 # kendisi yanlış yazıldığı için düzeltildi; eski adresler indekste.
 Redirect 301 /blog/aile-terapisi-magussa.html https://magusapsikoloji.com/blog/aile-terapisi-magusa.html
-Redirect 301 /blog/cift-terapisi-gazimagussa.html https://magusapsikoloji.com/blog/cift-terapisi-gazimagusa.html
+Redirect 301 /blog/cift-terapisi-gazimagussa.html https://magusapsikoloji.com/blog/
 
 # --- "ruh sağlığı" dil rehberi düzeltmesi (2026-09-15) ---
 # Dil rehberi "ruh" kelimesini yasaklıyor; kelime bu yazının URL'inde de
