@@ -164,7 +164,7 @@
         },
         {
           "q": "Hangi terapi türü bana uygun?",
-          "a": "BDT (Bilişsel Davranışçı Terapi) kaygı ve depresyonda geniş kanıt tabanına sahiptir. Aile sorunlarında sistemik yaklaşımlar uygun olabilir. Terapistiniz ilk değerlendirmede size en uygun yaklaşımı önerir."
+          "a": "BDT (Bilişsel Davranışçı Terapi) kaygı ve depresyonda geniş kanıt tabanına sahiptir. Çift veya aile sorunlarında sistemik yaklaşımlar uygun olabilir. Terapistiniz ilk değerlendirmede size en uygun yaklaşımı önerir."
         },
         {
           "q": "Terapiye devam etmek istemesem ne olur?",
@@ -256,7 +256,7 @@
         },
         {
           "q": "Kuzey Kıbrıs'ta hangi terapi hizmetleri sunuluyor?",
-          "a": "Bireysel terapi, aile terapisi ve çocuk psikolojisi hizmetleri sunulmaktadır. Hem yüz yüze hem de online seans seçenekleri mevcuttur."
+          "a": "Bireysel terapi, çift terapisi, aile terapisi ve çocuk psikolojisi hizmetleri sunulmaktadır. Hem yüz yüze hem de online seans seçenekleri mevcuttur."
         },
         {
           "q": "İngilizce terapi alabilir miyim?",
@@ -281,6 +281,42 @@
         {
           "q": "Mağusa Psikoloji Merkezi nerede bulunuyor?",
           "a": "Merkezimiz Gazimağusa'da hizmet vermektedir. Adres bilgisi ve yönlendirme için web sitemizin iletişim sayfasını ya da WhatsApp hattımızı kullanabilirsiniz."
+        }
+      ]
+    },
+    "cift-terapisi": {
+      "tr": [
+        {
+          "q": "Çift terapisine ne zaman başlamalıyız?",
+          "a": "Sorunlar krizle sonuçlanmadan, iletişim güçlüğü, süregelen çatışma veya duygusal uzaklaşmanın ilk belirtilerinde başlamak en etkili zaman dilimidir. Ancak ileri aşamalarda da terapi değerli olabilir."
+        },
+        {
+          "q": "Çift terapisi evliliği kurtarır mı?",
+          "a": "Terapi garantili bir çözüm sunmaz; ancak çiftlerin birbirini daha iyi anlamasına, sağlıklı iletişim kurmasına ve ilişkinin geleceği konusunda bilinçli karar vermesine yardımcı olur. Bazı çiftler birlikte güçlenerek çıkar, bazıları ise sağlıklı bir ayrılık kararına ulaşabilir."
+        },
+        {
+          "q": "Partnerim terapiye gelmek istemiyorsa ne yapabilirim?",
+          "a": "Bireysel terapi, ilişki dinamiklerini anlamak ve değiştirmek için etkili bir başlangıç noktası olabilir. Bazen bir tarafın değişimi, diğer tarafın da terapiye dahil olmak istemesine zemin hazırlar."
+        },
+        {
+          "q": "Çift terapisinde neler konuşulur?",
+          "a": "İletişim kalıpları, güven sorunları, cinsellik, finansal anlaşmazlıklar, ebeveynlik farkları ve geçmiş travmaların ilişkiye yansımaları gibi konular ele alınabilir. Gündem çiftin ihtiyaçlarına göre şekillenir."
+        },
+        {
+          "q": "Çift terapisi kaç seans sürer?",
+          "a": "Çiftin ihtiyacına, sorunların yoğunluğuna ve hedeflere bağlı olarak değişir; önceden bir seans sayısı vermiyoruz. Terapist süreç boyunca ilerlemeyi birlikte değerlendirir."
+        },
+        {
+          "q": "Online çift terapisi etkili olabilir mi?",
+          "a": "Evet. Video görüşme yoluyla çift terapisi başarıyla uygulanmaktadır. Özellikle ulaşım güçlüğü olan veya yoğun programı bulunan çiftler için büyük bir esneklik sağlar."
+        },
+        {
+          "q": "Çift terapisi ayrılmaya neden olur mu?",
+          "a": "Terapi ayrılmayı teşvik etmez; ancak süreci açık bir şekilde ele alarak çiftin bilinçli kararlar vermesine yardımcı olur. Bazı çiftler netlik kazanarak daha sağlıklı bir karar alabilir."
+        },
+        {
+          "q": "Evli olmayan çiftler de çift terapisine gelebilir mi?",
+          "a": "Evet, kesinlikle. Çift terapisi evli olma koşulunu aramaz; ilişki dinamiklerini geliştirmek isteyen her çift için uygundur."
         }
       ]
     },
@@ -484,7 +520,7 @@
         },
         {
           "q": "Which type of therapy is right for me?",
-          "a": "CBT has the broadest evidence base for anxiety and depression. Systemic approaches work well for family issues. Your therapist will recommend the best-fit approach after the initial assessment."
+          "a": "CBT has the broadest evidence base for anxiety and depression. Systemic approaches work well for relationship and family issues. Your therapist will recommend the best-fit approach after the initial assessment."
         },
         {
           "q": "How do I book an appointment?",
@@ -610,7 +646,7 @@
         },
         {
           "q": "What psychological services are available in Famagusta?",
-          "a": "We offer individual therapy, family therapy and child psychology. Sessions are available both in-person and online."
+          "a": "We offer individual therapy, couples therapy, family therapy and child psychology. Sessions are available both in-person and online."
         },
         {
           "q": "Can I receive therapy in English?",
@@ -667,6 +703,42 @@
         {
           "q": "Are there breathing or grounding exercises I can try right now?",
           "a": "Try box breathing: inhale for 4 seconds, hold for 4, exhale for 4, hold for 4. Repeat 4–5 times. Grounding—naming 5 things you see, 4 you can touch, 3 you hear—can also quickly reduce anxiety."
+        }
+      ]
+    },
+    "couples-therapy": {
+      "en": [
+        {
+          "q": "When should we start couples therapy?",
+          "a": "The most effective time is early—when communication difficulties, recurring conflict, or emotional distance first appear. That said, therapy can be valuable at any stage of a relationship."
+        },
+        {
+          "q": "Can couples therapy save our relationship?",
+          "a": "Therapy provides tools to communicate better, understand each other more deeply, and make informed decisions about the future—but it does not guarantee a specific outcome. Some couples strengthen their bond; others reach a healthy closure."
+        },
+        {
+          "q": "What if my partner refuses to come to therapy?",
+          "a": "Individual therapy is an excellent starting point. Understanding your own role in the relationship dynamic and making personal changes often creates a shift that encourages the other partner to engage."
+        },
+        {
+          "q": "What topics does couples therapy cover?",
+          "a": "Communication patterns, trust, intimacy, financial disagreements, parenting differences, infidelity, and how past experiences affect the relationship are all common areas. The agenda is shaped by the couple's needs."
+        },
+        {
+          "q": "How many sessions does couples therapy take?",
+          "a": "It varies with what the couple needs and the goals you set; we do not put a number of sessions on it in advance. Progress is reviewed regularly and the plan adjusted as the work develops."
+        },
+        {
+          "q": "Can couples therapy work online?",
+          "a": "Yes. Video-based couples therapy is well-established and effective. It is especially useful when partners have demanding schedules or travel for work."
+        },
+        {
+          "q": "Does couples therapy lead to break-ups?",
+          "a": "Therapy does not steer couples toward separation. It creates a safe space for honest exploration—and sometimes that clarity does lead to a conscious decision to part. That, too, can be a healthy outcome."
+        },
+        {
+          "q": "Do we have to be married to attend couples therapy?",
+          "a": "No. Couples therapy is open to any couple—married, cohabiting, or dating—who want to improve their relationship or navigate a difficult period."
         }
       ]
     },

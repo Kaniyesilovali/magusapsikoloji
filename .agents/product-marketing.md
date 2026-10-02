@@ -11,7 +11,7 @@
 
 **Tek cümle:** Gazimağusa'da lisanslı psikologlarla Türkçe ve İngilizce, yüz yüze ve online psikoterapi.
 
-**Ne yapıyor:** Mağusa Psikoloji Merkezi bireylerle ve ailelerle çalışan küçük bir psikoloji merkezi. Seanslar 50 dakika; Türkçe ya da İngilizce, merkezde ya da güvenli video görüşmesiyle yürütülüyor. Tek bir kurama bağlı kalınmıyor; BDT, psikodinamik terapi, ACT, sistem terapisi ve mindfulness temelli yaklaşımlar konuya göre birlikte kullanılıyor.
+**Ne yapıyor:** Mağusa Psikoloji Merkezi bireylerle, çiftlerle ve ailelerle çalışan küçük bir psikoloji merkezi. Seanslar 50 dakika; Türkçe ya da İngilizce, merkezde ya da güvenli video görüşmesiyle yürütülüyor. Tek bir kurama bağlı kalınmıyor; BDT, psikodinamik terapi, ACT, sistem terapisi ve mindfulness temelli yaklaşımlar konuya göre birlikte kullanılıyor.
 
 **Ürün kategorisi (hangi rafta duruyoruz):** Yerel psikoloji/terapi merkezi. İnsanlar bizi "Gazimağusa psikolog", "Mağusa psikolog", "KKTC psikolog", "Kuzey Kıbrıs terapi merkezi", "online terapi Kıbrıs" diye ararken buluyor.
 
@@ -24,7 +24,7 @@ Pazartesi–Cuma 09:00–18:00 · Cumartesi 10:00–18:00 · Pazar kapalı.
 **Online seanslar bu saatlerin dışında da planlanabiliyor** — yüz yüze seanslar için
 geçerli olan saat sınırı online için katı değil.
 
-**Hizmet listesi (yayında):** Bireysel terapi · Çocuk psikolojisi · Ergen psikolojisi · Genç yetişkin psikolojisi · Yetişkin psikolojisi · Aile terapisi · BDT/CBT · ACT · Psikodinamik terapi · Motivasyonel görüşme · Online terapi · Öğrenci danışmanlığı · **Nöropsikolojik değerlendirme** (tüm yaş grupları, yazılı rapor)
+**Hizmet listesi (yayında):** Bireysel terapi · Çocuk psikolojisi · Ergen psikolojisi · Beliren yetişkin psikolojisi · Yetişkin psikolojisi · Aile terapisi · BDT/CBT · ACT · Psikodinamik terapi · Motivasyonel görüşme · Online terapi · Öğrenci danışmanlığı · **Nöropsikolojik değerlendirme** (tüm yaş grupları, yazılı rapor)
 
 **Travma odaklı çalışma** (kullanıcı teyidi 2026-09-16, hizmet sayfası yayına hazır):
 - **Yaş grupları:** çocuk, ergen, beliren yetişkinlik, yetişkin
@@ -45,7 +45,7 @@ geçerli olan saat sınırı online için katı değil.
 - Gazimağusa ve çevresinde yaşayan yetişkinler
 - **Üniversite öğrencileri** — özellikle DAÜ; içinde ayrı ve büyük bir grup olarak **uluslararası öğrenciler** (İngilizce terapi, ev özlemi, vize/burs kaygısı, adaya uyum)
 - **Ebeveynler** — çocuğunun davranışı, okula uyumu, DEHB/öğrenme güçlüğü şüphesi için gelen
-- **Aileler**
+- **Çiftler ve aileler**
 - **İngilizce konuşan yerleşikler / expat'lar** — Türkçe hizmetten yararlanamayanlar
 - Nöropsikolojik değerlendirme için **hekim/okul yönlendirmesiyle** gelenler (rapor ihtiyacı)
 
@@ -66,7 +66,7 @@ geçerli olan saat sınırı online için katı değil.
 | Üniversite öğrencisi (DAÜ) | Zaman, ücret, program uyumu | Ders yükü + sınav kaygısı, vakit bulamamak | 50 dk seans, online seçeneği |
 | Uluslararası öğrenci | İngilizce hizmet, kültürel anlaşılma | Aileden uzak olmak, ev özlemi, vize belirsizliği | İngilizce seans; nereden geldiğiniz dikkate alınır |
 | Ebeveyn | Çocuğuna doğru şeyi yapmak | "Zorlamalı mıyım?" ikilemi | Çocuk + ebeveyn danışmanlığı birlikte |
-| Aile | Aile içi ilişkiler | Aile üyesinin gelmek istememesi | İlişkiyi bütün içinde ele alma |
+| Çift / aile | İlişkinin geleceği | Partnerin gelmek istememesi | İlişkiyi bütün içinde ele alma |
 | İngilizce konuşan yerleşik | Dil erişimi | Türkçe hizmete erişememek | Tam İngilizce site + seans |
 | Rapor ihtiyacı olan | Resmî çıktı | Adada nereye başvuracağını bilmemek | Yazılı rapor + sözlü geri bildirim |
 
@@ -81,7 +81,7 @@ geçerli olan saat sınırı online için katı değil.
 - Psikiyatriste gitmek çoğu kişide "ilaç yazılacak" korkusuyla eşleşiyor
 - Yakın çevreden destek almak, küçük bir toplumda gizlilik riski taşıyor
 
-**Maliyeti:** Erteleme. Belirtiler süreğenleşiyor; öğrencide akademik kayıp, ebeveynde çocuğun okul reddi uzaması.
+**Maliyeti:** Erteleme. Belirtiler süreğenleşiyor; öğrencide akademik kayıp, ebeveynde çocuğun okul reddi uzaması, çiftte onarılabilir bir dönemin kaçırılması.
 
 **Duygusal gerilim:** "Tanıdığım birine denk gelir miyim?" · "Terapiye gittiğimi ailem duyar mı?" · "Gitmeye değer mi, yoksa abartıyor muyum?" · "İşe yaramazsa ne olacak?" · "Terapiste her şeyi anlatmak zorunda mıyım?"
 
@@ -252,7 +252,7 @@ Bunlar yanıtlanmadan ilgili içerik üretilmez.
 - [x] Sigorta — **siteden kaldırıldı**, bahsedilmeyecek (2026-09-20 kararı)
 - [x] Nöropsikolojik değerlendirme — **rapor hizmeti yok** (2026-09-20). Yazılı rapor ifadeleri siteden kaldırıldı; süreç geri bildirim görüşmesiyle tamamlanıyor. Test bataryası adları hâlâ yazılmıyor.
 - [x] Merkez kuruluş yılı — **2026** (2026-09-20)
-- [x] Çift terapisi — **hizmet verilmiyor** (2026-10-02). Hizmet sayfası ve blog yazısı (TR+EN), SSS konusu ve tanıtım cümlelerindeki "çiftlerle" kaldırıldı; eski adresler 301 ile listelere gidiyor. Çift terapisi için içerik yazılmaz.
+- [x] Çift terapisi — sayfa mevcut
 - [x] EMDR yazıları — kaldırılmış, depoda yok
 
 ## Değişiklik Kaydı
