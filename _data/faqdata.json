@@ -690,7 +690,7 @@
         },
         {
           "q": "Can I fit therapy into my university schedule?",
-          "a": "Online therapy is designed for busy schedules—sessions can be booked in the evenings, at weekends, or between lectures. Even a session every two weeks can produce significant change."
+          "a": "Online therapy is designed for busy schedules—sessions can be booked in the evenings, at weekends, or between lectures."
         },
         {
           "q": "What if anxiety is stopping me from studying?",
@@ -703,10 +703,6 @@
         {
           "q": "Are there breathing or grounding exercises I can try right now?",
           "a": "Try box breathing: inhale for 4 seconds, hold for 4, exhale for 4, hold for 4. Repeat 4–5 times. Grounding—naming 5 things you see, 4 you can touch, 3 you hear—can also quickly reduce anxiety."
-        },
-        {
-          "q": "How does therapy differ from study skills coaching?",
-          "a": "Study skills coaching addresses techniques and habits; therapy addresses the emotional and cognitive patterns—perfectionism, fear of failure, self-criticism—that interfere with using those techniques effectively."
         }
       ]
     },
