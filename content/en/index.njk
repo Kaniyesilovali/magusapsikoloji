@@ -13,30 +13,45 @@ ogDescription: Individual therapy, CBT and child psychology services in North Cy
 ogLocale: en_CY
 headExtra: |-
   <style>
-      @keyframes heroSpin        { from{transform:rotate(0deg);}   to{transform:rotate(360deg);}  }
-      @keyframes heroSpinReverse { from{transform:rotate(360deg);} to{transform:rotate(0deg);}    }
-      .eco-badge {
-        display:inline-flex; align-items:center; gap:4px;
-        background:white; border:1px solid var(--color-warm-tertiary); border-radius:20px;
-        padding:5px 10px 5px 8px; font-size:0.68rem; font-weight:600; color:var(--color-ink);
-        box-shadow:0 4px 14px color-mix(in srgb, var(--color-ink) 10%, transparent); white-space:nowrap;
-        transition:opacity 0.3s, transform 0.25s, box-shadow 0.25s;
-        cursor:default; user-select:none;
+      /* Hero: zihin haritası — hareket assets/js/zihin-haritasi.js'te */
+      .zh-wrap {
+        position:relative; width:480px; height:480px;
+        --zh-ink: var(--color-ink-muted);
+        /* yeşil yalnız bu animasyonda: logonun kahvesine yakın, griye çekilmiş adaçayı */
+        --zh-line: #66805A; --zh-emph: #46593A; --zh-glow: #9DAE88;
       }
-      .eco-badge.eco-dimmed { opacity:0.15; }
-      .eco-badge.eco-active { transform:translate(-50%,-50%) scale(1.13) !important; box-shadow:0 8px 22px color-mix(in srgb, var(--color-ink) 22%, transparent); }
-      .eb-em { display:inline-flex; line-height:0; }
-      .badge-mikro { border-left:3px solid var(--color-primary); }
-      .badge-mezo  { border-left:3px solid var(--color-primary-light); }
-      .badge-ekzo  { border-left:3px solid var(--color-accent); }
-      .badge-makro { border-left:3px solid var(--color-primary-dark); }
-      .eco-btn {
-        font-size:0.6rem; font-weight:700; padding:5px 11px;
-        border-radius:20px; border:1.5px solid; background:transparent;
-        cursor:pointer; transition:background 0.25s, color 0.25s;
-        letter-spacing:0.04em; line-height:1;
+      .zh-rings { position:absolute; inset:0; overflow:visible; pointer-events:none; }
+      .zh-ring { fill:#9DAE88; stroke:var(--zh-line); stroke-width:1.1; }
+      .zh-ring-0 { stroke-opacity:.42; fill-opacity:.08; }
+      .zh-ring-1 { stroke-opacity:.28; fill-opacity:.04; }
+      .zh-ring-2 { stroke-opacity:.26; fill-opacity:.02; stroke-dasharray:1 5; stroke-linecap:round; }
+      .zh-thread { fill:none; stroke:var(--zh-line); stroke-width:1; stroke-linecap:round; opacity:0; }
+      .zh-glow {
+        position:absolute; left:50%; top:50%; width:190px; height:190px; margin:-95px 0 0 -95px; border-radius:50%;
+        background:radial-gradient(circle, color-mix(in srgb, var(--zh-glow) 38%, transparent) 0%, color-mix(in srgb, var(--zh-glow) 10%, transparent) 45%, transparent 70%);
+        filter:saturate(1.15); pointer-events:none;
       }
-      .eco-btn.eco-btn-active { background-color:var(--btn-c); color:white !important; border-color:var(--btn-c); }
+      .zh-core {
+        position:absolute; inset:195px; border-radius:50%; z-index:5;
+        background:linear-gradient(145deg,var(--color-primary-dark) 0%,var(--color-primary) 55%,var(--color-sage) 100%);
+        box-shadow:0 16px 48px color-mix(in srgb, var(--color-primary) 30%, transparent);
+        display:flex; align-items:center; justify-content:center;
+      }
+      .zh-core svg { width:46px; height:46px; color:color-mix(in srgb, var(--color-white) 90%, transparent); }
+      .zh-label {
+        position:absolute; left:0; top:0; z-index:10; will-change:transform;
+        font-family:var(--font-sans); font-size:.74rem; font-weight:500; letter-spacing:.01em; line-height:1;
+        padding:7px 12px; border-radius:999px; white-space:nowrap; cursor:default; user-select:none;
+        color:color-mix(in srgb, var(--zh-emph) calc(var(--emph,0) * 100%), var(--zh-ink));
+        background:color-mix(in srgb, var(--color-white) 92%, transparent);
+        border:1px solid color-mix(in srgb, var(--zh-line) calc(20% + var(--emph,0) * 35%), transparent);
+        box-shadow:0 4px 14px color-mix(in srgb, var(--color-ink) calc(5% + var(--emph,0) * 6%), transparent);
+        transition:opacity .9s ease;
+      }
+      .zh-label[data-ring="0"] { --zh-ink: var(--color-ink); }
+      .zh-label[data-ring="2"] { font-size:.7rem; background:color-mix(in srgb, var(--color-white) 70%, transparent); }
+      /* JS çalışmadan önce ya da hareket azaltıldığında kavramlar merkezde yığılmasın */
+      .zh-wrap:not([data-zh-ready]) .zh-label { opacity:0; }
     </style>
 rawSchemas:
   - '{"@context":"https://schema.org","@type":"MedicalOrganization","name":"Famagusta Psychology Centre","alternateName":"Mağusa Psikoloji Merkezi","url":"https://magusapsikoloji.com","logo":"https://magusapsikoloji.com/assets/images/logo.png","description":"Psychological counselling and therapy services in Famagusta, North Cyprus.","address":{"@type":"PostalAddress","streetAddress":"Eşref Bitlis Caddesi, Sancak Plaza, Kat 5 Daire 2","addressLocality":"Famagusta","addressRegion":"North Cyprus","addressCountry":"CY"},"medicalSpecialty":["Psychology"],"availableService":[{"@type":"MedicalTherapy","name":"Individual Therapy"},{"@type":"MedicalTherapy","name":"CBT Therapy"},{"@type":"MedicalTherapy","name":"Child Psychology"},{"@type":"MedicalTherapy","name":"Online Therapy"}]}'
@@ -95,40 +110,38 @@ sitemap:
             </div>
           </div>
 
-          <!-- Right: Bronfenbrenner Ecological Systems -->
+          <!-- Right: mind map — three breathing layers around the brain -->
           <div class="relative hidden lg:flex items-center justify-center">
-            <div id="eco-en" class="eco-wrap" style="position:relative;width:480px;height:480px;">
-
-              <!-- CHRONOSYSTEM: outer spinning dashed ring (20s) -->
-              <div style="position:absolute;inset:-6px;border-radius:50%;border:2px dashed color-mix(in srgb, var(--color-primary) 45%, transparent);animation:heroSpin 20s linear infinite;pointer-events:none;z-index:2;"></div>
-
-              <!-- MACROSYSTEM: ring 2 (inset:61 → r=179, 80s reverse) -->
-              <div style="position:absolute;inset:61px;border-radius:50%;border:1.5px solid color-mix(in srgb, var(--color-primary-dark) 38%, transparent);animation:heroSpinReverse 80s linear infinite;pointer-events:none;z-index:2;"></div>
-
-              <!-- MICROSYSTEM: inner ring (inset:128 → r=112, 50s forward) -->
-              <div style="position:absolute;inset:128px;border-radius:50%;border:1.5px solid color-mix(in srgb, var(--color-primary) 65%, transparent);animation:heroSpin 50s linear infinite;pointer-events:none;z-index:2;"></div>
-
-              <!-- INDIVIDUAL: center gradient circle -->
-              <div style="position:absolute;inset:195px;border-radius:50%;background:linear-gradient(145deg,var(--color-primary-dark) 0%,var(--color-primary) 55%,var(--color-sage) 100%);box-shadow:0 16px 48px color-mix(in srgb, var(--color-primary) 35%, transparent);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;z-index:15;">
-                <svg style="width:46px;height:46px;color:rgba(255,255,255,0.9);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <div id="zh-en" class="zh-wrap" aria-hidden="true">
+              <svg class="zh-rings" viewBox="0 0 480 480" width="480" height="480">
+                <g class="zh-threads"></g>
+                <circle class="zh-ring zh-ring-0" cx="240" cy="240" r="100"></circle>
+                <circle class="zh-ring zh-ring-1" cx="240" cy="240" r="158"></circle>
+                <circle class="zh-ring zh-ring-2" cx="240" cy="240" r="214"></circle>
+              </svg>
+              <div class="zh-glow"></div>
+              <div class="zh-core">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-1.03-4.47A3 3 0 0 1 4.5 8.5 3 3 0 0 1 7 6a2.5 2.5 0 0 1 2.5-4Z"></path>
                   <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 1.03-4.47A3 3 0 0 0 19.5 8.5 3 3 0 0 0 17 6a2.5 2.5 0 0 0-2.5-4Z"></path>
                 </svg>
               </div>
-
-              <!-- MICROSYSTEM badges (r=112) -->
-              <div class="eco-badge badge-mikro" data-system="mikro" data-start-angle="15" data-radius="112" style="position:absolute;top:132px;left:269px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">{% icon "child", "w-3.5 h-3.5" %}</span><span>Child Therapy</span></div>
-              <div class="eco-badge badge-mikro" data-system="mikro" data-start-angle="105" data-radius="112" style="position:absolute;top:269px;left:348px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">{% icon "brain", "w-3.5 h-3.5" %}</span><span>ADHD</span></div>
-              <div class="eco-badge badge-mikro" data-system="mikro" data-start-angle="195" data-radius="112" style="position:absolute;top:348px;left:211px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">{% icon "spark", "w-3.5 h-3.5" %}</span><span>Self-Esteem</span></div>
-              <div class="eco-badge badge-mikro" data-system="mikro" data-start-angle="285" data-radius="112" style="position:absolute;top:211px;left:132px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">{% icon "family", "w-3.5 h-3.5" %}</span><span>Parent–Child</span></div>
-
-              <!-- MACROSYSTEM badges (r=179) -->
-              <div class="eco-badge badge-makro" data-system="makro" data-start-angle="68" data-radius="179" style="position:absolute;top:173px;left:406px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">{% icon "rain", "w-3.5 h-3.5" %}</span><span>Depression</span></div>
-              <div class="eco-badge badge-makro" data-system="makro" data-start-angle="152" data-radius="179" style="position:absolute;top:398px;left:324px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">{% icon "puzzle", "w-3.5 h-3.5" %}</span><span>Personality</span></div>
-              <div class="eco-badge badge-makro" data-system="makro" data-start-angle="242" data-radius="179" style="position:absolute;top:324px;left:82px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">{% icon "burst", "w-3.5 h-3.5" %}</span><span>Trauma</span></div>
-              <div class="eco-badge badge-makro" data-system="makro" data-start-angle="332" data-radius="179" style="position:absolute;top:82px;left:156px;transform:translate(-50%,-50%);z-index:20;"><span class="eb-em">{% icon "search", "w-3.5 h-3.5" %}</span><span>Identity</span></div>
-
-
+              <!-- Inner: what moves within the person -->
+              <span class="zh-label" data-key="thoughts" data-ring="0" data-angle="0">Thoughts</span>
+              <span class="zh-label" data-key="emotions" data-ring="0" data-angle="90">Emotions</span>
+              <span class="zh-label" data-key="body" data-ring="0" data-angle="180">Body</span>
+              <span class="zh-label" data-key="needs" data-ring="0" data-angle="270">Needs</span>
+              <!-- Middle: the self and how it reaches out -->
+              <span class="zh-label" data-key="self" data-ring="1" data-angle="52">Self</span>
+              <span class="zh-label" data-key="values" data-ring="1" data-angle="124">Values</span>
+              <span class="zh-label" data-key="behaviours" data-ring="1" data-angle="196">Behaviours</span>
+              <span class="zh-label" data-key="relationships" data-ring="1" data-angle="268">Relationships</span>
+              <span class="zh-label" data-key="selfesteem" data-ring="1" data-angle="340">Self-esteem</span>
+              <!-- Outer: the context the person lives in -->
+              <span class="zh-label" data-key="family" data-ring="2" data-angle="60">Family</span>
+              <span class="zh-label" data-key="culture" data-ring="2" data-angle="150">Culture</span>
+              <span class="zh-label" data-key="transitions" data-ring="2" data-angle="240">Life Transitions</span>
+              <span class="zh-label" data-key="experiences" data-ring="2" data-angle="330">Life Experiences</span>
             </div>
           </div>
 
@@ -503,39 +516,4 @@ sitemap:
       </div>
     </section>
 
-  <script>
-    // Eco Systems: auto-orbit all badges (50s/turn) + badge hover highlights
-    (function(){
-      document.querySelectorAll('.eco-wrap').forEach(function(wrap){
-        var badges = wrap.querySelectorAll('.eco-badge');
-
-        badges.forEach(function(badge){
-          badge.addEventListener('mouseenter', function(){
-            var sys = this.dataset.system;
-            badges.forEach(function(b){
-              b.classList.toggle('eco-dimmed', b.dataset.system !== sys);
-              b.classList.toggle('eco-active',  b.dataset.system === sys);
-            });
-          });
-          badge.addEventListener('mouseleave', function(){
-            badges.forEach(function(b){ b.classList.remove('eco-dimmed','eco-active'); });
-          });
-        });
-
-        var badgeData = Array.from(badges).map(function(b){
-          return { el: b, angle: parseFloat(b.dataset.startAngle), r: parseFloat(b.dataset.radius) };
-        });
-
-        var deg = 0;
-        (function step(){
-          deg += 0.04; // 360 / 150s / 60fps ≈ 0.04
-          badgeData.forEach(function(d){
-            var a = (d.angle + deg) * Math.PI / 180;
-            d.el.style.top  = (240 - d.r * Math.cos(a)) + 'px';
-            d.el.style.left = (240 + d.r * Math.sin(a)) + 'px';
-          });
-          requestAnimationFrame(step);
-        })();
-      });
-    })();
-  </script>
+  <script src="/assets/js/zihin-haritasi.js" defer></script>
