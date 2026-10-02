@@ -46,7 +46,7 @@ geçerli olan saat sınırı online için katı değil.
 - **Üniversite öğrencileri** — özellikle DAÜ; içinde ayrı ve büyük bir grup olarak **uluslararası öğrenciler** (İngilizce terapi, ev özlemi, vize/burs kaygısı, adaya uyum)
 - **Ebeveynler** — çocuğunun davranışı, okula uyumu, DEHB/öğrenme güçlüğü şüphesi için gelen
 - **Aileler**
-- **İngilizce konuşan yerleşikler / expat'lar** — Türkçe hizmetten yararlanamayanlar
+- **İngilizce konuşan yerleşikler / KKTC'de yaşayan yabancı uyruklular** — Türkçe hizmetten yararlanamayanlar
 - Nöropsikolojik değerlendirme için **hekim/okul yönlendirmesiyle** gelenler (rapor ihtiyacı)
 
 **Ana kullanım durumu:** "Zorlandığım bir şey var, Gazimağusa'da güvenebileceğim bir psikolog arıyorum ama nereden başlayacağımı bilmiyorum."

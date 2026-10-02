@@ -98,7 +98,7 @@ Aşama 1'de neredeyse boş.** Ailenin bizi ilk kez görebileceği yer Aşama 1.
 
 ---
 
-## 3. İngilizce ebeveyn segmenti (expat + uluslararası aile)
+## 3. İngilizce ebeveyn segmenti (KKTC'de yaşayan yabancı uyruklular + uluslararası aile)
 
 Rakiplerin **hiçbirinde İngilizce içerik yok** (Faz 3). Ebeveyn tarafında bu açık daha da büyük.
 
