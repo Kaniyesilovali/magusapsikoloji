@@ -216,8 +216,9 @@ function renderHero(hero, opts = {}) {
     `<span class="text-xs text-ink-light">${esc(readingTime)}</span>\n` +
     updated +
     `</div>\n` +
-    `<h1 class="font-serif text-3xl lg:text-4xl text-ink leading-tight mb-5">${inline(hero.baslik)}</h1>\n` +
-    `<p class="text-ink-muted text-lg leading-relaxed">${inline(hero.giris)}</p>\n</div>\n</section>`
+    `<h1 class="font-serif text-3xl lg:text-4xl text-ink leading-tight${hero.giris ? ' mb-5' : ''}">${inline(hero.baslik)}</h1>\n` +
+    (hero.giris ? `<p class="text-ink-muted text-lg leading-relaxed">${inline(hero.giris)}</p>\n` : '') +
+    `</div>\n</section>`
   );
 }
 
