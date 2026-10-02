@@ -195,16 +195,17 @@ içerikte karşılığı olmadığı için beklemede. Bu 21'i kullanmanın yolu 
 var olan cümlelere iliştirmek değil.
 
 **2026-10-02 eki — psiko somatizasyon yazısı (`/blog/beyin-beden.html#dongu`):** yeni içerikle
-iki kurum daha devreye girdi; kullanılan kurum sayısı 3 → 5.
+bir kurum daha devreye girdi; kullanılan kurum sayısı 3 → 4.
 
 | # | Kurum | Nerede |
 |---|---|---|
 | 7 | **WHO** | Stres S&C sayfası (2026) — tanım, zihin+beden etkisi, belirtiler, baş etme önerileri, yardım isteme; niteliksel, rakam yok |
-| 11 | **Beck Institute** | *Understanding CBT* — bilişsel model cümlesi (düşünce → duygu ve davranış) |
 | 26 | **Center on the Developing Child** | *Toxic Stress* — stres tepki sistemi (kalp atışı, kan basıncı, kortizol). Yalnız genel ("our stress response systems") cümle kullanıldı; uzun süreli aktivasyon cümlesi çocuklara özgü olduğu için **kullanılmadı** |
 
 ICD-11 "bodily distress disorder" sayfası bu makineden okunamadı (JS). Bu yüzden
 "psiko somatizasyon" klinik tanım olarak değil, yazının kullandığı ifade olarak tanımlandı.
+Beck Institute'un bilişsel model atfı, "Düşünce, duygu, davranış ve beden" bölümüyle birlikte
+kaldırıldı (kullanıcı kararı, aynı gün) — Beck yine yalnız `hakkimizda`'daki eğitim bilgisinde geçiyor.
 
 ## 5 · Yıllık bakım
 
