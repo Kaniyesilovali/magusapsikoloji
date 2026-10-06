@@ -184,7 +184,7 @@ Bunlara zorla atıf iliştirilmedi — kaynak göstermek değil süs olurdu:
   kullanıldığı durumlar" olarak düzeltildi; artık etkililik iddiası yok, atıf gerekmiyor.
 - **EFPP, IPA, Anna Freud, Tavistock** (16-19) — psikodinamik hizmet sayfası yaklaşımı
   betimliyor, etkililik iddiası taşımıyor.
-- **ISTSS, ESTSS** (20-21) — travma sayfaları tarandı: **tek bir kanıt/etkililik iddiası
+- **ISTSS, ESTSS** (20-21) — *(ISTSS 2026-10-06 itibarıyla kullanılıyor, aşağıdaki eke bakın)* travma sayfaları tarandı: **tek bir kanıt/etkililik iddiası
   yok.** Travma içeriği derinleştirilirse ilk kaynak bunlar olacak.
 - **ESCAP, SRCD, WAIMH, Center on the Developing Child** (22, 24-26) — çocuk/gelişim
   içeriği şu an yaygınlık (WHO) ve tedavi (NICE) üzerinden kaynaklı. Bağlanma, erken
@@ -206,6 +206,17 @@ ICD-11 "bodily distress disorder" sayfası bu makineden okunamadı (JS). Bu yüz
 "psiko somatizasyon" klinik tanım olarak değil, yazının kullandığı ifade olarak tanımlandı.
 Beck Institute'un bilişsel model atfı, "Düşünce, duygu, davranış ve beden" bölümüyle birlikte
 kaldırıldı (kullanıcı kararı, aynı gün) — Beck yine yalnız `hakkimizda`'daki eğitim bilgisinde geçiyor.
+
+**2026-10-06 eki — TSSB yazısı (`/blog/travma-sonrasi-stres-bozuklugu.html` + EN
+`/en/blog/post-traumatic-stress-disorder.html`):** kullanılan kurum sayısı 4 → 5.
+
+| # | Kurum | Nerede |
+|---|---|---|
+| 7 | **WHO** | PTSD bilgi notu (2026-09-11) — üç belirti grubu, ilk bir ayda başlama, çocuklarda oyun/çizimde canlandırma. Kurum adı gövdede **bir kez** anılıyor, çocuk bölümünde yalnız atıf bağlantısı (kullanıcı kararı: tekrar etme). Aynı sayfadaki "%40 bir yılda iyileşir" (karar 1) ve "ilk tercih tedaviler… EMDR" (karar 3 + kapsam dışı) **kullanılmadı** |
+| 20 | **ISTSS** | *Natural recovery vs. PTSD* (çoğu kişide uzun süreli sorun olmaması) ve *Getting help* (ilk adım güvenlik). Rakam yok |
+
+Aynı gün panik atak yazısındaki "BDT ile yüksek başarı oranıyla tedavi edilebilir" (EN:
+"highly treatable with CBT") cümlesi karar 3 gereği betimleyici cümleyle değiştirildi.
 
 ## 5 · Yıllık bakım
 
