@@ -30,7 +30,6 @@ layout: page.njk
           <button type="button" data-filter="all" aria-pressed="true" class="text-xs font-medium bg-primary text-white border border-primary px-4 py-1.5 rounded-full cursor-pointer transition-colors">All</button>
           <button type="button" data-filter="kaygi" aria-pressed="false" class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Anxiety &amp; Burnout</button>
           <button type="button" data-filter="ogrenci" aria-pressed="false" class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Students</button>
-          <button type="button" data-filter="iliskiler" aria-pressed="false" class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Relationships</button>
           <button type="button" data-filter="cocuk" aria-pressed="false" class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Children &amp; Family</button>
           <button type="button" data-filter="travma" aria-pressed="false" class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Trauma &amp; Recovery</button>
           <button type="button" data-filter="terapi" aria-pressed="false" class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Therapy Guide</button>
@@ -42,7 +41,7 @@ layout: page.njk
     <section class="py-16 bg-white">
       <div class="max-w-6xl mx-auto px-5 lg:px-8">
         <div id="blogGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-{%- set catMap = {"Anxiety & Burnout": "kaygi", "Students": "ogrenci", "Relationships": "iliskiler", "Children & Family": "cocuk", "Children & Adolescents": "cocuk", "Assessment": "cocuk", "Trauma & Healing": "travma", "Trauma & Recovery": "travma", "Trauma": "travma", "Therapy Guide": "terapi", "Online Therapy": "terapi"} %}
+{%- set catMap = {"Anxiety & Burnout": "kaygi", "Students": "ogrenci", "Children & Family": "cocuk", "Children & Adolescents": "cocuk", "Assessment": "cocuk", "Trauma & Healing": "travma", "Trauma & Recovery": "travma", "Trauma": "travma", "Therapy Guide": "terapi", "Online Therapy": "terapi"} %}
 {%- for p in collections.blog_en | indexSort %}
 {%- set cat = p.data.card.category or p.data.category %}
           <a href="{{ p.url }}" data-cat="{{ catMap[cat] or 'diger' }}" class="group bg-warm border border-warm-tertiary rounded-2xl overflow-hidden hover:shadow-lg transition-all">
