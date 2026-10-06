@@ -38,5 +38,6 @@ kart oranına (16:9) kırpılmış, ~800×450 px JPEG olarak repoda durur. TR ve
 | terapi-dili-turkce-ingilizce.jpg | Açık duran iki dilli bir sözlüğün sayfası | photo-1451226428352-cf66bf8a0317 |
 | terapiye-baslamadan-once.jpg | Ahşap masada kahve fincanının yanında duran defter ve kalem | photo-1637689113621-73951984fcc1 |
 | terapiye-ne-zaman-gidilmeli.jpg | Üzerinde kalem duran, açık bir aylık ajanda | photo-1529651737248-dad5e287768e |
+| travma-sonrasi-stres-bozuklugu.jpg | Kırık çizgileri altınla onarılmış seramik bir tabak | photo-1622021134395-d26aab83c221 |
 | tukenmislik-sendromu.jpg | Aralarında ucu yanmış olanların da bulunduğu kibrit çöpü yığını | photo-1594508329976-4484d3cff278 |
 | universite-ogrencileri-psikolojik-destek.jpg | Kütüphanede kitaplarla dolu raflar | photo-1613899209236-ea0496f96180 |
