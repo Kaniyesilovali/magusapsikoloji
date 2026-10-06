@@ -26,14 +26,14 @@ layout: page.njk
     <!-- Kategoriler -->
     <section class="py-6 bg-warm border-b border-warm-tertiary">
       <div class="max-w-6xl mx-auto px-5 lg:px-8">
-        <div class="flex flex-wrap gap-2">
-          <span class="text-xs font-medium bg-primary text-white px-4 py-1.5 rounded-full cursor-pointer">Tümü</span>
-          <span class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Kaygı &amp; Tükenmişlik</span>
-          <span class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Öğrenci</span>
-          <span class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">İlişkiler</span>
-          <span class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Çocuk &amp; Aile</span>
-          <span class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Travma &amp; İyileşme</span>
-          <span class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Terapi Eğitimi</span>
+        <div id="blogFilters" class="flex flex-wrap gap-2" role="group" aria-label="Yazıları konuya göre filtrele">
+          <button type="button" data-filter="all" aria-pressed="true" class="text-xs font-medium bg-primary text-white border border-primary px-4 py-1.5 rounded-full cursor-pointer transition-colors">Tümü</button>
+          <button type="button" data-filter="kaygi" aria-pressed="false" class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Kaygı &amp; Tükenmişlik</button>
+          <button type="button" data-filter="ogrenci" aria-pressed="false" class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Öğrenci</button>
+          <button type="button" data-filter="iliskiler" aria-pressed="false" class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">İlişkiler</button>
+          <button type="button" data-filter="cocuk" aria-pressed="false" class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Çocuk &amp; Aile</button>
+          <button type="button" data-filter="travma" aria-pressed="false" class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Travma &amp; İyileşme</button>
+          <button type="button" data-filter="terapi" aria-pressed="false" class="text-xs font-medium bg-white border border-warm-tertiary text-ink-muted px-4 py-1.5 rounded-full cursor-pointer hover:border-primary hover:text-primary transition-colors">Terapi Eğitimi</button>
         </div>
       </div>
     </section>
@@ -42,8 +42,10 @@ layout: page.njk
     <section class="py-16 bg-white">
       <div class="max-w-6xl mx-auto px-5 lg:px-8">
         <div id="blogGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+{%- set catMap = {"Kaygı & Tükenmişlik": "kaygi", "Öğrenci": "ogrenci", "İlişkiler": "iliskiler", "Çocuk & Aile": "cocuk", "Çocuk & Ergen": "cocuk", "Değerlendirme": "cocuk", "Travma & İyileşme": "travma", "Travma": "travma", "Terapi Eğitimi": "terapi", "Online Terapi": "terapi"} %}
 {%- for p in collections.blog_tr | indexSort %}
-          <a href="{{ p.url }}" class="group bg-warm border border-warm-tertiary rounded-2xl overflow-hidden hover:shadow-lg transition-all">
+{%- set cat = p.data.card.category or p.data.category %}
+          <a href="{{ p.url }}" data-cat="{{ catMap[cat] or 'diger' }}" class="group bg-warm border border-warm-tertiary rounded-2xl overflow-hidden hover:shadow-lg transition-all">
 {%- if p.data.card.image %}
             <img src="{{ p.data.card.image }}" alt="{{ p.data.card.imageAlt }}" width="800" height="450" loading="lazy" decoding="async" class="h-44 w-full object-cover">
 {%- else %}
@@ -60,6 +62,8 @@ layout: page.njk
           </a>
 {%- endfor %}
 </div>
+        <p id="blogEmpty" hidden class="text-center text-sm text-ink-muted py-12">Bu konuda henüz yazı yok.</p>
+        <script src="/assets/js/blog-filter.js" defer></script>
       </div>
     </section>
 
