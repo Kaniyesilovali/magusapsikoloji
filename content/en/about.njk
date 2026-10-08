@@ -15,8 +15,8 @@ breadcrumb:
     item: https://magusapsikoloji.com/en/about.html
 rawSchemas:
   - '{"@context":"https://schema.org","@type":["LocalBusiness","MedicalOrganization"],"@id":"https://magusapsikoloji.com/#organization","name":"Famagusta Psychology Centre","alternateName":"Mağusa Psikoloji Merkezi","url":"https://magusapsikoloji.com","logo":"https://magusapsikoloji.com/assets/images/logo.png","image":"https://magusapsikoloji.com/assets/images/og-image.jpg","email":"info@magusapsikoloji.com","address":{"@type":"PostalAddress","streetAddress":"Eşref Bitlis Caddesi, Sancak Plaza, Kat 5 Daire 2","addressLocality":"Famagusta","addressRegion":"North Cyprus","addressCountry":"CY"},"areaServed":{"@type":"City","name":"Famagusta"},"medicalSpecialty":"Psychology","inLanguage":["en","tr"],"sameAs":["https://www.instagram.com/magusapsikoloji","https://www.facebook.com/magusapsikoloji/"],"employee":[{"@id":"https://magusapsikoloji.com/#gokce-ince"},{"@id":"https://magusapsikoloji.com/#yaprak-parlan-yesilovali"}],"availableLanguage":["English","Turkish"]}'
-  - '{"@context":"https://schema.org","@type":"Person","@id":"https://magusapsikoloji.com/#gokce-ince","name":"Gökçe İnce","givenName":"Gökçe","familyName":"İnce","jobTitle":"Clinical Psychologist","worksFor":{"@id":"https://magusapsikoloji.com/#organization"},"url":"https://magusapsikoloji.com/en/about.html#gokce-ince","alumniOf":[{"@type":"CollegeOrUniversity","name":"Eastern Mediterranean University"},{"@type":"CollegeOrUniversity","name":"Maltepe University"}],"knowsLanguage":["Turkish","English"],"knowsAbout":["Psychodynamic psychotherapy","Emerging adulthood","Adult psychology","Individual therapy"]}'
-  - '{"@context":"https://schema.org","@type":"Person","@id":"https://magusapsikoloji.com/#yaprak-parlan-yesilovali","name":"Yaprak Parlan Yeşilovalı","givenName":"Yaprak","familyName":"Parlan Yeşilovalı","jobTitle":"Developmental Psychologist & Psychotherapist","worksFor":{"@id":"https://magusapsikoloji.com/#organization"},"url":"https://magusapsikoloji.com/en/about.html#yaprak-parlan-yesilovali","alumniOf":[{"@type":"CollegeOrUniversity","name":"University of Brighton"},{"@type":"CollegeOrUniversity","name":"Eastern Mediterranean University"}],"knowsLanguage":["Turkish","English"],"knowsAbout":["Cognitive behavioural therapy","Psychotherapy","Child psychology","Adolescent psychology","Developmental psychology","Adult psychology"]}'
+  - '{"@context":"https://schema.org","@type":"Person","@id":"https://magusapsikoloji.com/#gokce-ince","name":"Gökçe İnce","image":"https://magusapsikoloji.com/assets/images/ekip/gokce-ince.jpg","givenName":"Gökçe","familyName":"İnce","jobTitle":"Clinical Psychologist","worksFor":{"@id":"https://magusapsikoloji.com/#organization"},"url":"https://magusapsikoloji.com/en/about.html#gokce-ince","alumniOf":[{"@type":"CollegeOrUniversity","name":"Eastern Mediterranean University"},{"@type":"CollegeOrUniversity","name":"Maltepe University"}],"knowsLanguage":["Turkish","English"],"knowsAbout":["Psychodynamic psychotherapy","Emerging adulthood","Adult psychology","Individual therapy"]}'
+  - '{"@context":"https://schema.org","@type":"Person","@id":"https://magusapsikoloji.com/#yaprak-parlan-yesilovali","name":"Yaprak Parlan Yeşilovalı","image":"https://magusapsikoloji.com/assets/images/ekip/yaprak-parlan-yesilovali.jpg","givenName":"Yaprak","familyName":"Parlan Yeşilovalı","jobTitle":"Psychotherapist","worksFor":{"@id":"https://magusapsikoloji.com/#organization"},"url":"https://magusapsikoloji.com/en/about.html#yaprak-parlan-yesilovali","alumniOf":[{"@type":"CollegeOrUniversity","name":"University of Brighton"},{"@type":"CollegeOrUniversity","name":"Eastern Mediterranean University"}],"knowsLanguage":["Turkish","English"],"knowsAbout":["Cognitive behavioural therapy","Psychotherapy","Child psychology","Adolescent psychology","Developmental psychology","Adult psychology"]}'
 layout: page.njk
 sitemap:
   changefreq: monthly
@@ -116,7 +116,7 @@ sitemap:
         <div class="grid gap-6 lg:grid-cols-2">
           <article id="gokce-ince" class="bg-warm border border-warm-tertiary rounded-2xl p-6 lg:p-8">
             <div class="flex items-start gap-4 mb-5">
-              <div class="w-16 h-16 shrink-0 rounded-full bg-gradient-to-br from-primary/15 to-sage/20 flex items-center justify-center text-3xl">{% icon "person", "w-7 h-7" %}</div>
+              <img src="/assets/images/ekip/gokce-ince.webp" alt="Gökçe İnce" width="80" height="80" loading="lazy" decoding="async" class="w-20 h-20 shrink-0 rounded-full object-cover bg-warm-tertiary">
               <div>
                 <h3 class="font-serif text-xl text-ink leading-tight">Gökçe İnce</h3>
                 <p class="text-sm text-primary mb-3">Clinical Psychologist</p>
@@ -138,10 +138,10 @@ sitemap:
 
           <article id="yaprak-parlan-yesilovali" class="bg-warm border border-warm-tertiary rounded-2xl p-6 lg:p-8">
             <div class="flex items-start gap-4 mb-5">
-              <div class="w-16 h-16 shrink-0 rounded-full bg-gradient-to-br from-accent/10 to-warm-tertiary flex items-center justify-center text-3xl">{% icon "person", "w-7 h-7" %}</div>
+              <img src="/assets/images/ekip/yaprak-parlan-yesilovali.webp" alt="Yaprak Parlan Yeşilovalı" width="80" height="80" loading="lazy" decoding="async" class="w-20 h-20 shrink-0 rounded-full object-cover bg-warm-tertiary">
               <div>
                 <h3 class="font-serif text-xl text-ink leading-tight">Yaprak Parlan Yeşilovalı, MSc</h3>
-                <p class="text-sm text-primary mb-3">Developmental Psychologist &amp; Psychotherapist</p>
+                <p class="text-sm text-primary mb-3">Psychotherapist</p>
                 <div class="flex flex-wrap gap-2">
                   <span class="text-[11px] font-medium text-ink-muted bg-white border border-warm-tertiary px-2.5 py-1 rounded-full">Cognitive behavioural therapy</span>
                   <span class="text-[11px] font-medium text-ink-muted bg-white border border-warm-tertiary px-2.5 py-1 rounded-full">Children</span>
