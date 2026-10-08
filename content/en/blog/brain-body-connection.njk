@@ -31,57 +31,6 @@ headExtra: |-
       }
       [data-animate].is-visible { opacity: 1; transform: translateY(0); }
 
-      /* ── Flow dot animation ── */
-      @keyframes flowDot {
-        from { stroke-dashoffset: 0; }
-        to   { stroke-dashoffset: -300; }
-      }
-      @keyframes ringBreath {
-        0%,100% { transform: scale(1); opacity: 0.22; }
-        55%     { transform: scale(1.2); opacity: 0; }
-      }
-      @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(10px); }
-        to   { opacity: 1; transform: translateY(0); }
-      }
-      @keyframes chainPop {
-        0%   { opacity: 0; transform: scale(0.85); }
-        60%  { transform: scale(1.04); }
-        100% { opacity: 1; transform: scale(1); }
-      }
-      @keyframes pulseGlow {
-        0%,100% { box-shadow: 0 0 0 0 rgba(74,124,111,0.3); }
-        50%     { box-shadow: 0 0 0 10px rgba(74,124,111,0); }
-      }
-
-      /* ── SVG arrows ── */
-      .arrow-td { animation: flowDot 2.8s linear infinite 0s; }
-      .arrow-de { animation: flowDot 2.8s linear infinite 0.93s; }
-      .arrow-bt { animation: flowDot 2.8s linear infinite 1.87s; }
-      .ring-breath { animation: ringBreath 3s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-      .ring-breath-b { animation: ringBreath 3s ease-in-out infinite 1s; transform-box: fill-box; transform-origin: center; }
-
-      /* ── Pause ── */
-      #main-diagram.is-paused .arrow-td,
-      #main-diagram.is-paused .arrow-de,
-      #main-diagram.is-paused .arrow-bt,
-      #main-diagram.is-paused .ring-breath,
-      #main-diagram.is-paused .ring-breath-b { animation-play-state: paused; }
-
-      /* ── Node highlight ── */
-      .node-circle { transition: filter 0.3s ease, opacity 0.3s ease; }
-      #main-diagram[data-highlight]:not([data-highlight=""]):not([data-highlight="all"]) .node-circle { opacity: 0.3; }
-      #main-diagram[data-highlight="dusunce"]  #node-dusunce  .node-circle { opacity: 1; filter: drop-shadow(0 0 12px color-mix(in srgb, var(--color-primary) 65%, transparent)); }
-      #main-diagram[data-highlight="duygu"]    #node-duygu    .node-circle { opacity: 1; filter: drop-shadow(0 0 12px rgba(200,120,90,0.65)); }
-      #main-diagram[data-highlight="davranis"] #node-davranis .node-circle { opacity: 1; filter: drop-shadow(0 0 12px rgba(90,107,98,0.65)); }
-      #main-diagram[data-highlight="beden"]    #node-beden    .node-circle { opacity: 1; filter: drop-shadow(0 0 10px rgba(138,158,148,0.65)); }
-      .diagram-node { cursor: pointer; }
-      .diagram-node:hover .node-circle { filter: drop-shadow(0 0 8px rgba(74,124,111,0.3)); }
-      #node-duygu:hover .node-circle   { filter: drop-shadow(0 0 8px rgba(200,120,90,0.3)); }
-
-      /* ── Info card animation ── */
-      .info-card { animation: fadeUp 0.22s ease; }
-
       /* ── Step fade ── */
       .step-body { transition: opacity 0.17s ease; }
       .step-body.fading { opacity: 0; }
@@ -94,36 +43,10 @@ headExtra: |-
       }
       .sdot.on { background: var(--color-primary); transform: scale(1.45); }
 
-      /* ── Chain cards ── */
-      .chain-card {
-        cursor: pointer;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-      }
-      .chain-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(44,56,48,0.12); }
-      .chain-card.active { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(44,56,48,0.16); }
-
-      /* ── Chain detail expand ── */
-      .chain-detail {
-        max-height: 0; overflow: hidden;
-        transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s ease;
-        opacity: 0;
-      }
-      .chain-detail.open { max-height: 200px; opacity: 1; }
-
-      /* ── Scenario step indicator badges ── */
-      .step-badge {
-        display: inline-flex; align-items: center; gap: 6px;
-        font-size: 11px; font-weight: 600;
-        padding: 5px 12px; border-radius: 999px;
-        transition: background 0.2s, color 0.2s;
-      }
-
       /* ── Reduced motion ── */
       @media (prefers-reduced-motion: reduce) {
         [data-animate] { opacity: 1 !important; transform: none !important; transition: none !important; }
-        .arrow-td,.arrow-de,.arrow-bt,.ring-breath,.ring-breath-b,
-        .node-circle,.info-card,.step-body,.chain-detail { animation: none !important; transition: none !important; }
-        .chain-detail { max-height: none; opacity: 1; }
+        .step-body { transition: none !important; }
       }
     </style>
 layout: post.njk
@@ -175,124 +98,8 @@ card:
       </div>
     </section>
 
-    <!-- ══ 2. THE LOOP DIAGRAM ══ -->
-    <section id="dongu" class="py-16 lg:py-24 bg-warm-secondary">
-      <div class="max-w-6xl mx-auto px-5 lg:px-8">
-
-        <div class="text-center mb-4" data-animate="">
-          <h2 class="font-serif text-3xl lg:text-4xl text-ink mb-3">Four links, one loop.</h2>
-          <p class="text-ink-muted">Tap each one — it will tell you what is going on.</p>
-        </div>
-
-        <div class="grid lg:grid-cols-[1fr_360px] gap-8 items-start mt-10">
-
-          <!-- SVG Diagram -->
-          <div class="mx-auto w-full" style="max-width:500px;">
-            <svg id="main-diagram" viewBox="0 0 600 580" width="100%" data-highlight="" style="display:block;" aria-label="The connection loop of Thought, Emotion, Behaviour and Body">
-              <defs>
-                <marker id="arw-g" markerWidth="9" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L9,4 z" fill="var(--color-primary)" opacity="0.75"></path></marker>
-                <marker id="arw-t" markerWidth="9" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L9,4 z" fill="var(--color-accent)" opacity="0.75"></path></marker>
-                <marker id="arw-m" markerWidth="9" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L9,4 z" fill="var(--color-ink-light)" opacity="0.75"></path></marker>
-              </defs>
-
-              <!-- Connection lines: Body center to nodes -->
-              <g opacity="0.35">
-                <line x1="300" y1="252" x2="300" y2="160" stroke="var(--color-ink-light)" stroke-width="1.5" stroke-dasharray="4 6"></line>
-                <line x1="336" y1="312" x2="418" y2="363" stroke="var(--color-ink-light)" stroke-width="1.5" stroke-dasharray="4 6"></line>
-                <line x1="264" y1="312" x2="182" y2="363" stroke="var(--color-ink-light)" stroke-width="1.5" stroke-dasharray="4 6"></line>
-              </g>
-
-              <!-- Arrow tracks (static, low opacity, arrowheads) -->
-              <path d="M 332 152 C 458 196 494 306 448 358" fill="none" stroke="var(--color-primary)" stroke-width="1.2" opacity="0.2" marker-end="url(#arw-g)"></path>
-              <path d="M 416 412 C 378 463 222 463 184 412" fill="none" stroke="var(--color-accent)" stroke-width="1.2" opacity="0.2" marker-end="url(#arw-t)"></path>
-              <path d="M 152 358 C 106 306 142 196 268 152" fill="none" stroke="var(--color-ink-light)" stroke-width="1.2" opacity="0.2" marker-end="url(#arw-m)"></path>
-
-              <!-- Animated flow dots -->
-              <path class="arrow-td" d="M 332 152 C 458 196 494 306 448 358" fill="none" stroke="var(--color-primary)" stroke-width="3.5" stroke-dasharray="16 284" stroke-linecap="round" opacity="0.85"></path>
-              <path class="arrow-de" d="M 416 412 C 378 463 222 463 184 412" fill="none" stroke="var(--color-accent)" stroke-width="3.5" stroke-dasharray="16 284" stroke-linecap="round" opacity="0.85"></path>
-              <path class="arrow-bt" d="M 152 358 C 106 306 142 196 268 152" fill="none" stroke="var(--color-ink-light)" stroke-width="3.5" stroke-dasharray="16 284" stroke-linecap="round" opacity="0.85"></path>
-
-              <!-- THOUGHT -->
-              <g class="diagram-node" id="node-dusunce" data-node="dusunce" tabindex="0" role="button" aria-label="Thought">
-                <circle class="ring-breath" cx="300" cy="113" r="57" fill="none" stroke="var(--color-primary)" stroke-width="1.5" opacity="0.22"></circle>
-                <circle class="node-circle" cx="300" cy="113" r="48" fill="var(--color-primary)"></circle>
-                <!-- Brain icon simplified -->
-                <g transform="translate(288,83)" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{% iconBody "thought" %}</g>
-                <text x="300" y="128" text-anchor="middle" font-family="Lora, Georgia, serif" font-weight="600" font-size="14" fill="white">Thought</text>
-              </g>
-
-              <!-- EMOTION -->
-              <g class="diagram-node" id="node-duygu" data-node="duygu" tabindex="0" role="button" aria-label="Emotion">
-                <circle class="ring-breath" cx="458" cy="390" r="57" fill="none" stroke="var(--color-accent)" stroke-width="1.5" opacity="0.22"></circle>
-                <circle class="node-circle" cx="458" cy="390" r="48" fill="var(--color-accent)"></circle>
-                <g transform="translate(446,360)" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{% iconBody "heart" %}</g>
-                <text x="458" y="405" text-anchor="middle" font-family="Lora, Georgia, serif" font-weight="600" font-size="14" fill="white">Emotion</text>
-              </g>
-
-              <!-- BEHAVIOUR -->
-              <g class="diagram-node" id="node-davranis" data-node="davranis" tabindex="0" role="button" aria-label="Behaviour">
-                <circle class="ring-breath" cx="142" cy="390" r="57" fill="none" stroke="var(--color-ink-muted)" stroke-width="1.5" opacity="0.22"></circle>
-                <circle class="node-circle" cx="142" cy="390" r="48" fill="var(--color-ink-muted)"></circle>
-                <g transform="translate(130,360)" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{% iconBody "run" %}</g>
-                <text x="142" y="405" text-anchor="middle" font-family="Lora, Georgia, serif" font-weight="600" font-size="13" fill="white">Behaviour</text>
-              </g>
-
-              <!-- BODY (center) -->
-              <g class="diagram-node" id="node-beden" data-node="beden" tabindex="0" role="button" aria-label="Body">
-                <circle class="ring-breath-b" cx="300" cy="287" r="42" fill="none" stroke="var(--color-ink-light)" stroke-width="1.5" opacity="0.18"></circle>
-                <circle class="node-circle" cx="300" cy="287" r="34" fill="none" stroke="var(--color-ink-light)" stroke-width="2" stroke-dasharray="5 4"></circle>
-                <circle cx="300" cy="287" r="27" fill="var(--color-warm-secondary)" opacity="0.96"></circle>
-                <g transform="translate(292,267) scale(0.667)" fill="none" stroke="var(--color-ink-muted)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">{% iconBody "lungs" %}</g>
-                <text x="300" y="300" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10.5" font-weight="600" fill="var(--color-ink-muted)">Body</text>
-              </g>
-
-            </svg>
-
-            <p class="text-center text-xs text-ink-muted mt-1 opacity-60">Tap each link</p>
-          </div>
-
-          <!-- Info Panel -->
-          <div id="info-panel" class="lg:sticky lg:top-28">
-
-            <!-- Default -->
-            <div id="info-default" class="bg-white rounded-2xl p-7 border border-warm-tertiary">
-              <div class="flex flex-col items-center text-center py-4 gap-4">
-                <div class="text-5xl">{% icon "tap", "w-12 h-12" %}</div>
-                <div>
-                  <h3 class="font-serif text-xl text-ink mb-2">Tap a link</h3>
-                  <p class="text-sm text-ink-muted leading-relaxed">
-                    It will tell you what is happening inside you in that moment.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Active -->
-            <div id="info-active" class="hidden">
-              <div class="info-card bg-white rounded-2xl border border-warm-tertiary overflow-hidden">
-                <div class="px-6 pt-5 pb-4 flex items-center justify-between border-b border-warm-tertiary">
-                  <div class="flex items-center gap-3">
-                    <span id="info-emoji" class="text-2xl"></span>
-                    <h3 id="info-title" class="font-serif text-xl text-ink"></h3>
-                  </div>
-                  <button id="info-close" class="p-1.5 rounded-lg hover:bg-warm text-ink-muted transition-colors" aria-label="Close">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
-                  </button>
-                </div>
-                <div class="px-6 py-5">
-                  <p id="info-what" class="text-base text-ink font-medium leading-snug mb-3"></p>
-                  <p id="info-example" class="text-sm text-ink-muted leading-relaxed italic"></p>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ══ 3. SCENARIO ══ -->
-    <section class="py-16 lg:py-24 bg-warm">
+    <!-- ══ 2. SCENARIO ══ -->
+    <section id="dongu" class="py-16 lg:py-24 bg-warm scroll-mt-16">
       <div class="max-w-4xl mx-auto px-5 lg:px-8">
 
         <div class="text-center mb-10" data-animate="">
@@ -319,7 +126,7 @@ card:
           <div class="p-7 lg:p-10">
             <div id="step-body" class="step-body min-h-[160px]">
               <div class="flex items-start gap-4 mb-5">
-                <div id="step-icon" class="text-5xl shrink-0 mt-1"></div>
+                <div id="step-icon" class="shrink-0 mt-1 text-primary"></div>
                 <div>
                   <p id="step-label" class="text-xs font-semibold uppercase tracking-wider mb-2" style="color:var(--color-ink-light);"></p>
                   <h3 id="step-headline" class="font-serif text-2xl lg:text-3xl text-ink leading-tight"></h3>
@@ -335,7 +142,7 @@ card:
                 Back
               </button>
               <div id="step-dots-wrap" class="flex gap-2"></div>
-              <button id="btn-next" class="flex items-center gap-2 bg-primary text-white text-sm font-medium px-6 py-2.5 rounded-full hover:bg-primary-hover transition-colors shadow-sm">
+              <button id="btn-next" data-next="Next" data-done="Done" class="flex items-center gap-2 bg-primary text-white text-sm font-medium px-6 py-2.5 rounded-full hover:bg-primary-hover transition-colors shadow-sm">
                 Next
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
               </button>
@@ -343,10 +150,129 @@ card:
           </div>
         </div>
 
+        <!-- Scenario texts and icons — read by assets/js/senaryo.js -->
+        <script type="application/json" id="scen-data">[
+ {
+  "name": "With friends",
+  "steps": [
+   {
+    "icon": "people",
+    "label": "WHAT HAPPENED",
+    "headline": "You texted a friend. Hours have passed, and still no reply.",
+    "desc": ""
+   },
+   {
+    "icon": "thought",
+    "label": "THOUGHT",
+    "headline": "\"Are they upset with me?\"",
+    "desc": "The brain started making meaning right away. There is no evidence yet — but the thought is already here."
+   },
+   {
+    "icon": "heart",
+    "label": "EMOTION",
+    "headline": "Uncertainty. A small fear.",
+    "desc": "A slight tightness in the chest. A sense of \"Is someone important pulling away from me?\""
+   },
+   {
+    "icon": "lungs",
+    "label": "BODY",
+    "headline": "You keep checking your phone.",
+    "desc": "You may not notice it, but there is a slight tension in your hands. Your stomach feels it too."
+   },
+   {
+    "icon": "run",
+    "label": "BEHAVIOUR",
+    "headline": "You can't sleep. Or you throw yourself into work.",
+    "desc": "The brain is trying to ease the discomfort. The loop starts over."
+   }
+  ]
+ },
+ {
+  "name": "Exam day",
+  "steps": [
+   {
+    "icon": "calendar",
+    "label": "WHAT HAPPENED",
+    "headline": "You open your eyes in the morning. Today is the exam.",
+    "desc": ""
+   },
+   {
+    "icon": "thought",
+    "label": "THOUGHT",
+    "headline": "\"I didn't study enough.\"",
+    "desc": "Maybe you did. Maybe you didn't. But the brain has already reached a verdict."
+   },
+   {
+    "icon": "heart",
+    "label": "EMOTION",
+    "headline": "Anxiety. Panic. Sometimes it feels like no feeling at all.",
+    "desc": "With intense anxiety, a sense of \"freezing\" can come. As if emotion shuts down."
+   },
+   {
+    "icon": "lungs",
+    "label": "BODY",
+    "headline": "Your stomach tightened. Your heart sped up.",
+    "desc": "Your hands went cold. A lump formed in your throat. The body switched into \"danger\" mode."
+   },
+   {
+    "icon": "run",
+    "label": "BEHAVIOUR",
+    "headline": "You froze. Or you wanted to run.",
+    "desc": "You can't sit down to study, or your mind won't work — this is normal too. The brain is overloaded."
+   }
+  ]
+ },
+ {
+  "name": "After an argument",
+  "steps": [
+   {
+    "icon": "burst",
+    "label": "WHAT HAPPENED",
+    "headline": "Something went wrong with someone important to you.",
+    "desc": ""
+   },
+   {
+    "icon": "thought",
+    "label": "THOUGHT",
+    "headline": "\"Was it me? Was it them? Is it all over?\"",
+    "desc": "The brain moves back and forth between conflicting thoughts, searching for an answer."
+   },
+   {
+    "icon": "heart",
+    "label": "EMOTION",
+    "headline": "Anger and sadness — at the same time.",
+    "desc": "Both can come at once. It feels very intense."
+   },
+   {
+    "icon": "lungs",
+    "label": "BODY",
+    "headline": "Your chest tightened. Your throat filled up.",
+    "desc": "Your eyes may have filled with tears. Or the opposite — empty inside, numb."
+   },
+   {
+    "icon": "run",
+    "label": "BEHAVIOUR",
+    "headline": "You shut yourself in your room. Or you shouted. Or you went silent.",
+    "desc": "All of these are valid reactions. The brain is trying to protect itself — and you."
+   }
+  ]
+ }
+]</script>
+        <template id="scen-icons">
+          <span data-icon="people">{% icon "people", "w-12 h-12" %}</span>
+          <span data-icon="calendar">{% icon "calendar", "w-12 h-12" %}</span>
+          <span data-icon="burst">{% icon "burst", "w-12 h-12" %}</span>
+          <span data-icon="thought">{% icon "thought", "w-12 h-12" %}</span>
+          <span data-icon="heart">{% icon "heart", "w-12 h-12" %}</span>
+          <span data-icon="lungs">{% icon "lungs", "w-12 h-12" %}</span>
+          <span data-icon="run">{% icon "run", "w-12 h-12" %}</span>
+        </template>
+        <script src="/assets/js/senaryo.js" defer></script>
+
       </div>
     </section>
 
-    <!-- ══ 4. THIS IS NORMAL ══ -->
+    <!-- ══ 3. THIS IS NORMAL ══ -->
     <section class="py-16 lg:py-24 bg-warm-secondary">
       <div class="max-w-5xl mx-auto px-5 lg:px-8">
 
@@ -379,7 +305,7 @@ card:
       </div>
     </section>
 
-    <!-- ══ 5. CTA ══ -->
+    <!-- ══ 4. CTA ══ -->
     <section class="py-20 lg:py-28 bg-primary">
       <div class="max-w-2xl mx-auto px-5 lg:px-8 text-center">
         <p class="text-white/60 text-sm font-medium mb-4">One step is enough</p>

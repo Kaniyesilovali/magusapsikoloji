@@ -300,7 +300,7 @@ card:
           <div class="p-7 lg:p-10">
             <div id="step-body" class="step-body min-h-[160px]">
               <div class="flex items-start gap-4 mb-5">
-                <div id="step-icon" class="text-5xl shrink-0 mt-1"></div>
+                <div id="step-icon" class="shrink-0 mt-1 text-primary"></div>
                 <div>
                   <p id="step-label" class="text-xs font-semibold uppercase tracking-wider mb-2" style="color:var(--color-ink-light);"></p>
                   <h3 id="step-headline" class="font-serif text-2xl lg:text-3xl text-ink leading-tight"></h3>
@@ -316,13 +316,132 @@ card:
                 Geri
               </button>
               <div id="step-dots-wrap" class="flex gap-2"></div>
-              <button id="btn-next" class="flex items-center gap-2 bg-primary text-white text-sm font-medium px-6 py-2.5 rounded-full hover:bg-primary-hover transition-colors shadow-sm">
+              <button id="btn-next" data-next="İleri" data-done="Tamam" class="flex items-center gap-2 bg-primary text-white text-sm font-medium px-6 py-2.5 rounded-full hover:bg-primary-hover transition-colors shadow-sm">
                 İleri
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
               </button>
             </div>
           </div>
         </div>
+
+        <!-- Senaryo metinleri ve ikonları — assets/js/senaryo.js okuyor -->
+        <script type="application/json" id="scen-data">[
+ {
+  "name": "Arkadaşlarla",
+  "steps": [
+   {
+    "icon": "people",
+    "label": "NE OLDU",
+    "headline": "Arkadaşına mesaj attın. Saatler geçti, hâlâ cevap yok.",
+    "desc": ""
+   },
+   {
+    "icon": "thought",
+    "label": "DÜŞÜNCE",
+    "headline": "\"Acaba bana küstü mü?\"",
+    "desc": "Beyin hemen anlam çıkarmaya başladı. Kanıt yok henüz — ama düşünce çoktan geldi."
+   },
+   {
+    "icon": "heart",
+    "label": "DUYGU",
+    "headline": "Belirsizlik. Küçük bir korku.",
+    "desc": "Göğüste hafif bir sıkışma. \"Önemli biri benden uzaklaşıyor mu?\" duygusu."
+   },
+   {
+    "icon": "lungs",
+    "label": "BEDEN",
+    "headline": "Telefonu defalarca kontrol ediyorsun.",
+    "desc": "Farkında değilsin ama ellerinde hafif bir gerginlik var. Mide de hissediyor."
+   },
+   {
+    "icon": "run",
+    "label": "DAVRANIŞ",
+    "headline": "Uyuyamıyorsun. Ya da kendini işe veriyorsun.",
+    "desc": "Beyin rahatsızlığı azaltmaya çalışıyor. Döngü başa dönüyor."
+   }
+  ]
+ },
+ {
+  "name": "Sınav günü",
+  "steps": [
+   {
+    "icon": "calendar",
+    "label": "NE OLDU",
+    "headline": "Sabah gözlerin açıldı. Bugün sınav.",
+    "desc": ""
+   },
+   {
+    "icon": "thought",
+    "label": "DÜŞÜNCE",
+    "headline": "\"Yeterince çalışmadım.\"",
+    "desc": "Belki yeterince çalıştın. Belki çalışmadın. Ama beyin şimdiden sonuç çıkardı."
+   },
+   {
+    "icon": "heart",
+    "label": "DUYGU",
+    "headline": "Kaygı. Panik. Bazen his yok gibi.",
+    "desc": "Yoğun kaygıda bazen \"donma\" hissi gelir. Duygu kapanır gibi."
+   },
+   {
+    "icon": "lungs",
+    "label": "BEDEN",
+    "headline": "Mide sıkıştı. Kalp hızlandı.",
+    "desc": "Eller soğudu. Boğaz düğümlendi. Beden \"tehlike var\" moduna geçti."
+   },
+   {
+    "icon": "run",
+    "label": "DAVRANIŞ",
+    "headline": "Donup kaldın. Ya da koşmak istedin.",
+    "desc": "Çalışmaya oturamıyorsun ya da kafan çalışmıyor — bu da normal. Beyin aşırı yüklendi."
+   }
+  ]
+ },
+ {
+  "name": "Kavgadan sonra",
+  "steps": [
+   {
+    "icon": "burst",
+    "label": "NE OLDU",
+    "headline": "Önemli biriyle bir şeyler ters gitti.",
+    "desc": ""
+   },
+   {
+    "icon": "thought",
+    "label": "DÜŞÜNCE",
+    "headline": "\"Ben mi yanlış yaptım? O mu? Her şey bitti mi?\"",
+    "desc": "Beyin çelişkili düşünceler arasında gidip geliyor. Yanıt aramaya çalışıyor."
+   },
+   {
+    "icon": "heart",
+    "label": "DUYGU",
+    "headline": "Öfke ve üzüntü — aynı anda.",
+    "desc": "İkisi birden gelebilir. Çok yoğun hissettiriyor."
+   },
+   {
+    "icon": "lungs",
+    "label": "BEDEN",
+    "headline": "Göğüs sıkıştı. Boğaz doldu.",
+    "desc": "Göz yaşarmış olabilir. Ya da tam tersi — içi boş, uyuşmuş."
+   },
+   {
+    "icon": "run",
+    "label": "DAVRANIŞ",
+    "headline": "Odana kapandın. Ya da bağırdın. Ya da sustun.",
+    "desc": "Hepsi geçerli tepkiler. Beyin kendini ve seni korumaya çalışıyor."
+   }
+  ]
+ }
+]</script>
+        <template id="scen-icons">
+          <span data-icon="people">{% icon "people", "w-12 h-12" %}</span>
+          <span data-icon="calendar">{% icon "calendar", "w-12 h-12" %}</span>
+          <span data-icon="burst">{% icon "burst", "w-12 h-12" %}</span>
+          <span data-icon="thought">{% icon "thought", "w-12 h-12" %}</span>
+          <span data-icon="heart">{% icon "heart", "w-12 h-12" %}</span>
+          <span data-icon="lungs">{% icon "lungs", "w-12 h-12" %}</span>
+          <span data-icon="run">{% icon "run", "w-12 h-12" %}</span>
+        </template>
+        <script src="/assets/js/senaryo.js" defer></script>
 
       </div>
     </section>
