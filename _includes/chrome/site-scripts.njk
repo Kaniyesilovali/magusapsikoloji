@@ -31,6 +31,11 @@
             ad_personalization: c.marketing ? 'granted' : 'denied'
           });
         }
+        if (c.marketing && typeof window.loadMetaPixel === 'function') {
+          window.loadMetaPixel();
+        } else if (!c.marketing && typeof window.fbq === 'function') {
+          fbq('consent', 'revoke');
+        }
         hideBanner();
         hideModal();
       }

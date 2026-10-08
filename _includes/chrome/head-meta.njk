@@ -23,6 +23,30 @@
   gtag('config', 'G-7ZCT7JXPGK');
 </script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-7ZCT7JXPGK"></script>
+
+<!-- Meta Pixel Code — yalnız pazarlama çerezlerine rıza verilince yüklenir (KVKK/GDPR).
+     noscript görseli bilerek eklenmedi: JS olmadan rıza alınamaz. -->
+<script>
+  window.loadMetaPixel = function () {
+    if (window.fbq) { fbq('consent', 'grant'); return; }
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1095926993134813');
+    fbq('track', 'PageView');
+  };
+  (function () {
+    var c = null;
+    try { c = JSON.parse(localStorage.getItem('gdpr_consent')); } catch (e) {}
+    if (c && c.marketing) window.loadMetaPixel();
+  })();
+</script>
+<!-- End Meta Pixel Code -->
 <title>{{ title }}</title>
 <meta name="description" content="{{ description }}" />
 {%- if keywords %}
