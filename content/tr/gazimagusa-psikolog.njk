@@ -28,7 +28,7 @@ faq:
   - q: Randevu nasıl alınır?
     a: WhatsApp ya da e-posta ile yazmanız yeterli. Neden yazdığınızı ayrıntılı anlatmak zorunda değilsiniz; hangi konuda görüşmek istediğinizi kısaca belirtmeniz yeter.
 rawSchemas:
-  - '{"@context":"https://schema.org","@type":["LocalBusiness","MedicalOrganization"],"@id":"https://magusapsikoloji.com/#organization","name":"Mağusa Psikoloji Merkezi","alternateName":"Famagusta Psychology Centre","url":"https://magusapsikoloji.com","logo":"https://magusapsikoloji.com/assets/images/logo.png","image":"https://magusapsikoloji.com/assets/images/og-image.jpg","email":"info@magusapsikoloji.com","address":{"@type":"PostalAddress","streetAddress":"Eşref Bitlis Caddesi, Sancak Plaza, Kat 5 Daire 2","addressLocality":"Gazimağusa","addressRegion":"Kuzey Kıbrıs","addressCountry":"CY"},"areaServed":{"@type":"City","name":"Gazimağusa"},"medicalSpecialty":"Psychology","availableLanguage":["Turkish","English"],"inLanguage":["tr","en"],"sameAs":["https://www.instagram.com/magusapsikoloji","https://www.facebook.com/magusapsikoloji/"]}'
+  - '{"@context":"https://schema.org","@type":["LocalBusiness","MedicalOrganization"],"@id":"https://magusapsikoloji.com/#organization","name":"Mağusa Psikoloji Merkezi","alternateName":"Famagusta Psychology Centre","url":"https://magusapsikoloji.com","logo":"https://magusapsikoloji.com/assets/images/logo.png","image":["https://magusapsikoloji.com/assets/images/og-image.jpg","https://magusapsikoloji.com/assets/images/merkez/seans-odasi.jpg","https://magusapsikoloji.com/assets/images/merkez/oturma-kosesi-liman.jpg","https://magusapsikoloji.com/assets/images/merkez/seans-odasi-koltuk.jpg"],"email":"info@magusapsikoloji.com","address":{"@type":"PostalAddress","streetAddress":"Eşref Bitlis Caddesi, Sancak Plaza, Kat 5 Daire 2","addressLocality":"Gazimağusa","addressRegion":"Kuzey Kıbrıs","addressCountry":"CY"},"areaServed":{"@type":"City","name":"Gazimağusa"},"medicalSpecialty":"Psychology","availableLanguage":["Turkish","English"],"inLanguage":["tr","en"],"sameAs":["https://www.instagram.com/magusapsikoloji","https://www.facebook.com/magusapsikoloji/"]}'
 cta:
   heading: Konuşmak isterseniz buradayız
   sub: Bir mesaj yeterli.
@@ -127,5 +127,6 @@ sitemap:
         <h2 class="font-serif text-3xl text-ink mb-6">Merkeze nasıl ulaşılır?</h2>
         <p class="text-ink-muted leading-relaxed mb-4">Merkez <strong class="text-ink font-medium">{{ contact.addressStreet }}</strong> içinde, {{ contact.addressUnit }}. Şehir merkezine ve Doğu Akdeniz Üniversitesi'ne yakın.</p>
         <p class="text-ink-muted leading-relaxed">Randevu için WhatsApp ya da <a href="mailto:{{ contact.email }}" class="text-primary underline hover:no-underline">{{ contact.email }}</a> adresinden yazabilirsiniz. Neden yazdığınızı ayrıntılı anlatmak zorunda değilsiniz.</p>
+        <img src="/assets/images/merkez/oturma-kosesi-liman.webp" alt="Mağusa Psikoloji Merkezi'nde, penceresi Mağusa limanına bakan oturma köşesi" width="1200" height="900" loading="lazy" decoding="async" class="mt-8 w-full h-auto rounded-2xl">
       </div>
     </section>
