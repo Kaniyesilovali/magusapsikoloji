@@ -224,7 +224,9 @@ Aynı gün panik atak yazısındaki "BDT ile yüksek başarı oranıyla tedavi e
 | # | Kurum | Nerede |
 |---|---|---|
 | 7 | **WHO** | Kaygı bozuklukları bilgi notu (2026) — sosyal kaygı bozukluğu tanımı; niteliksel |
-| 8 | **NICE** | CG159 *Context* (tanım, korkulan durumlar, öncesi/sonrası endişe, işlevsellik etkisi, çocuklarda görünüm) ve *Recommendations* (iki tanıma sorusu, "kişisel kusur" algısı). **Yalnız betimleme** — öneri/sıralama yok. Başlama yaşı, "yarısı yardım arıyor", "15–20 yıl", "etkili tedaviler mevcut" ve tarama ölçeğinin adı **kullanılmadı** (karar 1 ve 3) |
+| 8 | **NICE** | CG159 *Context* (tanım: süreklilik, orantısızlık, korkulan şeyler) ve *Recommendations* (iki tanıma sorusu). **Yalnız betimleme**, öneri/sıralama yok. Başlama yaşı, "yarısı yardım arıyor", "15–20 yıl", "etkili tedaviler mevcut" ve tarama ölçeğinin adı **kullanılmadı** (karar 1 ve 3) |
+
+Aynı gün atıflar sayfa başına **üçe** indirildi (kullanıcı kararı: "her yer NICE ve WHO diyor"). Kalanlar: WHO tanımı, NICE tanımı, NICE'ın iki sorusu. Diğer cümleler kurum adı anılmadan betimleyici hâle getirildi; SSS cevaplarında kurum adı geçmiyor.
 
 ## 5 · Yıllık bakım
 
