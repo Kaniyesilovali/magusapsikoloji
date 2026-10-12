@@ -218,6 +218,14 @@ kaldırıldı (kullanıcı kararı, aynı gün) — Beck yine yalnız `hakkimizd
 Aynı gün panik atak yazısındaki "BDT ile yüksek başarı oranıyla tedavi edilebilir" (EN:
 "highly treatable with CBT") cümlesi karar 3 gereği betimleyici cümleyle değiştirildi.
 
+**2026-10-12 eki — sosyal fobi yazısı (`/blog/sosyal-fobi-utangaclik-farki.html` + EN
+`/en/blog/social-anxiety-vs-shyness.html`):** kullanılan kurum sayısı 5 → 6 (NICE geri döndü).
+
+| # | Kurum | Nerede |
+|---|---|---|
+| 7 | **WHO** | Kaygı bozuklukları bilgi notu (2026) — sosyal kaygı bozukluğu tanımı; niteliksel |
+| 8 | **NICE** | CG159 *Context* (tanım, korkulan durumlar, öncesi/sonrası endişe, işlevsellik etkisi, çocuklarda görünüm) ve *Recommendations* (iki tanıma sorusu, "kişisel kusur" algısı). **Yalnız betimleme** — öneri/sıralama yok. Başlama yaşı, "yarısı yardım arıyor", "15–20 yıl", "etkili tedaviler mevcut" ve tarama ölçeğinin adı **kullanılmadı** (karar 1 ve 3) |
+
 ## 5 · Yıllık bakım
 
 Bağlantı listesi **yılda bir** kontrol edilir; kurum adları ve adresleri değişiyor

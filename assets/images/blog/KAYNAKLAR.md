@@ -41,3 +41,4 @@ kart oranına (16:9) kırpılmış, ~800×450 px JPEG olarak repoda durur. TR ve
 | travma-sonrasi-stres-bozuklugu.jpg | Kırık çizgileri altınla onarılmış seramik bir tabak | photo-1622021134395-d26aab83c221 |
 | tukenmislik-sendromu.jpg | Aralarında ucu yanmış olanların da bulunduğu kibrit çöpü yığını | photo-1594508329976-4484d3cff278 |
 | universite-ogrencileri-psikolojik-destek.jpg | Kütüphanede kitaplarla dolu raflar | photo-1613899209236-ea0496f96180 |
+| sosyal-fobi-utangaclik-farki.jpg | Boş bir sahnede, spot ışığının altında duran mikrofon | photo-1453090927415-5f45085b65c0 |
