@@ -45,10 +45,19 @@ Redirect 301 /en/services/couples-therapy.html https://magusapsikoloji.com/en/se
 Redirect 301 /blog/cift-terapisi-gazimagusa.html https://magusapsikoloji.com/blog/
 Redirect 301 /en/blog/couples-therapy-famagusta.html https://magusapsikoloji.com/en/blog/
 
+# --- Aile Terapisi → Ebeveyn Danışmanlığı (2026-10-16) ---
+# Merkezde aile terapisi verilmiyor; hizmet ebeveyn danışmanlığı olarak yeniden
+# yazıldı. Blog yazısı da aynı çerçeveye ("ailede zor dönemler") taşındı.
+# Konu karşılığı doğrudan olduğu için listelere değil, yeni sayfalara gidiyor.
+Redirect 301 /hizmetler/aile-terapisi.html https://magusapsikoloji.com/hizmetler/ebeveyn-danismanligi.html
+Redirect 301 /en/services/family-therapy.html https://magusapsikoloji.com/en/services/parent-counselling.html
+Redirect 301 /blog/aile-terapisi-magusa.html https://magusapsikoloji.com/blog/ailede-zor-donemler-ebeveyn-danismanligi.html
+Redirect 301 /en/blog/family-therapy-famagusta.html https://magusapsikoloji.com/en/blog/family-transitions-parent-counselling.html
+
 # --- URL yazım hatası düzeltmesi: "magussa" → "magusa" (2026-09-06) ---
 # İki blog adresi Gazimağusa'yı çift s ile yazıyordu. Hedeflenen kelimenin
 # kendisi yanlış yazıldığı için düzeltildi; eski adresler indekste.
-Redirect 301 /blog/aile-terapisi-magussa.html https://magusapsikoloji.com/blog/aile-terapisi-magusa.html
+Redirect 301 /blog/aile-terapisi-magussa.html https://magusapsikoloji.com/blog/ailede-zor-donemler-ebeveyn-danismanligi.html
 Redirect 301 /blog/cift-terapisi-gazimagussa.html https://magusapsikoloji.com/blog/
 
 # --- "ruh sağlığı" dil rehberi düzeltmesi (2026-09-15) ---

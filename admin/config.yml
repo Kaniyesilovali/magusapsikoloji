@@ -326,7 +326,7 @@ collections:
           - { label: "Psikolog mu Psikiyatrist mi", value: psikolog-psikiyatrist }
           - { label: "Öğrenci Kaygısı", value: ogrenci-kaygisi }
           - { label: "Kuzey Kıbrıs'ta Destek", value: kuzey-kibris }
-          - { label: "Aile Terapisi", value: aile-terapisi }
+          - { label: "Ebeveyn Danışmanlığı", value: ebeveyn-danismanligi }
       - name: faq
         label: "Google SSS Şeması"
         widget: list
@@ -482,7 +482,7 @@ collections:
           - { label: "Exam Anxiety", value: exam-anxiety }
           - { label: "Student Wellbeing", value: student-wellbeing }
           - { label: "Support in North Cyprus", value: north-cyprus }
-          - { label: "Family Therapy", value: family-therapy }
+          - { label: "Parent Counselling", value: parent-counselling }
           - { label: "Online Therapy", value: online-therapy }
           - { label: "Finding a Psychologist", value: find-psychologist }
       - name: faq

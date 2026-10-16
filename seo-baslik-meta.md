@@ -29,17 +29,18 @@ Mevcut hizmet sayfaları: `hizmetler/` ve `en/services/` altında, Türkçe + İ
 
 ---
 
-## Aile Terapisi
-**URL:** `/hizmetler/aile-terapisi.html` & `/en/services/family-therapy.html`
+## Ebeveyn Danışmanlığı
+**URL:** `/hizmetler/ebeveyn-danismanligi.html` & `/en/services/parent-counselling.html`
+(2026-10-16'ya kadar Aile Terapisi idi; eski adresler 301 ile buraya gidiyor.)
 
 | | Türkçe | İngilizce |
 |---|---|---|
-| **Title** | Aile Terapisi Mağusa \| Aile Danışmanlığı KKTC | Family Therapy Famagusta \| Family Counselling North Cyprus |
-| **Meta** | Gazimağusa'da aile terapisi. İletişim sorunları, ebeveynlik ve aile içi çatışmalar için uzman psikolojik destek. | Family therapy in Famagusta. Expert support for communication problems, parenting and family conflict in North Cyprus. |
-| **H1** | Aile Terapisi — Gazimağusa | Family Therapy — Famagusta |
-| **H2 önerileri** | Aile Terapisi Ne Zaman Gerekir? · Ebeveyn Danışmanlığı · Terapide Neler Çalışılır? |
+| **Title** | Ebeveyn Danışmanlığı Mağusa \| Anne ve Babalar İçin Destek KKTC | Parent Counselling Famagusta \| Support for Parents, North Cyprus |
+| **Meta** | Gazimağusa'da ebeveyn danışmanlığı. Çocuğunuzun davranışını anlamak ve evde sürdürebileceğiniz bir tutum kurmak için ebeveynle çalışıyoruz. | Parent counselling in Famagusta. We work with parents to understand a child's behaviour and build an approach that can be sustained at home. |
+| **H1** | Ebeveyn Danışmanlığı | Parent Counselling |
+| **H2** | Davranışı evin içinde okumak · Görüşmeler nasıl ilerliyor? · Nesiller yan yana yaşarken · Ebeveyn danışmanlığı mı, başka bir yol mu? |
 
-**Not:** Çift terapisi ayrı bir hizmet sayfası olmadığından bu sayfada H2 düzeyinde kısaca yer alabilir ("Çift İletişimi ve Aile Dinamikleri"). Blog yazısına iç bağlantı ver.
+**Not:** Aile terapisi ve çift terapisi verilmiyor; bu sayfada ikisi de hizmet olarak geçmez. Blog tarafı iki yazıya ayrık niyetle bağlanır: `/blog/ebeveyn-danismanligi-magusa.html` (nedir, nasıl işler) ve `/blog/ailede-zor-donemler-ebeveyn-danismanligi.html` (boşanma, kayıp, yeni kardeş gibi dönemler).
 
 ---
 

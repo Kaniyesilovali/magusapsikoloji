@@ -256,7 +256,7 @@
         },
         {
           "q": "Kuzey Kıbrıs'ta hangi terapi hizmetleri sunuluyor?",
-          "a": "Bireysel terapi, aile terapisi ve çocuk psikolojisi hizmetleri sunulmaktadır. Hem yüz yüze hem de online seans seçenekleri mevcuttur."
+          "a": "Bireysel terapi, çocuk ve ergen psikolojisi ve ebeveyn danışmanlığı hizmetleri sunulmaktadır. Hem yüz yüze hem de online seans seçenekleri mevcuttur."
         },
         {
           "q": "İngilizce terapi alabilir miyim?",
@@ -284,39 +284,39 @@
         }
       ]
     },
-    "aile-terapisi": {
+    "ebeveyn-danismanligi": {
       "tr": [
         {
-          "q": "Aile terapisi ne zaman gereklidir?",
-          "a": "Süregelen aile içi çatışma, ergen çocuklarla iletişim güçlüğü, boşanma veya kayıp gibi büyük geçişler, çocukta davranış sorunları ve nesiller arası örüntüler aile terapisinin değerli olduğu durumlar arasındadır."
+          "q": "Ebeveyn danışmanlığı ne zaman yararlı olur?",
+          "a": "Evde aynı tartışmanın her gün tekrar etmesi, ergen çocukla iletişimin kopması, boşanma ya da kayıp gibi büyük geçişler ve çocuğun davranışı karşısında ne yapılacağını bilememek, ebeveynlerin sık başvurduğu durumlar arasındadır."
         },
         {
-          "q": "Aile terapisine herkes katılmak zorunda mı?",
-          "a": "İdeal olan tüm aile üyelerinin katılımıdır; ancak zorunlu değildir. Sadece birkaç üyeyle başlanan süreç bile aile dinamiklerinde olumlu değişimler yaratabilir."
+          "q": "Çocuğun da görüşmelere gelmesi gerekir mi?",
+          "a": "Çoğu zaman gerekmez; görüşmelerin önemli bir kısmı yalnız ebeveynle yürür. Çocuğun kendi alanına ihtiyacı olduğunda, yaşına göre çocuk ya da ergen psikolojisi görüşmeleri ebeveyn çalışmasıyla birlikte yürütülebilir."
         },
         {
-          "q": "Çocuk için aile terapisi mi bireysel terapi mi daha iyi?",
-          "a": "Çocuğun güçlükleri büyük ölçüde aile sisteminden kaynaklanıyorsa aile terapisi daha etkilidir. Çocuğun kişisel işleme ihtiyacı varsa her ikisi paralel yürütülebilir. Terapist değerlendirme sonrası öneride bulunur."
+          "q": "Anne ve baba birlikte mi gelmeli?",
+          "a": "Mümkünse birlikte gelmek yararlı olur; ancak şart değil, tek ebeveynle de çalışılır. Ayrı yaşayan ebeveynlerde görüşmelerin nasıl yürütüleceği baştan konuşulur."
         },
         {
-          "q": "Ergen çocuk terapi sürecine nasıl dahil edilir?",
-          "a": "Ergenlerin sürece gönüllü katılımı için güvenli, yargısız bir ortam yaratmak önemlidir. Terapist önce ergenle bireysel bir bağ kurabilir, ardından aile seanslarına kademeli geçiş sağlanabilir."
+          "q": "Ergen çocuk sürece nasıl dahil edilir?",
+          "a": "Gelmek istemeyen bir genci zorlamıyoruz. Ebeveynle yürütülen çalışma evdeki iletişimi değiştirebilir; genç ilerleyen dönemde kendi görüşmesini isteyebilir. Böyle bir durumda ergen psikolojisi görüşmeleri ebeveyn çalışmasıyla birlikte yürütülür."
         },
         {
-          "q": "Aile terapisi ne kadar sürer?",
-          "a": "Ailenin ihtiyacına ve hedeflere bağlı olarak değişir; önceden bir seans sayısı vermiyoruz. Kısa vadeli kriz desteğinden uzun vadeli örüntü değişikliğine kadar geniş bir yelpazede uygulanabilir."
+          "q": "Ebeveyn danışmanlığı ne kadar sürer?",
+          "a": "Ailenin ihtiyacına göre değişir; önceden bir görüşme sayısı vermiyoruz. Görüşmeler 50 dakika sürer ve çoğunlukla haftada bir ya da iki haftada bir yapılır."
         },
         {
-          "q": "Online aile terapisi mümkün mü?",
-          "a": "Evet. Birden fazla kişinin aynı anda ekranda olduğu video görüşmesi aile terapisi için başarıyla uygulanmaktadır. Üyelerin farklı şehirlerde olduğu durumlarda özellikle değerlidir."
+          "q": "Online ebeveyn danışmanlığı mümkün mü?",
+          "a": "Evet. Ebeveynlerin farklı şehirlerde ya da ülkelerde yaşadığı durumlarda görüşmeler güvenli video bağlantısıyla yapılabilir."
         },
         {
-          "q": "Boşanma sürecinde aile terapisi nasıl yardımcı olur?",
-          "a": "Boşanma sürecinde çocukların ihtiyaçlarını merkeze alan iletişim biçimlerini geliştirmek, ebeveynlerin ayrışırken çocuklara güvenli bir aile hissi yaşatmasına olanak tanır."
+          "q": "Boşanma sürecinde ebeveyn danışmanlığı nasıl yardımcı olur?",
+          "a": "Ayrılığın çocuğa nasıl anlatılacağı, iki evde nasıl bir düzen kurulacağı ve ebeveynler arasındaki iletişimin çocuğu ortaya koymadan nasıl sürdürüleceği bu dönemde görüşmelerin konusudur."
         },
         {
-          "q": "Aile terapisinde ne kadar özel bilgi paylaşılır?",
-          "a": "Terapist gizlilik ilkesine bağlıdır. Grup seanslarında herkesin duyduklarını saklı tutması beklenir; terapist bu konuyu başlangıçta açıkça ele alır."
+          "q": "Görüşmelerde paylaşılanlar gizli kalır mı?",
+          "a": "Görüşmeler ve kişisel bilgileriniz gizlilik ilkeleri doğrultusunda korunur. Ebeveynlerden biriyle ya da çocukla ayrı görüşme yapıldığında, paylaşılanların nasıl ele alınacağı baştan konuşulur."
         }
       ]
     },
@@ -610,7 +610,7 @@
         },
         {
           "q": "What psychological services are available in Famagusta?",
-          "a": "We offer individual therapy, family therapy and child psychology. Sessions are available both in-person and online."
+          "a": "We offer individual therapy, child and adolescent psychology and parent counselling. Sessions are available both in-person and online."
         },
         {
           "q": "Can I receive therapy in English?",
@@ -670,39 +670,39 @@
         }
       ]
     },
-    "family-therapy": {
+    "parent-counselling": {
       "en": [
         {
-          "q": "When is family therapy recommended?",
-          "a": "Persistent family conflict, communication breakdown with a teenager, major transitions (divorce, bereavement, relocation), and behavioural difficulties in a child are all situations where family therapy can be particularly helpful."
+          "q": "When is parent counselling useful?",
+          "a": "The same argument repeating at home every day, communication breaking down with a teenager, major transitions such as divorce or bereavement, and not knowing how to respond to a child's behaviour are among the situations parents most often come with."
         },
         {
-          "q": "Does every family member have to attend?",
-          "a": "Ideally yes, but it is not mandatory. Progress can still be made with partial participation. Your therapist will work with whoever is willing to engage."
+          "q": "Does my child need to attend too?",
+          "a": "Usually not; a good share of the sessions run with the parent alone. Where a child needs their own space, child or adolescent psychology sessions can run alongside the work with the parent, depending on age."
         },
         {
-          "q": "Is family therapy or individual therapy better for a child?",
-          "a": "If the child's difficulties are largely rooted in family dynamics, family therapy is usually more effective. Where a child also needs personal processing space, both can run in parallel."
+          "q": "Should both parents come?",
+          "a": "Coming together helps where possible, but it is not a requirement, and we work with one parent too. Where parents live separately, how the sessions will run is agreed at the outset."
         },
         {
-          "q": "How do you engage a reluctant teenager in therapy?",
-          "a": "Creating a safe, non-judgmental space is key. The therapist may begin with one-to-one sessions with the teenager to build trust before transitioning to joint family work."
+          "q": "How is a teenager brought into the process?",
+          "a": "We do not push a young person who does not want to come. Work with the parent can change how communication runs at home, and the teenager may ask for their own sessions later. In that case adolescent psychology sessions run alongside the parent work."
         },
         {
-          "q": "How long does family therapy last?",
-          "a": "It varies with what the family needs and the goals you set; we do not put a number of sessions on it in advance. Short-term crisis support and longer-term pattern change are both possible within the family therapy framework."
+          "q": "How long does parent counselling last?",
+          "a": "It varies with what the family needs; we do not put a number of sessions on it in advance. Sessions last 50 minutes and usually take place weekly or every two weeks."
         },
         {
-          "q": "Is online family therapy possible?",
-          "a": "Yes. Video sessions with multiple family members are regularly used in family therapy. They are especially practical when family members live in different locations."
+          "q": "Is online parent counselling possible?",
+          "a": "Yes. Where parents live in different cities or countries, sessions can take place over a secure video connection."
         },
         {
-          "q": "How does family therapy help during divorce?",
-          "a": "It helps parents maintain child-centred communication, reduce conflict, and ensure children experience a sense of security even as the family structure changes."
+          "q": "How does parent counselling help during divorce?",
+          "a": "How to tell the child, what routine to build across two homes, and how parents can keep communicating without putting the child in the middle are what the sessions cover in this period."
         },
         {
-          "q": "What about confidentiality in family sessions?",
-          "a": "The therapist is bound by professional confidentiality. Within group sessions, all participants are expected to respect what is shared; the therapist sets this expectation clearly from the outset."
+          "q": "Is what we share kept confidential?",
+          "a": "Sessions and your personal information are protected in line with our confidentiality principles. Where one parent or the child is seen separately, how anything shared there will be handled is agreed at the outset."
         }
       ]
     },

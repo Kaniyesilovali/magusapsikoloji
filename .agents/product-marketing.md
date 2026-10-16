@@ -24,7 +24,7 @@ Pazartesi–Cuma 09:00–18:00 · Cumartesi 10:00–18:00 · Pazar kapalı.
 **Online seanslar bu saatlerin dışında da planlanabiliyor** — yüz yüze seanslar için
 geçerli olan saat sınırı online için katı değil.
 
-**Hizmet listesi (yayında):** Bireysel terapi · Çocuk psikolojisi · Ergen psikolojisi · Beliren yetişkin psikolojisi · Yetişkin psikolojisi · Aile terapisi · BDT/CBT · ACT · Psikodinamik terapi · Motivasyonel görüşme · Online terapi · Öğrenci danışmanlığı · **Nöropsikolojik değerlendirme** (tüm yaş grupları, yazılı rapor)
+**Hizmet listesi (yayında):** Bireysel terapi · Çocuk psikolojisi · Ergen psikolojisi · Beliren yetişkin psikolojisi · Yetişkin psikolojisi · Ebeveyn danışmanlığı (2026-10-16'da aile terapisinin yerini aldı; aile terapisi verilmiyor) · BDT/CBT · ACT · Psikodinamik terapi · Motivasyonel görüşme · Online terapi · Öğrenci danışmanlığı · **Nöropsikolojik değerlendirme** (tüm yaş grupları, yazılı rapor)
 
 **Travma odaklı çalışma** (kullanıcı teyidi 2026-09-16, hizmet sayfası yayına hazır):
 - **Yaş grupları:** çocuk, ergen, beliren yetişkinlik, yetişkin
@@ -66,7 +66,7 @@ geçerli olan saat sınırı online için katı değil.
 | Üniversite öğrencisi (DAÜ) | Zaman, ücret, program uyumu | Ders yükü + sınav kaygısı, vakit bulamamak | 50 dk seans, online seçeneği |
 | Uluslararası öğrenci | İngilizce hizmet, kültürel anlaşılma | Aileden uzak olmak, ev özlemi, vize belirsizliği | İngilizce seans; nereden geldiğiniz dikkate alınır |
 | Ebeveyn | Çocuğuna doğru şeyi yapmak | "Zorlamalı mıyım?" ikilemi | Çocuk + ebeveyn danışmanlığı birlikte |
-| Aile | Aile içi ilişkiler | Aile üyesinin gelmek istememesi | İlişkiyi bütün içinde ele alma |
+| Aile | Aile içi ilişkiler, zor dönemler (boşanma, kayıp) | Eşin gelmek istememesi | Ebeveyn danışmanlığı: çocuğun davranışını ev içindeki döngüyle birlikte ele alma |
 | İngilizce konuşan yerleşik | Dil erişimi | Türkçe hizmete erişememek | Tam İngilizce site + seans |
 | Rapor ihtiyacı olan | Resmî çıktı | Adada nereye başvuracağını bilmemek | Yazılı rapor + sözlü geri bildirim |
 
