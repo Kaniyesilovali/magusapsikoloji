@@ -42,3 +42,4 @@ kart oranına (16:9) kırpılmış, ~800×450 px JPEG olarak repoda durur. TR ve
 | tukenmislik-sendromu.jpg | Aralarında ucu yanmış olanların da bulunduğu kibrit çöpü yığını | photo-1594508329976-4484d3cff278 |
 | universite-ogrencileri-psikolojik-destek.jpg | Kütüphanede kitaplarla dolu raflar | photo-1613899209236-ea0496f96180 |
 | sosyal-fobi-utangaclik-farki.jpg | Boş bir sahnede, spot ışığının altında duran mikrofon | photo-1453090927415-5f45085b65c0 |
+| bilissel-davranisci-terapi-nedir.jpg | Ahşap bir masanın üzerinde duran, arka planı bulanık bir gözlük (unsplash.com/photos/mlQ_4Ff6YSM) | reserve/mFzm7UbxRle0Qhm5m3xM_IMG_7535.jpg |
