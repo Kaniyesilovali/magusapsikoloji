@@ -228,6 +228,33 @@ Aynı gün panik atak yazısındaki "BDT ile yüksek başarı oranıyla tedavi e
 
 Aynı gün atıflar sayfa başına **üçe** indirildi (kullanıcı kararı: "her yer NICE ve WHO diyor"). Kalanlar: WHO tanımı, NICE tanımı, NICE'ın iki sorusu. Diğer cümleler kurum adı anılmadan betimleyici hâle getirildi; SSS cevaplarında kurum adı geçmiyor.
 
+**2026-10-16/17 eki — kaynak dengesi (kullanıcı kararı):** "WHO çok kullanılıyor; kaynaklar eşit
+ağırlıkta kullanılsın, en önde APA." Bu karar bağlayıcıdır: yeni içerikte **önce APA** aranır,
+WHO yalnız WHO'ya özgü bilgi (ICD-11 tükenmişlik tanımı, depresif dönemin iki hafta ölçütü,
+niteliksel yaygınlık) için kullanılır. Kurum adı gövdede bir kez anılır; SSS'lerde kurum adı yok.
+
+- **Erişim:** APA ve AACAP doğrudan okunmuyor; `https://r.jina.ai/<adres>` okuma vekiliyle
+  okunuyor (AACAP'ı kısa süreli engelleyebiliyor — sıralı ve aralıklı çekilmeli). Atıf her zaman
+  kurumun kendi adresine verilir.
+- **Kullanılan kurum sayısı 6 → 12** (APA, WHO, NICE, Cochrane, ISTSS, Center on the Developing
+  Child, AACAP, Beck Institute, ACBS, Tavistock and Portman, TPD + liste dışı NHS kaldırıldı).
+- **NHS (nhs.uk) liste dışıydı**, 3 çocuk yazısında (TR+EN) kaynak olarak duruyordu → AACAP,
+  APA *Monitor* ve Center on the Developing Child ile değiştirildi.
+- APA sayfaları: `topics/anxiety`, `anxiety/disorders`, `stress/anxiety-difference`,
+  `anxiety/panic-disorder`, `depression`, `stress/body`, `healthy-workplaces/work-stress`, `ptsd`,
+  `adhd`, `autism-spectrum-disorder`, `psychotherapy/understanding`,
+  `psychotherapy/choose-therapist`, `ed/graduate/specialize/neuropsychology` (rapor kısmı
+  **kullanılmadı**, karar 5), `monitor/2024/09/dyslexia-myths`. APA'daki "highly effective",
+  "2.000 çalışma" vb. etkililik cümleleri **kullanılmadı** (karar 3).
+- Hizmet sayfaları: BDT → Beck Institute (bilişsel model), ACT → ACBS (psikolojik esneklik),
+  psikodinamik → Tavistock and Portman (`tavistockandportman.ac.uk`, "en az bir yıl" kullanılmadı,
+  karar 4), ebeveyn danışmanlığı → Center on the Developing Child (*serve and return*), travma →
+  ISTSS.
+- Aynı turda bulunan eski kural ihlalleri düzeltildi: liste dışı **DSM-5** ölçütleri (depresyon,
+  panik, DEHB), yaygınlık rakamları (doğum sonrası %10–15, okul reddi %1–5, sınav kaygısı %25–40),
+  üstünlük ifadeleri ("en geniş araştırma tabanı", NICE NG222 "ilk sıra", "en çok kabul gören",
+  "en etkili", "BDT'nin en etkili olduğu durumlar"), "araştırmalar gösteriyor… en büyük etken".
+
 ## 5 · Yıllık bakım
 
 Bağlantı listesi **yılda bir** kontrol edilir; kurum adları ve adresleri değişiyor
