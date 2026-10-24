@@ -255,6 +255,15 @@ niteliksel yaygınlık) için kullanılır. Kurum adı gövdede bir kez anılır
   üstünlük ifadeleri ("en geniş araştırma tabanı", NICE NG222 "ilk sıra", "en çok kabul gören",
   "en etkili", "BDT'nin en etkili olduğu durumlar"), "araştırmalar gösteriyor… en büyük etken".
 
+**2026-10-24 eki — psikodinamik psikoterapi yazısı (`/blog/psikodinamik-psikoterapi-nedir.html` + EN `/en/blog/what-is-psychodynamic-psychotherapy.html`):**
+kullanılan kurum sayısı 12 → 13 (EFPP ilk kez).
+
+| # | Kurum | Nerede |
+|---|---|---|
+| 1 | **APA** | `topics/psychotherapy/approaches` (tanım: bilinçdışı anlamlar, çalışma ortaklığı) ve `psychotherapy/understanding` (konuşma ağırlığı, erken yaşantılar; çoğu terapistin yaklaşımları harmanlaması). Aynı sayfadaki "long-term effects" cümlesi **kullanılmadı** (karar 3) |
+| 19 | **Tavistock and Portman** | Köken (Freud → Anna Freud, Klein, Winnicott, Bowlby) ve aktarım. "En az bir yıl" (karar 4), "Is it effective?" bölümü (karar 2-3) ve çiftlerle çalışma (hizmet yok) **kullanılmadı** |
+| 16 | **EFPP** | Ana sayfadaki *What is Psychoanalytic Psychotherapy?* tanımı (iç dünya). "Alleviate emotional suffering" sonuç cümlesi kullanılmadı |
+
 ## 5 · Yıllık bakım
 
 Bağlantı listesi **yılda bir** kontrol edilir; kurum adları ve adresleri değişiyor
