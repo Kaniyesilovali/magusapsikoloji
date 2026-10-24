@@ -5,6 +5,7 @@
  *  2. hreflang: hedefler mevcut mu ve karşılıklı mı?
  *  3. sitemap.xml: listelenen her URL build çıktısında var mı?
  *  4. TR/EN eşleşmeyen sayfalar (uyarı).
+ *  5. Title > 60, description 110–160 dışı (uyarı).
  * Hata varsa exit 1 → deploy durur.
  */
 const fs = require('fs');
@@ -32,6 +33,10 @@ const urlExists = (u) => {
 
 let errors = 0;
 const warn = [];
+const metaWarn = [];
+const TITLE_MAX = 60;
+const DESC_MIN = 110;
+const DESC_MAX = 160;
 const htmlFiles = files.filter((f) => f.endsWith('.html'));
 const hreflangMap = {}; // rel → {tr,en}
 
@@ -56,6 +61,17 @@ for (const f of htmlFiles) {
   const other = lang === 'tr' ? 'en' : 'tr';
   // /admin/ CMS arayüzüdür, çeviri eşi beklenmez
   if (!hl[other] && !rel.startsWith('/admin/')) warn.push(`${rel}: ${other.toUpperCase()} eşi yok`);
+
+  // Meta uzunlukları — Sveltia sınırları (admin/config.yml) yalnız CMS'ten girilen
+  // içerikte işliyor; dosyaya doğrudan yazılan sayfalar buradan yakalanır.
+  if (!/noindex/.test($('meta[name="robots"]').attr('content') || '')) {
+    const title = $('title').text().trim();
+    const desc = ($('meta[name="description"]').attr('content') || '').trim();
+    if (title.length > TITLE_MAX) metaWarn.push(`${rel}: title ${title.length} karakter (en çok ${TITLE_MAX})`);
+    if (desc.length < DESC_MIN || desc.length > DESC_MAX) {
+      metaWarn.push(`${rel}: description ${desc.length} karakter (${DESC_MIN}–${DESC_MAX})`);
+    }
+  }
 }
 
 // Karşılıklılık: A'nın en'i B ise, B'nin tr'si A olmalı
@@ -88,5 +104,9 @@ if (warn.length) {
   console.log('\n⚠ Çevirisi olmayan sayfalar (bilgi):');
   for (const w of warn) console.log('  - ' + w);
 }
-console.log(`\n${htmlFiles.length} sayfa, sitemap ${smCount} URL — ${errors} hata, ${warn.length} uyarı.`);
+if (metaWarn.length) {
+  console.log('\n⚠ Meta uzunluğu sınır dışında (deploy durmaz):');
+  for (const w of metaWarn) console.log('  - ' + w);
+}
+console.log(`\n${htmlFiles.length} sayfa, sitemap ${smCount} URL — ${errors} hata, ${warn.length + metaWarn.length} uyarı.`);
 process.exit(errors ? 1 : 0);
