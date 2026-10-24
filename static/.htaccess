@@ -65,3 +65,10 @@ Redirect 301 /blog/cift-terapisi-gazimagussa.html https://magusapsikoloji.com/bl
 # geçiyordu. Yazı /blog/magusa-uluslararasi-ogrenciler-psikolojik-destek.html
 # adresine taşındı, eski adres indekste ve iç bağlantılarda duruyordu.
 Redirect 301 /blog/magusa-uluslararasi-ogrenciler-ruh-sagligi.html https://magusapsikoloji.com/blog/magusa-uluslararasi-ogrenciler-psikolojik-destek.html
+
+# --- Şehir sayfaları ana sayfaya (2026-10-24) ---
+# /gazimagusa-psikolog.html ana sayfayla birebir aynı title'ı taşıyor ve aynı
+# kelimeyi hedefliyordu; Google ikisinden birini seçemiyor, gösterimi ana sayfa
+# alıyordu. Sayfalar kaldırıldı, değerleri ana sayfalarda toplanıyor.
+Redirect 301 /gazimagusa-psikolog.html https://magusapsikoloji.com/
+Redirect 301 /en/psychologist-in-famagusta.html https://magusapsikoloji.com/en/
