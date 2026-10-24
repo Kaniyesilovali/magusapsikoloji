@@ -22,6 +22,10 @@
         </article>
 {%- endfor %}
         </div>
+{%- if cat.more and cat.more.length %}
+        <p class="mt-4 text-sm text-ink-muted">{{ "Ayrıntılı bilgi" if lang == "tr" else "Read more" }}:
+{%- for m in cat.more %} <a href="{{ m.href }}" class="text-primary underline hover:no-underline">{{ m.text }}</a>{{ " ·" if not loop.last }}{%- endfor %}</p>
+{%- endif %}
       </section>
 {%- endfor %}
     </div>

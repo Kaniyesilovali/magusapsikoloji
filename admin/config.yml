@@ -707,6 +707,15 @@ collections:
                     fields:
                       - { name: q, label: "Soru", widget: string }
                       - { name: a, label: "Cevap", widget: text }
+                  - name: more
+                    label: "İlgili sayfalar"
+                    widget: list
+                    required: false
+                    hint: "Kategorinin altında 'Ayrıntılı bilgi' olarak gösterilir. Adres sitenin kendi sayfası olmalı (/ ile başlar)."
+                    summary: "{{fields.text}}"
+                    fields:
+                      - { name: text, label: "Bağlantı metni", widget: string }
+                      - { name: href, label: "Adres", widget: string, hint: "Örn: /terapi-sureci.html" }
               - name: en
                 label: "İngilizce Sorular"
                 widget: list
@@ -722,3 +731,12 @@ collections:
                     fields:
                       - { name: q, label: "Soru", widget: string }
                       - { name: a, label: "Cevap", widget: text }
+                  - name: more
+                    label: "İlgili sayfalar"
+                    widget: list
+                    required: false
+                    hint: "Kategorinin altında 'Ayrıntılı bilgi' olarak gösterilir. Adres sitenin kendi sayfası olmalı (/ ile başlar)."
+                    summary: "{{fields.text}}"
+                    fields:
+                      - { name: text, label: "Bağlantı metni", widget: string }
+                      - { name: href, label: "Adres", widget: string, hint: "Örn: /terapi-sureci.html" }

@@ -1043,6 +1043,16 @@
             "q": "Doğru psikologu nasıl seçerim?",
             "a": "Bize ulaştığınızda ihtiyaçlarınızı dinliyor ve sizi en uygun psikologla eşleştiriyoruz. Sorununuzun türü, tercih ettiğiniz yaklaşım ve psikologla \"uyum hissi\" önemli faktörlerdir; uyumu ilk seansta birlikte değerlendirebilirsiniz."
           }
+        ],
+        "more": [
+          {
+            "text": "Terapiye başlamadan önce bilmeniz gerekenler",
+            "href": "/blog/terapiye-baslamadan-once.html"
+          },
+          {
+            "text": "Terapiye ne zaman gidilmeli?",
+            "href": "/blog/terapiye-ne-zaman-gidilmeli.html"
+          }
         ]
       },
       {
@@ -1061,6 +1071,12 @@
             "q": "Terapiyi bırakmak istesem ne olur?",
             "a": "Terapi gönüllülük esasına dayanır; istediğiniz zaman sonlandırabilirsiniz. Ancak süreci psikologunuzla konuşmanızı tavsiye ederiz. Planlı bir sonlandırma hem kazanımları pekiştirir hem de \"bitmemiş iş\" hissini azaltır."
           }
+        ],
+        "more": [
+          {
+            "text": "Terapi süreci nasıl ilerler?",
+            "href": "/terapi-sureci.html"
+          }
         ]
       },
       {
@@ -1074,6 +1090,16 @@
           {
             "q": "Online seans için hangi teknik gereksinimlere ihtiyacım var?",
             "a": "Stabil bir internet bağlantısı, kamera ve mikrofonu olan bir cihaz yeterlidir. Güvenli ve gizli bir ortamda (yalnız olduğunuz ve birinin sizi duyamayacağı bir yer) olmanız önemlidir. Online görüşme platformu bilgisi randevu öncesinde paylaşılır."
+          }
+        ],
+        "more": [
+          {
+            "text": "Online terapi hizmeti",
+            "href": "/hizmetler/online-terapi.html"
+          },
+          {
+            "text": "Online terapi etkili mi?",
+            "href": "/blog/online-terapi-etkili-mi.html"
           }
         ]
       },
@@ -1089,6 +1115,12 @@
             "q": "İngilizce seans mümkün mü?",
             "a": "Evet. Ekibimiz hem Türkçe hem de İngilizce seans vermektedir. KKTC'de yaşayan yabancı uyruklu bireyler ve uluslararası öğrenciler için İngilizce seanslar mevcuttur."
           }
+        ],
+        "more": [
+          {
+            "text": "Terapiyi hangi dilde almalı?",
+            "href": "/blog/terapi-dili-turkce-ingilizce.html"
+          }
         ]
       },
       {
@@ -1102,6 +1134,12 @@
           {
             "q": "Randevuyu nasıl iptal edebilirim?",
             "a": "İptal veya erteleme talepleri için lütfen en az 24 saat öncesinden WhatsApp veya telefon yoluyla bildiriniz. Geç bildirim veya gelmeme durumlarında da seans ücreti talep edilmektedir."
+          }
+        ],
+        "more": [
+          {
+            "text": "İletişim ve randevu",
+            "href": "/iletisim.html"
           }
         ]
       }
@@ -1123,6 +1161,16 @@
             "q": "How do I choose the right psychologist?",
             "a": "When you contact us we listen to your needs and match you with the most suitable psychologist. The type of issue, your preferred approach and the sense of \"fit\" with the psychologist are all important factors — you can gauge that fit in your first session."
           }
+        ],
+        "more": [
+          {
+            "text": "What to know before starting therapy",
+            "href": "/en/blog/before-starting-therapy.html"
+          },
+          {
+            "text": "When should you go to therapy?",
+            "href": "/en/blog/when-to-go-to-therapy.html"
+          }
         ]
       },
       {
@@ -1141,6 +1189,12 @@
             "q": "What if I want to stop therapy?",
             "a": "Therapy is voluntary and you can end it whenever you choose. However, we do recommend discussing this with your psychologist. A planned ending consolidates gains and reduces any sense of \"unfinished business.\""
           }
+        ],
+        "more": [
+          {
+            "text": "How the therapy process works",
+            "href": "/en/therapy-process.html"
+          }
         ]
       },
       {
@@ -1154,6 +1208,16 @@
           {
             "q": "What technical requirements do I need for online sessions?",
             "a": "A stable internet connection and a device with a camera and microphone are sufficient. It's important to be somewhere private and secure — a place where you are alone and cannot be overheard. Details of the online session platform are shared before your appointment."
+          }
+        ],
+        "more": [
+          {
+            "text": "Online therapy service",
+            "href": "/en/services/online-therapy.html"
+          },
+          {
+            "text": "Is online therapy effective?",
+            "href": "/en/blog/is-online-therapy-effective.html"
           }
         ]
       },
@@ -1169,6 +1233,12 @@
             "q": "Are sessions available in English?",
             "a": "Yes. Our team provides sessions in both Turkish and English. English-language sessions are available for foreign nationals living in North Cyprus and for international students."
           }
+        ],
+        "more": [
+          {
+            "text": "Which language should therapy be in?",
+            "href": "/en/blog/therapy-language-turkish-english.html"
+          }
         ]
       },
       {
@@ -1182,6 +1252,12 @@
           {
             "q": "How do I cancel an appointment?",
             "a": "Please notify us at least 24 hours in advance via WhatsApp or phone for cancellations or rescheduling. A session fee is charged for late notice or non-attendance."
+          }
+        ],
+        "more": [
+          {
+            "text": "Contact and appointments",
+            "href": "/en/contact.html"
           }
         ]
       }
