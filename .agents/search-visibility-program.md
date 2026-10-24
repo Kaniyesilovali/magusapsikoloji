@@ -22,7 +22,7 @@
 | # | Faz | Beceri | Durum | Çıktılar |
 |---|---|---|---|---|
 | 0 | Bağlam temeli | product-marketing | ✅ | `.agents/product-marketing.md` (v1) |
-| 1 | Teknik teşhis | seo-audit | ✅ (2026-09-16 yeniden tarandı) | `.agents/seo-audit-2026-09.md` (106 URL) · [eski rapor sayfası](https://claude.ai/code/artifact/5db9f4b7-52d6-4b21-bade-a0bc3197c5bf) |
+| 1 | Teknik teşhis | seo-audit | ✅ (2026-10-24 yeniden tarandı) | `.agents/seo-audit-2026-10.md` (116 URL) · `.agents/seo-audit-2026-09.md` (106 URL) · [eski rapor sayfası](https://claude.ai/code/artifact/5db9f4b7-52d6-4b21-bade-a0bc3197c5bf) |
 | 2 | AI görünürlük temel ölçümü | ai-seo (yalnız Adım 1) | ✅ | `.agents/ai-gorunurluk-temel-2026-09.md` |
 | 3 | Rakip profilleri | competitor-profiling | ✅ | `competitor-profiles/` (5 profil + `_summary.md` + `dau-pdram.md`) |
 | 4 | İçerik boşluk analizi | content-strategy | ✅ | `.agents/icerik-stratejisi-2026-09.md` |
