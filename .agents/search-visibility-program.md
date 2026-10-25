@@ -47,6 +47,8 @@ alıntılanmayı en çok belirleyen madde bu. Y2 kapanmadan Faz 8'de anlamlı ha
 - Y1: 3 hatalı atıf düzeltildi + 5 kaynak bağlandı (`f56483f`). Kalan: B11 + 4 karar sorusu
   + 6 araştırılmamış iddia. Liste: `.agents/kaynak-inceleme-listesi.md`
 - Kurumsal danışmanlık + eğitim/atölye — kapsam teyidi bekliyor
+- **Yeni içerik kümesi (2026-10-24):** bağlanma ve erken çocukluk — 10 yazı, onaylandı.
+  Plan, sıra ve durum: `.agents/baglanma-kumesi-2026-10.md`
 - ~~K1: 98 sayfada kırık `wa.me`~~ — **çözüldü (2026-09-16):** gerçek numara `+905391232547` girildi
 
 **Faz 6 çıktısı (2026-09-08, yayında ve doğrulandı)**
