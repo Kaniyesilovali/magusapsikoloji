@@ -44,3 +44,4 @@ kart oranına (16:9) kırpılmış, ~800×450 px JPEG olarak repoda durur. TR ve
 | sosyal-fobi-utangaclik-farki.jpg | Boş bir sahnede, spot ışığının altında duran mikrofon | photo-1453090927415-5f45085b65c0 |
 | bilissel-davranisci-terapi-nedir.jpg | Ahşap bir masanın üzerinde duran, arka planı bulanık bir gözlük (unsplash.com/photos/mlQ_4Ff6YSM) | reserve/mFzm7UbxRle0Qhm5m3xM_IMG_7535.jpg |
 | psikodinamik-psikoterapi-nedir.jpg | Su yüzeyinin üstünde küçük ucu, altında büyük gövdesi görünen buzdağı (unsplash.com/photos/qjs2R1lMMcw; dikey görsel `crop=focalpoint&fp-y=0.36` ile kırpıldı) | photo-1635944095210-23114a1fb7c0 |
+| baglanma-nedir.jpg | Yeşil yaprakların arasında, içinde iki mavi yumurta duran bir kuş yuvası (unsplash.com/photos/_UQgnpzyVo0) | photo-1495863367063-b9ac3e6394f7 |

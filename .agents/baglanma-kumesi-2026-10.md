@@ -25,7 +25,7 @@ Oluşturuldu: 2026-10-24 · Durum: **onaylandı, kullanılacak**
 
 | # | Başlık | Anahtar kelime | Niyet | Huni | Tür | Zorluk | İlk kaynak | Durum |
 |---|---|---|---|---|---|---|---|---|
-| 1 | Bağlanma Nedir? Çocukta Güvenli Bağın Temelleri | bağlanma nedir | Bilgi | TOFU | Rehber (pillar) | Orta | Center on the Developing Child, Anna Freud | ☐ |
+| 1 | Bağlanma Nedir? Çocukta Güvenli Bağın Temelleri | bağlanma nedir | Bilgi | TOFU | Rehber (pillar) | Orta | APA Dictionary, Center on the Developing Child | ✅ yayında (2026-10-26): `/blog/baglanma-nedir.html` + EN `/en/blog/what-is-attachment.html`, kart görseli kuş yuvası |
 | 2 | Bebeklerde Duygusal Gelişim: 0–3 Yaş Rehberi | bebeklerde duygusal gelişim | Bilgi | TOFU | Rehber | Orta | WAIMH, Center on the Developing Child | ☐ |
 | 3 | Bebekle Etkileşim: "Ver ve Al" Nasıl Kurulur? | bebekle iletişim nasıl kurulur | Bilgi | TOFU | Nasıl yapılır | Düşük | Center on the Developing Child (*serve and return*) | ☐ |
 | 4 | Bağlanma Hakkında 6 Yanlış Bilinen | kucağa alışma şımartır mı | Bilgi | TOFU | Mit/hata | Düşük | Center on the Developing Child, SRCD | ☐ |
