@@ -196,6 +196,8 @@ $router->get('/odemeler',                    [PaymentController::class, 'index']
 $router->get('/odemeler/{id}',               [PaymentController::class, 'show']);
 $router->post('/odemeler/{id}/ucret',        [PaymentController::class, 'setFee']);
 $router->post('/odemeler/{id}/tahsilat',     [PaymentController::class, 'storePayment']);
+$router->post('/odemeler/{id}/odendi',       [PaymentController::class, 'markPaid']);
+$router->post('/odemeler/{id}/odenmedi',     [PaymentController::class, 'markUnpaid']);
 $router->post('/odemeler/tahsilat/{id}/sil', [PaymentController::class, 'destroyPayment']);
 
 $router->get('/sistem',          [SystemController::class, 'index']);

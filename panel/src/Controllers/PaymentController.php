@@ -22,8 +22,10 @@ use Panel\View;
  * tahsilat silindiğinde ya da düzeltildiğinde bayrak geride kalır, kayıtlar
  * birbirini tutmazdı.
  *
- * Terapist kendi randevularının ücret ve ödeme durumunu görür, ücreti de
- * girebilir; ama **tahsilat kaydedemez** — para alma işi merkez yönetiminde.
+ * Terapist kendi randevularının ücretini girer, tahsilatını kaydeder ve
+ * seansı tek tıkla "ödendi / ödenmedi" olarak işaretler (payment.manage.own).
+ * "Ödendi" kalan tutar kadar bir tahsilat satırı ekler, "ödenmedi" seansın
+ * tahsilat satırlarını siler — bayrak yine yok, durum yine hesaplanıyor.
  */
 final class PaymentController
 {
@@ -57,7 +59,7 @@ final class PaymentController
         }
 
         $rows = Db::all(
-            "SELECT a.id, a.starts_at, a.status, a.fee, a.client_id,
+            "SELECT a.id, a.starts_at, a.status, a.fee, a.client_id, a.therapist_id,
                     c.full_name AS client_name,
                     t.full_name AS therapist_name,
                     (SELECT COALESCE(SUM(p.amount), 0) FROM payments p WHERE p.appointment_id = a.id) AS paid
@@ -71,6 +73,7 @@ final class PaymentController
 
         foreach ($rows as $index => $row) {
             $rows[$index]['payment_status'] = $this->statusOf($row);
+            $rows[$index]['can_manage']     = $this->canManage($actor, $row);
         }
 
         $status = query('durum', 'hepsi');
@@ -119,7 +122,7 @@ final class PaymentController
             'status'      => $this->statusOf($appointment),
             'statusLabels' => self::STATUS_LABELS,
             'methods'     => self::METHODS,
-            'canManage'   => Rbac::can($actor, 'payment.manage'),
+            'canManage'   => $this->canManage($actor, $appointment),
             'canSetFee'   => $this->canSetFee($actor, $appointment),
             'actor'       => $actor,
         ]);
@@ -154,8 +157,9 @@ final class PaymentController
 
     public function storePayment(int $appointmentId): void
     {
-        $actor       = Auth::requirePermission('payment.manage');
+        $actor       = $this->requireView();
         $appointment = $this->find($appointmentId, $actor);
+        $this->requireManage($actor, $appointment);
 
         $amount = Money::parse(post('amount'));
         $method = post('method');
@@ -194,7 +198,7 @@ final class PaymentController
 
     public function destroyPayment(int $paymentId): void
     {
-        $actor = Auth::requirePermission('payment.manage');
+        $actor = $this->requireView();
 
         $payment = Db::one('SELECT * FROM payments WHERE id = ? LIMIT 1', [$paymentId]);
         if ($payment === null) {
@@ -203,7 +207,7 @@ final class PaymentController
         }
 
         $appointmentId = (int) $payment['appointment_id'];
-        $this->find($appointmentId, $actor);
+        $this->requireManage($actor, $this->find($appointmentId, $actor));
 
         Db::run('DELETE FROM payments WHERE id = ?', [$paymentId]);
         Audit::log('payment.deleted', 'appointment', $appointmentId, ['tutar' => $payment['amount']]);
@@ -212,7 +216,105 @@ final class PaymentController
         redirect("/odemeler/{$appointmentId}");
     }
 
+    /**
+     * Tek tıkla "ödendi": kalan tutar kadar bugünün tarihli bir tahsilat eklenir.
+     *
+     * Ayrı bir bayrak yazılmıyor; tahsilat satırı yazılıyor. Böylece seans
+     * sonradan kısmen iade edilse ya da yanlış işaretlense bile durum tek
+     * kaynaktan (tahsilatlar) hesaplanmaya devam eder.
+     */
+    public function markPaid(int $appointmentId): void
+    {
+        $actor       = $this->requireView();
+        $appointment = $this->find($appointmentId, $actor);
+        $this->requireManage($actor, $appointment);
+
+        $back = $this->backTo($appointmentId);
+
+        if ($appointment['fee'] === null) {
+            flash('error', 'Önce seans ücretini girin; ücret yokken "ödendi" denemez.');
+            redirect("/odemeler/{$appointmentId}");
+        }
+
+        $remaining = number_format(max(0, (float) $appointment['fee'] - (float) $appointment['paid']), 2, '.', '');
+        if (!Money::isPositive($remaining)) {
+            flash('info', 'Bu seans zaten ödenmiş görünüyor.');
+            redirect($back);
+        }
+
+        $method = post('method', 'cash');
+        if (!array_key_exists($method, self::METHODS)) {
+            $method = 'cash';
+        }
+
+        Db::run(
+            'INSERT INTO payments (appointment_id, amount, method, paid_at, note, created_by, created_at)
+             VALUES (?, ?, ?, NOW(), ?, ?, NOW())',
+            [$appointmentId, $remaining, $method, 'Ödendi olarak işaretlendi', $actor['id']]
+        );
+        Audit::log('payment.recorded', 'appointment', $appointmentId, ['tutar' => $remaining, 'yontem' => $method, 'isaret' => 'odendi']);
+
+        flash('success', $appointment['client_name'] . ' · ' . Money::format($remaining) . ' ödendi olarak işaretlendi.');
+        redirect($back);
+    }
+
+    /**
+     * Tek tıkla "ödenmedi": seansın bütün tahsilat satırları silinir.
+     * Yanlışlıkla "ödendi" denmiş seansı geri almanın yolu bu.
+     */
+    public function markUnpaid(int $appointmentId): void
+    {
+        $actor       = $this->requireView();
+        $appointment = $this->find($appointmentId, $actor);
+        $this->requireManage($actor, $appointment);
+
+        $back = $this->backTo($appointmentId);
+
+        $deleted = Db::run('DELETE FROM payments WHERE appointment_id = ?', [$appointmentId])->rowCount();
+        Audit::log('payment.deleted', 'appointment', $appointmentId, ['tutar' => $appointment['paid'], 'isaret' => 'odenmedi']);
+
+        flash('success', $deleted > 0
+            ? $appointment['client_name'] . ' seansı ödenmedi olarak işaretlendi.'
+            : 'Bu seans için zaten tahsilat kaydı yok.');
+        redirect($back);
+    }
+
     // ── Yardımcılar ─────────────────────────────────────────────
+
+    /**
+     * Tahsilat yazma: yönetim her seansta, terapist yalnız kendi seansında.
+     * Rol açıkça aranır — canSetFee ile aynı gerekçe.
+     */
+    private function canManage(array $actor, array $appointment): bool
+    {
+        return Rbac::can($actor, 'payment.manage')
+            || (Rbac::can($actor, 'payment.manage.own')
+                && $actor['role'] === Rbac::THERAPIST
+                && (int) $appointment['therapist_id'] === (int) $actor['id']);
+    }
+
+    private function requireManage(array $actor, array $appointment): void
+    {
+        if (!$this->canManage($actor, $appointment)) {
+            Audit::log('access.denied', 'appointment', (int) $appointment['id'], ['reason' => 'tahsilat']);
+            View::error(403, 'Yetkiniz yok', 'Bu seansın tahsilatını değiştiremezsiniz.');
+            exit;
+        }
+    }
+
+    /**
+     * Listeden işaretlendiyse aynı filtrelerle listeye, değilse seans sayfasına
+     * dönülür. Yalnız /odemeler altındaki yerel adreslere izin verilir.
+     */
+    private function backTo(int $appointmentId): string
+    {
+        $back = post('geri');
+        if (preg_match('#^/odemeler(\?[^\s]*)?$#', $back) === 1) {
+            return $back;
+        }
+        return "/odemeler/{$appointmentId}";
+    }
+
 
     private function requireView(): array
     {

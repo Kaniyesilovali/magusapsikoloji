@@ -77,8 +77,31 @@ $remaining = $appointment['fee'] === null
 <?php endif; ?>
 
 <section class="sheet mb-6">
-  <div class="sheet-head">
+  <div class="sheet-head flex flex-wrap items-center justify-between gap-2">
     <h2 class="sheet-title">Tahsilatlar</h2>
+    <?php if ($canManage): ?>
+      <div class="flex items-center gap-2">
+        <?php if ($remaining !== null && Money::isPositive($remaining)): ?>
+          <form method="post" action="<?= e(url("/odemeler/{$appointment['id']}/odendi")) ?>" class="flex items-center gap-2">
+            <?= Csrf::field() ?>
+            <label for="quick_method" class="sr-only">Yöntem</label>
+            <select id="quick_method" name="method" class="field w-auto py-1.5 text-[0.8125rem]">
+              <?php foreach ($methods as $value => $label): ?>
+                <option value="<?= e($value) ?>"><?= e($label) ?></option>
+              <?php endforeach; ?>
+            </select>
+            <button class="btn btn-primary btn-sm">Ödendi olarak işaretle</button>
+          </form>
+        <?php endif; ?>
+        <?php if ($payments !== []): ?>
+          <form method="post" action="<?= e(url("/odemeler/{$appointment['id']}/odenmedi")) ?>"
+                data-confirm="Bu seansın bütün tahsilat kayıtları silinip ödenmedi yapılsın mı?">
+            <?= Csrf::field() ?>
+            <button class="btn btn-quiet btn-sm">Ödenmedi yap</button>
+          </form>
+        <?php endif; ?>
+      </div>
+    <?php endif; ?>
   </div>
 
   <?php if ($payments === []): ?>
@@ -140,7 +163,7 @@ $remaining = $appointment['fee'] === null
     <p class="sheet-foot text-xs text-ink-light">
       <?= $isClient
           ? 'Ödemeleriniz merkez tarafından kaydedilir; burada göründükleri hâl kayıtlardaki hâlleridir. Eksik ya da hatalı gördüğünüz bir tutar varsa merkeze bildirin.'
-          : 'Tahsilat kaydı merkez yönetimi tarafından girilir. Ücreti siz belirleyebilirsiniz.' ?>
+          : 'Bu seans başka bir terapiste ait; tahsilatını o terapist ya da merkez yönetimi girer.' ?>
     </p>
   <?php endif; ?>
 </section>

@@ -75,8 +75,12 @@ final class Rbac
             'appointment.view.team',
             'availability.manage.own',
             // Terapist kendi seanslarının ücret/ödeme durumunu görür ve ücreti
-            // girebilir; tahsilat kaydı (payment.manage) merkez yönetimindedir.
-            'payment.view.own',
+            // girebilir. Ücreti çoğu zaman seansın sonunda kendisi aldığı için
+            // tahsilatı da kendi seanslarında kaydeder, siler ve "ödendi /
+            // ödenmedi" olarak işaretler (terapistlerin isteği, 2026-11-23).
+            // Başka terapistin seansındaki tahsilata dokunamaz; tüm merkezin
+            // tahsilatı (payment.manage) yine yönetimde.
+            'payment.view.own', 'payment.manage.own',
             'note.write', 'note.read.own',
             // Seanslar arası check-in tedavinin takibi: eğriyi okuyan ve
             // bağlantıyı gönderen, süreci yürüten terapisttir. Yöneticide

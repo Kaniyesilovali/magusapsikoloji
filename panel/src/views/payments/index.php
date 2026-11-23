@@ -1,4 +1,5 @@
 <?php
+use Panel\Csrf;
 use Panel\Money;
 use Panel\Rbac;
 /** @var array $rows @var array $totals @var DateTimeImmutable $from @var DateTimeImmutable $to */
@@ -24,6 +25,9 @@ $link = static function (array $params) use ($status, $therapistFilter, $isMonth
     }
     return url('/odemeler?' . http_build_query($params));
 };
+
+// Hızlı işaretten sonra aynı filtreli listeye dönülsün diye o anki adres taşınır.
+$here = '/odemeler' . (($_SERVER['QUERY_STRING'] ?? '') !== '' ? '?' . $_SERVER['QUERY_STRING'] : '');
 
 // "Kısmi" de "ödenmedi" gibi bir bakiye demek — ikisi de insan kararı bekliyor,
 // bu yüzden aynı rozeti taşırlar; farkı metin söyler.
@@ -217,7 +221,7 @@ if (!Rbac::can($actor, 'payment.view.all')) {
 
 <div class="sheet"
      data-tour="22" data-tour-title="Ücret ile tahsilat ayrı şeyler"
-     data-tour-text="Her satır bir seans. “Ücret” o seansın fiyatı, “Tahsil” bugüne kadar alınan tutar; ikisi arasındaki fark durumu belirler. Satıra girip ücreti yazabilir, kısmi tahsilat ekleyebilirsiniz — bir seans birden çok ödemeyle kapanabilir.">
+     data-tour-text="Her satır bir seans. “Ücret” o seansın fiyatı, “Tahsil” bugüne kadar alınan tutar; ikisi arasındaki fark durumu belirler. Kendi seanslarınızı satırdaki “Ödendi / Ödenmedi” ile tek tıkla işaretleyebilirsiniz; tutar, yöntem ya da kısmi tahsilat için satırı açın — bir seans birden çok ödemeyle kapanabilir.">
   <?php if ($rows === []): ?>
     <p class="sheet-empty">Bu aralıkta kayıt yok.</p>
   <?php else: ?>
@@ -262,8 +266,27 @@ if (!Rbac::can($actor, 'payment.view.all')) {
                   <?= e($statusLabels[$row['payment_status']]) ?>
                 </span>
               </td>
-              <td class="text-right">
-                <a href="<?= e(url("/odemeler/{$row['id']}")) ?>" class="btn-text btn-text-quiet">Aç</a>
+              <td class="text-right whitespace-nowrap">
+                <?php // Hızlı işaret: ücreti girilmiş ve bakiyesi olan seans "ödendi"
+                      // yapılır (kalan tutar nakit olarak eklenir); ödenmiş ya da
+                      // kısmi seans "ödenmedi"ye döndürülür (tahsilatları silinir).
+                      // Yöntem/tutar/tarih ayrıntısı için satır açılır. ?>
+                <?php if (!empty($row['can_manage']) && in_array($row['payment_status'], ['odenmedi', 'kismi'], true)): ?>
+                  <form method="post" action="<?= e(url("/odemeler/{$row['id']}/odendi")) ?>" class="inline">
+                    <?= Csrf::field() ?>
+                    <input type="hidden" name="geri" value="<?= e($here) ?>">
+                    <button class="btn btn-quiet btn-sm">Ödendi</button>
+                  </form>
+                <?php endif; ?>
+                <?php if (!empty($row['can_manage']) && in_array($row['payment_status'], ['odendi', 'kismi'], true)): ?>
+                  <form method="post" action="<?= e(url("/odemeler/{$row['id']}/odenmedi")) ?>" class="inline"
+                        data-confirm="<?= e($row['client_name']) ?> seansının tahsilat kayıtları silinip ödenmedi yapılsın mı?">
+                    <?= Csrf::field() ?>
+                    <input type="hidden" name="geri" value="<?= e($here) ?>">
+                    <button class="btn-text btn-text-quiet hover:text-accent-dark">Ödenmedi</button>
+                  </form>
+                <?php endif; ?>
+                <a href="<?= e(url("/odemeler/{$row['id']}")) ?>" class="btn-text btn-text-quiet ml-2">Aç</a>
               </td>
             </tr>
           <?php endforeach; ?>
