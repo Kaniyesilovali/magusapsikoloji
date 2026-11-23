@@ -35,6 +35,7 @@ aksi hâlde `npm run build` onları `_site/panel/` içine kopyalar ve yayına ç
 | Tüm randevular | ✔ | ✔ | kendi randevuları | kendi randevuları (salt okunur) |
 | Ekip takvimi (diğer terapistlerin randevuları: saat, süre, yer, durum, birey adı — salt okunur; telefon/not/ücret yok) | ✔ | ✔ | ✔ | — |
 | Ödeme/borç durumu | ✔ | ✔ | kendi seanslarının ücreti | kendi seansları (salt okunur) |
+| Raporlar (aylık seyir, gün × saat, gün/saat/seans türü yoğunluğu, gelmeme, doluluk) | ✔ (tüm merkez + gelir) | ✔ (tüm merkez + gelir) | yalnız kendi seansları, gelir yok | — |
 | Randevu oluştur/düzenle/iptal | ✔ | ✔ | kendi takvimine | — |
 | Çalışma saati ve izin tanımla | ✔ | ✔ | kendi müsaitliği | — |
 | Onam formunu düzenle | ✔ | ✔ | — | — |

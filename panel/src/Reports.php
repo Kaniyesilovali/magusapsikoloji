@@ -136,6 +136,151 @@ final class Reports
         return $out;
     }
 
+    // ── Yoğunluk ────────────────────────────────────────────────
+
+    /**
+     * Randevuların gün, saat ve seans türüne göre dağılımı.
+     *
+     * Sayılan şey **ayrılmış saat**: iptal edilenler dışarıda, gelmeyenler
+     * içeride. Gelmeyen bireyin saati yine de o gün o saatte tutulmuştu;
+     * yoğunluk sorusu "kim geldi" değil "takvim ne zaman doluyor".
+     *
+     * Saat, seansın başladığı saattir (09:30 → 09). Sütun aralığı veriden
+     * kurulur ama en az 09–18 gösterilir; tek seanslık bir ayda tablo tek
+     * sütuna çökmesin.
+     *
+     * @return array{total:int,grid:array<int,array<int,int>>,byWeekday:array<int,int>,
+     *               byHour:array<int,int>,hours:list<int>,byType:array<string,int>,
+     *               typeWeekday:array<string,array<int,int>>,typeHour:array<string,array<int,int>>,
+     *               typesReady:bool}
+     */
+    public static function density(DateTimeImmutable $from, DateTimeImmutable $to, ?int $therapistId = null, ?string $type = null): array
+    {
+        [$where, $params] = self::scope($from, $to, $therapistId);
+        $typesReady = Schema::sessionTypesReady();
+
+        if ($type !== null && $typesReady) {
+            $where   .= ' AND a.session_type = ?';
+            $params[] = $type;
+        }
+
+        $rows = Db::all(
+            'SELECT a.starts_at, ' . ($typesReady ? 'a.session_type' : 'NULL AS session_type')
+            . " FROM appointments a WHERE {$where} AND a.status <> 'cancelled'",
+            $params
+        );
+
+        $grid = $byWeekday = $byHour = $byType = $typeWeekday = $typeHour = [];
+        foreach ($rows as $row) {
+            $at   = new DateTimeImmutable((string) $row['starts_at']);
+            $wd   = (int) $at->format('N');
+            $hour = (int) $at->format('G');
+            $kind = (string) ($row['session_type'] ?? '') ?: 'none';
+
+            $grid[$wd][$hour]         = ($grid[$wd][$hour] ?? 0) + 1;
+            $byWeekday[$wd]           = ($byWeekday[$wd] ?? 0) + 1;
+            $byHour[$hour]            = ($byHour[$hour] ?? 0) + 1;
+            $byType[$kind]            = ($byType[$kind] ?? 0) + 1;
+            $typeWeekday[$kind][$wd]  = ($typeWeekday[$kind][$wd] ?? 0) + 1;
+            $typeHour[$kind][$hour]   = ($typeHour[$kind][$hour] ?? 0) + 1;
+        }
+
+        $first = $byHour === [] ? 9  : min(9,  min(array_keys($byHour)));
+        $last  = $byHour === [] ? 18 : max(18, max(array_keys($byHour)));
+
+        // Türler sabit sırada (Scheduling::SESSION_TYPES), türü girilmemiş eski
+        // kayıtlar en sonda — sayıya göre sıralamak her ay sırayı değiştirirdi.
+        $orderedTypes = [];
+        foreach ([...array_keys(Scheduling::SESSION_TYPES), 'none'] as $key) {
+            if (isset($byType[$key])) {
+                $orderedTypes[$key] = $byType[$key];
+            }
+        }
+
+        return [
+            'total'       => count($rows),
+            'grid'        => $grid,
+            'byWeekday'   => $byWeekday,
+            'byHour'      => $byHour,
+            'hours'       => range($first, $last),
+            'byType'      => $orderedTypes,
+            'typeWeekday' => $typeWeekday,
+            'typeHour'    => $typeHour,
+            'typesReady'  => $typesReady,
+        ];
+    }
+
+    /**
+     * Aylık seyir: seçilen aydan geriye $months ay, her ay için durum dağılımı.
+     *
+     * "Seans" sütunu iptal dışındaki her şey (yoğunlukla aynı tanım); iptaller
+     * ayrıca gösteriliyor ki seyirdeki bir düşüşün iptalden mi, az randevudan
+     * mı geldiği okunabilsin.
+     *
+     * @return list<array{month:DateTimeImmutable,booked:int,completed:int,noShow:int,cancelled:int,types:array<string,int>}>
+     */
+    public static function trend(DateTimeImmutable $lastMonth, int $months, ?int $therapistId = null, ?string $type = null): array
+    {
+        $from = $lastMonth->modify(sprintf('-%d months', $months - 1));
+        $to   = $lastMonth->modify('+1 month');
+
+        [$where, $params] = self::scope($from, $to, $therapistId);
+        $typesReady = Schema::sessionTypesReady();
+
+        if ($type !== null && $typesReady) {
+            $where   .= ' AND a.session_type = ?';
+            $params[] = $type;
+        }
+
+        $out = [];
+        for ($month = $from; $month < $to; $month = $month->modify('+1 month')) {
+            $out[$month->format('Y-m')] = [
+                'month' => $month, 'booked' => 0, 'completed' => 0, 'noShow' => 0, 'cancelled' => 0, 'types' => [],
+            ];
+        }
+
+        $rows = Db::all(
+            'SELECT a.starts_at, a.status, ' . ($typesReady ? 'a.session_type' : 'NULL AS session_type')
+            . " FROM appointments a WHERE {$where}",
+            $params
+        );
+
+        foreach ($rows as $row) {
+            $key = substr((string) $row['starts_at'], 0, 7);
+            if (!isset($out[$key])) {
+                continue;
+            }
+            $status = (string) $row['status'];
+            if ($status === 'cancelled') {
+                $out[$key]['cancelled']++;
+                continue;
+            }
+            $out[$key]['booked']++;
+            if ($status === 'completed') {
+                $out[$key]['completed']++;
+            } elseif ($status === 'no_show') {
+                $out[$key]['noShow']++;
+            }
+            $kind = (string) ($row['session_type'] ?? '') ?: 'none';
+            $out[$key]['types'][$kind] = ($out[$key]['types'][$kind] ?? 0) + 1;
+        }
+
+        return array_values($out);
+    }
+
+    /**
+     * Isı hücresinin tonu: 0 boş, 1–5 en yoğuna göre beşte bir dilimler.
+     * Göreli ölçek bilinçli: bir terapistin "en yoğun saati" kendi takvimine
+     * göre okunur, merkezin en yoğun saatine göre değil.
+     */
+    public static function level(int $value, int $max, int $steps = 5): int
+    {
+        if ($value <= 0 || $max <= 0) {
+            return 0;
+        }
+        return max(1, (int) ceil($value / $max * $steps));
+    }
+
     // ── İç işler ────────────────────────────────────────────────
 
     /**

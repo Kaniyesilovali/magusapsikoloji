@@ -27,7 +27,7 @@ $groups = [
         ['path' => '/check-in-sorulari', 'label' => 'Check-in', 'icon' => 'checkin', 'permissions' => ['checkin.manage']],
         ['path' => '/musaitlik',   'label' => 'Müsaitlik',    'icon' => 'musaitlik',    'permissions' => ['availability.manage.all', 'availability.manage.own']],
         ['path' => '/odemeler',    'label' => 'Ödemeler',     'icon' => 'odemeler',     'permissions' => ['payment.view.all', 'payment.view.own']],
-        ['path' => '/raporlar',    'label' => 'Raporlar',     'icon' => 'raporlar',     'permissions' => ['payment.view.all']],
+        ['path' => '/raporlar',    'label' => 'Raporlar',     'icon' => 'raporlar',     'permissions' => ['report.view.all', 'report.view.own']],
     ]],
     ['label' => 'Site', 'items' => [
         ['path' => '/icerik',      'label' => 'Site içeriği', 'icon' => 'icerik',       'permissions' => ['content.manage']],

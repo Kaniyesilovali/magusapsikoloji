@@ -33,6 +33,7 @@ final class Rbac
             'appointment.view.all', 'appointment.create', 'appointment.update', 'appointment.cancel',
             'availability.manage.all',
             'payment.view.all', 'payment.manage',
+            'report.view.all',
             'audit.view', 'settings.manage', 'consent.manage', 'content.manage',
             // Soru metni ve haftalık gönderim listesi (bkz. checkin.manage).
             'checkin.manage',
@@ -45,6 +46,7 @@ final class Rbac
             'appointment.view.all', 'appointment.create', 'appointment.update', 'appointment.cancel',
             'availability.manage.all',
             'payment.view.all', 'payment.manage',
+            'report.view.all',
             // KVKK metni işletme belgesidir, güvenlik ayarı değil: admin de düzenleyebilir.
             'consent.manage', 'content.manage',
             // Aynı gerekçe check-in'in idari yüzü için de geçerli: sorunun
@@ -81,6 +83,13 @@ final class Rbac
             // Başka terapistin seansındaki tahsilata dokunamaz; tüm merkezin
             // tahsilatı (payment.manage) yine yönetimde.
             'payment.view.own', 'payment.manage.own',
+            // Raporlar ekranı terapiste YALNIZ kendi seanslarıyla açılır:
+            // aylık seyir, gün/saat yoğunluğu, seans türü dağılımı, kendi
+            // doluluğu (terapistlerin isteği, 2026-11-23). Terapist seçimi
+            // kilitli; merkez geliri ve başka terapistlerin sayıları bu
+            // görünüme gelmez — "kim ne kadar doldu" karşılaştırması yine
+            // yalnız yönetimde (report.view.all).
+            'report.view.own',
             'note.write', 'note.read.own',
             // Seanslar arası check-in tedavinin takibi: eğriyi okuyan ve
             // bağlantıyı gönderen, süreci yürüten terapisttir. Yöneticide
