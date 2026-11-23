@@ -263,12 +263,12 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
     </div>
     <div>
       <label for="start_time" class="field-label">Başlangıç</label>
-      <input type="time" id="start_time" name="start_time" required value="09:00"
+      <input type="text" inputmode="numeric" autocomplete="off" maxlength="5" size="5" placeholder="14:00" pattern="([01]?[0-9]|2[0-3])([:.]?[0-5][0-9])?" title="24 saat biçiminde yazın, örn. 14:00" data-time id="start_time" name="start_time" required value="09:00"
              class="field w-auto py-1.5 text-[0.8125rem] num">
     </div>
     <div>
       <label for="end_time" class="field-label">Bitiş</label>
-      <input type="time" id="end_time" name="end_time" required value="18:00"
+      <input type="text" inputmode="numeric" autocomplete="off" maxlength="5" size="5" placeholder="14:00" pattern="([01]?[0-9]|2[0-3])([:.]?[0-5][0-9])?" title="24 saat biçiminde yazın, örn. 14:00" data-time id="end_time" name="end_time" required value="18:00"
              class="field w-auto py-1.5 text-[0.8125rem] num">
     </div>
     <button class="btn btn-primary btn-sm">Ekle</button>
@@ -322,7 +322,7 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
         <input type="date" id="start_date" name="start_date" required
                class="field w-auto py-1.5 text-[0.8125rem] num">
         <label for="leave_start_time" class="sr-only">Başlangıç saati</label>
-        <input type="time" id="leave_start_time" name="start_time" required value="00:00"
+        <input type="text" inputmode="numeric" autocomplete="off" maxlength="5" size="5" placeholder="14:00" pattern="([01]?[0-9]|2[0-3])([:.]?[0-5][0-9])?" title="24 saat biçiminde yazın, örn. 14:00" data-time id="leave_start_time" name="start_time" required value="00:00"
                class="field w-auto py-1.5 text-[0.8125rem] num">
       </div>
     </div>
@@ -332,7 +332,7 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
         <input type="date" id="end_date" name="end_date" required
                class="field w-auto py-1.5 text-[0.8125rem] num">
         <label for="leave_end_time" class="sr-only">Bitiş saati</label>
-        <input type="time" id="leave_end_time" name="end_time" required value="23:59"
+        <input type="text" inputmode="numeric" autocomplete="off" maxlength="5" size="5" placeholder="14:00" pattern="([01]?[0-9]|2[0-3])([:.]?[0-5][0-9])?" title="24 saat biçiminde yazın, örn. 14:00" data-time id="leave_end_time" name="end_time" required value="23:59"
                class="field w-auto py-1.5 text-[0.8125rem] num">
       </div>
     </div>

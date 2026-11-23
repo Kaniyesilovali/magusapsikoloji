@@ -167,6 +167,30 @@ final class Scheduling
     }
 
     /**
+     * Elle yazılmış saati 24 saatlik 'HH:MM' biçimine çevirir; geçersizse null.
+     *
+     * Saat alanları tarayıcının type="time" kutusu değil, düz metin: o kutu
+     * AM/PM'i işletim sisteminin dil ayarından alıyor ve sayfa bunu
+     * değiştiremiyor. Kabul edilenler: '14:00', '14.00', '9:30', '14', '1400',
+     * '930' ve tarayıcıların gönderebildiği saniyeli '14:00:00'.
+     */
+    public static function normalizeTime(string $time): ?string
+    {
+        $time = trim($time);
+        if (preg_match('/^(\d{1,2})[:.](\d{2})(?::\d{2})?$/', $time, $m) === 1) {
+            [$hour, $minute] = [(int) $m[1], (int) $m[2]];
+        } elseif (preg_match('/^\d{1,2}$/', $time) === 1) {
+            [$hour, $minute] = [(int) $time, 0];
+        } elseif (preg_match('/^(\d{1,2})(\d{2})$/', $time, $m) === 1) {
+            [$hour, $minute] = [(int) $m[1], (int) $m[2]];
+        } else {
+            return null;
+        }
+
+        return $hour <= 23 && $minute <= 59 ? sprintf('%02d:%02d', $hour, $minute) : null;
+    }
+
+    /**
      * Form alanlarından ('2026-07-22' + '14:30') geçerli bir başlangıç zamanı üretir.
      * Geçersizse null döner — çağıran taraf doğrulama hatası yazar.
      */
@@ -175,8 +199,10 @@ final class Scheduling
         if ($date === '' || $time === '') {
             return null;
         }
-        // 'H:i:s' de kabul edilsin: bazı tarayıcılar saniyeli değer gönderir.
-        $time  = mb_substr($time, 0, 5);
+        $time = self::normalizeTime($time);
+        if ($time === null) {
+            return null;
+        }
         $value = DateTimeImmutable::createFromFormat('Y-m-d H:i', $date . ' ' . $time);
         if ($value === false) {
             return null;

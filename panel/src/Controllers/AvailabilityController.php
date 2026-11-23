@@ -426,9 +426,9 @@ final class AvailabilityController
     /** 'HH:MM' → 'HH:MM:00'; geçersizse null. */
     private function time(string $value): ?string
     {
-        return preg_match('/^([01]\d|2[0-3]):[0-5]\d$/', mb_substr($value, 0, 5)) === 1
-            ? mb_substr($value, 0, 5) . ':00'
-            : null;
+        $time = Scheduling::normalizeTime($value);
+
+        return $time === null ? null : $time . ':00';
     }
 
     private function therapistOptions(): array

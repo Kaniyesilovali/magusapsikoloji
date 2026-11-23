@@ -567,4 +567,27 @@
     locked.forEach(function (button) { button.disabled = false; });
     locked.length = 0;
   });
+
+  // Saat alanları (data-time) düz metin: type="time" AM/PM'i işletim
+  // sisteminin dil ayarından alıyor. Alandan çıkınca yazılan 24 saatlik
+  // HH:MM'e çevrilir — '14' → 14:00, '1430' / '14.30' → 14:30, '930' → 09:30.
+  // Kurallar Scheduling::normalizeTime ile aynı; sunucu da ayrıca doğrular.
+  function normalizeTime(value) {
+    var m = value.trim().match(/^(\d{1,2})(?:[:.]?(\d{2}))?$/);
+    if (!m) return null;
+
+    var hour = parseInt(m[1], 10);
+    var minute = m[2] === undefined ? 0 : parseInt(m[2], 10);
+    if (hour > 23 || minute > 59) return null;
+
+    return (hour < 10 ? '0' : '') + hour + ':' + (minute < 10 ? '0' : '') + minute;
+  }
+
+  document.addEventListener('focusout', function (event) {
+    var field = event.target;
+    if (!(field instanceof HTMLInputElement) || !field.hasAttribute('data-time')) return;
+
+    var normalized = normalizeTime(field.value);
+    if (normalized !== null) field.value = normalized;
+  });
 })();

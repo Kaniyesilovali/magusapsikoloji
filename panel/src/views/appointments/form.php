@@ -92,7 +92,7 @@ $needsAck    = error_for('confirm_warnings') !== null;
       </div>
       <div>
         <label for="time" class="field-label">Saat</label>
-        <input type="time" id="time" name="time" required class="field num"
+        <input type="text" inputmode="numeric" autocomplete="off" maxlength="5" size="5" placeholder="14:00" pattern="([01]?[0-9]|2[0-3])([:.]?[0-5][0-9])?" title="24 saat biçiminde yazın, örn. 14:00" data-time id="time" name="time" required class="field num"
                value="<?= e($field('time', $startsAt !== null ? substr($startsAt, 11, 5) : '')) ?>">
       </div>
       <div>
