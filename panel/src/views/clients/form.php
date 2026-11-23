@@ -64,6 +64,24 @@ $consentOnline = $isNew ? null : Panel\Consent::latestOnline((int) $client['id']
       </div>
     </div>
 
+    <?php if (Panel\Schema::sessionTypesReady()): ?>
+      <div class="sm:w-1/2 sm:pr-2">
+        <label for="session_type" class="field-label">Seans türü</label>
+        <?php $selectedType = $field('session_type', (string) ($client['session_type'] ?? '')); ?>
+        <select id="session_type" name="session_type" required class="field">
+          <option value="" disabled <?= $selectedType === '' ? 'selected' : '' ?>>— seçin —</option>
+          <?php foreach (Panel\Scheduling::SESSION_TYPES as $value => $label): ?>
+            <option value="<?= e($value) ?>" <?= $selectedType === $value ? 'selected' : '' ?>><?= e($label) ?></option>
+          <?php endforeach; ?>
+        </select>
+        <?php if ($message = error_for('session_type')): ?>
+          <p class="field-error"><?= e($message) ?></p>
+        <?php else: ?>
+          <p class="field-hint">Yeni randevu formunda bu tür hazır seçili gelir; randevuda değiştirilebilir.</p>
+        <?php endif; ?>
+      </div>
+    <?php endif; ?>
+
     <div>
       <label for="email" class="field-label">
         E-posta <span class="font-normal text-ink-light">(isteğe bağlı)</span>

@@ -590,4 +590,23 @@
     var normalized = normalizeTime(field.value);
     if (normalized !== null) field.value = normalized;
   });
+
+  // Bir seçim başka bir seçimi ön doldurur: seçilen <option>'ın data-fill
+  // değeri, data-fill-target'taki alana yazılır (yeni randevu → bireyin seans
+  // türü). Hedef elle değiştirildiyse bir daha üzerine yazılmaz — kullanıcının
+  // kararı ön değerden önce gelir.
+  document.querySelectorAll('select[data-fill-target]').forEach(function (source) {
+    var target = document.querySelector(source.getAttribute('data-fill-target'));
+    if (!target) return;
+
+    var touched = false;
+    target.addEventListener('change', function () { touched = true; });
+
+    source.addEventListener('change', function () {
+      if (touched) return;
+      var option = source.options[source.selectedIndex];
+      var value = option ? option.getAttribute('data-fill') : null;
+      if (value) target.value = value;
+    });
+  });
 })();

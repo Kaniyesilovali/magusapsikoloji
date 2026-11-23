@@ -304,6 +304,9 @@ $manualInvite = Invites::pending('client');
             <li class="px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1 <?= $index > 0 ? 'border-t border-warm-secondary' : '' ?>">
               <span class="text-sm text-ink num w-36 shrink-0"><?= e(dt($appointment['starts_at'])) ?></span>
               <span class="text-sm text-ink-muted flex-1 min-w-40"><?= e($appointment['therapist_name']) ?></span>
+              <?php if (($appointment['session_type'] ?? null) !== null): ?>
+                <span class="text-xs text-ink-light"><?= e(Scheduling::sessionTypeLabel($appointment['session_type'])) ?></span>
+              <?php endif; ?>
               <span class="text-xs text-ink-light"><?= e(Scheduling::locationLabel($appointment['location'])) ?></span>
               <span class="chip <?= $chip[$appointment['status']] ?? 'chip-neutral' ?>">
                 <?= e(Scheduling::statusLabel($appointment['status'])) ?>
@@ -341,6 +344,12 @@ $manualInvite = Invites::pending('client');
             <?php if ($age !== null): ?><span class="text-ink-light">(<?= $age ?>)</span><?php endif; ?>
           </dd>
         </div>
+        <?php if (array_key_exists('session_type', $client)): ?>
+          <div class="px-5 py-3 border-t border-warm-secondary">
+            <dt class="eyebrow">Seans türü</dt>
+            <dd class="text-sm text-ink mt-0.5"><?= e(Scheduling::sessionTypeLabel($client['session_type'])) ?></dd>
+          </div>
+        <?php endif; ?>
 
         <div class="px-5 py-3 border-t border-warm-secondary">
           <dt class="eyebrow">Onam</dt>

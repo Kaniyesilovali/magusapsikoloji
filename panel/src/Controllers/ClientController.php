@@ -19,6 +19,7 @@ use Panel\Patterns;
 use Panel\Rbac;
 use Panel\Scales;
 use Panel\Schema;
+use Panel\Scheduling;
 use Panel\View;
 use PDOException;
 
@@ -459,6 +460,8 @@ final class ClientController
             ]
         );
 
+        $this->applySessionType($clientId, $input['session_type']);
+
         // Onam sütunları doğrudan yazılmıyor: kutucuk "form okundu ve
         // imzalandı" demek ve bunun bir kaydı olmalı — kim işaretledi, hangi
         // sürüme, hangi yolla. Consent tek kapı (bkz. Consent::record).
@@ -549,6 +552,8 @@ final class ClientController
                 $id,
             ]
         );
+
+        $this->applySessionType($id, $input['session_type']);
 
         // Onam sütunları bu UPDATE'in dışında: kutucuğun iki yönü de artık bir
         // OLAY ve olayın kaydı tutuluyor (bkz. Consent).
@@ -799,7 +804,21 @@ final class ClientController
             'birth_date'           => post('birth_date') !== '' ? post('birth_date') : null,
             'primary_therapist_id' => $therapistId !== '' ? (int) $therapistId : null,
             'consent'              => isset($_POST['consent']),
+            'session_type'         => post('session_type'),
         ];
+    }
+
+    /**
+     * Seans türü ayrı bir UPDATE ile yazılır: sütun, 014 göçü uygulanana kadar
+     * yoktur ve ana INSERT'i ona bağlamak birey kaydını tamamen bozardı
+     * (bkz. AppointmentController::applyFee). Alan formda yoksa dokunulmaz.
+     */
+    private function applySessionType(int $clientId, string $type): void
+    {
+        if (!array_key_exists('session_type', $_POST) || !Schema::sessionTypesReady()) {
+            return;
+        }
+        Db::run('UPDATE clients SET session_type = ? WHERE id = ?', [$type, $clientId]);
     }
 
     private function validate(array $input, ?array $current, array $actor): array
@@ -816,6 +835,9 @@ final class ClientController
         if ($input['primary_therapist_id'] === null && !Rbac::can($actor, 'client.view.all')) {
             $errors['primary_therapist_id'] = 'Birincil terapist seçilmeli — '
                 . 'atama yapılmayan kayıt sizin listenizde görünmez.';
+        }
+        if (Schema::sessionTypesReady() && !array_key_exists($input['session_type'], Scheduling::SESSION_TYPES)) {
+            $errors['session_type'] = 'Seans türünü seçin.';
         }
         if ($input['phone'] !== null && !preg_match('/^[0-9 +()-]{7,20}$/', $input['phone'])) {
             $errors['phone'] = 'Telefon numarası geçersiz.';

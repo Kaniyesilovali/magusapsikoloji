@@ -34,6 +34,16 @@ final class Scheduling
         'online' => 'Online',
     ];
 
+    /** Seans türü (014_seans_turu). Hem birey kaydında hem randevuda aynı liste. */
+    public const SESSION_TYPES = [
+        'child'      => 'Çocuk',
+        'adolescent' => 'Ergen',
+        'adult'      => 'Yetişkin',
+        'couple'     => 'Çift',
+        'family'     => 'Aile',
+        'group'      => 'Grup',
+    ];
+
     /** ISO-8601: 1 = Pazartesi … 7 = Pazar (working_hours.weekday ile aynı). */
     public const WEEKDAYS = [
         1 => 'Pazartesi',
@@ -53,6 +63,11 @@ final class Scheduling
     public static function locationLabel(?string $location): string
     {
         return self::LOCATIONS[$location] ?? '—';
+    }
+
+    public static function sessionTypeLabel(?string $type): string
+    {
+        return self::SESSION_TYPES[$type] ?? '—';
     }
 
     public static function weekdayLabel(int $weekday): string

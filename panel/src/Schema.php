@@ -133,6 +133,18 @@ final class Schema
             && self::hasTable('consent_versions');
     }
 
+    /**
+     * Seans türü (014_seans_turu) uygulanmış mı?
+     *
+     * Uygulanmadan da birey ve randevu formları eskisi gibi çalışır: alan
+     * hiç çizilmez, kayıt olmayan sütuna yazmaya çalışmaz.
+     */
+    public static function sessionTypesReady(): bool
+    {
+        return self::hasColumn('appointments', 'session_type')
+            && self::hasColumn('clients', 'session_type');
+    }
+
     public static function hasTable(string $table): bool
     {
         $key = 'table:' . $table;

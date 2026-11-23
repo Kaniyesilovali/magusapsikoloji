@@ -52,6 +52,9 @@ use Panel\Scheduling;
                 <?php endif; ?>
               </span>
               <span class="text-xs text-ink-muted"><?= e($appointment['therapist_name']) ?></span>
+              <?php if (($appointment['session_type'] ?? null) !== null): ?>
+                <span class="text-xs text-ink-light"><?= e(Scheduling::sessionTypeLabel($appointment['session_type'])) ?></span>
+              <?php endif; ?>
               <span class="text-xs text-ink-light"><?= e(Scheduling::locationLabel($appointment['location'])) ?></span>
               <span class="chip <?= $chip[$appointment['status']] ?? 'chip-neutral' ?>"><?= e(Scheduling::statusLabel($appointment['status'])) ?></span>
             </div>

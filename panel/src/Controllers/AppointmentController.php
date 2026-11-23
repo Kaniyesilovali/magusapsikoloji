@@ -161,6 +161,8 @@ final class AppointmentController
                 'therapist_id' => $actor['role'] === Rbac::THERAPIST ? (string) $actor['id'] : '',
                 'date'         => query('tarih') !== '' ? query('tarih') : date('Y-m-d'),
                 'time'         => query('saat'),
+                // Bireyden gelindiyse kaydındaki tür hazır seçili gelir.
+                'session_type' => $this->clientSessionType((int) query('danisan'), $actor),
                 'duration_min' => (string) Scheduling::defaultDuration(
                     $actor['role'] === Rbac::THERAPIST ? (int) $actor['id'] : null
                 ),
@@ -202,6 +204,7 @@ final class AppointmentController
         );
 
         $this->applyFee($appointmentId, $input['fee']);
+        $this->applySessionType($appointmentId, $input['session_type']);
 
         Audit::log('appointment.created', 'appointment', $appointmentId, [
             'starts_at' => $start->format('Y-m-d H:i'),
@@ -265,6 +268,7 @@ final class AppointmentController
         );
 
         $this->applyFee($id, $input['fee']);
+        $this->applySessionType($id, $input['session_type']);
 
         Audit::log('appointment.updated', 'appointment', $id, [
             'starts_at' => $start->format('Y-m-d H:i'),
@@ -416,6 +420,7 @@ final class AppointmentController
             'confirm_warnings'  => post('confirm_warnings'),
             'notify'            => isset($_POST['notify']),
             'fee'               => post('fee'),
+            'session_type'      => post('session_type'),
         ];
     }
 
@@ -435,6 +440,32 @@ final class AppointmentController
         Db::run(
             'UPDATE appointments SET fee = ? WHERE id = ?',
             [$raw === '' ? null : Money::parse($raw), $appointmentId]
+        );
+    }
+
+    /**
+     * Seans türü de ücret gibi ayrı yazılır: 014 göçü uygulanmadan sütun yok.
+     * Alan formda yoksa (göç öncesi açılmış sekme) dokunulmaz.
+     */
+    private function applySessionType(int $appointmentId, string $type): void
+    {
+        if (!array_key_exists('session_type', $_POST) || !Schema::sessionTypesReady()) {
+            return;
+        }
+        Db::run('UPDATE appointments SET session_type = ? WHERE id = ?', [$type, $appointmentId]);
+    }
+
+    /** Bireyin kaydındaki seans türü — yalnız aktörün görebildiği bir kayıtsa. */
+    private function clientSessionType(int $clientId, array $actor): string
+    {
+        if ($clientId <= 0 || !Schema::sessionTypesReady()) {
+            return '';
+        }
+        [$scope, $params] = ClientScope::filter($actor);
+        array_unshift($params, $clientId);
+        return (string) Db::value(
+            "SELECT c.session_type FROM clients c WHERE c.id = ? AND ({$scope}) LIMIT 1",
+            $params
         );
     }
 
@@ -491,6 +522,10 @@ final class AppointmentController
 
         if (!array_key_exists($input['location'], Scheduling::LOCATIONS)) {
             $errors['location'] = 'Görüşme yerini seçin.';
+        }
+
+        if (Schema::sessionTypesReady() && !array_key_exists($input['session_type'], Scheduling::SESSION_TYPES)) {
+            $errors['session_type'] = 'Seans türünü seçin.';
         }
 
         if ($input['fee'] !== '' && Money::parse($input['fee']) === null) {
@@ -575,8 +610,11 @@ final class AppointmentController
         [$scope, $params] = ClientScope::filter($actor);
         $params[] = $includeId ?? 0;
 
+        // Seans türü, formda birey değişince türü ön doldurmak için taşınır.
+        $type = Schema::sessionTypesReady() ? ', c.session_type' : '';
+
         return Db::all(
-            "SELECT c.id, c.full_name FROM clients c
+            "SELECT c.id, c.full_name{$type} FROM clients c
               WHERE ({$scope}) AND (c.status = 'active' OR c.id = ?)
            ORDER BY c.full_name",
             $params

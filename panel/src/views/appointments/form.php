@@ -15,6 +15,7 @@ $field = static function (string $key, string $fallback = '') use ($defaults): s
 $startsAt    = $isNew ? null : (string) $appointment['starts_at'];
 $isTherapist = $actor['role'] === Rbac::THERAPIST;
 $needsAck    = error_for('confirm_warnings') !== null;
+$typesReady  = Panel\Schema::sessionTypesReady();
 ?>
 
 <?php // Form sayfası dar tutulur: içerik sütunu 6xl, alanlar o genişlikte okunmuyor. ?>
@@ -45,10 +46,13 @@ $needsAck    = error_for('confirm_warnings') !== null;
     <div>
       <label for="client_id" class="field-label">Birey</label>
       <?php $selectedClient = $field('client_id', (string) ($appointment['client_id'] ?? '')); ?>
-      <select id="client_id" name="client_id" required class="field">
+      <?php // Yeni randevuda birey seçilince kaydındaki seans türü ön doldurulur (panel.js, data-fill-target). ?>
+      <select id="client_id" name="client_id" required class="field"
+              <?= $isNew && $typesReady ? 'data-fill-target="#session_type"' : '' ?>>
         <option value="">— seçin —</option>
         <?php foreach ($clients as $client): ?>
-          <option value="<?= (int) $client['id'] ?>" <?= $selectedClient === (string) $client['id'] ? 'selected' : '' ?>>
+          <option value="<?= (int) $client['id'] ?>" <?= $selectedClient === (string) $client['id'] ? 'selected' : '' ?>
+                  <?= ($client['session_type'] ?? null) !== null ? 'data-fill="' . e((string) $client['session_type']) . '"' : '' ?>>
             <?= e($client['full_name']) ?>
           </option>
         <?php endforeach; ?>
@@ -109,6 +113,22 @@ $needsAck    = error_for('confirm_warnings') !== null;
     <?php endforeach; ?>
 
     <div class="grid sm:grid-cols-2 gap-4">
+      <?php if ($typesReady): ?>
+        <div>
+          <label for="session_type" class="field-label">Seans türü</label>
+          <?php $selectedType = $field('session_type', (string) ($appointment['session_type'] ?? '')); ?>
+          <select id="session_type" name="session_type" required class="field">
+            <option value="" disabled <?= $selectedType === '' ? 'selected' : '' ?>>— seçin —</option>
+            <?php foreach (Scheduling::SESSION_TYPES as $value => $label): ?>
+              <option value="<?= e($value) ?>" <?= $selectedType === $value ? 'selected' : '' ?>><?= e($label) ?></option>
+            <?php endforeach; ?>
+          </select>
+          <?php if ($message = error_for('session_type')): ?>
+            <p class="field-error"><?= e($message) ?></p>
+          <?php endif; ?>
+        </div>
+      <?php endif; ?>
+
       <div>
         <label for="location" class="field-label">Görüşme yeri</label>
         <?php $selectedLocation = $field('location', (string) ($appointment['location'] ?? 'office')); ?>
