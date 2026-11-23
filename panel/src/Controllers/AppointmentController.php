@@ -58,13 +58,27 @@ final class AppointmentController
 
         [$scope, $params] = $this->visibilityFilter($actor);
 
-        // Terapist filtresi yalnız tüm takvimi görenler için anlamlı.
-        $therapistFilter = (int) query('terapist');
-        if ($therapistFilter > 0 && Rbac::can($actor, 'appointment.view.all')) {
+        // Terapist filtresi. Yönetici için boş = tüm terapistler. Ekip takvimini
+        // gören terapist için boş = kendi takvimi (günlük ekranı değişmesin),
+        // 'tumu' = tüm ekip, kimlik = o terapist.
+        $canAll          = Rbac::can($actor, 'appointment.view.all');
+        $canTeam         = !$canAll && Rbac::can($actor, 'appointment.view.team');
+        $therapistParam  = query('terapist');
+        $therapistFilter = (int) $therapistParam;
+        if ($canAll && $therapistFilter > 0) {
             $scope   .= ' AND a.therapist_id = ?';
             $params[] = $therapistFilter;
+        } elseif ($canTeam && $therapistParam === 'tumu') {
+            [$scope, $params] = ['1 = 1', []];
+            $therapistFilter  = 0;
+        } elseif ($canTeam && $therapistFilter > 0) {
+            [$scope, $params] = ['a.therapist_id = ?', [$therapistFilter]];
         } else {
             $therapistFilter = 0;
+            $therapistParam  = '';
+        }
+        if ($therapistFilter > 0) {
+            $therapistParam = (string) $therapistFilter;
         }
 
         $rows = Db::all(
@@ -77,6 +91,18 @@ final class AppointmentController
            ORDER BY a.starts_at",
             array_merge([$rangeStart->format('Y-m-d H:i:s'), $rangeEnd->format('Y-m-d H:i:s')], $params)
         );
+
+        // Başka terapistin randevusu: yalnız takvimde yer tutmak için gerekenler
+        // görünüme geçer. Kırpma burada, görünümde değil — bir şablon hatası
+        // telefonu ya da idari notu sızdıramasın diye alanlar hiç taşınmaz.
+        if ($canTeam) {
+            $rows = array_map(
+                static fn (array $r): array => (int) $r['therapist_id'] === (int) $actor['id']
+                    ? $r + ['foreign' => false]
+                    : self::teamRow($r),
+                $rows
+            );
+        }
 
         // Gün gün grupla — boş günler de görünsün diye anahtarlar önden açılır.
         $days = [];
@@ -113,8 +139,10 @@ final class AppointmentController
                 )
                 : null,
             'total'           => $total,
-            'therapists'      => Rbac::can($actor, 'appointment.view.all') ? $this->therapistOptions() : [],
+            'therapists'      => $canAll || $canTeam ? $this->therapistOptions() : [],
             'therapistFilter' => $therapistFilter,
+            'therapistParam'  => $therapistParam,
+            'teamView'        => $canTeam,
             'actor'           => $actor,
         ]);
     }
@@ -311,6 +339,31 @@ final class AppointmentController
             exit;
         }
         return $user;
+    }
+
+    /**
+     * Ekip takvimindeki başka bir terapistin randevusu. Beyaz liste: yeni bir
+     * sütun (ücret, hatırlatma vb.) eklendiğinde kendiliğinden görünmesin.
+     * client_id de düşer — bağlantı kurulmaz, kutu salt okunurdur.
+     */
+    private static function teamRow(array $r): array
+    {
+        return [
+            'id'             => $r['id'],
+            'therapist_id'   => $r['therapist_id'],
+            'starts_at'      => $r['starts_at'],
+            'duration_min'   => $r['duration_min'],
+            'status'         => $r['status'],
+            'location'       => $r['location'],
+            'client_name'    => $r['client_name'],
+            'therapist_name' => $r['therapist_name'],
+            'client_id'      => null,
+            'client_phone'   => null,
+            'note'           => null,
+            'cancel_reason'  => null,
+            'has_note'       => 0,
+            'foreign'        => true,
+        ];
     }
 
     /** @return array{0:string,1:array} */

@@ -60,19 +60,22 @@ $cancelled = $total - $drawn;
               // Kutunun içine ne sığdığı seansın kendi süresinden gelir; 30
               // dakikalık bir seansa iki satır sığmaz, zorlamak taşırırdı.
               $dense = $slot['dur'] <= 8;
-              $target = $canEdit
+              // Başka terapistin randevusu salt okunur: bağlantısı yok.
+              $foreign = !empty($row['foreign']);
+              $tag     = $foreign ? 'div' : 'a';
+              $target  = $canEdit
                   ? "/randevular/{$row['id']}/duzenle"
                   : "/danisanlar/{$row['client_id']}";
               ?>
-              <a href="<?= e(url($target)) ?>"
-                 class="rail-slot cal-slot at-<?= (int) $slot['at'] ?> dur-<?= (int) $slot['dur'] ?> lane-<?= (int) $slot['lane'] ?>-<?= (int) $slot['lanes'] ?> <?= $tone[$row['status']] ?? '' ?>"
+              <<?= $tag ?> <?= $foreign ? '' : 'href="' . e(url($target)) . '"' ?>
+                 class="rail-slot cal-slot at-<?= (int) $slot['at'] ?> dur-<?= (int) $slot['dur'] ?> lane-<?= (int) $slot['lane'] ?>-<?= (int) $slot['lanes'] ?> <?= $tone[$row['status']] ?? '' ?> <?= $foreign ? 'is-foreign' : '' ?>"
                  title="<?= e($slot['start']->format('H:i') . '–' . $slot['end']->format('H:i') . ' · ' . $row['client_name'] . ' · ' . $row['therapist_name'] . ' · ' . Scheduling::statusLabel($row['status'])) ?>">
                 <span class="rail-time num block"><?= e($slot['start']->format('H:i')) ?><span class="rail-end">–<?= e($slot['end']->format('H:i')) ?></span></span>
                 <span class="rail-name block truncate"><?= e($row['client_name']) ?></span>
                 <?php if (!$dense): ?>
                   <span class="rail-meta block truncate"><?= e($row['therapist_name']) ?></span>
                 <?php endif; ?>
-              </a>
+              </<?= $tag ?>>
             <?php endforeach; ?>
           </div>
         <?php endforeach; ?>

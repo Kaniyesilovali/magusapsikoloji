@@ -3,7 +3,7 @@ use Panel\Rbac;
 /** @var string $mode @var DateTimeImmutable $anchor @var DateTimeImmutable $monthStart */
 /** @var DateTimeImmutable $rangeStart @var DateTimeImmutable $rangeEnd */
 /** @var array $days @var array|null $rail @var int $total */
-/** @var array $therapists @var int $therapistFilter @var array $actor */
+/** @var array $therapists @var int $therapistFilter @var string $therapistParam @var bool $teamView @var array $actor */
 
 $today   = date('Y-m-d');
 $isMonth = $mode === 'ay';
@@ -29,10 +29,10 @@ $tone = [
 ];
 
 /** Görünüm, çapa ve terapist filtresi bağlantılar arasında taşınır. */
-$link = static function (array $over = []) use ($mode, $anchor, $therapistFilter): string {
+$link = static function (array $over = []) use ($mode, $anchor, $therapistParam): string {
     $params = ['gorunum' => $mode, 'tarih' => $anchor->format('Y-m-d')];
-    if ($therapistFilter > 0) {
-        $params['terapist'] = $therapistFilter;
+    if ($therapistParam !== '') {
+        $params['terapist'] = $therapistParam;
     }
     return url('/randevular?' . http_build_query(array_merge($params, $over)));
 };
@@ -46,7 +46,8 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
 // başlığın kendisi tarih aralığı. Yerine hangi kayıtlara bakıldığı yazıyor:
 // filtre açıkken bunu söyleyen tek yer aşağıdaki açılır kutuydu ve seçili
 // terapistle gelen bir bağlantı sessizce eksik bir takvim gösteriyordu.
-$filterLabel = 'Tüm terapistler';
+// Ekip takvimini gören terapistte boş seçim "kendi takvimi" demek.
+$filterLabel = $teamView && $therapistParam === '' ? 'Benim takvimim' : 'Tüm terapistler';
 foreach ($therapists as $therapist) {
     if ($therapistFilter === (int) $therapist['id']) {
         $filterLabel = (string) $therapist['full_name'];
@@ -114,8 +115,15 @@ foreach ($therapists as $therapist) {
       <label for="terapist" class="eyebrow ml-1">Terapist</label>
       <?php // Terapistin etiketi kalıyor: "Tümü" tek başına neyin tümü olduğunu söylemez. ?>
       <select id="terapist" name="terapist" class="field w-auto py-1.5 text-[0.8125rem]">
-        <option value="">Tümü</option>
+        <?php if ($teamView): ?>
+          <option value="">Benim takvimim</option>
+          <option value="tumu" <?= $therapistParam === 'tumu' ? 'selected' : '' ?>>Tüm ekip</option>
+        <?php else: ?>
+          <option value="">Tümü</option>
+        <?php endif; ?>
         <?php foreach ($therapists as $therapist): ?>
+          <?php // Terapist kendi adını ayrıca görmez: "Benim takvimim" zaten o. ?>
+          <?php if ($teamView && (int) $therapist['id'] === (int) $actor['id']) { continue; } ?>
           <option value="<?= (int) $therapist['id'] ?>" <?= $therapistFilter === (int) $therapist['id'] ? 'selected' : '' ?>>
             <?= e($therapist['full_name']) ?>
           </option>

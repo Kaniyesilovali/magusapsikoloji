@@ -30,15 +30,19 @@ $monthKey = $monthStart->format('Y-m');
           </div>
 
           <?php foreach ($items as $appointment): ?>
-            <?php $target = $canEdit
+            <?php
+            $foreign = !empty($appointment['foreign']);
+            $tag     = $foreign ? 'div' : 'a';
+            $target  = $canEdit
                 ? "/randevular/{$appointment['id']}/duzenle"
-                : "/danisanlar/{$appointment['client_id']}"; ?>
-            <a href="<?= e(url($target)) ?>"
-               class="cal-item <?= $tone[$appointment['status']] ?? '' ?>"
+                : "/danisanlar/{$appointment['client_id']}";
+            ?>
+            <<?= $tag ?> <?= $foreign ? '' : 'href="' . e(url($target)) . '"' ?>
+               class="cal-item <?= $tone[$appointment['status']] ?? '' ?> <?= $foreign ? 'is-foreign' : '' ?>"
                title="<?= e(dt($appointment['starts_at'], 'H:i') . ' · ' . $appointment['client_name'] . ' · ' . $appointment['therapist_name'] . ' · ' . Scheduling::statusLabel($appointment['status'])) ?>">
               <span class="cal-item-time num"><?= e(dt($appointment['starts_at'], 'H:i')) ?></span>
               <span class="cal-item-name"><?= e($appointment['client_name']) ?></span>
-            </a>
+            </<?= $tag ?>>
           <?php endforeach; ?>
         </div>
       <?php endforeach; ?>

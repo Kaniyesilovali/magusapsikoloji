@@ -1204,6 +1204,10 @@ details > summary::-webkit-details-marker {
 /* Gelmedi: saat planlanmıştı ama seans olmadı — yeri durur, dolgusu durmaz. */
 .rail-slot.is-off       { background: transparent; border-style: dashed; border-color: color-mix(in srgb, var(--color-accent) 55%, transparent); }
 .rail-slot.is-off .rail-name { color: var(--color-ink-muted); }
+/* Ekip takvimi: başka terapistin randevusu. Salt okunur — soluk zemin, hover yok. */
+.rail-slot.is-foreign,
+.rail-slot.is-foreign:hover { background: var(--color-warm); border-color: var(--color-warm-tertiary); cursor: default; }
+.rail-slot.is-foreign .rail-name { color: var(--color-ink-muted); font-weight: 400; }
 .rail-time { font-size: 0.75rem; font-variant-numeric: tabular-nums; color: var(--color-ink-muted); white-space: nowrap; }
 /* Dar ekranda yan yana duran iki seansta saat aralığı iki satıra kırılıp altındaki
    satırı kutunun dışına itiyordu. Çakışma yoksa aralık tam yazılır. */
@@ -1446,6 +1450,8 @@ details > summary::-webkit-details-marker {
   line-height: 1.45;
 }
 .cal-item:hover { border-color: var(--color-primary-light); }
+.cal-item.is-foreign,
+.cal-item.is-foreign:hover { background: var(--color-warm); border-color: var(--color-warm-tertiary); color: var(--color-ink-muted); cursor: default; }
 .cal-item.is-confirmed { background: var(--color-primary-soft); border-color: color-mix(in srgb, var(--color-primary) 30%, transparent); }
 .cal-item.is-done      { background: transparent; color: var(--color-ink-muted); }
 .cal-item.is-off       { background: transparent; border-style: dashed; border-color: color-mix(in srgb, var(--color-accent) 55%, transparent); }

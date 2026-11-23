@@ -31,6 +31,8 @@ use Panel\Scheduling;
           $start = new DateTimeImmutable((string) $appointment['starts_at']);
           $end   = $start->modify('+' . (int) $appointment['duration_min'] . ' minutes');
           $off   = in_array($appointment['status'], ['cancelled', 'no_show'], true);
+          // Başka terapistin randevusu: ad ve saat görünür, eylem ve bağlantı yok.
+          $foreign = !empty($appointment['foreign']);
           ?>
           <li class="px-5 py-3 <?= $index > 0 ? 'border-t border-warm-secondary' : '' ?>">
             <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
@@ -38,9 +40,13 @@ use Panel\Scheduling;
                 <?= e($start->format('H:i')) ?>–<?= e($end->format('H:i')) ?>
               </span>
               <span class="flex-1 min-w-40">
-                <a href="<?= e(url("/danisanlar/{$appointment['client_id']}")) ?>" class="person text-sm text-ink hover:text-primary">
-                  <?= e($appointment['client_name']) ?>
-                </a>
+                <?php if ($foreign): ?>
+                  <span class="person text-sm text-ink-muted"><?= e($appointment['client_name']) ?></span>
+                <?php else: ?>
+                  <a href="<?= e(url("/danisanlar/{$appointment['client_id']}")) ?>" class="person text-sm text-ink hover:text-primary">
+                    <?= e($appointment['client_name']) ?>
+                  </a>
+                <?php endif; ?>
                 <?php if ($appointment['client_phone'] !== null): ?>
                   <span class="text-xs text-ink-light ml-1.5 num"><?= e($appointment['client_phone']) ?></span>
                 <?php endif; ?>
@@ -57,7 +63,7 @@ use Panel\Scheduling;
               <p class="text-xs text-ink-muted mt-1.5 sm:pl-32">İptal gerekçesi: <?= e($appointment['cancel_reason']) ?></p>
             <?php endif; ?>
 
-            <?php if ($canEdit && $appointment['status'] !== 'cancelled'): ?>
+            <?php if ($canEdit && !$foreign && $appointment['status'] !== 'cancelled'): ?>
               <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2 sm:pl-32">
                 <a href="<?= e(url("/randevular/{$appointment['id']}/duzenle")) ?>" class="btn-text btn-text-quiet">Düzenle</a>
 

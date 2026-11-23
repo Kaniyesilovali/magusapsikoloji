@@ -67,6 +67,12 @@ final class Rbac
             // çalışmaya başlarsa bu satır yeniden düşünülmeli.
             'client.view.own', 'client.create', 'client.update', 'client.assign_therapist',
             'appointment.view.own', 'appointment.create', 'appointment.update', 'appointment.cancel',
+            // Ekip takvimi: diğer terapistlerin randevularını saat, süre, yer,
+            // durum ve bireyin adıyla SALT OKUNUR görür (terapistlerin isteği,
+            // 2026-11-23). Telefon, idari not, iptal gerekçesi, ücret ve seans
+            // notu bilgisi bu görünüme hiç gelmez; düzenleme/iptal yine yalnız
+            // kendi randevusunda. Maskeleme AppointmentController::index'te.
+            'appointment.view.team',
             'availability.manage.own',
             // Terapist kendi seanslarının ücret/ödeme durumunu görür ve ücreti
             // girebilir; tahsilat kaydı (payment.manage) merkez yönetimindedir.
