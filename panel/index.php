@@ -36,6 +36,7 @@ use Panel\Controllers\AppointmentController;
 use Panel\Controllers\AuditController;
 use Panel\Controllers\AuthController;
 use Panel\Controllers\AvailabilityController;
+use Panel\Controllers\BusyTimeController;
 use Panel\Controllers\CaseFileController;
 use Panel\Controllers\CheckinController;
 use Panel\Controllers\ClientController;
@@ -178,6 +179,13 @@ $router->post('/randevular/{id}/durum',   [AppointmentController::class, 'setSta
 $router->post('/randevular/{id}/iptal',   [AppointmentController::class, 'cancel']);
 $router->get('/randevular/{id}/not',      [NoteController::class, 'form']);
 $router->post('/randevular/{id}/not',     [NoteController::class, 'save']);
+
+// Özel zaman: randevu değil ama takvimde yer kaplar, o yüzden aynı kökün altında.
+$router->get('/randevular/ozel-zaman/yeni',          [BusyTimeController::class, 'createForm']);
+$router->post('/randevular/ozel-zaman/yeni',         [BusyTimeController::class, 'store']);
+$router->get('/randevular/ozel-zaman/{id}/duzenle',  [BusyTimeController::class, 'editForm']);
+$router->post('/randevular/ozel-zaman/{id}/duzenle', [BusyTimeController::class, 'update']);
+$router->post('/randevular/ozel-zaman/{id}/sil',     [BusyTimeController::class, 'destroy']);
 
 $router->get('/musaitlik',                [AvailabilityController::class, 'index']);
 $router->post('/musaitlik/saat-ekle',     [AvailabilityController::class, 'addHours']);

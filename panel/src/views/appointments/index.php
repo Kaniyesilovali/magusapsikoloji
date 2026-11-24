@@ -3,7 +3,7 @@ use Panel\Rbac;
 /** @var string $mode @var DateTimeImmutable $anchor @var DateTimeImmutable $monthStart */
 /** @var DateTimeImmutable $rangeStart @var DateTimeImmutable $rangeEnd */
 /** @var array $days @var array|null $rail @var int $total */
-/** @var array $therapists @var int $therapistFilter @var string $therapistParam @var bool $teamView @var array $actor */
+/** @var array $therapists @var int $therapistFilter @var string $therapistParam @var bool $teamView @var bool $canBlock @var array $actor */
 
 $today   = date('Y-m-d');
 $isMonth = $mode === 'ay';
@@ -71,9 +71,16 @@ foreach ($therapists as $therapist) {
     </h1>
     <p class="page-sub"><span class="num"><?= $total ?></span> randevu</p>
   </div>
-  <?php if ($canCreate): ?>
-    <a href="<?= e(url('/randevular/yeni?tarih=' . $rangeStart->format('Y-m-d'))) ?>" class="btn btn-primary">Yeni randevu</a>
-  <?php endif; ?>
+  <div class="flex flex-wrap gap-2">
+    <?php if ($canBlock): ?>
+      <?php // Yönetici tek bir terapistin takvimine bakıyorsa seçim forma taşınır. ?>
+      <a href="<?= e(url('/randevular/ozel-zaman/yeni' . ($therapistFilter > 0 && !$teamView ? '?terapist=' . $therapistFilter : ''))) ?>"
+         class="btn btn-quiet">Özel zaman</a>
+    <?php endif; ?>
+    <?php if ($canCreate): ?>
+      <a href="<?= e(url('/randevular/yeni?tarih=' . $rangeStart->format('Y-m-d'))) ?>" class="btn btn-primary">Yeni randevu</a>
+    <?php endif; ?>
+  </div>
 </header>
 
 <div class="ctl mb-4"

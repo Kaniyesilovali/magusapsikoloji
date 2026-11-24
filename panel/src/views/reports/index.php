@@ -208,7 +208,7 @@ $cubuklar = static function (array $items, int $total) use ($yuzde): void {
     <div>
       <h2 class="sheet-title">Doluluk</h2>
       <p class="text-xs text-ink-light mt-1">
-        Dolu saat / çalışma şablonundaki açık saat. İzinler kapasiteden düşülür.
+        Dolu saat / çalışma şablonundaki açık saat. İzinler ve özel zamanlar kapasiteden düşülür.
       </p>
     </div>
   </div>

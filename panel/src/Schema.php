@@ -145,6 +145,17 @@ final class Schema
             && self::hasColumn('clients', 'session_type');
     }
 
+    /**
+     * Özel zaman (015_ozel_zaman) uygulanmış mı?
+     *
+     * Uygulanmadan takvim ve randevu kaydı eskisi gibi çalışır: "Özel zaman"
+     * düğmesi çizilmez, çakışma kontrolü olmayan tabloya sorulmaz.
+     */
+    public static function busyTimesReady(): bool
+    {
+        return self::hasTable('busy_times');
+    }
+
     public static function hasTable(string $table): bool
     {
         $key = 'table:' . $table;

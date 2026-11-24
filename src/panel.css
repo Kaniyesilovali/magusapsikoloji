@@ -340,6 +340,7 @@ details > summary::-webkit-details-marker {
   .chip-go      { background: var(--color-primary-soft);   color: var(--color-primary-dark); }
   .chip-done    { background: transparent; color: var(--color-ink-light); box-shadow: inset 0 0 0 1px var(--color-warm-tertiary); }
   .chip-stop    { background: var(--color-accent-soft);    color: var(--color-accent-dark); }
+  .chip-busy    { background: var(--color-accent);         color: #fff; }
 
   /* ── Denetim şeridi ────────────────────────────────────────────────────
      Randevular, Müsaitlik ve Ödemeler'in üçünde de aynı satır var: dönem
@@ -1208,6 +1209,13 @@ details > summary::-webkit-details-marker {
 .rail-slot.is-foreign,
 .rail-slot.is-foreign:hover { background: var(--color-warm); border-color: var(--color-warm-tertiary); cursor: default; }
 .rail-slot.is-foreign .rail-name { color: var(--color-ink-muted); font-weight: 400; }
+/* Özel zaman: cetveldeki tek dolu kırmızı kutu. Randevu tonlarının hepsi açık
+   zeminli; bu bilerek değil — uzaktan bakınca "buraya yazılamaz" okunmalı. */
+.rail-slot.is-busy { background: var(--color-accent); border-color: var(--color-accent-dark); }
+a.rail-slot.is-busy:hover { background: var(--color-accent-dark); border-color: var(--color-accent-dark); }
+.rail-slot.is-busy .rail-time,
+.rail-slot.is-busy .rail-name,
+.rail-slot.is-busy .rail-meta { color: #fff; }
 .rail-time { font-size: 0.75rem; font-variant-numeric: tabular-nums; color: var(--color-ink-muted); white-space: nowrap; }
 /* Dar ekranda yan yana duran iki seansta saat aralığı iki satıra kırılıp altındaki
    satırı kutunun dışına itiyordu. Çakışma yoksa aralık tam yazılır. */
@@ -1457,6 +1465,9 @@ details > summary::-webkit-details-marker {
 .cal-item.is-off       { background: transparent; border-style: dashed; border-color: color-mix(in srgb, var(--color-accent) 55%, transparent); }
 .cal-item.is-cancelled { background: transparent; border-style: dashed; color: var(--color-ink-light); }
 .cal-item.is-cancelled .cal-item-name { text-decoration: line-through; }
+.cal-item.is-busy { background: var(--color-accent); border-color: var(--color-accent-dark); color: #fff; }
+.cal-item.is-busy .cal-item-time { color: #fff; }
+a.cal-item.is-busy:hover { background: var(--color-accent-dark); border-color: var(--color-accent-dark); }
 /* Müsaitlik ayında kutular bir olayı değil bir kuralı gösterir. */
 .cal-item.is-work    { background: var(--color-primary-soft); border-color: color-mix(in srgb, var(--color-primary) 18%, transparent); color: var(--color-primary-dark); }
 .cal-item.is-off-day { background: var(--color-accent-soft);  border-color: color-mix(in srgb, var(--color-accent) 35%, transparent); color: var(--color-accent-dark); }

@@ -284,7 +284,7 @@ final class Reports
     // ── İç işler ────────────────────────────────────────────────
 
     /**
-     * Haftalık şablonun aralıktaki karşılığı, izinler düşülmüş hâlde.
+     * Haftalık şablonun aralıktaki karşılığı, izinler ve özel zamanlar düşülmüş hâlde.
      * Şablon hiç girilmemişse null.
      */
     private static function capacity(int $therapistId, DateTimeImmutable $from, DateTimeImmutable $to): ?int
@@ -308,6 +308,16 @@ final class Reports
             [$therapistId, $to->format('Y-m-d H:i:s'), $from->format('Y-m-d H:i:s')]
         );
 
+        // Özel zamana randevu yazılamıyor; açık saat sayılırsa doluluk olduğundan
+        // düşük çıkardı.
+        if (Schema::busyTimesReady()) {
+            $timeOff = array_merge($timeOff, Db::all(
+                'SELECT starts_at, ends_at FROM busy_times
+                  WHERE therapist_id = ? AND starts_at < ? AND ends_at > ?',
+                [$therapistId, $to->format('Y-m-d H:i:s'), $from->format('Y-m-d H:i:s')]
+            ));
+        }
+
         $total = 0;
         for ($day = $from; $day < $to; $day = $day->modify('+1 day')) {
             foreach ($byWeekday[(int) $day->format('N')] ?? [] as [$start, $end]) {
@@ -318,7 +328,7 @@ final class Reports
         return $total;
     }
 
-    /** Bir günün belirli dilimine düşen izin dakikası. */
+    /** Bir günün belirli dilimine düşen izin/özel zaman dakikası. */
     private static function offMinutes(array $timeOff, DateTimeImmutable $day, int $start, int $end): int
     {
         $dayStart = $day->setTime(0, 0);

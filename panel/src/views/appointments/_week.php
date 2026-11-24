@@ -11,7 +11,9 @@ $nowAt = $rail['days'][$today]['nowAt'] ?? null;
 
 // Cetvel iptalleri çizmediği için "boş hafta" sayımı $total'dan gelemez:
 // yalnız iptal edilmiş randevusu olan bir hafta dolu sayılırdı.
-$drawn     = array_sum(array_map(static fn (array $d): int => count($d['slots']), $rail['days']));
+// Özel zaman da cetvelde durur ama randevu değildir, sayıma girmez.
+$slots     = array_merge(...array_column($rail['days'], 'slots'));
+$drawn     = count(array_filter($slots, static fn (array $s): bool => ($s['row']['kind'] ?? '') !== 'busy'));
 $cancelled = $total - $drawn;
 ?>
 
@@ -47,7 +49,7 @@ $cancelled = $total - $drawn;
         <div class="rail-now at-<?= (int) $nowAt ?>"><span><?= e(date('H:i')) ?></span></div>
       <?php endif; ?>
 
-      <?php if ($drawn === 0): ?>
+      <?php if ($slots === []): ?>
         <p class="rail-empty">Bu hafta randevu yok.</p>
       <?php endif; ?>
 
@@ -57,6 +59,11 @@ $cancelled = $total - $drawn;
             <?php foreach ($day['slots'] as $slot): ?>
               <?php
               $row = $slot['row'];
+              if (($row['kind'] ?? '') === 'busy') {
+                  $slotClass = 'cal-slot';
+                  require __DIR__ . '/_busy_slot.php';
+                  continue;
+              }
               // Kutunun içine ne sığdığı seansın kendi süresinden gelir; 30
               // dakikalık bir seansa iki satır sığmaz, zorlamak taşırırdı.
               $dense = $slot['dur'] <= 8;

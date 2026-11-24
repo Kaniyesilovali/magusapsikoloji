@@ -8,10 +8,12 @@ use DateTimeImmutable;
 /**
  * Randevu zamanlamasının kuralları — çakışma, çalışma saati, izin.
  *
- * Ayrım bilinçli: **çakışma engeldir**, diğerleri yalnız uyarıdır.
+ * Ayrım bilinçli: **çakışma ve özel zaman engeldir**, diğerleri yalnız uyarıdır.
  * İki randevu aynı anda gerçekten yapılamaz; ama merkez, mesai dışına veya
  * izin gününe bilerek randevu koymak isteyebilir (acil görüşme, telafi seansı).
  * Bu yüzden uyarılar formda gösterilir ve kullanıcı onaylarsa kayıt geçer.
+ * Özel zaman (busy_times) ise terapistin kendi koyduğu engeldir: onayla geçilmez,
+ * saati açmak için kaydın kendisi silinir ya da taşınır.
  */
 final class Scheduling
 {
@@ -131,6 +133,82 @@ final class Scheduling
         }
 
         return Db::all($sql . ' ORDER BY a.starts_at LIMIT 5', $params);
+    }
+
+    /** Bu aralığa değen ilk özel zaman kaydı; yoksa null. */
+    public static function busyConflict(int $therapistId, DateTimeImmutable $start, int $minutes): ?array
+    {
+        if (!Schema::busyTimesReady()) {
+            return null;
+        }
+        return Db::one(
+            'SELECT * FROM busy_times
+              WHERE therapist_id = ? AND starts_at < ? AND ends_at > ?
+           ORDER BY starts_at LIMIT 1',
+            [
+                $therapistId,
+                self::endOf($start, $minutes)->format('Y-m-d H:i:s'),
+                $start->format('Y-m-d H:i:s'),
+            ]
+        );
+    }
+
+    /** Randevu formunda ve durum değişikliğinde aynı cümle görünsün diye tek yerde. */
+    public static function busyMessage(array $busy): string
+    {
+        return sprintf(
+            'Bu saat dolu: terapistin %s–%s arası özel zamanı var. Başka bir saat seçin.',
+            dt($busy['starts_at'], 'd.m.Y H:i'),
+            dt($busy['ends_at'], 'H:i')
+        );
+    }
+
+    /**
+     * Takvimde çizilecek özel zamanlar, randevu satırıyla aynı biçimde
+     * (starts_at + duration_min). `kind` alanı görünümlerin ayrımı içindir.
+     *
+     * Not yalnız kaydın sahibine taşınır: başkasının satırında alan boş gelir.
+     *
+     * @param  ?int $therapistId null = tüm terapistler
+     * @return list<array<string, mixed>>
+     */
+    public static function busyRows(
+        DateTimeImmutable $from,
+        DateTimeImmutable $to,
+        ?int $therapistId,
+        array $viewer
+    ): array {
+        if (!Schema::busyTimesReady()) {
+            return [];
+        }
+
+        $sql = 'SELECT b.id, b.therapist_id, b.starts_at, b.ends_at, b.note, t.full_name AS therapist_name,
+                       TIMESTAMPDIFF(MINUTE, b.starts_at, b.ends_at) AS duration_min
+                  FROM busy_times b
+                  JOIN users t ON t.id = b.therapist_id
+                 WHERE b.starts_at >= ? AND b.starts_at < ?';
+        $params = [$from->format('Y-m-d H:i:s'), $to->format('Y-m-d H:i:s')];
+
+        if ($therapistId !== null) {
+            $sql     .= ' AND b.therapist_id = ?';
+            $params[] = $therapistId;
+        }
+
+        return array_map(
+            static fn (array $r): array => [
+                'note'     => (int) $r['therapist_id'] === (int) $viewer['id'] ? $r['note'] : null,
+                'editable' => self::canManageBusy($viewer, (int) $r['therapist_id']),
+                'kind'     => 'busy',
+            ] + $r,
+            Db::all($sql . ' ORDER BY b.starts_at', $params)
+        );
+    }
+
+    /** Yönetim herkesin, terapist yalnız kendi özel zamanını değiştirir. */
+    public static function canManageBusy(array $actor, int $therapistId): bool
+    {
+        return Rbac::can($actor, 'availability.manage.all')
+            || (Rbac::can($actor, 'availability.manage.own') && $therapistId === (int) $actor['id']);
     }
 
     /**

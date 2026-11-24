@@ -14,6 +14,9 @@ $seesAll  = Rbac::can($user, 'appointment.view.all');
 $first = $today[0] ?? null;
 $endsAt = null;
 foreach ($rail['slots'] as $slot) {
+    if (($slot['row']['kind'] ?? '') === 'busy') {
+        continue;
+    }
     if ($endsAt === null || $slot['end'] > $endsAt) {
         $endsAt = $slot['end'];
     }
@@ -103,6 +106,11 @@ $chip = [
         <?php foreach ($rail['slots'] as $slot): ?>
           <?php
           $row = $slot['row'];
+          if (($row['kind'] ?? '') === 'busy') {
+              $slotClass = '';
+              require dirname(__DIR__) . '/appointments/_busy_slot.php';
+              continue;
+          }
           // Yoğunluk seansın kendi süresinden gelir: 30 dakikalık bir seansa üç
           // satır sığmaz, sığdırmaya çalışmak da kutuyu süresinden büyük yapardı.
           $dense = $slot['dur'] <= 6;

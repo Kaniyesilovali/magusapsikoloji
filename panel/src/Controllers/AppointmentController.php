@@ -21,7 +21,7 @@ use Panel\View;
  * Randevu takvimi.
  *
  * Kayıt kuralları [Scheduling] sınıfında; burada yalnız yetki, doğrulama ve
- * ekran akışı var. Çakışma kaydı engeller, mesai dışı/izin yalnız uyarır ve
+ * ekran akışı var. Çakışma ve özel zaman kaydı engeller, mesai dışı/izin yalnız uyarır ve
  * kullanıcının açık onayıyla geçilebilir.
  *
  * Üç görünüm var ve üçü de aynı sorguyu paylaşır, yalnız aralıkları farklı:
@@ -104,6 +104,18 @@ final class AppointmentController
             );
         }
 
+        // Özel zamanlar randevularla aynı kapsamı izler. Bireyin ekranına hiç
+        // gelmez: terapistin özel saati yalnız ekibin bilgisidir.
+        $busy = [];
+        if ($canAll || $actor['role'] === Rbac::THERAPIST) {
+            $busyOwner = match (true) {
+                $therapistFilter > 0                  => $therapistFilter,
+                $canAll, $therapistParam === 'tumu'   => null,
+                default                               => (int) $actor['id'],
+            };
+            $busy = Scheduling::busyRows($rangeStart, $rangeEnd, $busyOwner, $actor);
+        }
+
         // Gün gün grupla — boş günler de görünsün diye anahtarlar önden açılır.
         $days = [];
         for ($day = $rangeStart; $day < $rangeEnd; $day = $day->modify('+1 day')) {
@@ -111,6 +123,17 @@ final class AppointmentController
         }
         foreach ($rows as $row) {
             $days[substr((string) $row['starts_at'], 0, 10)][] = $row;
+        }
+        // Ay ve liste özel zamanı randevuların arasında, saat sırasıyla gösterir.
+        foreach ($busy as $row) {
+            $days[substr((string) $row['starts_at'], 0, 10)][] = $row;
+        }
+        if ($busy !== []) {
+            foreach ($days as &$items) {
+                usort($items, static fn (array $a, array $b): int
+                    => strcmp((string) $a['starts_at'], (string) $b['starts_at']));
+            }
+            unset($items);
         }
 
         // Ay görünümünde sayaç yalnız o aya ait randevuları saymalı; ızgaranın
@@ -133,7 +156,10 @@ final class AppointmentController
             // gösterir — orada kayıt "olan biten"in dökümüdür.
             'rail'            => $mode === 'hafta'
                 ? Rail::week(
-                    array_values(array_filter($rows, static fn (array $r): bool => $r['status'] !== 'cancelled')),
+                    array_merge(
+                        array_values(array_filter($rows, static fn (array $r): bool => $r['status'] !== 'cancelled')),
+                        $busy
+                    ),
                     $rangeStart,
                     new DateTimeImmutable()
                 )
@@ -143,6 +169,8 @@ final class AppointmentController
             'therapistFilter' => $therapistFilter,
             'therapistParam'  => $therapistParam,
             'teamView'        => $canTeam,
+            'canBlock'        => Schema::busyTimesReady()
+                && Rbac::canAny($actor, ['availability.manage.all', 'availability.manage.own']),
             'actor'           => $actor,
         ]);
     }
@@ -291,6 +319,21 @@ final class AppointmentController
         if (!in_array($status, ['scheduled', 'confirmed', 'completed', 'no_show'], true)) {
             flash('error', 'Geçersiz durum.');
             redirect('/randevular?hafta=' . substr((string) $appointment['starts_at'], 0, 10));
+        }
+
+        // "Gelmedi" saati serbest bırakmıştı; araya özel zaman girilmişse
+        // randevu o saati sessizce geri alamaz.
+        if (in_array($status, Scheduling::BLOCKING_STATUSES, true)
+            && !in_array($appointment['status'], Scheduling::BLOCKING_STATUSES, true)) {
+            $busy = Scheduling::busyConflict(
+                (int) $appointment['therapist_id'],
+                new DateTimeImmutable((string) $appointment['starts_at']),
+                (int) $appointment['duration_min']
+            );
+            if ($busy !== null) {
+                flash('error', Scheduling::busyMessage($busy));
+                redirect('/randevular?hafta=' . substr((string) $appointment['starts_at'], 0, 10));
+            }
         }
 
         Db::run(
@@ -558,6 +601,16 @@ final class AppointmentController
                     $clash['client_name'],
                     $clash['therapist_name']
                 );
+            }
+        }
+
+        // Özel zaman onayla geçilmez. Saat tutmayan durumlar (iptal, gelmedi)
+        // dışarıda; yeni kayıtta formdaki durum okunmaz, hep "planlandı"dır.
+        $holdsSlot = $current === null || in_array($input['status'], Scheduling::BLOCKING_STATUSES, true);
+        if ($errors === [] && $start !== null && $holdsSlot) {
+            $busy = Scheduling::busyConflict((int) $input['therapist_id'], $start, $duration);
+            if ($busy !== null) {
+                $errors['time'] = Scheduling::busyMessage($busy);
             }
         }
 

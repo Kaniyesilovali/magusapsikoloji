@@ -29,6 +29,9 @@ final class Rail
     private const MAX_SPAN   = 168;  // çalışma/izin bandı cetvelin tamamını kaplayabilir
     private const MAX_LANES  = 4;
 
+    /** Bundan uzun özel zaman (tüm gün gibi) saat penceresini genişletmez. */
+    private const LONG_BUSY = 480;  // dakika
+
     /** Hiç randevu yoksa gösterilen varsayılan pencere. */
     private const DEFAULT_START = 9;
     private const DEFAULT_END   = 18;
@@ -49,7 +52,7 @@ final class Rail
             'startHour' => $startHour,
             'hours'     => $endHour - $startHour,
             'nowAt'     => self::nowUnits($nowMin, $windowStart, $endHour - $startHour),
-            'slots'     => self::layout($items, $windowStart),
+            'slots'     => self::layout(self::clipBusy($items, $windowStart, $endHour * 60), $windowStart),
         ];
     }
 
@@ -82,7 +85,7 @@ final class Rail
         $days = [];
         foreach ($byDay as $key => $items) {
             $days[$key] = [
-                'slots' => self::layout($items, $windowStart),
+                'slots' => self::layout(self::clipBusy($items, $windowStart, $endHour * 60), $windowStart),
                 'nowAt' => $key === $todayKey
                     ? self::nowUnits($nowMin, $windowStart, $endHour - $startHour)
                     : null,
@@ -130,6 +133,7 @@ final class Rail
             $duration = max(self::UNIT, (int) ($row['duration_min'] ?: 50));
             $items[] = [
                 'row'      => $row,
+                'busy'     => ($row['kind'] ?? '') === 'busy',
                 'startMin' => (int) $start->format('G') * 60 + (int) $start->format('i'),
                 'durMin'   => $duration,
                 'start'    => $start,
@@ -162,6 +166,9 @@ final class Rail
      */
     private static function window(array $items, ?int $nowMin): array
     {
+        $busy  = array_filter($items, static fn (array $i): bool => $i['busy']);
+        $items = array_filter($items, static fn (array $i): bool => !$i['busy']);
+
         if ($items === []) {
             $startHour = self::DEFAULT_START;
             $endHour   = self::DEFAULT_END;
@@ -196,7 +203,42 @@ final class Rail
             $endHour = $startHour + (int) (self::MAX_UNITS / 12);
         }
 
+        // Özel zaman pencereyi en son ve yalnız kalan yer kadar genişletir:
+        // bir randevuyu cetvelin dışına itemez, tüm günlük bir kayıt da
+        // haftayı geceye yaymaz (o kayıt pencereye kırpılarak çizilir).
+        $maxHours = (int) (self::MAX_UNITS / 12);
+        foreach ($busy as $item) {
+            if ($item['durMin'] > self::LONG_BUSY) {
+                continue;
+            }
+            $startHour = max(min($startHour, intdiv($item['startMin'], 60)), $endHour - $maxHours);
+            $endHour   = min(
+                max($endHour, (int) ceil(($item['startMin'] + $item['durMin']) / 60)),
+                $startHour + $maxHours,
+                24
+            );
+        }
+
         return [$startHour, $endHour, $nowMin];
+    }
+
+    /** Özel zamanı pencereye kırpar; pencereye hiç değmeyen kayıt çizilmez. */
+    private static function clipBusy(array $items, int $windowStart, int $windowEnd): array
+    {
+        $out = [];
+        foreach ($items as $item) {
+            if ($item['busy']) {
+                $from = max($item['startMin'], $windowStart);
+                $to   = min($item['startMin'] + $item['durMin'], $windowEnd);
+                if ($to <= $from) {
+                    continue;
+                }
+                $item['startMin'] = $from;
+                $item['durMin']   = $to - $from;
+            }
+            $out[] = $item;
+        }
+        return $out;
     }
 
     /**
@@ -249,7 +291,7 @@ final class Rail
                     'start' => $item['start'],
                     'end'   => $item['end'],
                     'at'    => self::clampUnits((int) round(($item['startMin'] - $windowStart) / self::UNIT), self::MAX_UNITS),
-                    'dur'   => max(1, self::clampUnits((int) round($item['durMin'] / self::UNIT), self::MAX_DUR)),
+                    'dur'   => max(1, self::clampUnits((int) round($item['durMin'] / self::UNIT), $item['busy'] ? self::MAX_SPAN : self::MAX_DUR)),
                     'lane'  => min($lanes, $lane + 1),
                     'lanes' => $lanes,
                 ];

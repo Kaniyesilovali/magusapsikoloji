@@ -281,7 +281,7 @@ $next = $isMonth ? $monthStart->modify('+1 month') : $rangeStart->modify('+7 day
   <div class="sheet-head">
     <div>
       <h2 class="sheet-title">İzinler</h2>
-      <p class="text-xs text-ink-light mt-0.5">Tatil, kongre, rapor… Geçmiş izinler listeden düşer.</p>
+      <p class="text-xs text-ink-light mt-0.5">Tatil, kongre, rapor… Geçmiş izinler listeden düşer. Bir saati randevuya tamamen kapatmak için Randevular ekranındaki “Özel zaman” kullanılır.</p>
     </div>
   </div>
 

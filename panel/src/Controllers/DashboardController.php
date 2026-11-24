@@ -8,6 +8,7 @@ use Panel\Auth;
 use Panel\Db;
 use Panel\Rail;
 use Panel\Rbac;
+use Panel\Scheduling;
 use Panel\View;
 
 final class DashboardController
@@ -65,6 +66,18 @@ final class DashboardController
 
         $now = new DateTimeImmutable('now');
 
+        // Özel zaman günün şeklinin parçasıdır ama seans sayısına girmez.
+        $busy = [];
+        if (Rbac::can($user, 'appointment.view.all') || $user['role'] === Rbac::THERAPIST) {
+            $midnight = $now->setTime(0, 0);
+            $busy     = Scheduling::busyRows(
+                $midnight,
+                $midnight->modify('+1 day'),
+                Rbac::can($user, 'appointment.view.all') ? null : (int) $user['id'],
+                $user
+            );
+        }
+
         View::render('dashboard/index', [
             'title'    => 'Bugün',
             'user'     => $user,
@@ -72,7 +85,7 @@ final class DashboardController
             'today'    => $today,
             'upcoming' => $upcoming,
             'now'      => $now,
-            'rail'     => Rail::build($today, $now->setTime(0, 0), $now),
+            'rail'     => Rail::build(array_merge($today, $busy), $now->setTime(0, 0), $now),
         ]);
     }
 }

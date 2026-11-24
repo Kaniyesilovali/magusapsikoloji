@@ -38,6 +38,7 @@ aksi hâlde `npm run build` onları `_site/panel/` içine kopyalar ve yayına ç
 | Raporlar (aylık seyir, gün × saat, gün/saat/seans türü yoğunluğu, gelmeme, doluluk) | ✔ (tüm merkez + gelir) | ✔ (tüm merkez + gelir) | yalnız kendi seansları, gelir yok | — |
 | Randevu oluştur/düzenle/iptal | ✔ | ✔ | kendi takvimine | — |
 | Çalışma saati ve izin tanımla | ✔ | ✔ | kendi müsaitliği | — |
+| Özel zaman (takvimde kırmızı “Dolu”, randevu yazılamaz) | ✔ (notu görmez) | ✔ (notu görmez) | kendi takvimine | — |
 | Onam formunu düzenle | ✔ | ✔ | — | — |
 | **Seans notu okuma/yazma** | **—** | **—** | **yalnız kendi yazdığı** | — |
 | **Check-in eğrisi / bağlantı gönderme** | **—** | **—** | **kendi bireyleri** | — |
@@ -189,6 +190,13 @@ Zamanlama kararları tek yerde: [`panel/src/Scheduling.php`](../panel/src/Schedu
 hem birey için yapılır — bir bireyin aynı saatte iki farklı terapiste yazılması da
 gerçek bir çakışmadır ve yalnız terapist takvimine bakmak bunu kaçırırdı. İptal edilen
 ve "gelmedi" işaretli randevular saati serbest bırakır.
+
+**Özel zaman da engeldir.** Terapist takvimde kendisi için saat kapatabilir (Randevular →
+“Özel zaman”). O aralık kırmızı “Dolu” görünür ve randevu kaydı onay kutusuyla da geçmez;
+saati açmak için kaydın kendisi silinir ya da taşınır. Planlı randevunun üstüne özel zaman
+girilemez. Notu yalnız terapistin kendisi görür — ekip ve yönetim “Dolu” görür, birey hiçbir
+şey görmez, not denetim kaydına da yazılmaz. İzinden (`time_off`) bilerek ayrı tablodur
+(`busy_times`, 015): izin uyarır, özel zaman engeller.
 
 **Uyarı (onaylanırsa geçer).** Terapistin çalışma saatleri dışı, izin aralığı, geçmiş
 tarih. Bunlar engellenmez; form uyarıyı gösterir ve kullanıcı onay kutusunu işaretleyip

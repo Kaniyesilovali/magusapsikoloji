@@ -30,6 +30,20 @@ $monthKey = $monthStart->format('Y-m');
           </div>
 
           <?php foreach ($items as $appointment): ?>
+            <?php if (($appointment['kind'] ?? '') === 'busy'): ?>
+              <?php
+              $tag  = $appointment['editable'] ? 'a' : 'div';
+              $note = (string) ($appointment['note'] ?? '');
+              $span = dt($appointment['starts_at'], 'H:i') . '–' . dt($appointment['ends_at'], 'H:i');
+              ?>
+              <<?= $tag ?> <?= $appointment['editable'] ? 'href="' . e(url("/randevular/ozel-zaman/{$appointment['id']}/duzenle")) . '"' : '' ?>
+                 class="cal-item is-busy"
+                 title="<?= e($span . ' · Dolu · ' . $appointment['therapist_name'] . ($note !== '' ? ' · ' . $note : '')) ?>">
+                <span class="cal-item-time num"><?= e($span) ?></span>
+                <span class="cal-item-name">Dolu</span>
+              </<?= $tag ?>>
+              <?php continue; ?>
+            <?php endif; ?>
             <?php
             $foreign = !empty($appointment['foreign']);
             $tag     = $foreign ? 'div' : 'a';

@@ -27,6 +27,29 @@ use Panel\Scheduling;
     <?php else: ?>
       <ul class="border-b border-warm-tertiary">
         <?php foreach ($items as $index => $appointment): ?>
+          <?php if (($appointment['kind'] ?? '') === 'busy'): ?>
+            <li class="px-5 py-3 <?= $index > 0 ? 'border-t border-warm-secondary' : '' ?>">
+              <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+                <span class="text-sm num w-28 shrink-0 text-accent-dark">
+                  <?= e(dt($appointment['starts_at'], 'H:i')) ?>–<?= e(dt($appointment['ends_at'], 'H:i')) ?>
+                </span>
+                <span class="flex-1 min-w-40 text-sm text-ink-muted"><?= e((string) ($appointment['note'] ?? '')) ?></span>
+                <span class="text-xs text-ink-muted"><?= e($appointment['therapist_name']) ?></span>
+                <span class="chip chip-busy">Dolu</span>
+              </div>
+              <?php if ($appointment['editable']): ?>
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2 sm:pl-32">
+                  <a href="<?= e(url("/randevular/ozel-zaman/{$appointment['id']}/duzenle")) ?>" class="btn-text btn-text-quiet">Düzenle</a>
+                  <form method="post" action="<?= e(url("/randevular/ozel-zaman/{$appointment['id']}/sil")) ?>"
+                        data-confirm="Özel zaman silinsin mi? Saat yeniden randevuya açılır.">
+                    <?= Csrf::field() ?>
+                    <button class="btn-text btn-text-quiet hover:text-accent-dark">Sil</button>
+                  </form>
+                </div>
+              <?php endif; ?>
+            </li>
+            <?php continue; ?>
+          <?php endif; ?>
           <?php
           $start = new DateTimeImmutable((string) $appointment['starts_at']);
           $end   = $start->modify('+' . (int) $appointment['duration_min'] . ' minutes');
