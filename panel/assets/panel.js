@@ -591,6 +591,19 @@
     if (normalized !== null) field.value = normalized;
   });
 
+  // data-show-when="#alan" taşıyan öğe, o alanın değeri data-show-value iken
+  // görünür (randevu formunda iptal gerekçesi). JS kapalıyken hep görünür.
+  document.querySelectorAll('[data-show-when]').forEach(function (el) {
+    var source = document.querySelector(el.getAttribute('data-show-when'));
+    if (!source) return;
+
+    var sync = function () { el.hidden = source.value !== el.getAttribute('data-show-value'); };
+    source.addEventListener('change', sync);
+    // Geri tuşuyla dönüşte tarayıcı seçimi sonradan geri yükler.
+    window.addEventListener('pageshow', sync);
+    sync();
+  });
+
   // Bir seçim başka bir seçimi ön doldurur: seçilen <option>'ın data-fill
   // değeri, data-fill-target'taki alana yazılır (yeni randevu → bireyin seans
   // türü). Hedef elle değiştirildiyse bir daha üzerine yazılmaz — kullanıcının

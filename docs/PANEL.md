@@ -191,6 +191,11 @@ hem birey için yapılır — bir bireyin aynı saatte iki farklı terapiste yaz
 gerçek bir çakışmadır ve yalnız terapist takvimine bakmak bunu kaçırırdı. İptal edilen
 ve "gelmedi" işaretli randevular saati serbest bırakır.
 
+**İptal iki yerden yapılır:** Liste görünümündeki "İptal et" ya da düzenleme formunda
+Durum → "İptal edildi". İkisi de gerekçeyi (isteğe bağlı) kaydeder, aynı iptal
+bildirimini gönderir ve aynı denetim kaydını bırakır. Formdan durum geri alınırsa
+gerekçe silinir; saat bu arada dolmuşsa kayıt geçmez.
+
 **Özel zaman da engeldir.** Terapist takvimde kendisi için saat kapatabilir (Randevular →
 “Özel zaman”). O aralık kırmızı “Dolu” görünür ve randevu kaydı onay kutusuyla da geçmez;
 saati açmak için kaydın kendisi silinir ya da taşınır. Planlı randevunun üstüne özel zaman

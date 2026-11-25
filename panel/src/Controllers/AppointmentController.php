@@ -274,14 +274,22 @@ final class AppointmentController
             redirect("/randevular/{$id}/duzenle");
         }
 
-        if ($this->needsConfirmation((int) $input['therapist_id'], $start, (int) $input['duration_min'], $input, $id)) {
+        // İptalde mesai dışı / izin / geçmiş tarih uyarısının anlamı yok: saat boşalıyor.
+        $isCancelled  = $input['status'] === 'cancelled';
+        $wasCancelled = $appointment['status'] === 'cancelled';
+
+        if (!$isCancelled
+            && $this->needsConfirmation((int) $input['therapist_id'], $start, (int) $input['duration_min'], $input, $id)) {
             redirect("/randevular/{$id}/duzenle");
         }
+
+        // Gerekçe yalnız iptalde tutulur; randevu geri alınırsa silinir (bkz. setStatus).
+        $reason = $isCancelled && $input['cancel_reason'] !== '' ? $input['cancel_reason'] : null;
 
         Db::run(
             'UPDATE appointments
                 SET client_id = ?, therapist_id = ?, starts_at = ?, duration_min = ?,
-                    location = ?, note = ?, status = ?, updated_at = NOW()
+                    location = ?, note = ?, status = ?, cancel_reason = ?, updated_at = NOW()
               WHERE id = ?',
             [
                 $input['client_id'],
@@ -291,6 +299,7 @@ final class AppointmentController
                 $input['location'],
                 $input['note'] !== '' ? $input['note'] : null,
                 $input['status'],
+                $reason,
                 $id,
             ]
         );
@@ -298,11 +307,22 @@ final class AppointmentController
         $this->applyFee($id, $input['fee']);
         $this->applySessionType($id, $input['session_type']);
 
+        // Formdan yapılan iptal, listedeki "İptal et" ile aynı izi bırakır.
+        if ($isCancelled && !$wasCancelled) {
+            Audit::log('appointment.cancelled', 'appointment', $id, ['reason' => (string) $reason]);
+            $this->notify($id, 'cancelled', $actor, $input['notify']);
+
+            flash('success', 'Randevu iptal edildi. Saat yeniden kullanılabilir.');
+            redirect('/randevular?hafta=' . $start->format('Y-m-d'));
+        }
+
         Audit::log('appointment.updated', 'appointment', $id, [
             'starts_at' => $start->format('Y-m-d H:i'),
             'status'    => $input['status'],
         ]);
-        $this->notify($id, 'updated', $actor, $input['notify']);
+        // Zaten iptal olan kayıttaki düzeltme bildirilmez: "Randevunuz güncellendi,
+        // yeni zaman…" e-postası iptal edilmiş randevuyu geçerli gösterirdi.
+        $this->notify($id, 'updated', $actor, $input['notify'] && !$isCancelled);
 
         flash('success', 'Randevu güncellendi.');
         redirect('/randevular?hafta=' . $start->format('Y-m-d'));
@@ -315,7 +335,7 @@ final class AppointmentController
         $appointment = $this->find($id, $actor);
 
         $status = post('status');
-        // İptal ayrı akış: gerekçe alınması gerekiyor.
+        // İptal buradan geçmez: gerekçe ve bildirim kendi akışında (cancel, update).
         if (!in_array($status, ['scheduled', 'confirmed', 'completed', 'no_show'], true)) {
             flash('error', 'Geçersiz durum.');
             redirect('/randevular?hafta=' . substr((string) $appointment['starts_at'], 0, 10));
@@ -460,6 +480,7 @@ final class AppointmentController
             'location'          => post('location'),
             'note'              => mb_substr(post('note'), 0, 255),
             'status'            => post('status', 'scheduled'),
+            'cancel_reason'     => mb_substr(post('cancel_reason'), 0, 255),
             'confirm_warnings'  => post('confirm_warnings'),
             'notify'            => isset($_POST['notify']),
             'fee'               => post('fee'),
@@ -575,17 +596,24 @@ final class AppointmentController
             $errors['fee'] = 'Ücreti sayı olarak girin (ör. 1500 ya da 1.500,00).';
         }
 
-        // İptal, gerekçe alındığı için yalnız kendi akışından yapılır; düzenleme
-        // formu mevcut durumu koruyabilir ama "iptal"e çeviremez.
+        // İptal ayrı bir yetkidir; yetkisi olmayan mevcut durumu koruyabilir ama
+        // randevuyu "iptal"e çeviremez.
         if ($current !== null) {
             $allowed = ['scheduled', 'confirmed', 'completed', 'no_show', (string) $current['status']];
+            if (Rbac::can($actor, 'appointment.cancel')) {
+                $allowed[] = 'cancelled';
+            }
             if (!in_array($input['status'], $allowed, true)) {
                 $errors['status'] = 'Geçersiz durum.';
             }
         }
 
+        // Saat tutmayan durumlar (iptal, gelmedi) çakışmaz; yeni kayıtta formdaki
+        // durum okunmaz, hep "planlandı"dır.
+        $holdsSlot = $current === null || in_array($input['status'], Scheduling::BLOCKING_STATUSES, true);
+
         // Çakışma yalnız diğer alanlar geçerliyse sorulabilir.
-        if ($errors === [] && $start !== null) {
+        if ($errors === [] && $start !== null && $holdsSlot) {
             $conflicts = Scheduling::conflicts(
                 (int) $input['therapist_id'],
                 (int) $input['client_id'],
@@ -604,9 +632,7 @@ final class AppointmentController
             }
         }
 
-        // Özel zaman onayla geçilmez. Saat tutmayan durumlar (iptal, gelmedi)
-        // dışarıda; yeni kayıtta formdaki durum okunmaz, hep "planlandı"dır.
-        $holdsSlot = $current === null || in_array($input['status'], Scheduling::BLOCKING_STATUSES, true);
+        // Özel zaman onayla geçilmez.
         if ($errors === [] && $start !== null && $holdsSlot) {
             $busy = Scheduling::busyConflict((int) $input['therapist_id'], $start, $duration);
             if ($busy !== null) {

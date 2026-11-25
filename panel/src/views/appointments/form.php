@@ -146,14 +146,30 @@ $typesReady  = Panel\Schema::sessionTypesReady();
         <div>
           <label for="status" class="field-label">Durum</label>
           <?php $selectedStatus = $field('status', (string) $appointment['status']); ?>
+          <?php $canPickCancelled = $appointment['status'] === 'cancelled' || Rbac::can($actor, 'appointment.cancel'); ?>
           <select id="status" name="status" required class="field">
             <?php foreach (Scheduling::STATUSES as $value => $label): ?>
-              <?php if ($value === 'cancelled' && $appointment['status'] !== 'cancelled') { continue; } ?>
+              <?php if ($value === 'cancelled' && !$canPickCancelled) { continue; } ?>
               <option value="<?= e($value) ?>" <?= $selectedStatus === $value ? 'selected' : '' ?>><?= e($label) ?></option>
             <?php endforeach; ?>
           </select>
-          <p class="field-hint">İptal için listedeki "İptal et" düğmesini kullanın — gerekçe kaydedilir.</p>
+          <?php if ($message = error_for('status')): ?>
+            <p class="field-error"><?= e($message) ?></p>
+          <?php endif; ?>
         </div>
+
+        <?php if ($canPickCancelled): ?>
+          <?php // Yalnız "İptal edildi" seçiliyken görünür (panel.js, data-show-when).
+                // JS kapalıysa hep görünür; başka durumda yazılan gerekçe kaydedilmez. ?>
+          <div data-show-when="#status" data-show-value="cancelled">
+            <label for="cancel_reason" class="field-label">
+              İptal gerekçesi <span class="font-normal text-ink-light">(isteğe bağlı)</span>
+            </label>
+            <input type="text" id="cancel_reason" name="cancel_reason" maxlength="255" class="field"
+                   value="<?= e($field('cancel_reason', (string) ($appointment['cancel_reason'] ?? ''))) ?>">
+            <p class="field-hint">İptal edilen randevunun saati yeniden kullanılabilir. Klinik içerik yazmayın.</p>
+          </div>
+        <?php endif; ?>
       <?php endif; ?>
     </div>
 
